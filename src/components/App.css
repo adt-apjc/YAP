@@ -1,0 +1,163 @@
+:root {
+   --side-bg-color: #017cad;
+   --side-width: 15%;
+   --navbar-height: 55px;
+}
+/*
+DEFINE 100 % height of main component
+*/
+body,
+html {
+   height: 100%;
+   margin: 0;
+}
+
+.center {
+   display: block;
+   margin-left: auto;
+   margin-right: auto;
+   width: 50%;
+}
+
+#root {
+   height: 100%;
+}
+
+[type="button"],
+[type="reset"],
+[type="submit"],
+button {
+   -webkit-appearance: none;
+}
+
+span {
+   user-select: none;
+}
+
+.popup__content {
+   z-index: 1000;
+}
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:visited,
+.btn-primary:focus {
+   background-color: #007cad;
+   border-color: #0080b3;
+}
+
+.font-sm {
+   font-size: 12px;
+}
+
+.font-lg {
+   font-size: 22px;
+}
+
+.pointer {
+   cursor: pointer;
+}
+.pointer.disabled {
+   pointer-events: none;
+}
+
+.main-content {
+   margin-left: var(--side-width);
+   /* minus the size of navbar */
+   /* height: calc(100% - var(--navbar-height)); */
+   height: 100%;
+   width: calc(100% - var(--side-width));
+}
+
+.sidenav {
+   height: 100%; /* Full-height: remove this if you want "auto" height */
+   width: var(--side-width); /* Set the width of the sidebar */
+   position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+   z-index: 1000;
+   top: 0;
+   left: 0;
+   background-color: var(--side-bg-color);
+   overflow-x: hidden; /* Disable horizontal scroll */
+   transition: 0.2s;
+   min-width: 60px;
+   padding: 0 10px;
+}
+
+.side-item {
+   display: flex;
+   color: #ddd;
+}
+.side-item.disabled {
+   color: #aaa;
+}
+
+.sidenav-container {
+   position: sticky;
+   z-index: 10;
+   width: 100%;
+   left: 0;
+   top: 0;
+   background-color: var(--side-bg-color);
+   padding-bottom: 1rem;
+   /* border: 1px solid #01719c; */
+}
+
+.sidenav-footer {
+   width: calc(100% - 20px);
+   position: absolute;
+   bottom: 0;
+}
+
+.collapse-icon {
+   font-size: 13px;
+}
+
+/* 
+
+*/
+
+.section-header {
+   padding: 10px;
+}
+
+.section-header:hover {
+   background-color: #f8f9fa;
+}
+
+.section-container {
+   border: 1px solid #eaeaea;
+   border-radius: 0.25rem;
+}
+
+.api-method-badge {
+   padding: 7px;
+   width: 100px;
+   text-align: center;
+   display: inline-block;
+   font-size: 15px;
+   user-select: none;
+}
+
+.modal {
+   z-index: 1000;
+   background: rgba(0, 0, 0, 0.7);
+   overflow-y: hidden;
+}
+.modal-content {
+   max-height: 90%;
+   overflow-y: auto;
+}
+
+.text-hover-highlight:hover {
+   text-decoration: underline;
+}
+.icon-hover-highlight:hover {
+   opacity: 0.6;
+}
+
+.endpoint-form {
+   border: 1px solid #eaeaea;
+   border-radius: 0.25rem;
+   padding: 20px;
+}
