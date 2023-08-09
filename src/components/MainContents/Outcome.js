@@ -207,8 +207,8 @@ class Outcome extends React.Component {
             );
          } else {
             return (
-               <div className="text-center">
-                  <div>No configuration</div>
+               <div className="container">
+                  <div className="shadow-sm p-3 mb-3 bg-light text-secondary rounded">No configuration</div>
                </div>
             );
          }

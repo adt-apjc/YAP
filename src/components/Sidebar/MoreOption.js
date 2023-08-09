@@ -1,79 +1,76 @@
-import React from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Modal } from "../../helper/modalHelper";
 import { Popper } from "../../helper/popperHelper";
 import ModalContentSelector from "./ModalContentSelector";
 import GlobalContext from "../contexts/ContextProvider";
 
-class MoreOption extends React.Component {
-   constructor(props) {
-      super(props);
-      this.state = { popupShow: false, modalShow: false };
-      this.triggerRef = React.createRef();
-      this.warpperRef = React.createRef();
-   }
+const MoreOption = (props) => {
+   const [popupShow, setPopupShow] = useState(false);
+   const [modalShow, setModalShow] = useState(false);
+   const triggerRef = useRef();
+   const warpperRef = useRef();
 
-   componentDidMount() {
-      document.addEventListener("mousedown", this.handleClickOutside);
-   }
+   const context = useContext(GlobalContext);
 
-   componentWillUnmount() {
-      document.removeEventListener("mousedown", this.handleClickOutside);
-   }
-
-   togglePopupShow = () => {
-      this.setState({ popupShow: !this.state.popupShow });
-      // console.log(this.warpperRef.current);
+   const togglePopupShow = () => {
+      setPopupShow((prev) => !prev);
    };
 
-   handleClickOutside = (event) => {
-      if (this.warpperRef && !this.warpperRef.current.contains(event.target)) {
-         this.setState({ popupShow: false });
-         // console.log(this.warpperRef.current);
-         // console.log(event.target);
-      }
-   };
+   useEffect(() => {
+      const handleClickOutside = (event) => {
+         if (warpperRef && !warpperRef.current.contains(event.target)) {
+            setPopupShow(false);
+         }
+      };
+      console.log("add event");
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+         console.log("remove event");
+         document.removeEventListener("mousedown", handleClickOutside);
+      };
+   }, []);
 
-   render() {
-      const Context = this.context;
-      return (
-         <div ref={this.warpperRef} className="collapse-icon text-light pointer">
-            <span ref={this.triggerRef} onClick={this.togglePopupShow}>
-               More
-            </span>
-            <Popper show={this.state.popupShow} triggerRef={this.triggerRef}>
-               <div className="list-group">
-                  <button
-                     className="list-group-item list-group-item-action"
-                     onClick={() => {
-                        Context.toggleMode();
-                        this.setState({ popupShow: false });
-                     }}
-                  >
-                     Switch to <span className="text-info">{Context.mode === "presentation" ? "Edit" : "Presentation"} mode</span>
-                  </button>
-                  <button
-                     className="list-group-item list-group-item-action"
-                     onClick={() => {
-                        Context.clearConfig();
-                     }}
-                  >
-                     Clear Configuration
-                  </button>
-                  <button
-                     className="list-group-item list-group-item-action"
-                     onClick={() => this.setState({ modalShow: true, popupShow: false })}
-                  >
-                     Settings
-                  </button>
-               </div>
-            </Popper>
-            <Modal show={this.state.modalShow} onHide={() => this.setState({ modalShow: false })}>
-               <ModalContentSelector contentType="settings" onHide={() => this.setState({ modalShow: false })} />
-            </Modal>
-         </div>
-      );
-   }
-}
-MoreOption.contextType = GlobalContext;
+   return (
+      <div ref={warpperRef} className="collapse-icon text-light pointer">
+         <span ref={triggerRef} onClick={togglePopupShow}>
+            More
+         </span>
+         <Popper show={popupShow} triggerRef={triggerRef}>
+            <div className="list-group">
+               <button
+                  className="list-group-item list-group-item-action"
+                  onClick={() => {
+                     context.toggleMode();
+                     setPopupShow(false);
+                  }}
+               >
+                  Switch to <span className="text-info">{context.mode === "presentation" ? "Edit" : "Presentation"} mode</span>
+               </button>
+               <button
+                  className="list-group-item list-group-item-action"
+                  onClick={() => {
+                     context.clearConfig();
+                     setPopupShow(false);
+                  }}
+               >
+                  Clear Configuration
+               </button>
+               <button
+                  className="list-group-item list-group-item-action"
+                  onClick={() => {
+                     setModalShow(true);
+                     setPopupShow(false);
+                  }}
+               >
+                  Settings
+               </button>
+            </div>
+         </Popper>
+         <Modal show={modalShow} onHide={() => setModalShow(false)}>
+            <ModalContentSelector contentType="settings" onHide={() => setModalShow(false)} />
+         </Modal>
+      </div>
+   );
+};
 
 export default MoreOption;
