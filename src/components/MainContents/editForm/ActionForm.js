@@ -32,10 +32,10 @@ class ExpectForm extends React.Component {
    renderExpectForm = () => {
       return this.state.expect.map((el, index) => {
          return (
-            <div key={index} className="form-row mb-3">
+            <div key={index} className="row mb-3">
                <div className="col-3">
                   <select
-                     className="custom-select custom-select-sm"
+                     className="form-select form-select-sm"
                      name="type"
                      value={this.state.expect[index].type}
                      onChange={(e) => this.onExpectFormChange(e, index)}
@@ -176,7 +176,7 @@ class ActionForm extends React.Component {
    render() {
       let pollingTypeForm = (
          <>
-            <div className="form-row mb-3">
+            <div className="row mb-3">
                <div className="col">
                   <input
                      type="text"
@@ -202,8 +202,8 @@ class ActionForm extends React.Component {
       );
       let form = (
          <form id="actionForm" onSubmit={(e) => this.onSubmitHandler(e)}>
-            <div className="form-row">
-               <div className="col">
+            <div className="row align-items-center">
+               <div className="col-3">
                   <div className="form-check form-check-inline">
                      <input
                         className="form-check-input"
@@ -233,9 +233,9 @@ class ActionForm extends React.Component {
                      </label>
                   </div>
                </div>
-               <div className="col">
+               <div className="col-9">
                   <select
-                     className="custom-select custom-select-sm"
+                     className="form-select"
                      name="useEndpoint"
                      onChange={(e) => this.onChangeHandler(e)}
                      value={this.state.input.useEndpoint}
@@ -248,7 +248,8 @@ class ActionForm extends React.Component {
             </div>
             <div className="input-group my-3">
                <select
-                  className="custom-select col-sm-2"
+                  style={{ maxWidth: 150 }}
+                  className="form-select form-select-sm"
                   name="method"
                   value={this.state.input.method}
                   onChange={(e) => this.onChangeHandler(e)}
@@ -269,7 +270,7 @@ class ActionForm extends React.Component {
                   onChange={(e) => this.onChangeHandler(e)}
                />
             </div>
-            <div className="form-row mb-2">
+            <div className="row mb-2">
                <div className="col-sm-3">
                   <input
                      type="text"
@@ -303,7 +304,7 @@ class ActionForm extends React.Component {
                   />
                </div>
             </div>
-            <div className="form-row mb-3">
+            <div className="row mb-3">
                <div className="col">
                   <textarea
                      className="form-control form-control-sm"
@@ -314,11 +315,11 @@ class ActionForm extends React.Component {
                   />
                </div>
             </div>
-            <div className="form-row mb-3">
+            <div className="row mb-3">
                <div className="col-sm-12 col-md-2">DisplayResponseAs</div>
                <div className="col-sm-12 col-md-3">
                   <select
-                     className="custom-select custom-select-sm"
+                     className="form-select form-select-sm"
                      name="displayResponseAs"
                      value={this.state.input.displayResponseAs}
                      onChange={(e) => this.onChangeHandler(e)}
@@ -342,7 +343,7 @@ class ActionForm extends React.Component {
             </div>
             {this.state.input.type === "polling" ? pollingTypeForm : ""}
             <ExpectForm ref={this.expectRef} initValue={this.props.initValue} />
-            <div className="form-row mb-3">
+            <div className="row mb-3">
                <div className="col">
                   {/* <textarea className="form-control form-control-sm" placeholder="Payload (optional)" /> */}
                   <div>

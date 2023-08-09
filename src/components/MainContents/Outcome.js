@@ -53,7 +53,7 @@ class CommandModal extends React.Component {
       return (
          <div className="container-fluid">
             <div className="input-group mb-3">
-               <select className="custom-select" onChange={this.selectChangeHandler}>
+               <select className="form-select" onChange={this.selectChangeHandler}>
                   <option>Choose command to run</option>
                   {this.renderSelectOpion()}
                </select>

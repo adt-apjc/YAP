@@ -18,7 +18,7 @@ export class ContextProvider extends React.Component {
             this.setState({ runningStatus: {} });
          } else {
             this.setState({ runningStatus: { ...this.state.runningStatus, [step]: status } }, () =>
-               window.localStorage.setItem("runningStatus", JSON.stringify(this.state.runningStatus)),
+               window.localStorage.setItem("runningStatus", JSON.stringify(this.state.runningStatus))
             );
          }
       };

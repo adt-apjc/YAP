@@ -59,7 +59,10 @@ class MoreOption extends React.Component {
                   >
                      Clear Configuration
                   </button>
-                  <button className="list-group-item list-group-item-action" onClick={() => this.setState({ modalShow: true, popupShow: false })}>
+                  <button
+                     className="list-group-item list-group-item-action"
+                     onClick={() => this.setState({ modalShow: true, popupShow: false })}
+                  >
                      Settings
                   </button>
                </div>

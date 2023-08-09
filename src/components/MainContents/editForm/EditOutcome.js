@@ -145,7 +145,7 @@ class AddCommandForm extends React.Component {
             </div>
             {this.state.enableCommand && (
                <div className="px-4 pb-2 border-top">
-                  <div className="form-row">
+                  <div className="row">
                      <div className="col-sm-12 col-md-1">
                         <div
                            className="btn btn-sm btn-secondary px-4 me-1 my-3"
@@ -178,7 +178,7 @@ class AddCommandForm extends React.Component {
                   </div>
                   {this.state.selectedCommandIndex && (
                      <>
-                        <div className="form-row">
+                        <div className="row">
                            <div className="col">
                               <div className="form-check form-check-inline">
                                  <input
@@ -211,7 +211,7 @@ class AddCommandForm extends React.Component {
                            </div>
                            <div className="col">
                               <select
-                                 className="custom-select custom-select-sm"
+                                 className="form-select form-select-sm"
                                  name="useEndpoint"
                                  onChange={(e) => this.onChangeHandler(e)}
                                  value={this.state.commandList[this.state.selectedCommandIndex].useEndpoint}
@@ -223,7 +223,7 @@ class AddCommandForm extends React.Component {
                         </div>
                         <div className="input-group my-2">
                            <select
-                              className="custom-select col-sm-2"
+                              className="form-select col-sm-2"
                               name="method"
                               value={this.state.commandList[this.state.selectedCommandIndex].method}
                               onChange={(e) => this.onChangeHandler(e)}
@@ -243,7 +243,7 @@ class AddCommandForm extends React.Component {
                               onChange={(e) => this.onChangeHandler(e)}
                            />
                         </div>
-                        <div className="form-row mb-2">
+                        <div className="row mb-2">
                            <div className="col">
                               <input
                                  type="text"
@@ -255,11 +255,11 @@ class AddCommandForm extends React.Component {
                               />
                            </div>
                         </div>
-                        <div className="form-row mb-3">
+                        <div className="row mb-3">
                            <div className="col-sm-12 col-md-2">DisplayResponseAs</div>
                            <div className="col-sm-12 col-md-3">
                               <select
-                                 className="custom-select custom-select-sm"
+                                 className="form-select form-select-sm"
                                  name="displayResponseAs"
                                  value={this.state.commandList[this.state.selectedCommandIndex].displayResponseAs}
                                  onChange={(e) => this.onChangeHandler(e)}
@@ -282,7 +282,7 @@ class AddCommandForm extends React.Component {
                            )}
                         </div>
                         {this.state.commandList[this.state.selectedCommandIndex].type === "polling" && (
-                           <div className="form-row mb-3">
+                           <div className="row mb-3">
                               <div className="col">
                                  <input
                                     type="text"
@@ -305,7 +305,7 @@ class AddCommandForm extends React.Component {
                               </div>
                            </div>
                         )}
-                        <div className="form-row mb-2">
+                        <div className="row mb-2">
                            <div className="col">
                               {/* <textarea className="form-control form-control-sm" placeholder="Payload (optional)" /> */}
                               <div>
@@ -422,7 +422,7 @@ class AddNodeForm extends React.Component {
          <>
             <form onSubmit={this.addNodeHandler}>
                <div className="form-group">
-                  <div className="form-row">
+                  <div className="row">
                      <div className="col-sm-3">
                         <label>Label</label>
                         <input
@@ -437,7 +437,7 @@ class AddNodeForm extends React.Component {
                      <div className="col-sm-3">
                         <label>Appearance</label>
                         <select
-                           className="custom-select custom-select-sm"
+                           className="form-select form-select-sm"
                            name="type"
                            value={this.state.input.type}
                            onChange={(e) => this.setState({ input: { ...this.state.input, [e.target.name]: e.target.value } })}
@@ -575,11 +575,11 @@ class AddEdgeForm extends React.Component {
          <>
             <form onSubmit={this.addEdgeHandler}>
                <div className="form-group">
-                  <div className="form-row">
+                  <div className="row">
                      <div className="col-sm-3">
                         <label>Source</label>
                         <select
-                           className="custom-select custom-select-sm"
+                           className="form-select form-select-sm"
                            required
                            name="source"
                            value={this.state.input.source}
@@ -592,7 +592,7 @@ class AddEdgeForm extends React.Component {
                      <div className="col-sm-3">
                         <label>Target</label>
                         <select
-                           className="custom-select custom-select-sm"
+                           className="form-select form-select-sm"
                            required
                            name="target"
                            value={this.state.input.target}

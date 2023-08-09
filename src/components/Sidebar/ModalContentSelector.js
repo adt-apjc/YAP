@@ -34,27 +34,29 @@ class EndpointEditor extends React.Component {
       return this.state.inputHeader.map((el, index) => {
          return (
             <React.Fragment key={index}>
-               <div className="input-group col-10" style={{ marginTop: "-1px" }}>
-                  <input
-                     type="text"
-                     className="form-control form-control-sm col-sm-3"
-                     name="key"
-                     placeholder="key"
-                     required
-                     value={el.key || ""}
-                     onChange={(e) => this.onHeaderChangeHandler(e, index)}
-                  />
-                  <input
-                     type="text"
-                     className="form-control form-control-sm col-sm-9"
-                     name="value"
-                     placeholder="value"
-                     required
-                     value={el.value || ""}
-                     onChange={(e) => this.onHeaderChangeHandler(e, index)}
-                  />
+               <div className="col-11">
+                  <div className="input-group" style={{ marginTop: "-1px" }}>
+                     <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        name="key"
+                        placeholder="key"
+                        required
+                        value={el.key || ""}
+                        onChange={(e) => this.onHeaderChangeHandler(e, index)}
+                     />
+                     <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        name="value"
+                        placeholder="value"
+                        required
+                        value={el.value || ""}
+                        onChange={(e) => this.onHeaderChangeHandler(e, index)}
+                     />
+                  </div>
                </div>
-               <div className="col-2">
+               <div className="col-1">
                   <span
                      className="pointer"
                      onClick={() => this.setState({ inputHeader: this.state.inputHeader.filter((el, i) => i !== index) })}
@@ -70,31 +72,34 @@ class EndpointEditor extends React.Component {
    render() {
       return (
          <div className="endpoint-form">
-            <div>
-               <div className="float-right btn btn-sm btn-info" onClick={this.onHeaderSaveHandler}>
+            <div className="d-flex align-items-center">
+               <div>New Endpoint</div>
+               <div className="btn btn-sm btn-info ms-auto" onClick={this.onHeaderSaveHandler}>
                   Save
                </div>
-               <div>New Endpoint</div>
             </div>
-            <div className="input-group my-3">
-               <input
-                  type="text"
-                  className="form-control col-sm-3"
-                  name="name"
-                  placeholder="Endpoint Name"
-                  required
-                  value={this.state.input.name}
-                  onChange={this.onChangeHandler}
-               />
-               <input
-                  type="text"
-                  className="form-control"
-                  name="baseURL"
-                  placeholder="Enter baseURL"
-                  required
-                  value={this.state.input.baseURL}
-                  onChange={this.onChangeHandler}
-               />
+            <div className="col-11">
+               <div className="input-group my-3">
+                  <input
+                     style={{ maxWidth: 200 }}
+                     type="text"
+                     className="form-control"
+                     name="name"
+                     placeholder="Endpoint Name"
+                     required
+                     value={this.state.input.name}
+                     onChange={this.onChangeHandler}
+                  />
+                  <input
+                     type="text"
+                     className="form-control"
+                     name="baseURL"
+                     placeholder="Enter baseURL"
+                     required
+                     value={this.state.input.baseURL}
+                     onChange={this.onChangeHandler}
+                  />
+               </div>
             </div>
             <div className="mb-3">Header</div>
             <div className="row">{this.renderHeaderField()}</div>
@@ -123,45 +128,46 @@ class EndpointViewer extends React.Component {
       return Object.keys(Context.config.endpoints).map((endpointName, index) => {
          return (
             <div key={index} className="row">
-               <div
-                  className="input-group input-group-sm mb-2 col-10 pointer"
-                  onClick={() => this.onSelectHandler(endpointName, Context.config.endpoints[endpointName])}
-               >
-                  <div type="text" className="form-control col-3">
-                     {endpointName}
-                  </div>
-                  <div type="text" className="form-control col-9">
-                     {Context.config.endpoints[endpointName].baseURL}
+               <div className="mb-2 col-10">
+                  <div
+                     className="input-group input-group-sm pointer"
+                     onClick={() => this.onSelectHandler(endpointName, Context.config.endpoints[endpointName])}
+                  >
+                     <div type="text" className="form-control col-3">
+                        {endpointName}
+                     </div>
+                     <div type="text" className="form-control col-9">
+                        {Context.config.endpoints[endpointName].baseURL}
+                     </div>
                   </div>
                </div>
+
                <div className="col-2">
-                  <div>
-                     {this.state.showDeleteEndpoint.includes(index) ? (
-                        <>
-                           <span
-                              className="pointer font-sm"
-                              onClick={() =>
-                                 this.setState({ showDeleteEndpoint: this.state.showDeleteEndpoint.filter((el) => el !== index) })
-                              }
-                           >
-                              Cancel
-                           </span>
-                           <span
-                              className="pointer font-sm text-danger mx-2 text-hover-highlight"
-                              onClick={() => Context.deleteEndpoint(endpointName)}
-                           >
-                              Delete
-                           </span>
-                        </>
-                     ) : (
+                  {this.state.showDeleteEndpoint.includes(index) ? (
+                     <>
                         <span
-                           className="pointer"
-                           onClick={() => this.setState({ showDeleteEndpoint: [...this.state.showDeleteEndpoint, index] })}
+                           className="pointer font-sm"
+                           onClick={() =>
+                              this.setState({ showDeleteEndpoint: this.state.showDeleteEndpoint.filter((el) => el !== index) })
+                           }
                         >
-                           {"\u00D7"}
+                           Cancel
                         </span>
-                     )}
-                  </div>
+                        <span
+                           className="pointer font-sm text-danger mx-2 text-hover-highlight"
+                           onClick={() => Context.deleteEndpoint(endpointName)}
+                        >
+                           Delete
+                        </span>
+                     </>
+                  ) : (
+                     <span
+                        className="pointer"
+                        onClick={() => this.setState({ showDeleteEndpoint: [...this.state.showDeleteEndpoint, index] })}
+                     >
+                        {"\u00D7"}
+                     </span>
+                  )}
                </div>
             </div>
          );
@@ -181,7 +187,7 @@ class Settings extends React.Component {
          <>
             <div className="modal-header">
                <span className="modal-title">Settings</span>
-               <button type="button" className="bnt-close" onClick={this.props.onHide}></button>
+               <button type="button" className="btn-close" onClick={this.props.onHide}></button>
             </div>
             <div className="modal-body">
                <div className="mb-3">
@@ -202,7 +208,7 @@ class Settings extends React.Component {
                )}
             </div>
             <div className="modal-footer">
-               <button type="button" className="btn btn-sm" onClick={this.props.onHide}>
+               <button type="button" className="btn btn-sm btn-danger" onClick={this.props.onHide}>
                   Close
                </button>
             </div>
