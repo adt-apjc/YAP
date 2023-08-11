@@ -96,9 +96,30 @@
                "useEndpoint": "NSO",
                "header": "SSH Keys",
                "headerColor": "",
-               "title": "Fetch SSH keys - having some issues :-(, with the connection but still return 200",
-               "description": "Fetch SSH keys form the newly created routers",
-               "url": "restconf/data/tailf-ncs:devices/fetch-ssh-host-keys",
+               "title": "Fetch Node_8 SSH keys",
+               "description": "Fetch SSH keys form the newly added Node_8 router",
+               "url": "restconf/data/tailf-ncs:devices/device=Node_8/ssh/fetch-host-keys",
+               "method": "post",
+               "data": {},
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": "200"
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "fingerprint"
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "SSH Keys",
+               "headerColor": "",
+               "title": "Fetch Node_9 SSH keys",
+               "description": "Fetch SSH keys form the newly added Node_9 router",
+               "url": "restconf/data/tailf-ncs:devices/device=Node_9/ssh/fetch-host-keys",
                "method": "post",
                "data": {},
                "expect": [
@@ -117,9 +138,30 @@
                "useEndpoint": "NSO",
                "header": "Sync",
                "headerColor": "",
-               "title": "Syncronize configuration from the router - fails if I can not fetch the ssh keys :-( but still return 200, need to check in data",
-               "description": "If sync-from fail, one or mode nodes will have 'Failed to authenticate towards device Node_8: SSH host key mismatch'",
-               "url": "restconf/data/tailf-ncs:devices/sync-from",
+               "title": "Syncronize NSO from the current Node_8 configuration",
+               "description": "",
+               "url": "restconf/data/tailf-ncs:devices/device=Node_8/sync-from",
+               "method": "post",
+               "data": {},
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "true"
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "Sync",
+               "headerColor": "",
+               "title": "Syncronize NSO from the current Node_9 configuration",
+               "description": "",
+               "url": "restconf/data/tailf-ncs:devices/device=Node_9/sync-from",
                "method": "post",
                "data": {},
                "expect": [
@@ -134,33 +176,135 @@
                ]
             }
          ],
-         "validations": [],
+         "validations": [
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "RPC",
+               "headerColor": "",
+               "title": "Execute remote action on Node_9",
+               "description": "Execute a local ping on Node_9 tha ping its own loopback interface",
+               "url": "restconf/operations/devices/device=Node_9/live-status/exec/any",
+               "method": "post",
+               "data": {
+                  "input": {
+                     "args": "ping 9.9.9.9"
+                  }
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "tailf-ned-cisco-ios-xr-stats:output"
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "RPC",
+               "headerColor": "",
+               "title": "Execute remote action on Node_9",
+               "description": "Execute a local ping on Node_9 tha ping its own loopback interface",
+               "url": "restconf/operations/devices/device=Node_9/live-status/exec/any",
+               "method": "post",
+               "data": {
+                  "input": {
+                     "args": "ping 9.9.9.9"
+                  }
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "tailf-ned-cisco-ios-xr-stats:output"
+                  }
+               ]
+            }
+         ],
          "outcome": {
-            "summaryText": "Routers have been created",
+            "summaryText": "Router are onboaded in NSO",
             "elements": {
                "nodes": [
                   {
-                     "data": { "id": "melbourne" },
+                     "data": { "id": "Node_8", "label": "Node_8", "width": "50", "height": "50" },
                      "position": { "x": 0, "y": 150 },
                      "classes": ["router"]
                   },
                   {
-                     "data": { "id": "sydney" },
+                     "data": { "id": "Node_9", "label": "Node_9", "width": "50", "height": "50" },
                      "position": { "x": 200, "y": 150 },
-                     "classes": ["highlight", "router"]
+                     "classes": ["router"]
                   }
                ],
-               "edges": []
+               "edges": [
+                  {
+                     "data": { "id": "Link_1", "source": "Node_8", "target": "Node_9", "label": "99.8.9.0/24" },
+                     "classes": []
+                  }
+               ]
             },
             "commands": {
-               "sydney": [
+               "Node_8": [
                   {
                      "type": "request",
-                     "useEndpoint": "mockAPI",
+                     "useEndpoint": "NSO",
                      "displayResponseAs": "json",
-                     "title": "Get router details",
-                     "url": "/api/devices/1",
-                     "method": "get"
+                     "title": "Ping interface Node_9",
+                     "url": "restconf/operations/devices/device=Node_8/live-status/exec/any",
+                     "method": "post",
+                     "data": {
+                        "input": {
+                           "args": "ping 99.8.9.9"
+                        }
+                     }
+                  },
+                  {
+                     "type": "request",
+                     "useEndpoint": "NSO",
+                     "displayResponseAs": "json",
+                     "title": "Ping loopback Node_9",
+                     "url": "restconf/operations/devices/device=Node_8/live-status/exec/any",
+                     "method": "post",
+                     "data": {
+                        "input": {
+                           "args": "ping 9.9.9.9"
+                        }
+                     }
+                  }
+               ],
+               "Node_9": [
+                  {
+                     "type": "request",
+                     "useEndpoint": "NSO",
+                     "displayResponseAs": "json",
+                     "title": "Ping interface Node_8",
+                     "url": "restconf/operations/devices/device=Node_8/live-status/exec/any",
+                     "method": "post",
+                     "data": {
+                        "input": {
+                           "args": "ping 99.8.9.8"
+                        }
+                     }
+                  },
+                  {
+                     "type": "request",
+                     "useEndpoint": "NSO",
+                     "displayResponseAs": "json",
+                     "title": "Ping loopback Node_8",
+                     "url": "restconf/operations/devices/device=Node_9/live-status/exec/any",
+                     "method": "post",
+                     "data": {
+                        "input": {
+                           "args": "ping 8.8.8.8"
+                        }
+                     }
                   }
                ]
             }
@@ -194,9 +338,7 @@
          }
       },
       "cleanup": {
-         "description": [
-            "The follwoing procedure is required to clean and assure there is no corrupted service (i.e. Zombies services) left behind"
-         ],
+         "description": ["Cleaning up NSO configuration before starting a new demo"],
          "continueOnFail": false,
          "actions": [
             {
