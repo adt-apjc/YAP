@@ -1,104 +1,140 @@
 {
-   "title": "YAP Hello World",
+   "title": "YAP Spring Cleaning",
    "sidebar": [
       {
          "name": "step_1",
-         "label": "Create router resouces"
+         "label": "Onboard Devices"
       },
       {
          "name": "step_2",
-         "label": "Create link resouces"
+         "label": "Service Provision - TBA"
       }
    ],
    "preface": [
       {
-         "title": "Hello World",
-         "stepDesc": "Intro",
-         "bodyArr": ["session for open mic"]
+         "title": "Device Onboarding",
+         "stepDesc": "Onboarding",
+         "bodyArr": ["Assessing feasability of YAP as baseline for automation demos: demonstating device onboard on NSO"]
+      },
+      {
+         "title": "TBA Title 2",
+         "stepDesc": "TBA Step 2",
+         "bodyArr": ["TO be created"]
       }
    ],
    "endpoints": {
-      "mockAPI": {
-         "baseURL": "https://5ac886b551c80500149ae808.mockapi.io",
+      "NSO": {
+         "baseURL": "http://10.76.230.28:8888/nso",
          "headers": {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
+            "Content-Type": "application/yang-data+json",
+            "Accept": "application/yang-data+json",
+            "Authorization": "Basic YWRtaW46YWRtaW4="
          }
       }
    },
    "mainContent": {
       "step_1": {
-         "description": ["API Request to mockAPI"],
+         "description": ["Onboard device on NSO instance"],
          "continueOnFail": false,
          "actions": [
             {
-               "type": "polling",
-               "useEndpoint": "mockAPI",
-               "header": "Validation",
-               "headerColor": "green",
-               "title": "Check there is no Melbourne router",
-               "description": "Validate that no devices has been created. (expect for 404)",
-               "interval": "2000",
-               "maxRetry": "20",
-               "url": "api/v1/devices/:1234",
-               "method": "get",
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "Create",
+               "headerColor": "Green",
+               "title": "Create devices in NSO",
+               "description": "Add Node_8 and Node_9 to NSO configuration",
+               "url": "restconf/data/tailf-ncs:devices",
+               "method": "post",
+               "data": {
+                  "device": [
+                     {
+                        "name": "Node_8",
+                        "address": "10.76.230.237",
+                        "port": 22,
+                        "authgroup": "router",
+                        "device-type": {
+                           "cli": {
+                              "ned-id": "cisco-iosxr-cli-7.49:cisco-iosxr-cli-7.49"
+                           }
+                        },
+                        "ssh-algorithms": {
+                           "public-key": ["ssh-rsa"]
+                        },
+                        "state": {
+                           "admin-state": "unlocked"
+                        }
+                     },
+                     {
+                        "name": "Node_9",
+                        "address": "10.76.230.237",
+                        "port": 22,
+                        "authgroup": "router",
+                        "device-type": {
+                           "cli": {
+                              "ned-id": "cisco-iosxr-cli-7.49:cisco-iosxr-cli-7.49"
+                           }
+                        },
+                        "ssh-algorithms": {
+                           "public-key": ["ssh-rsa"]
+                        },
+                        "state": {
+                           "admin-state": "unlocked"
+                        }
+                     }
+                  ]
+               },
                "expect": [
                   {
                      "type": "codeIs",
-                     "value": "404"
+                     "value": "201"
                   }
                ]
             },
             {
                "type": "request",
-               "useEndpoint": "mockAPI",
-               "header": "Create",
+               "useEndpoint": "NSO",
+               "header": "SSH Keys",
                "headerColor": "",
-               "title": "Create new router in Melbourne",
-               "description": "Send POST to the endpoint to create new entry in DB",
-               "url": "api/v1/devices",
+               "title": "Fetch SSH keys - having some issues :-(, with the connection but still return 200",
+               "description": "Fetch SSH keys form the newly created routers",
+               "url": "restconf/data/tailf-ncs:devices/fetch-ssh-host-keys",
                "method": "post",
-               "data": {
-                  "name": "Melbourne",
-                  "model": "ASR9001",
-                  "loopback_ip": "1.1.1.1/32"
-               }
-            },
-            {
-               "type": "request",
-               "useEndpoint": "mockAPI",
-               "header": "Create",
-               "headerColor": "",
-               "title": "Create new router in Sydney",
-               "description": "Send POST to the endpoint to create new entry in DB",
-               "url": "api/v1/devices",
-               "method": "post",
-               "data": {
-                  "name": "Sydney",
-                  "model": "NCS5501",
-                  "loopback_ip": "1.1.1.2/32"
-               }
-            }
-         ],
-         "validations": [
-            {
-               "type": "request",
-               "useEndpoint": "mockAPI",
-               "header": "Check",
-               "headerColor": "#555555",
-               "title": "Melbourne router",
-               "description": "",
-               "displayResponseAs": "json",
-               "url": "/api/v1/devices",
-               "method": "get",
+               "data": {},
                "expect": [
                   {
+                     "type": "codeIs",
+                     "value": "200"
+                  },
+                  {
                      "type": "bodyContain",
-                     "value": "Melbourne"
+                     "value": "fingerprint"
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "Sync",
+               "headerColor": "",
+               "title": "Syncronize configuration from the router - fails if I can not fetch the ssh keys :-( but still return 200, need to check in data",
+               "description": "If sync-from fail, one or mode nodes will have 'Failed to authenticate towards device Node_8: SSH host key mismatch'",
+               "url": "restconf/data/tailf-ncs:devices/sync-from",
+               "method": "post",
+               "data": {},
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "true"
                   }
                ]
             }
          ],
+         "validations": [],
          "outcome": {
             "summaryText": "Routers have been created",
             "elements": {
@@ -131,137 +167,72 @@
          }
       },
       "step_2": {
-         "description": ["API Request to mockAPI"],
+         "description": ["TBA"],
          "continueOnFail": false,
          "actions": [
             {
                "type": "request",
-               "useEndpoint": "mockAPI",
+               "useEndpoint": "NSO",
                "header": "Create",
-               "headerColor": "",
-               "title": "Create link Melbourne to Sydney",
-               "description": "Send POST to the endpoint to create new entry in DB",
-               "url": "api/v1/links",
+               "headerColor": "Green",
+               "title": "Configure Authentication",
+               "description": "Add authentication group required to access network routers",
+               "url": "restconf/data/tailf-ncs:devices/authgroups/group=test",
                "method": "post",
-               "data": {
-                  "name": "Mel-Syd",
-                  "source": "1234",
-                  "destination": "6789"
-               }
-            }
-         ],
-         "validations": [
-            {
-               "type": "request",
-               "useEndpoint": "mockAPI",
-               "header": "Check",
-               "headerColor": "#555555",
-               "title": "Melbourne to Sydney link",
-               "description": "",
-               "displayResponseAs": "json",
-               "url": "/api/v1/links/1",
-               "method": "get",
+               "data": "",
                "expect": [
                   {
-                     "type": "bodyContain",
-                     "value": "Melbourne"
+                     "type": "codeIs",
+                     "value": "200"
                   }
                ]
             }
          ],
+         "validations": [],
          "outcome": {
-            "summaryText": "Melbourne to Sydney link has been created",
-            "elements": {
-               "nodes": [
-                  {
-                     "data": { "id": "melbourne", "label": "Melbourne", "width": "50", "height": "50" },
-                     "position": { "x": 0, "y": 150 },
-                     "classes": ["router"]
-                  },
-                  {
-                     "data": { "id": "sydney", "label": "Sydney" },
-                     "position": { "x": 200, "y": 150 },
-                     "classes": ["router"]
-                  }
-               ],
-               "edges": [
-                  {
-                     "data": { "id": "Link_1", "source": "melbourne", "target": "sydney", "label": "" },
-                     "classes": ["highlight"]
-                  }
-               ]
-            },
-            "commands": {
-               "Link_1": [
-                  {
-                     "type": "request",
-                     "useEndpoint": "mockAPI",
-                     "displayResponseAs": "json",
-                     "title": "Get router details",
-                     "url": "/api/devices/1/interfaces",
-                     "method": "get"
-                  }
-               ],
-               "melbourne": [
-                  {
-                     "type": "request",
-                     "useEndpoint": "mockAPI",
-                     "displayResponseAs": "json",
-                     "title": "get",
-                     "url": "/api/devices",
-                     "method": "get"
-                  }
-               ]
-            }
+            "summaryText": "Melbourne to Sydney link has been created"
          }
       },
       "cleanup": {
-         "description": ["The follwoing procedure is required to clean and assure there is no corrupted service (i.e. Zombies services) left behind"],
+         "description": [
+            "The follwoing procedure is required to clean and assure there is no corrupted service (i.e. Zombies services) left behind"
+         ],
          "continueOnFail": false,
          "actions": [
             {
                "type": "request",
-               "useEndpoint": "mockAPI",
+               "useEndpoint": "NSO",
                "header": "Delete",
                "headerColor": "red",
-               "title": "Delete Melbourne router",
+               "title": "Remove Node_8 from NSO",
                "description": "",
-               "url": "api/v1/devices/1",
-               "method": "delete"
+               "url": "restconf/data/tailf-ncs:devices/device=Node_8",
+               "method": "delete",
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["204", "404"]
+                  }
+               ]
             },
             {
                "type": "request",
-               "useEndpoint": "mockAPI",
+               "useEndpoint": "NSO",
                "header": "Delete",
                "headerColor": "red",
-               "title": "Delete Sydney router",
+               "title": "Remove Node_9 from NSO",
                "description": "",
-               "url": "api/v1/devices/2",
-               "method": "delete"
-            },
-            {
-               "type": "request",
-               "useEndpoint": "mockAPI",
-               "header": "Delete",
-               "headerColor": "red",
-               "title": "Delete Melbourne Sydney link",
-               "description": "",
-               "url": "api/v1/links/1",
-               "method": "delete"
+               "url": "restconf/data/tailf-ncs:devices/device=Node_9",
+               "method": "delete",
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["204", "404"]
+                  }
+               ]
             }
          ],
-         "validations": [
-            {
-               "type": "request",
-               "useEndpoint": "mockAPI",
-               "header": "GET",
-               "headerColor": "",
-               "title": "Validate that no devices left",
-               "description": "expect []",
-               "url": "/api/v1/devices",
-               "method": "get"
-            }
-         ]
+         "validations": []
       }
    }
 }

@@ -1,0 +1,269 @@
+{
+   "title": "YAP Hello World",
+   "sidebar": [
+      {
+         "name": "step_1",
+         "label": "Create router resouces"
+      },
+      {
+         "name": "step_2",
+         "label": "Create link resouces"
+      }
+   ],
+   "preface": [
+      {
+         "title": "Hello World",
+         "stepDesc": "Intro",
+         "bodyArr": ["session for open mic"]
+      }
+   ],
+   "endpoints": {
+      "mockAPI": {
+         "baseURL": "https://5ac886b551c80500149ae808.mockapi.io",
+         "headers": {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+         }
+      }
+   },
+   "mainContent": {
+      "step_1": {
+         "description": ["API Request to mockAPI"],
+         "continueOnFail": false,
+         "actions": [
+            {
+               "type": "polling",
+               "useEndpoint": "mockAPI",
+               "header": "Validation",
+               "headerColor": "green",
+               "title": "Check there is no Melbourne router",
+               "description": "Validate that no devices has been created. (expect for 404)",
+               "interval": "2000",
+               "maxRetry": "20",
+               "url": "api/v1/devices/:1234",
+               "method": "get",
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": "404"
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "mockAPI",
+               "header": "Create",
+               "headerColor": "",
+               "title": "Create new router in Melbourne",
+               "description": "Send POST to the endpoint to create new entry in DB",
+               "url": "api/v1/devices",
+               "method": "post",
+               "data": {
+                  "name": "Melbourne",
+                  "model": "ASR9001",
+                  "loopback_ip": "1.1.1.1/32"
+               }
+            },
+            {
+               "type": "request",
+               "useEndpoint": "mockAPI",
+               "header": "Create",
+               "headerColor": "",
+               "title": "Create new router in Sydney",
+               "description": "Send POST to the endpoint to create new entry in DB",
+               "url": "api/v1/devices",
+               "method": "post",
+               "data": {
+                  "name": "Sydney",
+                  "model": "NCS5501",
+                  "loopback_ip": "1.1.1.2/32"
+               }
+            }
+         ],
+         "validations": [
+            {
+               "type": "request",
+               "useEndpoint": "mockAPI",
+               "header": "Check",
+               "headerColor": "#555555",
+               "title": "Melbourne router",
+               "description": "",
+               "displayResponseAs": "json",
+               "url": "/api/v1/devices",
+               "method": "get",
+               "expect": [
+                  {
+                     "type": "bodyContain",
+                     "value": "Melbourne"
+                  }
+               ]
+            }
+         ],
+         "outcome": {
+            "summaryText": "Routers have been created",
+            "elements": {
+               "nodes": [
+                  {
+                     "data": { "id": "melbourne" },
+                     "position": { "x": 0, "y": 150 },
+                     "classes": ["router"]
+                  },
+                  {
+                     "data": { "id": "sydney" },
+                     "position": { "x": 200, "y": 150 },
+                     "classes": ["highlight", "router"]
+                  }
+               ],
+               "edges": []
+            },
+            "commands": {
+               "sydney": [
+                  {
+                     "type": "request",
+                     "useEndpoint": "mockAPI",
+                     "displayResponseAs": "json",
+                     "title": "Get router details",
+                     "url": "/api/devices/1",
+                     "method": "get"
+                  }
+               ]
+            }
+         }
+      },
+      "step_2": {
+         "description": ["API Request to mockAPI"],
+         "continueOnFail": false,
+         "actions": [
+            {
+               "type": "request",
+               "useEndpoint": "mockAPI",
+               "header": "Create",
+               "headerColor": "",
+               "title": "Create link Melbourne to Sydney",
+               "description": "Send POST to the endpoint to create new entry in DB",
+               "url": "api/v1/links",
+               "method": "post",
+               "data": {
+                  "name": "Mel-Syd",
+                  "source": "1234",
+                  "destination": "6789"
+               }
+            }
+         ],
+         "validations": [
+            {
+               "type": "request",
+               "useEndpoint": "mockAPI",
+               "header": "Check",
+               "headerColor": "#555555",
+               "title": "Melbourne to Sydney link",
+               "description": "",
+               "displayResponseAs": "json",
+               "url": "/api/v1/links/1",
+               "method": "get",
+               "expect": [
+                  {
+                     "type": "bodyContain",
+                     "value": "Melbourne"
+                  }
+               ]
+            }
+         ],
+         "outcome": {
+            "summaryText": "Melbourne to Sydney link has been created",
+            "elements": {
+               "nodes": [
+                  {
+                     "data": { "id": "melbourne", "label": "Melbourne", "width": "50", "height": "50" },
+                     "position": { "x": 0, "y": 150 },
+                     "classes": ["router"]
+                  },
+                  {
+                     "data": { "id": "sydney", "label": "Sydney" },
+                     "position": { "x": 200, "y": 150 },
+                     "classes": ["router"]
+                  }
+               ],
+               "edges": [
+                  {
+                     "data": { "id": "Link_1", "source": "melbourne", "target": "sydney", "label": "" },
+                     "classes": ["highlight"]
+                  }
+               ]
+            },
+            "commands": {
+               "Link_1": [
+                  {
+                     "type": "request",
+                     "useEndpoint": "mockAPI",
+                     "displayResponseAs": "json",
+                     "title": "Get router details",
+                     "url": "/api/devices/1/interfaces",
+                     "method": "get"
+                  }
+               ],
+               "melbourne": [
+                  {
+                     "type": "request",
+                     "useEndpoint": "mockAPI",
+                     "displayResponseAs": "json",
+                     "title": "get",
+                     "url": "/api/devices",
+                     "method": "get"
+                  }
+               ]
+            }
+         }
+      },
+      "cleanup": {
+         "description": [
+            "The follwoing procedure is required to clean and assure there is no corrupted service (i.e. Zombies services) left behind"
+         ],
+         "continueOnFail": false,
+         "actions": [
+            {
+               "type": "request",
+               "useEndpoint": "mockAPI",
+               "header": "Delete",
+               "headerColor": "red",
+               "title": "Delete Melbourne router",
+               "description": "",
+               "url": "api/v1/devices/1",
+               "method": "delete"
+            },
+            {
+               "type": "request",
+               "useEndpoint": "mockAPI",
+               "header": "Delete",
+               "headerColor": "red",
+               "title": "Delete Sydney router",
+               "description": "",
+               "url": "api/v1/devices/2",
+               "method": "delete"
+            },
+            {
+               "type": "request",
+               "useEndpoint": "mockAPI",
+               "header": "Delete",
+               "headerColor": "red",
+               "title": "Delete Melbourne Sydney link",
+               "description": "",
+               "url": "api/v1/links/1",
+               "method": "delete"
+            }
+         ],
+         "validations": [
+            {
+               "type": "request",
+               "useEndpoint": "mockAPI",
+               "header": "GET",
+               "headerColor": "",
+               "title": "Validate that no devices left",
+               "description": "expect []",
+               "url": "/api/v1/devices",
+               "method": "get"
+            }
+         ]
+      }
+   }
+}
