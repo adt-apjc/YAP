@@ -2,15 +2,17 @@ import React from "react";
 import GlobalContext from "../contexts/ContextProvider";
 import { Modal } from "../../helper/modalHelper";
 import ModalContentSelector from "./editForm/ModalContentSelector";
-
 import { isArray, isEmpty, isEqual } from "lodash";
+import Logo from "./Logo";
 
 class PrefaceContent extends React.Component {
    render() {
       let texts = this.props.config.bodyArr;
       if (isArray(texts)) {
          texts = this.props.config.bodyArr.map((element, textIndex) => {
-            return <div key={textIndex} className="card-text text-justify p-2 m-0" dangerouslySetInnerHTML={{ __html: element }} />;
+            return (
+               <div key={textIndex} className="card-text text-justify p-2 m-0" dangerouslySetInnerHTML={{ __html: element }} />
+            );
          });
       }
       return (
@@ -47,7 +49,8 @@ class Preface extends React.Component {
       if (!isEmpty(preface)) {
          return (
             <div className="pb-3">
-               <div className="btn-toolbar justify-content-end">
+               <div className="btn-toolbar justify-content-between">
+                  <Logo />
                   <div className="btn-group">
                      {this.props.config.map((element, stepIndex) => {
                         let stepStyle = "btn btn-outline-primary";
@@ -113,7 +116,10 @@ class Preface extends React.Component {
                      <PrefaceContent config={preface} index={index} />
                   </div>
                </div>
-               <Modal show={this.state.modalShow} onHide={() => this.setState({ modalShow: false, modalContentType: null, paramValues: null })}>
+               <Modal
+                  show={this.state.modalShow}
+                  onHide={() => this.setState({ modalShow: false, modalContentType: null, paramValues: null })}
+               >
                   <ModalContentSelector
                      onHide={() => this.setState({ modalShow: false, modalContentType: null, paramValues: null })}
                      contentType={this.state.modalContentType}

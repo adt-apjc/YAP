@@ -113,7 +113,7 @@ const SideBar = (props) => {
       return context.config.sidebar.map((element, index) => {
          let statusIcon;
          if (context.runningStatus[element.name] === "success") {
-            statusIcon = <i className={"fad ms-2 me-3 fa-circle text-success"} />;
+            statusIcon = <i className={"fad ms-2 me-3 fa-circle custom-text-success"} />;
          } else if (context.runningStatus[element.name] === "running") {
             statusIcon = <i className={"fal fa-spinner fa-spin text-light ms-2 me-3"} />;
          } else if (context.runningStatus[element.name] === "fail") {

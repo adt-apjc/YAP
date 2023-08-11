@@ -8,6 +8,7 @@ import Validations from "./Validations";
 import Outcome from "./Outcome";
 
 import _ from "lodash";
+import Logo from "./Logo";
 
 class DemoContent extends React.Component {
    constructor(props) {
@@ -259,12 +260,15 @@ class DemoContent extends React.Component {
       return (
          <>
             {/* HEADER SECTION */}
-            <div className="row">
-               <div className="col-md-3">
-                  <div style={{ fontSize: "25px" }}>{this.props.currentStep.label}</div>
+            <div className="d-flex justify-content-between">
+               <div className="">
+                  <div className="d-flex ">
+                     <Logo />
+                     <div style={{ fontSize: "25px" }}>{this.props.currentStep.label}</div>
+                  </div>
                </div>
-               <div className="col-md-7">
-                  {description}
+               <div className="">
+                  <p className="mt-2">{description}</p>
                   {Context.mode === "edit" && (
                      <div
                         className="float-right text-info font-sm pointer text-hover-highlight"
@@ -272,7 +276,10 @@ class DemoContent extends React.Component {
                            this.setState({
                               modalShow: true,
                               modalContentType: "editStepDescription",
-                              paramValues: { title: this.props.currentStep.label, description: this.props.currentStepDetails.description },
+                              paramValues: {
+                                 title: this.props.currentStep.label,
+                                 description: this.props.currentStepDetails.description,
+                              },
                            })
                         }
                      >
@@ -280,9 +287,9 @@ class DemoContent extends React.Component {
                      </div>
                   )}
                </div>
-               <div className="col-md-2">
+               <div className="">
                   <button
-                     className="btn btn-sm btn-primary float-right"
+                     className="btn btn-sm btn-primary float-right align-self-center"
                      onClick={this.startWorkflowHandler}
                      disabled={!this.props.currentStepDetails.actions || this.state.currentRunning ? true : false}
                   >
@@ -316,7 +323,11 @@ class DemoContent extends React.Component {
                            Add
                         </span>
                      )}
-                     {this.state.isActionCompleted[this.props.currentStep.name] ? <i className="fad fa-check m-2 text-success" /> : ""}
+                     {this.state.isActionCompleted[this.props.currentStep.name] ? (
+                        <i className="fad fa-check m-2 text-success" />
+                     ) : (
+                        ""
+                     )}
                      <i className={`p-2 fas fa-caret-${this.state.actionSectionShow ? "down" : "right"}`}></i>
                   </div>
                </div>
@@ -364,7 +375,11 @@ class DemoContent extends React.Component {
                            Add
                         </span>
                      )}
-                     {this.state.isValidationCompleted[this.props.currentStep.name] ? <i className="fad fa-check m-2 text-success" /> : ""}
+                     {this.state.isValidationCompleted[this.props.currentStep.name] ? (
+                        <i className="fad fa-check m-2 text-success" />
+                     ) : (
+                        ""
+                     )}
                      <i className={`p-2 fas fa-caret-${this.state.validationSectionShow ? "down" : "right"}`}></i>
                   </div>
                </div>
@@ -396,7 +411,11 @@ class DemoContent extends React.Component {
                            className="text-info font-sm text-hover-highlight pointer"
                            onClick={(e) => {
                               e.stopPropagation();
-                              this.setState({ modalShow: true, modalContentType: "editOutcome", paramValues: this.props.currentStepDetails.outcome });
+                              this.setState({
+                                 modalShow: true,
+                                 modalContentType: "editOutcome",
+                                 paramValues: this.props.currentStepDetails.outcome,
+                              });
                            }}
                         >
                            Edit

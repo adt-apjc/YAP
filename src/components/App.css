@@ -1,5 +1,5 @@
 :root {
-   --side-bg-color: #017cad;
+   --side-bg-color: #007eb3;
    --side-width: 15%;
    --navbar-height: 55px;
 }
@@ -86,7 +86,7 @@ span {
 
 .side-item {
    display: flex;
-   color: #ddd;
+   color: #fef6f9;
 }
 .side-item.disabled {
    color: #aaa;
@@ -160,4 +160,14 @@ span {
    border: 1px solid #eaeaea;
    border-radius: 0.25rem;
    padding: 20px;
+}
+
+.cisco-logo {
+   position: relative;
+   top: -8px;
+   width: 55px;
+}
+
+.custom-text-success {
+   color: #79be6f;
 }
