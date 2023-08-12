@@ -50,28 +50,16 @@ class DemoContent extends React.Component {
    };
 
    clearStateHandler = () => {
-      this.setState({
+      this.setState((prev) => ({
+         isActionCompleted: { cleanup: prev.isActionCompleted },
+         isValidationCompleted: { cleanup: prev.isValidationCompleted },
+         actionResults: { cleanup: prev.actionResults.cleanup },
+         validationResults: { cleanup: prev.actionResults.cleanup },
          currentRunning: null,
-         isActionCompleted: {},
-         isValidationCompleted: {},
-         actionResults: { cleanup: this.state.actionResults.cleanup },
-         validationResults: { cleanup: this.state.actionResults.cleanup },
          modalShow: false,
          modalContentType: null,
-      });
+      }));
       console.log("DEBUG - clear state from sidebar demoContent");
-   };
-
-   checkWorkflowResult = (componentName) => {
-      if (_.isEmpty(this.state[componentName][this.props.currentStep.name])) return false;
-      //
-      for (let index in this.state[componentName][this.props.currentStep.name]) {
-         // incase cotinueOnFail set
-         if (_.isEmpty(this.state[componentName][this.props.currentStep.name][index])) return false;
-         // incase cotinueOnFail not set
-         if (this.state[componentName][this.props.currentStep.name][index].success === false) return false;
-      }
-      return true;
    };
 
    saveStateToLocalStorage = () => {
@@ -87,20 +75,21 @@ class DemoContent extends React.Component {
          isActionCompleted: { ...this.state.isActionCompleted, [this.props.currentStep.name]: false },
          isValidationCompleted: { ...this.state.isValidationCompleted, [this.props.currentStep.name]: false },
       });
-      await this.runActionWorkflowHandler();
+      let isActionCompleted = await this.runActionWorkflowHandler();
       // if it is cleanup module also run clearStateHandler() after runAction complete successfully
-      if (this.props.currentStep.name === "cleanup" && this.state.isActionCompleted.cleanup) {
+      if (this.props.currentStep.name === "cleanup" && isActionCompleted) {
          Context.clearStateHandler();
       }
       // after action complete delay 500 ms and start validation
       setTimeout(async () => {
-         await this.runValidationWorkflowHandler();
+         let isValidationCompleted = await this.runValidationWorkflowHandler();
          // set globalContext status on sidebar
-         Context.setRunningStatus(this.props.currentStep.name, this.checkWorkflowResult("actionResults") ? "success" : "fail");
+         Context.setRunningStatus(this.props.currentStep.name, isActionCompleted && isValidationCompleted ? "success" : "fail");
       }, 500);
    };
 
    runActionWorkflowHandler = async () => {
+      let isCompleted = true;
       let Context = this.context;
       let index = 0;
       let { currentStepDetails } = this.props;
@@ -124,6 +113,8 @@ class DemoContent extends React.Component {
                // polling request
                response = await pollingRequest(action, Context.config.endpoints);
             }
+            //
+            if (!response.success) isCompleted = false;
             // update state actionResults for specific step
             this.setState(
                {
@@ -136,9 +127,10 @@ class DemoContent extends React.Component {
                   },
                   currentRunning: null,
                },
-               this.saveStateToLocalStorage,
+               this.saveStateToLocalStorage
             );
          } catch (e) {
+            isCompleted = false;
             console.log(e);
             // update state actionResults for specific step
             this.setState(
@@ -152,7 +144,7 @@ class DemoContent extends React.Component {
                   },
                   currentRunning: null,
                },
-               this.saveStateToLocalStorage,
+               this.saveStateToLocalStorage
             );
             // check continueOnFail
             if (!currentStepDetails.continueOnFail) {
@@ -165,12 +157,14 @@ class DemoContent extends React.Component {
       this.setState({
          isActionCompleted: {
             ...this.state.isActionCompleted,
-            [this.props.currentStep.name]: this.checkWorkflowResult("actionResults"),
+            [this.props.currentStep.name]: isCompleted,
          },
       });
+      return isCompleted;
    };
 
    runValidationWorkflowHandler = async () => {
+      let isCompleted = true;
       let Context = this.context;
       let index = 0;
       let { currentStepDetails } = this.props;
@@ -180,7 +174,7 @@ class DemoContent extends React.Component {
          validationResults: { ...this.state.validationResults, [this.props.currentStep.name]: {} },
       });
       // validate if it has validation configured or not
-      if (!currentStepDetails.validations) return null;
+      if (!currentStepDetails.validations) return true;
       // start
       for (let validation of currentStepDetails.validations) {
          // SET current running state before start.
@@ -194,6 +188,8 @@ class DemoContent extends React.Component {
                // polling request
                response = await pollingRequest(validation, Context.config.endpoints);
             }
+            //
+            if (!response.success) isCompleted = false;
             // update state validationResults for specific step
             this.setState(
                {
@@ -206,9 +202,10 @@ class DemoContent extends React.Component {
                   },
                   currentRunning: null,
                },
-               this.saveStateToLocalStorage,
+               this.saveStateToLocalStorage
             );
          } catch (e) {
+            isCompleted = false;
             console.log(e);
             // update state validationResults for specific step
             this.setState(
@@ -222,7 +219,7 @@ class DemoContent extends React.Component {
                   },
                   currentRunning: null,
                },
-               this.saveStateToLocalStorage,
+               this.saveStateToLocalStorage
             );
             // check continueOnFail
             if (!currentStepDetails.continueOnFail) {
@@ -235,9 +232,10 @@ class DemoContent extends React.Component {
       this.setState({
          isValidationCompleted: {
             ...this.state.isValidationCompleted,
-            [this.props.currentStep.name]: this.checkWorkflowResult("validationResults"),
+            [this.props.currentStep.name]: isCompleted,
          },
       });
+      return isCompleted;
    };
 
    render() {
@@ -325,9 +323,7 @@ class DemoContent extends React.Component {
                      )}
                      {this.state.isActionCompleted[this.props.currentStep.name] ? (
                         <i className="fad fa-check m-2 text-success" />
-                     ) : (
-                        ""
-                     )}
+                     ) : null}
                      <i className={`p-2 fas fa-caret-${this.state.actionSectionShow ? "down" : "right"}`}></i>
                   </div>
                </div>

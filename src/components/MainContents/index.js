@@ -9,7 +9,9 @@ class MainContents extends React.Component {
    render() {
       const Context = this.context;
       const currentStepDetails =
-         Context.currentStep.name === "cleanup" ? Context.config.mainContent.cleanup : Context.config.mainContent[Context.currentStep.name];
+         Context.currentStep.name === "cleanup"
+            ? Context.config.mainContent.cleanup
+            : Context.config.mainContent[Context.currentStep.name];
       return (
          <div className="container-fluid">
             <div className="container-fluid pb-3">

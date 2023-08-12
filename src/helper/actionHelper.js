@@ -13,7 +13,7 @@ const validateExpect = (expect, response) => {
             // code may be a single string or an array of string, where one need to match the value expected
             console.log("DEBUG condition (response.status/condition.value): ", response.status, condition.value);
 
-            if (condition.value.includes(JSON.stringify(response.status))) {
+            if (condition.value === response.status.toString()) {
                console.log("DEBUG (response.status/condition.value) - MATCHED ", response.status, condition.value);
                return true;
             }
@@ -86,7 +86,9 @@ const replaceStrWithParams = (text) => {
 export const normalRequest = (actionObject, endpoints) => {
    let config = {
       baseURL: actionObject.baseURL ? actionObject.baseURL : endpoints[actionObject.useEndpoint].baseURL,
-      headers: actionObject.headers ? replaceStrWithParams(actionObject.headers) : replaceStrWithParams(endpoints[actionObject.useEndpoint].headers),
+      headers: actionObject.headers
+         ? replaceStrWithParams(actionObject.headers)
+         : replaceStrWithParams(endpoints[actionObject.useEndpoint].headers),
       url: replaceStrWithParams(actionObject.url),
       method: actionObject.method,
       data: replaceStrWithParams(actionObject.data),
@@ -134,7 +136,9 @@ export const pollingRequest = (actionObject, endpoints) => {
    let maxRetry = actionObject.maxRetry ? parseInt(actionObject.maxRetry) : 10;
    let config = {
       baseURL: actionObject.baseURL ? actionObject.baseURL : endpoints[actionObject.useEndpoint].baseURL,
-      headers: actionObject.headers ? replaceStrWithParams(actionObject.headers) : replaceStrWithParams(endpoints[actionObject.useEndpoint].headers),
+      headers: actionObject.headers
+         ? replaceStrWithParams(actionObject.headers)
+         : replaceStrWithParams(endpoints[actionObject.useEndpoint].headers),
       url: replaceStrWithParams(actionObject.url),
       method: actionObject.method,
       data: replaceStrWithParams(actionObject.data),
@@ -165,7 +169,11 @@ export const pollingRequest = (actionObject, endpoints) => {
                clearInterval(timer);
                if (actionObject.expect) {
                   // this case mean runtime exceed maxRetry and expect was set and it still not hit the criteria
-                  reject({ status: "Error Timeout - ", statusText: "Criteria was not meet in the proposed polling time", success: false });
+                  reject({
+                     status: "Error Timeout - ",
+                     statusText: "Criteria was not meet in the proposed polling time",
+                     success: false,
+                  });
                } else {
                   // this case mean runtime exceed maxRetry and expect not set
                   // we will assume that it success. in case user want to polling for a specific time and dont expect anything in response.

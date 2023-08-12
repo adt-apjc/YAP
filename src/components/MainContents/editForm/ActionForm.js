@@ -26,7 +26,7 @@ class ExpectForm extends React.Component {
    };
 
    getCurrentStateValue = () => {
-      return this.state.expect;
+      return this.state.isExpectEnable ? this.state.expect : [];
    };
 
    renderExpectForm = () => {
@@ -135,9 +135,12 @@ class ActionForm extends React.Component {
       const { initValue } = this.props;
       const actionIndex = initValue ? initValue.actionIndex : null;
       const expectObject = this.expectRef.current.getCurrentStateValue();
+
       if (this.state.isPayloadValid) {
          Context.addAction(
-            expectObject.length !== 0 ? { ...this.state.input, expect: expectObject } : this.state.input,
+            expectObject.length !== 0
+               ? { ...this.state.input, expect: expectObject }
+               : { ...this.state.input, expect: undefined },
             this.props.tab,
             Context.currentStep.name,
             actionIndex
