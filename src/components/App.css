@@ -176,7 +176,11 @@ span {
 }
 
 .custom-text-success {
-   color: #79be6f;
+   color: #70fd70;
+}
+
+.custom-text-danger {
+   color: #ff0000;
 }
 
 .preface-nav {

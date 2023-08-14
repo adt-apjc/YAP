@@ -3,6 +3,7 @@ import ReactJson from "@uiw/react-json-view";
 import GlobalContext from "../contexts/ContextProvider";
 import { Modal } from "../../helper/modalHelper";
 import ModalContentSelector from "./editForm/ModalContentSelector";
+import RunButtonComponent from "./RunButtonComponent";
 
 class ActionDetail extends React.Component {
    getStringFromObject = (obj, path) => {
@@ -144,9 +145,10 @@ class Actions extends React.Component {
                            </div>
                            {action.title ? action.title : "NO TITLE"}
                         </div>
-                        <div>
+                        <div className="d-flex align-items-center">
                            {Context.mode === "edit" && (
-                              <>
+                              <div className="d-flex align-items-center">
+                                 <RunButtonComponent currentRunning={null} workflowHandler={() => null} />
                                  <span
                                     className="px-1 font-sm font-weight-light text-info text-hover-highlight"
                                     onClick={(e) => {
@@ -161,7 +163,7 @@ class Actions extends React.Component {
                                     Edit
                                  </span>
                                  <span
-                                    className="px-1 font-sm font-weight-light text-danger text-hover-highlight"
+                                    className="pe-3 ps-1 font-sm font-weight-light text-danger text-hover-highlight"
                                     onClick={(e) => {
                                        e.stopPropagation();
                                        this.setState({
@@ -173,7 +175,7 @@ class Actions extends React.Component {
                                  >
                                     Delete
                                  </span>
-                              </>
+                              </div>
                            )}
                            <i className={`fas fa-caret-${this.state.selectedAPI.includes(index) ? "down" : "right"}`}></i>
                            {this.isActionRunning("action", index) ? <i className="fas fa-spinner fa-spin m-2" /> : ""}

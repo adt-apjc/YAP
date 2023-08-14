@@ -51,7 +51,7 @@ class Preface extends React.Component {
             <div className="pb-3">
                <div className="btn-toolbar justify-content-between position-relative">
                   <Logo />
-                  <div className="d-flex align-items-center">
+                  <div className="d-flex align-items-center mt-1">
                      <ul className="nav nav-tabs preface-nav">
                         {this.props.config.map((element, stepIndex) => {
                            return (

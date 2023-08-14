@@ -9,6 +9,8 @@ import Outcome from "./Outcome";
 
 import _ from "lodash";
 import Logo from "./Logo";
+import PreCheck from "./PreCheck";
+import RunButtonComponent from "./RunButtonComponent";
 
 class DemoContent extends React.Component {
    constructor(props) {
@@ -24,6 +26,7 @@ class DemoContent extends React.Component {
          outcomeSectionShow: false,
          modalShow: false,
          modalContentType: null,
+         preCheckSectionShow: false,
       };
    }
 
@@ -127,7 +130,7 @@ class DemoContent extends React.Component {
                   },
                   currentRunning: null,
                },
-               this.saveStateToLocalStorage
+               this.saveStateToLocalStorage,
             );
          } catch (e) {
             isCompleted = false;
@@ -144,7 +147,7 @@ class DemoContent extends React.Component {
                   },
                   currentRunning: null,
                },
-               this.saveStateToLocalStorage
+               this.saveStateToLocalStorage,
             );
             // check continueOnFail
             if (!currentStepDetails.continueOnFail) {
@@ -202,7 +205,7 @@ class DemoContent extends React.Component {
                   },
                   currentRunning: null,
                },
-               this.saveStateToLocalStorage
+               this.saveStateToLocalStorage,
             );
          } catch (e) {
             isCompleted = false;
@@ -219,7 +222,7 @@ class DemoContent extends React.Component {
                   },
                   currentRunning: null,
                },
-               this.saveStateToLocalStorage
+               this.saveStateToLocalStorage,
             );
             // check continueOnFail
             if (!currentStepDetails.continueOnFail) {
@@ -259,33 +262,33 @@ class DemoContent extends React.Component {
          <>
             {/* HEADER SECTION */}
             <div className="d-flex justify-content-between">
-               <div className="">
-                  <div className="d-flex ">
+               <div className="d-flex flex-column">
+                  <div className="d-flex">
                      <Logo />
                      <div style={{ fontSize: "25px" }}>{this.props.currentStep.label}</div>
                   </div>
+                  <div>
+                     <p className="mt-2 me-3">{description}</p>
+                     {Context.mode === "edit" && (
+                        <div
+                           className="float-right text-info font-sm pointer text-hover-highlight"
+                           onClick={() =>
+                              this.setState({
+                                 modalShow: true,
+                                 modalContentType: "editStepDescription",
+                                 paramValues: {
+                                    title: this.props.currentStep.label,
+                                    description: this.props.currentStepDetails.description,
+                                 },
+                              })
+                           }
+                        >
+                           Edit
+                        </div>
+                     )}
+                  </div>
                </div>
-               <div className="">
-                  <p className="mt-2">{description}</p>
-                  {Context.mode === "edit" && (
-                     <div
-                        className="float-right text-info font-sm pointer text-hover-highlight"
-                        onClick={() =>
-                           this.setState({
-                              modalShow: true,
-                              modalContentType: "editStepDescription",
-                              paramValues: {
-                                 title: this.props.currentStep.label,
-                                 description: this.props.currentStepDetails.description,
-                              },
-                           })
-                        }
-                     >
-                        Edit
-                     </div>
-                  )}
-               </div>
-               <div className="">
+               <div className="text-nowrap">
                   <button
                      className="btn btn-sm btn-primary float-right align-self-center"
                      onClick={this.startWorkflowHandler}
@@ -302,13 +305,44 @@ class DemoContent extends React.Component {
                </div>
             </div>
             <div className="mt-3 mb-4" style={{ borderBottom: "1px solid #eaeaea" }}></div>
+            {/* PRE-CHECK */}
+            <div className="section-container my-1">
+               <div
+                  className="section-header d-flex justify-content-between pointer"
+                  onClick={() => this.setState({ preCheckSectionShow: !this.state.preCheckSectionShow })}
+               >
+                  <div className="d-flex align-items-center">
+                     <span className="font-weight-bold">Pre-Check</span>
+                     <RunButtonComponent currentRunning={null} workflowHandler={() => null} />
+                  </div>
+                  <div>
+                     {Context.mode === "edit" && (
+                        <span
+                           className="text-info font-sm text-hover-highlight pointer"
+                           onClick={(e) => {
+                              e.stopPropagation();
+                              this.setState({ modalShow: true, modalContentType: "action" });
+                           }}
+                        >
+                           Add
+                        </span>
+                     )}
+                     <i className={`p-2 fas fa-caret-${this.state.preCheckSectionShow ? "down" : "right"}`}></i>
+                  </div>
+               </div>
+               <PreCheck show={this.state.preCheckSectionShow} />
+            </div>
             {/* ACTION */}
             <div className="section-container my-1">
                <div
                   className="section-header d-flex justify-content-between pointer"
                   onClick={() => this.setState({ actionSectionShow: !this.state.actionSectionShow })}
                >
-                  <span className="font-weight-bold">Actions</span>
+                  <div className="d-flex align-items-center">
+                     <span className="font-weight-bold">Actions</span>
+                     <RunButtonComponent currentRunning={null} workflowHandler={() => null} />
+                  </div>
+
                   <div>
                      {Context.mode === "edit" && (
                         <span
@@ -340,24 +374,12 @@ class DemoContent extends React.Component {
                   className="section-header d-flex justify-content-between pointer"
                   onClick={() => this.setState({ validationSectionShow: !this.state.validationSectionShow })}
                >
-                  <div>
-                     <span className="font-weight-bold">Validations</span>
-                     <button
-                        className="btn btn-sm btn-primary mx-3"
-                        onClick={(e) => {
-                           e.stopPropagation();
-                           this.runValidationWorkflowHandler();
-                        }}
-                        disabled={!this.props.currentStepDetails.validations || this.state.currentRunning ? true : false}
-                     >
-                        {this.state.currentRunning ? (
-                           <i className="fas fa-spinner fa-spin m-1" />
-                        ) : _.isEmpty(this.state.validationResults[this.props.currentStep.name]) ? (
-                           "Run"
-                        ) : (
-                           "Re-run"
-                        )}
-                     </button>
+                  <div className="d-flex align-items-center">
+                     <span className="font-weight-bold">Post-Check</span>
+                     <RunButtonComponent
+                        currentRunning={this.state.currentRunning}
+                        workflowHandler={this.runValidationWorkflowHandler}
+                     />
                   </div>
                   <div>
                      {Context.mode === "edit" && (

@@ -117,7 +117,7 @@ const SideBar = (props) => {
          } else if (context.runningStatus[element.name] === "running") {
             statusIcon = <i className={"fal fa-spinner fa-spin text-light ms-2 me-3"} />;
          } else if (context.runningStatus[element.name] === "fail") {
-            statusIcon = <i className={"fad ms-2 me-3 fa-circle text-danger"} />;
+            statusIcon = <i className={"fad ms-2 me-3 fa-circle custom-text-danger"} />;
          } else {
             statusIcon = (
                <i className={`${context.currentStep.name === element.name ? "fas" : "fal"} ms-2 me-3 fa-circle text-light`} />
