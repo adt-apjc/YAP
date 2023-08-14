@@ -176,7 +176,7 @@ class AddCommandForm extends React.Component {
                         <div className="d-flex overflow-auto my-3">{this.renderCommand()}</div>
                      </div>
                   </div>
-                  {this.state.selectedCommandIndex && (
+                  {this.state.selectedCommandIndex !== null && (
                      <>
                         <div className="row">
                            <div className="col">
@@ -223,7 +223,8 @@ class AddCommandForm extends React.Component {
                         </div>
                         <div className="input-group my-2">
                            <select
-                              className="form-select col-sm-2"
+                              style={{ maxWidth: 150 }}
+                              className="form-select"
                               name="method"
                               value={this.state.commandList[this.state.selectedCommandIndex].method}
                               onChange={(e) => this.onChangeHandler(e)}
@@ -234,6 +235,7 @@ class AddCommandForm extends React.Component {
                               <option value="patch">PATCH</option>
                               <option value="delete">DELETE</option>
                            </select>
+
                            <input
                               type="text"
                               className="form-control"
@@ -677,7 +679,7 @@ class EditOutcome extends React.Component {
       super(props);
       this.topologyRef = React.createRef();
       this.state = {
-         outcome: this.props.initValue || { elements: { nodes: [], edges: [] }, commands: {} },
+         outcome: { elements: { nodes: [], edges: [] }, commands: {}, ...this.props.initValue },
          selectedNode: null,
          selectedEdge: null,
          formShow: "node",
