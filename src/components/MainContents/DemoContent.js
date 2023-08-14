@@ -79,6 +79,11 @@ class DemoContent extends React.Component {
          isValidationCompleted: { ...this.state.isValidationCompleted, [this.props.currentStep.name]: false },
       });
       let isActionCompleted = await this.runActionWorkflowHandler();
+
+      if (!isActionCompleted && !this.props.currentStepDetails.continueOnFail) {
+         Context.setRunningStatus(this.props.currentStep.name, "fail");
+         return;
+      }
       // if it is cleanup module also run clearStateHandler() after runAction complete successfully
       if (this.props.currentStep.name === "cleanup" && isActionCompleted) {
          Context.clearStateHandler();
@@ -267,11 +272,11 @@ class DemoContent extends React.Component {
                      <Logo />
                      <div style={{ fontSize: "25px" }}>{this.props.currentStep.label}</div>
                   </div>
-                  <div>
-                     <p className="mt-2 me-3">{description}</p>
-                     {Context.mode === "edit" && (
-                        <div
-                           className="float-right text-info font-sm pointer text-hover-highlight"
+                  <div className="my-2 me-3">{description}</div>
+                  {Context.mode === "edit" && (
+                     <div className="d-flex">
+                        <span
+                           className="text-info font-sm pointer text-hover-highlight"
                            onClick={() =>
                               this.setState({
                                  modalShow: true,
@@ -284,10 +289,11 @@ class DemoContent extends React.Component {
                            }
                         >
                            Edit
-                        </div>
-                     )}
-                  </div>
+                        </span>
+                     </div>
+                  )}
                </div>
+
                <div className="text-nowrap">
                   <button
                      className="btn btn-sm btn-primary float-right align-self-center"

@@ -65,7 +65,9 @@ class Preface extends React.Component {
                                     })
                                  }
                               >
-                                 <a className={stepIndex === index ? "nav-link active" : "nav-link"}>{element.stepDesc}</a>
+                                 <a className={stepIndex === index ? "nav-link active" : "nav-link text-black-50"}>
+                                    {element.stepDesc}
+                                 </a>
                               </li>
                            );
                         })}

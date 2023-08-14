@@ -114,7 +114,7 @@ class Actions extends React.Component {
       // check if it collasped
       if (!this.props.show) return null;
       // apiList component
-      if (this.props.currentStepDetails.actions) {
+      if (this.props.currentStepDetails.actions && this.props.currentStepDetails.actions.length !== 0) {
          apiList = this.props.currentStepDetails.actions.map((action, index) => {
             //
             let runResultStatus =

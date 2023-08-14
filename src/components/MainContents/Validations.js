@@ -112,7 +112,7 @@ class Validations extends React.Component {
       // check if it collasped
       if (!this.props.show) return null;
       //
-      if (this.props.currentStepDetails.validations) {
+      if (this.props.currentStepDetails.validations && this.props.currentStepDetails.validations.length !== 0) {
          apiList = this.props.currentStepDetails.validations.map((validation, index) => {
             //
             let runResultStatus =
