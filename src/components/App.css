@@ -146,7 +146,14 @@ span {
 }
 .modal-content {
    max-height: 90%;
+}
+
+.modal-body {
+   height: 100%;
    overflow-y: auto;
+   position: relative;
+   flex: 1 1 auto;
+   padding: var(--bs-modal-padding);
 }
 
 .text-hover-highlight:hover {
@@ -170,4 +177,10 @@ span {
 
 .custom-text-success {
    color: #79be6f;
+}
+
+.preface-nav {
+   position: relative;
+   top: 1px;
+   right: 10px;
 }

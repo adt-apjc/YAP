@@ -305,7 +305,7 @@ class AddCommandForm extends React.Component {
                               </div>
                            </div>
                         )}
-                        <div className="row mb-2">
+                        <div className="row">
                            <div className="col">
                               {/* <textarea className="form-control form-control-sm" placeholder="Payload (optional)" /> */}
                               <div>
@@ -794,7 +794,7 @@ class EditOutcome extends React.Component {
                <span className="modal-title">Outcome Editor</span>
                <button type="button" className="btn-close" onClick={this.props.onHide}></button>
             </div>
-            <div className="modal-body">
+            <div className="modal-body overflow-auto">
                <div className="row">
                   <div className="btn-group btn-group-sm col-4">
                      <button
@@ -815,12 +815,10 @@ class EditOutcome extends React.Component {
                </div>
                <div className="border rounded p-3" style={{ marginTop: "-1px" }}>
                   <div className="row">
-                     <div className="col-md-4">
-                        <div className="d-flex justify-content-between">
+                     <div className="col-sm-4 me-auto">
+                        <div className="d-flex align-items-center">
                            <div className="input-group input-group-sm">
-                              <div className="input-group-prepend">
-                                 <span className="input-group-text">Element ID</span>
-                              </div>
+                              <span className="input-group-text">Element ID</span>
                               <input type="text" className="form-control" disabled value={selectedElementId} />
                            </div>
                            <div className="mx-2">
@@ -833,7 +831,7 @@ class EditOutcome extends React.Component {
                            </div>
                         </div>
                      </div>
-                     <div className="col-md-2 offset-md-6">
+                     <div className="col-auto">
                         <button
                            type="button"
                            title="Delete selected element"

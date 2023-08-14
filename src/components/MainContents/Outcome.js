@@ -57,18 +57,16 @@ class CommandModal extends React.Component {
                   <option>Choose command to run</option>
                   {this.renderSelectOpion()}
                </select>
-               <div className="input-group-append">
-                  <button className="btn btn-outline-secondary" onClick={this.runHandler}>
-                     {this.state.isRunning ? (
-                        <>
-                           Running
-                           <i className="fas fa-spinner fa-spin m-1" />
-                        </>
-                     ) : (
-                        "Run"
-                     )}
-                  </button>
-               </div>
+               <button className="btn btn-outline-secondary" onClick={this.runHandler}>
+                  {this.state.isRunning ? (
+                     <>
+                        Running
+                        <i className="fas fa-spinner fa-spin m-1" />
+                     </>
+                  ) : (
+                     "Run"
+                  )}
+               </button>
             </div>
             <div>
                <ValidationDetail

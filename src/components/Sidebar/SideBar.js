@@ -126,7 +126,9 @@ const SideBar = (props) => {
          return (
             <div
                key={index}
-               className={`side-item mb-3 justify-content-between pointer ${isSomeStepRunning() ? "disabled" : ""}`}
+               className={`side-item mb-3 justify-content-between align-items-center pointer ${
+                  isSomeStepRunning() ? "disabled" : ""
+               }`}
                style={{ fontSize: "20px" }}
                onClick={() => context.setCurrentStep(element)}
             >
@@ -142,7 +144,7 @@ const SideBar = (props) => {
                </div>
                {context.mode === "edit" && (
                   <i
-                     className="fad fa-trash mx-2 icon-hover-highlight"
+                     className="far fa-trash fa-sm ms-2 icon-hover-highlight"
                      onClick={(e) => {
                         e.stopPropagation();
                         setState((prev) => ({ ...prev, modalShow: true, selectedStep: element }));
@@ -210,11 +212,9 @@ const SideBar = (props) => {
                         value={state.input}
                         onChange={(e) => setState((prev) => ({ ...prev, input: e.target.value }))}
                      />
-                     <div className="input-group-append">
-                        <button type="button" className="btn btn-sm btn-info" onClick={addNewStageHandler}>
-                           Add
-                        </button>
-                     </div>
+                     <button type="button" className="btn btn-sm btn-info" onClick={addNewStageHandler}>
+                        Add
+                     </button>
                   </div>
                )}
                {context.mode === "edit" && (

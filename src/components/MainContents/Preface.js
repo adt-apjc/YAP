@@ -49,37 +49,34 @@ class Preface extends React.Component {
       if (!isEmpty(preface)) {
          return (
             <div className="pb-3">
-               <div className="btn-toolbar justify-content-between">
+               <div className="btn-toolbar justify-content-between position-relative">
                   <Logo />
-                  <div className="btn-group">
-                     {this.props.config.map((element, stepIndex) => {
-                        let stepStyle = "btn btn-outline-primary";
-                        if (stepIndex === index) {
-                           stepStyle = "btn btn-primary";
-                        }
-                        return (
-                           <button
-                              key={stepIndex}
-                              className={stepStyle}
-                              onClick={() =>
-                                 this.setState({
-                                    preface: { ...this.props.config[stepIndex] },
-                                    index: stepIndex,
-                                 })
-                              }
-                           >
-                              <div>{element.stepDesc}</div>
-                           </button>
-                        );
-                     })}
+                  <div className="d-flex align-items-center">
+                     <ul className="nav nav-tabs preface-nav">
+                        {this.props.config.map((element, stepIndex) => {
+                           return (
+                              <li
+                                 key={stepIndex}
+                                 className="nav-item pointer"
+                                 onClick={() =>
+                                    this.setState({
+                                       preface: { ...this.props.config[stepIndex] },
+                                       index: stepIndex,
+                                    })
+                                 }
+                              >
+                                 <a className={stepIndex === index ? "nav-link active" : "nav-link"}>{element.stepDesc}</a>
+                              </li>
+                           );
+                        })}
+                     </ul>
                      {Context.mode === "edit" && (
-                        <button
-                           type="button"
-                           className="btn btn-outline-primary"
+                        <div
+                           className="ms-3 pointer"
                            onClick={() => this.setState({ modalShow: true, modalContentType: "editPreface" })}
                         >
-                           +
-                        </button>
+                           <i className="far fa-plus text-primary" />
+                        </div>
                      )}
                   </div>
                </div>

@@ -346,7 +346,7 @@ class ActionForm extends React.Component {
             </div>
             {this.state.input.type === "polling" ? pollingTypeForm : ""}
             <ExpectForm ref={this.expectRef} initValue={this.props.initValue} />
-            <div className="row mb-3">
+            <div className="row">
                <div className="col">
                   {/* <textarea className="form-control form-control-sm" placeholder="Payload (optional)" /> */}
                   <div>
