@@ -34,7 +34,9 @@
    },
    "mainContent": {
       "step_1": {
-         "description": ["Onboard device on NSO instance"],
+         "description": [
+            "Onboard device on NSO instance, using remote calls to load the golden configuraiton. An alternative option would be to move to load of the golden config in the clean up and perform a sing sync-from that works well for NCS-540 but we must assure the devices are onboarded before removing them from the NSO configuration. This sequence is a bit longer, adding complexity bacause of extra command but it covers more scenarios."
+         ],
          "continueOnFail": false,
          "actions": [
             {
@@ -211,13 +213,17 @@
             {
                "type": "request",
                "useEndpoint": "NSO",
-               "header": "Sync",
-               "headerColor": "",
-               "title": "Syncronize NSO from the current routers configuration",
+               "header": "RPC",
+               "headerColor": "Green",
+               "title": "Configure Node_1_dev using base golden configuration",
                "description": "",
-               "url": "restconf/data/tailf-ncs:devices/sync-from",
+               "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
                "method": "post",
-               "data": {},
+               "data": {
+                  "input": {
+                     "args": "copy harddisk:/golden/dev_Node_1_base.cfg running-config replace"
+                  }
+               },
                "expect": [
                   {
                      "type": "codeIs",
@@ -225,7 +231,132 @@
                   },
                   {
                      "type": "bodyContain",
-                     "value": "true"
+                     "value": "committed"
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "RPC",
+               "headerColor": "Green",
+               "title": "Configure Node_2_dev using base golden configuration",
+               "description": "",
+               "url": "restconf/operations/devices/device=Node_2_dev/live-status/exec/any",
+               "method": "post",
+               "data": {
+                  "input": {
+                     "args": "copy harddisk:/golden/dev_Node_2_base.cfg running-config replace"
+                  }
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "committed"
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "RPC",
+               "headerColor": "Green",
+               "title": "Configure Node_3_dev using base golden configuration",
+               "description": "",
+               "url": "restconf/operations/devices/device=Node_3_dev/live-status/exec/any",
+               "method": "post",
+               "data": {
+                  "input": {
+                     "args": "copy harddisk:/golden/dev_Node_3_base.cfg running-config replace"
+                  }
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "committed"
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "RPC",
+               "headerColor": "Green",
+               "title": "Configure Node_4_dev using base golden configuration",
+               "description": "",
+               "url": "restconf/operations/devices/device=Node_4_dev/live-status/exec/any",
+               "method": "post",
+               "data": {
+                  "input": {
+                     "args": "copy harddisk:/golden/dev_Node_4_base.cfg running-config replace"
+                  }
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "committed"
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "RPC",
+               "headerColor": "Green",
+               "title": "Configure Node_5_dev using base golden configuration",
+               "description": "",
+               "url": "restconf/operations/devices/device=Node_5_dev/live-status/exec/any",
+               "method": "post",
+               "data": {
+                  "input": {
+                     "args": "copy harddisk:/golden/dev_Node_5_base.cfg running-config replace"
+                  }
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "committed"
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "RPC",
+               "headerColor": "Green",
+               "title": "Configure Node_6_dev using base golden configuration",
+               "description": "",
+               "url": "restconf/operations/devices/device=Node_6_dev/live-status/exec/any",
+               "method": "post",
+               "data": {
+                  "input": {
+                     "args": "copy harddisk:/golden/dev_Node_6_base.cfg running-config replace"
+                  }
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "committed"
                   }
                ]
             }
@@ -425,7 +556,7 @@
                "useEndpoint": "NSO",
                "header": "Delete",
                "headerColor": "red",
-               "title": "Remove Node_8 from NSO",
+               "title": "Remove Devices from NSO",
                "description": "",
                "url": "restconf/data/tailf-ncs:devices",
                "method": "delete",
