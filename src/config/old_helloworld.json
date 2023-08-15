@@ -45,7 +45,7 @@
                "expect": [
                   {
                      "type": "codeIs",
-                     "value": "404"
+                     "value": ["404"]
                   }
                ]
             },

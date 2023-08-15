@@ -14,9 +14,17 @@ class ExpectForm extends React.Component {
       }
    }
 
-   onExpectFormChange = (e, index) => {
+   onExpectValueChange = (e, index) => {
       let currentExpect = this.state.expect;
-      currentExpect[index][e.target.name] = e.target.value;
+      currentExpect[index].value =
+         currentExpect[index].type === "codeIs" ? e.target.value.split(",").map((el) => el.trim()) : e.target.value;
+      this.setState({ expect: currentExpect });
+   };
+
+   onExpectTypeChange = (e, index) => {
+      let currentExpect = this.state.expect;
+      currentExpect[index].type = e.target.value;
+      currentExpect[index].value = e.target.value === "codeIs" ? [] : "";
       this.setState({ expect: currentExpect });
    };
 
@@ -38,7 +46,7 @@ class ExpectForm extends React.Component {
                      className="form-select form-select-sm"
                      name="type"
                      value={this.state.expect[index].type}
-                     onChange={(e) => this.onExpectFormChange(e, index)}
+                     onChange={(e) => this.onExpectTypeChange(e, index)}
                   >
                      <option value="bodyContain">bodyContain</option>
                      <option value="codeIs">HttpResponseCodeIs</option>
@@ -50,7 +58,7 @@ class ExpectForm extends React.Component {
                      type="text"
                      name="value"
                      value={this.state.expect[index].value}
-                     onChange={(e) => this.onExpectFormChange(e, index)}
+                     onChange={(e) => this.onExpectValueChange(e, index)}
                   />
                </div>
                <div className="col-2">
@@ -143,7 +151,7 @@ class ActionForm extends React.Component {
                : { ...this.state.input, expect: undefined },
             this.props.tab,
             Context.currentStep.name,
-            actionIndex
+            actionIndex,
          );
          this.props.onHide();
       }

@@ -63,7 +63,7 @@
                "expect": [
                   {
                      "type": "codeIs",
-                     "value": "201"
+                     "value": ["201"]
                   }
                ]
             },
@@ -185,7 +185,7 @@
                "expect": [
                   {
                      "type": "codeIs",
-                     "value": "201"
+                     "value": ["201"]
                   }
                ]
             },
@@ -202,7 +202,7 @@
                "expect": [
                   {
                      "type": "codeIs",
-                     "value": "200"
+                     "value": ["200"]
                   },
                   {
                      "type": "bodyContain",
@@ -537,7 +537,7 @@
                "expect": [
                   {
                      "type": "codeIs",
-                     "value": "200"
+                     "value": ["200"]
                   }
                ]
             }

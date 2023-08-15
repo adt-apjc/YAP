@@ -12,9 +12,7 @@ const validateExpect = (expect, response) => {
          case "codeIs":
             // code may be a single string or an array of string, where one need to match the value expected
             console.log("DEBUG condition (response.status/condition.value): ", response.status, condition.value);
-            let expectedCodeList = condition.value.split(",").map((el) => el.trim());
-            if (expectedCodeList.includes(response.status.toString())) {
-               console.log("DEBUG (response.status/expectedCode) - MATCHED ", response.status, expectedCodeList);
+            if (condition.value.includes(response.status.toString())) {
                return true;
             }
             break;
