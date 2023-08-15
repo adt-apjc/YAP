@@ -188,3 +188,8 @@ span {
    top: 1px;
    right: 10px;
 }
+
+.disabled {
+   color: var(--bs-gray-500);
+   pointer-events: none;
+}

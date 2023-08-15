@@ -120,7 +120,7 @@ class Actions extends React.Component {
             let runResultStatus =
                this.props.results && this.props.results[index] ? (
                   this.props.results[index].success ? (
-                     <i className="fad fa-check m-2 text-success" />
+                     <i className="fad fa-check-circle m-2 text-success" />
                   ) : (
                      <i className="fad fa-exclamation-circle m-2 text-danger" />
                   )
@@ -136,19 +136,27 @@ class Actions extends React.Component {
                      onClick={() => this.expandDetailHandler(index)}
                   >
                      <div className="d-flex justify-content-between">
-                        <div>
-                           <div
-                              className={`api-method-badge text-light me-3 rounded`}
-                              style={{ backgroundColor: action.headerColor ? action.headerColor : "#007cad" }}
-                           >
-                              {action.header ? action.header : "NO HEADER"}
+                        <div className="d-flex align-items-center">
+                           <div>
+                              <div
+                                 className={`api-method-badge text-light me-3 rounded`}
+                                 style={{ backgroundColor: action.headerColor ? action.headerColor : "#007cad" }}
+                              >
+                                 {action.header ? action.header : "NO HEADER"}
+                              </div>
+                              {action.title ? action.title : "NO TITLE"}
                            </div>
-                           {action.title ? action.title : "NO TITLE"}
+                           {this.isActionRunning("action", index) ? (
+                              <i className="fas fa-spinner fa-spin m-2 text-primary" />
+                           ) : (
+                              ""
+                           )}
+                           {runResultStatus}
                         </div>
                         <div className="d-flex align-items-center">
+                           <RunButtonComponent currentRunning={null} workflowHandler={() => null} disable={true} />
                            {Context.mode === "edit" && (
                               <div className="d-flex align-items-center">
-                                 <RunButtonComponent currentRunning={null} workflowHandler={() => null} />
                                  <span
                                     className="px-1 font-sm font-weight-light text-info text-hover-highlight"
                                     onClick={(e) => {
@@ -178,8 +186,6 @@ class Actions extends React.Component {
                               </div>
                            )}
                            <i className={`fas fa-caret-${this.state.selectedAPI.includes(index) ? "down" : "right"}`}></i>
-                           {this.isActionRunning("action", index) ? <i className="fas fa-spinner fa-spin m-2" /> : ""}
-                           {runResultStatus}
                         </div>
                      </div>
                   </div>

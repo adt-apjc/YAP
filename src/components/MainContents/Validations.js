@@ -118,7 +118,7 @@ class Validations extends React.Component {
             let runResultStatus =
                this.props.results && this.props.results[index] ? (
                   this.props.results[index].success ? (
-                     <i className="fad fa-check m-2 text-success" />
+                     <i className="fad fa-check-circle m-2 text-success" />
                   ) : (
                      <i className="fad fa-exclamation-circle m-2 text-danger" />
                   )
@@ -134,25 +134,24 @@ class Validations extends React.Component {
                      onClick={() => this.expandDetailHandler(index)}
                   >
                      <div className="d-flex justify-content-between">
-                        <div>
-                           <div
-                              className={`api-method-badge text-light me-3 rounded`}
-                              style={{ backgroundColor: validation.headerColor ? validation.headerColor : "#007cad" }}
-                           >
-                              {validation.header ? validation.header : "NO HEADER"}
+                        <div className="d-flex align-items-center">
+                           <div>
+                              <div
+                                 className={`api-method-badge text-light me-3 rounded`}
+                                 style={{ backgroundColor: validation.headerColor ? validation.headerColor : "#007cad" }}
+                              >
+                                 {validation.header ? validation.header : "NO HEADER"}
+                              </div>
+                              {validation.title ? validation.title : "NO TITLE"}
                            </div>
-                           {validation.title ? validation.title : "NO TITLE"}
+                           {this.isActionRunning("validation", index) ? (
+                              <i className="fas fa-spinner fa-spin m-2 text-primary" />
+                           ) : (
+                              ""
+                           )}
+                           {runResultStatus}
                         </div>
                         <div>
-                           {/* <button
-                              className="btn btn-sm btn-secondary mx-2"
-                              onClick={(e) => {
-                                 e.stopPropagation();
-                                 this.props.onRunValidationWorkflow(validation, index);
-                              }}
-                           >
-                              run
-                           </button> */}
                            {Context.mode === "edit" && (
                               <>
                                  <span
@@ -185,8 +184,6 @@ class Validations extends React.Component {
                            )}
 
                            <i className={`fas fa-caret-${this.state.selectedAPI.includes(index) ? "down" : "right"}`}></i>
-                           {this.isActionRunning("validation", index) ? <i className="fas fa-spinner fa-spin m-2" /> : ""}
-                           {runResultStatus}
                         </div>
                      </div>
                   </div>
