@@ -17,6 +17,7 @@ class DemoContent extends React.Component {
       super(props);
       this.state = {
          currentRunning: null,
+         isActionRunning: null,
          isActionCompleted: {},
          isValidationCompleted: {},
          actionResults: {},
@@ -103,16 +104,16 @@ class DemoContent extends React.Component {
       let { currentStepDetails } = this.props;
       // clear old state before start
       this.setState({
-         currentRunning: null,
+         isActionRunning: null,
          actionResults: { ...this.state.actionResults, [this.props.currentStep.name]: {} },
       });
       // validate if it has validation configured or not
       if (!currentStepDetails.actions) return null;
       //
       for (let action of currentStepDetails.actions) {
-         // SET current running state before start.
-         this.setState({ currentRunning: { type: "action", index } });
          try {
+            // SET current running state before start.
+            this.setState({ isActionRunning: { type: "action", index } });
             let response;
             if (action.type === "request") {
                // normal request
@@ -133,7 +134,7 @@ class DemoContent extends React.Component {
                         [index]: response,
                      },
                   },
-                  currentRunning: null,
+                  isActionRunning: null,
                },
                this.saveStateToLocalStorage,
             );
@@ -150,7 +151,7 @@ class DemoContent extends React.Component {
                         [index]: e,
                      },
                   },
-                  currentRunning: null,
+                  isActionRunning: null,
                },
                this.saveStateToLocalStorage,
             );
@@ -300,12 +301,12 @@ class DemoContent extends React.Component {
                      onClick={this.startWorkflowHandler}
                      disabled={!this.props.currentStepDetails.actions || this.state.currentRunning ? true : false}
                   >
-                     {this.state.currentRunning ? (
+                     {this.state.currentRunning || this.state.isActionRunning ? (
                         <i className="fas fa-spinner fa-spin m-1" />
                      ) : _.isEmpty(this.state.actionResults[this.props.currentStep.name]) ? (
-                        "Run"
+                        "Run All"
                      ) : (
-                        "Re-run"
+                        "Re-run All"
                      )}
                   </button>
                </div>
@@ -317,23 +318,23 @@ class DemoContent extends React.Component {
                   className="section-header d-flex justify-content-between pointer"
                   onClick={() => this.setState({ preCheckSectionShow: !this.state.preCheckSectionShow })}
                >
+                  <span className="font-weight-bold">Pre-Check</span>
                   <div className="d-flex align-items-center">
-                     <span className="font-weight-bold">Pre-Check</span>
-                     <RunButtonComponent currentRunning={null} workflowHandler={() => null} />
-                  </div>
-                  <div>
-                     {Context.mode === "edit" && (
-                        <span
-                           className="text-info font-sm text-hover-highlight pointer"
-                           onClick={(e) => {
-                              e.stopPropagation();
-                              this.setState({ modalShow: true, modalContentType: "action" });
-                           }}
-                        >
-                           Add
-                        </span>
-                     )}
-                     <i className={`p-2 fas fa-caret-${this.state.preCheckSectionShow ? "down" : "right"}`}></i>
+                     <RunButtonComponent currentRunning={null} workflowHandler={() => null} disable={true} />
+                     <div>
+                        {Context.mode === "edit" && (
+                           <span
+                              className="text-info font-sm text-hover-highlight pointer"
+                              onClick={(e) => {
+                                 e.stopPropagation();
+                                 this.setState({ modalShow: true, modalContentType: "action" });
+                              }}
+                           >
+                              Add
+                           </span>
+                        )}
+                        <i className={`p-2 fas fa-caret-${this.state.preCheckSectionShow ? "down" : "right"}`}></i>
+                     </div>
                   </div>
                </div>
                <PreCheck show={this.state.preCheckSectionShow} />
@@ -346,10 +347,27 @@ class DemoContent extends React.Component {
                >
                   <div className="d-flex align-items-center">
                      <span className="font-weight-bold">Actions</span>
-                     <RunButtonComponent currentRunning={null} workflowHandler={() => null} />
+
+                     {this.state.isActionCompleted[this.props.currentStep.name] &&
+                     this.props.currentStepDetails.actions.length > 0 ? (
+                        <i className="fad fa-check-circle m-2 text-success" />
+                     ) : (
+                        <>
+                           {this.state.actionResults[this.props.currentStep.name] !== undefined &&
+                           Object.values(this.state.actionResults[this.props.currentStep.name]).filter((e) => e.success === false)
+                              .length > 0 ? (
+                              <i className="fad fa-exclamation-circle m-2 text-danger" />
+                           ) : null}
+                        </>
+                     )}
                   </div>
 
-                  <div>
+                  <div className="d-flex align-items-center">
+                     <RunButtonComponent
+                        currentRunning={this.state.isActionRunning}
+                        workflowHandler={this.runActionWorkflowHandler}
+                        disable={this.props.currentStepDetails.actions.length === 0}
+                     />
                      {Context.mode === "edit" && (
                         <span
                            className="text-info font-sm text-hover-highlight pointer"
@@ -361,20 +379,19 @@ class DemoContent extends React.Component {
                            Add
                         </span>
                      )}
-                     {this.state.isActionCompleted[this.props.currentStep.name] ? (
-                        <i className="fad fa-check m-2 text-success" />
-                     ) : null}
+
                      <i className={`p-2 fas fa-caret-${this.state.actionSectionShow ? "down" : "right"}`}></i>
                   </div>
                </div>
                <Actions
                   show={this.state.actionSectionShow}
                   currentStepDetails={this.props.currentStepDetails}
-                  currentRunning={this.state.currentRunning}
+                  currentRunning={this.state.isActionRunning}
                   results={this.state.actionResults[this.props.currentStep.name]}
+                  workflowHandler={this.runActionWorkflowHandler}
                />
             </div>
-            {/* VALIDATION */}
+            {/* POST-CHECK */}
             <div className="section-container my-1">
                <div
                   className="section-header d-flex justify-content-between pointer"
@@ -382,12 +399,26 @@ class DemoContent extends React.Component {
                >
                   <div className="d-flex align-items-center">
                      <span className="font-weight-bold">Post-Check</span>
+                     {this.state.isValidationCompleted[this.props.currentStep.name] &&
+                     this.props.currentStepDetails.validations.length > 0 ? (
+                        <i className="fad fa-check-circle m-2 text-success" />
+                     ) : (
+                        <>
+                           {this.state.isValidationCompleted[this.props.currentStep.name] !== undefined &&
+                           Object.values(this.state.isValidationCompleted[this.props.currentStep.name]).filter(
+                              (e) => e.success === false,
+                           ).length > 0 ? (
+                              <i className="fad fa-exclamation-circle m-2 text-danger" />
+                           ) : null}
+                        </>
+                     )}
+                  </div>
+                  <div className="d-flex align-items-center">
                      <RunButtonComponent
                         currentRunning={this.state.currentRunning}
                         workflowHandler={this.runValidationWorkflowHandler}
+                        disable={this.props.currentStepDetails.validations.length === 0}
                      />
-                  </div>
-                  <div>
                      {Context.mode === "edit" && (
                         <span
                            className="text-info font-sm text-hover-highlight pointer"
@@ -399,11 +430,7 @@ class DemoContent extends React.Component {
                            Add
                         </span>
                      )}
-                     {this.state.isValidationCompleted[this.props.currentStep.name] ? (
-                        <i className="fad fa-check m-2 text-success" />
-                     ) : (
-                        ""
-                     )}
+
                      <i className={`p-2 fas fa-caret-${this.state.validationSectionShow ? "down" : "right"}`}></i>
                   </div>
                </div>

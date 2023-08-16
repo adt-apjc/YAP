@@ -1,18 +1,18 @@
 import React from "react";
 
-const RunButtonComponent = (props) => {
+const RunButtonComponent = ({ currentRunning, workflowHandler, disable = false }) => {
    return (
       <div className="mx-3 text-primary">
-         {props.currentRunning ? (
+         {currentRunning ? (
             <i className="fas fa-spinner fa-spin " />
          ) : (
             <i
                type="button"
-               className="fad fa-play-circle "
+               className={`fad fa-play-circle ${disable ? "disabled" : ""}`}
                title="Run"
                onClick={(e) => {
                   e.stopPropagation();
-                  props.workflowHandler();
+                  workflowHandler();
                }}
             />
          )}
