@@ -4,8 +4,7 @@ import AceEditor from "react-ace";
 import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-github";
-import { setOriginalNode } from "typescript";
-// import _ from "lodash";
+
 const ExpectForm = (props) => {
    const [isExpectEnable, setIsExpectEnable] = useState(false);
 
@@ -123,6 +122,7 @@ const ActionForm = (props) => {
       data: undefined,
    });
    const [isPayloadValid, setIsPayloadValid] = useState(true);
+   const [isExpectConfigValid, setIsExpectConfigValid] = useState(true);
 
    const setExpect = (val) => {
       setInput((prev) => ({ ...prev, expect: val }));
@@ -176,6 +176,16 @@ const ActionForm = (props) => {
          setInput({ ...props.initValue.action });
       }
    }, []);
+
+   useEffect(() => {
+      for (let expect of input.expect) {
+         if (expect.value.length === 1 && expect.value[0] === "") {
+            setIsExpectConfigValid(false);
+            return;
+         }
+      }
+      setIsExpectConfigValid(true);
+   }, [input.expect]);
 
    return (
       <>
@@ -355,7 +365,6 @@ const ActionForm = (props) => {
                <ExpectForm expect={input.expect} setExpect={setExpect} />
                <div className="row">
                   <div className="col">
-                     {/* <textarea className="form-control form-control-sm" placeholder="Payload (optional)" /> */}
                      <div>
                         <span className="me-2 font-sm">Payload (optional)</span>
                         {!isPayloadValid ? "invalid JSON" : ""}
@@ -380,7 +389,11 @@ const ActionForm = (props) => {
             <button type="button" className="btn btn-sm" onClick={props.onHide}>
                Close
             </button>
-            <button type="submit" className="btn btn-primary btn-sm" form="actionForm">
+            <button
+               type="submit"
+               className={`btn btn-primary btn-sm ${!isExpectConfigValid ? "disabled" : ""}`}
+               form="actionForm"
+            >
                {props.initValue ? "Update" : "Add"}
             </button>
          </div>
