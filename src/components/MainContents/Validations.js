@@ -78,13 +78,8 @@ const Validations = (props) => {
       }
    };
 
-   const isActionRunning = (type, index) => {
-      if (props.currentRunning) {
-         return props.currentRunning.type === type && props.currentRunning.index === index;
-      } else {
-         // null mean not running
-         return false;
-      }
+   const isValidationRunning = (index) => {
+      return props.currentRunning === index;
    };
 
    let apiList;
@@ -107,7 +102,7 @@ const Validations = (props) => {
                {/* API DETAILS */}
                <div
                   className={`shadow-sm p-3 mb-3 bg-light text-secondary rounded pointer ${
-                     isActionRunning("validation", index) ? "border" : ""
+                     isValidationRunning(index) ? "border" : ""
                   }`}
                   onClick={() => expandDetailHandler(index)}
                >
@@ -124,7 +119,7 @@ const Validations = (props) => {
                            {validation.title ? validation.title : "NO TITLE"}
                         </div>
                         {/* RUNNING SPINNER */}
-                        {isActionRunning("validation", index) ? <i className="fas fa-spinner fa-spin m-2 text-primary" /> : ""}
+                        {isValidationRunning(index) ? <i className="fas fa-spinner fa-spin m-2 text-primary" /> : ""}
                         {/* RESULT ICON */}
                         {runResultStatus}
                      </div>

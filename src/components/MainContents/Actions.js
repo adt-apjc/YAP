@@ -88,12 +88,8 @@ const Actions = (props) => {
       }
    };
 
-   const isActionRunning = (type, index) => {
-      if (props.currentRunning) {
-         return props.currentRunning.type === type && props.currentRunning.index === index;
-      } else {
-         return false;
-      }
+   const isActionRunning = (index) => {
+      return props.currentRunning === index;
    };
 
    // check if it collasped
@@ -116,7 +112,7 @@ const Actions = (props) => {
             <div className="mt-2" key={index}>
                <div
                   className={`shadow-sm p-3 mb-3 bg-light text-secondary rounded pointer ${
-                     isActionRunning("action", index) ? "border" : ""
+                     isActionRunning(index) ? "border" : ""
                   }`}
                   onClick={() => expandDetailHandler(index)}
                >
@@ -131,7 +127,7 @@ const Actions = (props) => {
                            </div>
                            {action.title ? action.title : "NO TITLE"}
                         </div>
-                        {isActionRunning("action", index) ? <i className="fas fa-spinner fa-spin m-2 text-primary" /> : ""}
+                        {isActionRunning(index) ? <i className="fas fa-spinner fa-spin m-2 text-primary" /> : ""}
                         {runResultStatus}
                      </div>
                      <div className="d-flex align-items-center">
