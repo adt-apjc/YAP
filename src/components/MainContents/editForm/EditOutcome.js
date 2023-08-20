@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import GlobalContext from "../../contexts/ContextProvider";
-import { TopologyWrapper } from "../Outcome";
+import TopologyWrapper from "../TopologyWrapper";
 import AceEditor from "react-ace";
 import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-json";
