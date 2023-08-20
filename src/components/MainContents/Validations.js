@@ -68,13 +68,14 @@ export const ValidationDetail = ({ show, response, request }) => {
 
 const Validations = (props) => {
    const context = useContext(GlobalContext);
-   const [state, setState] = useState({ selectedAPI: [], modalShow: false, modalContentType: null, selectedAction: null });
+   const [modal, setModal] = useState({ modalShow: false, modalContentType: null, selectedAction: null });
+   const [curExpandRow, setCurExpandRow] = useState([]);
 
    const expandDetailHandler = (index) => {
-      if (!state.selectedAPI.includes(index)) {
-         setState({ ...state, selectedAPI: [...state.selectedAPI, index] });
+      if (!curExpandRow.includes(index)) {
+         setCurExpandRow((prev) => [...prev, index]);
       } else {
-         setState({ selectedAPI: state.selectedAPI.filter((ele) => ele !== index) });
+         setCurExpandRow(curExpandRow.filter((ele) => ele !== index));
       }
    };
 
@@ -82,8 +83,10 @@ const Validations = (props) => {
       return props.currentRunning === index;
    };
 
-   let apiList;
+   // check if it collasped
    if (!props.show) return null;
+
+   let apiList;
    if (props.currentStepDetails.validations && props.currentStepDetails.validations.length > 0) {
       apiList = props.currentStepDetails.validations.map((validation, index) => {
          let runResultStatus =
@@ -93,10 +96,7 @@ const Validations = (props) => {
                ) : (
                   <i className="fad fa-exclamation-circle m-2 text-danger" />
                )
-            ) : (
-               ""
-            );
-
+            ) : null;
          return (
             <div className="mt-2" key={index}>
                {/* API DETAILS */}
@@ -130,7 +130,7 @@ const Validations = (props) => {
                                  className="px-1 font-sm font-weight-light text-info text-hover-highlight"
                                  onClick={(e) => {
                                     e.stopPropagation();
-                                    setState({
+                                    setModal({
                                        modalShow: true,
                                        modalContentType: "validation",
                                        selectedAction: { action: validation, actionIndex: index },
@@ -143,7 +143,7 @@ const Validations = (props) => {
                                  className="px-1 font-sm font-weight-light text-danger text-hover-highlight"
                                  onClick={(e) => {
                                     e.stopPropagation();
-                                    setState({
+                                    setModal({
                                        modalShow: true,
                                        modalContentType: "actionDeleteConfirm",
                                        selectedAction: { action: validation, actionIndex: index, tab: "validations" },
@@ -155,16 +155,14 @@ const Validations = (props) => {
                            </>
                         )}
 
-                        <i
-                           className={`fas fa-caret-${state.selectedAPI && state.selectedAPI.includes(index) ? "down" : "right"}`}
-                        ></i>
+                        <i className={`fas fa-caret-${curExpandRow.includes(index) ? "down" : "right"}`}></i>
                      </div>
                   </div>
                </div>
 
                {/* API RESPONSE DETAILS*/}
                <ValidationDetail
-                  show={state.selectedAPI && state.selectedAPI.includes(index)}
+                  show={curExpandRow.includes(index)}
                   response={props.results && props.results[index] ? props.results[index] : null}
                   request={validation}
                />
@@ -179,14 +177,14 @@ const Validations = (props) => {
       <div className="container">
          {apiList}
          <Modal
-            show={state.modalShow}
-            onHide={() => setState({ ...state, modalShow: false, modalContentType: null, selectedAction: null })}
+            show={modal.modalShow}
+            onHide={() => setModal({ modalShow: false, modalContentType: null, selectedAction: null })}
             width="70%"
          >
             <ModalContentSelector
-               onHide={() => setState({ ...state, modalShow: false, modalContentType: null, selectedAction: null })}
-               initValue={state.selectedAction}
-               contentType={state.modalContentType}
+               onHide={() => setModal({ modalShow: false, modalContentType: null, selectedAction: null })}
+               initValue={modal.selectedAction}
+               contentType={modal.modalContentType}
             />
          </Modal>
       </div>

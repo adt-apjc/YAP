@@ -42,37 +42,34 @@ const ActionDetail = (props) => {
       ) : null;
    }
 
-   if (props.show) {
-      return (
-         <div className="container position-relative bg-light pt-2 pb-3" style={{ top: "-15px" }}>
-            <div className="p-2">{props.request ? props.request.description : ""}</div>
-            <div className="p-2 d-inline-block mb-2">
-               Endpoint{" "}
-               <span className="font-weight-light bg-secondary text-light p-1 ms-4 rounded">{props.request.useEndpoint}</span>
-            </div>
-            <div className="bg-white p-2 rounded shadow-sm mb-2">
-               <div className="d-flex">
-                  <div className={`me-3 font-weight-bolder text-${colorMapper[props.request.method]}`}>
-                     {props.request.method.toUpperCase()}
-                  </div>
-                  <div className="text-dark">{props.request.url}</div>
-               </div>
-               {payloadViewer}
-            </div>
-            <div className="bg-white p-2 rounded shadow-sm">
-               <div className="d-flex justify-content-between">
-                  Response
-                  <div className="font-weight-light" style={{ fontSize: "12px" }}>
-                     {responseStatus}
-                  </div>
-               </div>
-               {responseViewer}
-            </div>
+   if (!props.show) return null;
+   return (
+      <div className="container position-relative bg-light pt-2 pb-3" style={{ top: "-15px" }}>
+         <div className="p-2">{props.request ? props.request.description : ""}</div>
+         <div className="p-2 d-inline-block mb-2">
+            Endpoint{" "}
+            <span className="font-weight-light bg-secondary text-light p-1 ms-4 rounded">{props.request.useEndpoint}</span>
          </div>
-      );
-   } else {
-      return null;
-   }
+         <div className="bg-white p-2 rounded shadow-sm mb-2">
+            <div className="d-flex">
+               <div className={`me-3 font-weight-bolder text-${colorMapper[props.request.method]}`}>
+                  {props.request.method.toUpperCase()}
+               </div>
+               <div className="text-dark">{props.request.url}</div>
+            </div>
+            {payloadViewer}
+         </div>
+         <div className="bg-white p-2 rounded shadow-sm">
+            <div className="d-flex justify-content-between">
+               Response
+               <div className="font-weight-light" style={{ fontSize: "12px" }}>
+                  {responseStatus}
+               </div>
+            </div>
+            {responseViewer}
+         </div>
+      </div>
+   );
 };
 
 const Actions = (props) => {

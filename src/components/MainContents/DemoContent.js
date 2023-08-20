@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import GlobalContext from "../contexts/ContextProvider";
+import { useDidUpdateEffect } from "../contexts/CustomHooks";
 import { normalRequest, pollingRequest } from "../../helper/actionHelper";
 import { Modal } from "../../helper/modalHelper";
 import ModalContentSelector from "./editForm/ModalContentSelector";
@@ -11,27 +12,8 @@ import _ from "lodash";
 import Logo from "./Logo";
 import PreCheck from "./PreCheck";
 import RunButtonComponent from "./RunButtonComponent";
-import { act } from "react-dom/test-utils";
 
 const DemoContent = (props) => {
-   // constructor(props) {
-   //    super(props);
-   //    this.state = {
-   //       currentRunning: null,
-   //       isActionRunning: null,
-   //       isActionCompleted: {},
-   //       isValidationCompleted: {},
-   //       actionResults: {},
-   //       validationResults: {},
-   //       actionSectionShow: false,
-   //       validationSectionShow: false,
-   //       outcomeSectionShow: false,
-   //       preCheckSectionShow: false,
-   //       modalShow: false,
-   //       modalContentType: null,
-   //    };
-   // }
-
    const context = useContext(GlobalContext);
    const [modal, setModal] = useState({ modalShow: false, modalContentType: null, paramValues: null });
    const [currentRunning, setCurrentRunning] = useState({ preCheck: null, action: null, validation: null });
@@ -205,7 +187,7 @@ const DemoContent = (props) => {
    }, []);
 
    // saveStateToLocalStorage
-   useEffect(() => {
+   useDidUpdateEffect(() => {
       window.localStorage.setItem(
          "mainContentState",
          JSON.stringify({ actionResults, validationResults, isActionCompleted, isValidationCompleted }),
