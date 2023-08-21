@@ -7,7 +7,7 @@
       },
       {
          "name": "step_2",
-         "label": "Service Provision - TBA"
+         "label": "Service Provision"
       }
    ],
    "preface": [
@@ -17,9 +17,9 @@
          "bodyArr": ["Assessing feasability of YAP as baseline for automation demos: demonstating device onboard on NSO"]
       },
       {
-         "title": "TBA Title 2",
+         "title": "Service Provision",
          "stepDesc": "TBA Step 2",
-         "bodyArr": ["TO be created"]
+         "bodyArr": ["Example that describe ISIS routing configuration using NSO service provisioning."]
       }
    ],
    "endpoints": {
@@ -85,7 +85,7 @@
                         "authgroup": "router",
                         "device-type": {
                            "cli": {
-                              "ned-id": "cisco-iosxr-cli-7.49:cisco-iosxr-cli-7.49"
+                              "ned-id": "cisco-iosxr-cli-7.50:cisco-iosxr-cli-7.50"
                            }
                         },
                         "ssh-algorithms": {
@@ -102,7 +102,7 @@
                         "authgroup": "router",
                         "device-type": {
                            "cli": {
-                              "ned-id": "cisco-iosxr-cli-7.49:cisco-iosxr-cli-7.49"
+                              "ned-id": "cisco-iosxr-cli-7.50:cisco-iosxr-cli-7.50"
                            }
                         },
                         "ssh-algorithms": {
@@ -119,7 +119,7 @@
                         "authgroup": "router",
                         "device-type": {
                            "cli": {
-                              "ned-id": "cisco-iosxr-cli-7.49:cisco-iosxr-cli-7.49"
+                              "ned-id": "cisco-iosxr-cli-7.50:cisco-iosxr-cli-7.50"
                            }
                         },
                         "ssh-algorithms": {
@@ -136,7 +136,7 @@
                         "authgroup": "router",
                         "device-type": {
                            "cli": {
-                              "ned-id": "cisco-iosxr-cli-7.49:cisco-iosxr-cli-7.49"
+                              "ned-id": "cisco-iosxr-cli-7.50:cisco-iosxr-cli-7.50"
                            }
                         },
                         "ssh-algorithms": {
@@ -153,7 +153,7 @@
                         "authgroup": "router",
                         "device-type": {
                            "cli": {
-                              "ned-id": "cisco-iosxr-cli-7.49:cisco-iosxr-cli-7.49"
+                              "ned-id": "cisco-iosxr-cli-7.50:cisco-iosxr-cli-7.50"
                            }
                         },
                         "ssh-algorithms": {
@@ -170,7 +170,7 @@
                         "authgroup": "router",
                         "device-type": {
                            "cli": {
-                              "ned-id": "cisco-iosxr-cli-7.49:cisco-iosxr-cli-7.49"
+                              "ned-id": "cisco-iosxr-cli-7.50:cisco-iosxr-cli-7.50"
                            }
                         },
                         "ssh-algorithms": {
@@ -207,6 +207,733 @@
                   {
                      "type": "bodyContain",
                      "value": "fingerprint"
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "SSH Keys",
+               "headerColor": "",
+               "title": "Sync NSO to devices configuraiton",
+               "description": "",
+               "url": "restconf/data/tailf-ncs:devices/sync-from",
+               "method": "post",
+               "data": {},
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "fingerprint"
+                  }
+               ]
+            }
+         ],
+         "validations": [
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "RPC",
+               "headerColor": "",
+               "title": "Request Node_1_dev to ping local interface",
+               "description": "Execute a local ping on Node_1_dev's loopback interface via a Remote Procedure Call",
+               "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
+               "method": "post",
+               "data": {
+                  "input": {
+                     "args": "ping 1.1.1.1"
+                  }
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "tailf-ned-cisco-ios-xr-stats:output"
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "RPC",
+               "headerColor": "",
+               "title": "Ping Node_2_dev connected interface from Node_1_dev",
+               "description": "Execute a ping from Node_1_dev to Node_2_dev connected interface via a Remote Procedure Call",
+               "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
+               "method": "post",
+               "data": {
+                  "input": {
+                     "args": "ping 99.1.2.2"
+                  }
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "tailf-ned-cisco-ios-xr-stats:output"
+                  }
+               ]
+            }
+         ],
+         "outcome": {
+            "summaryText": "Router are onboaded in NSO and we can ping router interfaces via NSO.",
+            "elements": {
+               "nodes": [
+                  {
+                     "data": { "id": "Node_1_dev", "label": "Node_1_dev", "width": "50", "height": "50" },
+                     "position": { "x": 0, "y": 200 },
+                     "classes": ["router", "highlight"]
+                  },
+                  {
+                     "data": { "id": "Node_2_dev", "label": "Node_2_dev", "width": "50", "height": "50" },
+                     "position": { "x": 200, "y": 100 },
+                     "classes": ["router"]
+                  },
+                  {
+                     "data": { "id": "Node_3_dev", "label": "Node_3_dev", "width": "50", "height": "50" },
+                     "position": { "x": 200, "y": 300 },
+                     "classes": ["router"]
+                  },
+                  {
+                     "data": { "id": "Node_4_dev", "label": "Node_4_dev", "width": "50", "height": "50" },
+                     "position": { "x": 400, "y": 100 },
+                     "classes": ["router"]
+                  },
+                  {
+                     "data": { "id": "Node_5_dev", "label": "Node_5_dev", "width": "50", "height": "50" },
+                     "position": { "x": 400, "y": 300 },
+                     "classes": ["router"]
+                  },
+                  {
+                     "data": { "id": "Node_6_dev", "label": "Node_6_dev", "width": "50", "height": "50" },
+                     "position": { "x": 600, "y": 200 },
+                     "classes": ["router"]
+                  }
+               ],
+               "edges": [
+                  {
+                     "data": { "id": "Link_1_2", "source": "Node_1_dev", "target": "Node_2_dev", "label": "99.1.2.0/24" },
+                     "classes": []
+                  },
+                  {
+                     "data": { "id": "Link_1_3", "source": "Node_1_dev", "target": "Node_3_dev", "label": "" },
+                     "classes": []
+                  },
+                  {
+                     "data": { "id": "Link_2_4", "source": "Node_2_dev", "target": "Node_4_dev", "label": "" },
+                     "classes": []
+                  },
+                  {
+                     "data": { "id": "Link_3_5", "source": "Node_3_dev", "target": "Node_5_dev", "label": "" },
+                     "classes": []
+                  },
+                  {
+                     "data": { "id": "Link_4_6", "source": "Node_4_dev", "target": "Node_6_dev", "label": "" },
+                     "classes": []
+                  },
+                  {
+                     "data": { "id": "Link_5_6", "source": "Node_5_dev", "target": "Node_6_dev", "label": "" },
+                     "classes": []
+                  }
+               ]
+            },
+            "commands": {
+               "Node_1_dev": [
+                  {
+                     "type": "request",
+                     "useEndpoint": "NSO",
+                     "displayResponseAs": "json",
+                     "title": "Ping local loopback",
+                     "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
+                     "method": "post",
+                     "data": {
+                        "input": {
+                           "args": "ping 1.1.1.1"
+                        }
+                     }
+                  },
+                  {
+                     "type": "request",
+                     "useEndpoint": "NSO",
+                     "displayResponseAs": "json",
+                     "title": "Ping Node_2_dev directly connected interface",
+                     "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
+                     "method": "post",
+                     "data": {
+                        "input": {
+                           "args": "ping 99.1.2.2"
+                        }
+                     }
+                  },
+                  {
+                     "type": "request",
+                     "useEndpoint": "NSO",
+                     "displayResponseAs": "json",
+                     "title": "Ping Node_6_dev - shall fail at this stage",
+                     "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
+                     "method": "post",
+                     "data": {
+                        "input": {
+                           "args": "ping 99.0.0.6"
+                        }
+                     }
+                  }
+               ]
+            }
+         }
+      },
+      "step_2": {
+         "description": ["Deploy ISIS routing across the network using an NSO service abstraction."],
+         "continueOnFail": false,
+         "actions": [
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "Create",
+               "headerColor": "Green",
+               "title": "Configure ISIS as a service",
+               "description": "",
+               "url": "restconf/data/isis:isis",
+               "method": "patch",
+               "data": {
+                  "isis:isis": [
+                     {
+                        "id": 1,
+                        "device": "Node_1_dev",
+                        "interfaces": [
+                           {
+                              "id": 1,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/0"
+                           },
+                           {
+                              "id": 2,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/1"
+                           }
+                        ]
+                     },
+                     {
+                        "id": 2,
+                        "device": "Node_2_dev",
+                        "interfaces": [
+                           {
+                              "id": 1,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/0"
+                           },
+                           {
+                              "id": 2,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/1"
+                           },
+                           {
+                              "id": 3,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/3"
+                           }
+                        ]
+                     },
+                     {
+                        "id": 3,
+                        "device": "Node_3_dev",
+                        "interfaces": [
+                           {
+                              "id": 1,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/0"
+                           },
+                           {
+                              "id": 2,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/1"
+                           },
+                           {
+                              "id": 3,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/3"
+                           }
+                        ]
+                     },
+                     {
+                        "id": 4,
+                        "device": "Node_4_dev",
+                        "interfaces": [
+                           {
+                              "id": 1,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/0"
+                           },
+                           {
+                              "id": 2,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/1"
+                           },
+                           {
+                              "id": 3,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/3"
+                           }
+                        ]
+                     },
+                     {
+                        "id": 5,
+                        "device": "Node_5_dev",
+                        "interfaces": [
+                           {
+                              "id": 1,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/0"
+                           },
+                           {
+                              "id": 2,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/1"
+                           },
+                           {
+                              "id": 3,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/3"
+                           }
+                        ]
+                     },
+                     {
+                        "id": 6,
+                        "device": "Node_6_dev",
+                        "interfaces": [
+                           {
+                              "id": 1,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/0"
+                           },
+                           {
+                              "id": 2,
+                              "interface-type": "TenGigE",
+                              "interface-number": "0/0/0/1"
+                           }
+                        ]
+                     }
+                  ]
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["204"]
+                  }
+               ]
+            }
+         ],
+         "validations": [
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "RPC",
+               "headerColor": "",
+               "title": "Request Node_1_dev to ping remote PE Node_6_dev loopback interface",
+               "description": "Validate ISIS convergence by pinging Node_6_dev from Node_1_dev's loopback interface via a Remote Procedure Call",
+               "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
+               "method": "post",
+               "data": {
+                  "input": {
+                     "args": "ping 99.0.6"
+                  }
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "tailf-ned-cisco-ios-xr-stats:output"
+                  }
+               ]
+            }
+         ],
+         "outcome": {
+            "summaryText": "End to end IP connectivity provided by ISIS routing. Ping remote interfaces via NSO.",
+            "elements": {
+               "nodes": [
+                  {
+                     "data": { "id": "Node_1_dev", "label": "Node_1_dev", "width": "50", "height": "50" },
+                     "position": { "x": 0, "y": 200 },
+                     "classes": ["router", "highlight"]
+                  },
+                  {
+                     "data": { "id": "Node_2_dev", "label": "Node_2_dev", "width": "50", "height": "50" },
+                     "position": { "x": 200, "y": 100 },
+                     "classes": ["router"]
+                  },
+                  {
+                     "data": { "id": "Node_3_dev", "label": "Node_3_dev", "width": "50", "height": "50" },
+                     "position": { "x": 200, "y": 300 },
+                     "classes": ["router"]
+                  },
+                  {
+                     "data": { "id": "Node_4_dev", "label": "Node_4_dev", "width": "50", "height": "50" },
+                     "position": { "x": 400, "y": 100 },
+                     "classes": ["router"]
+                  },
+                  {
+                     "data": { "id": "Node_5_dev", "label": "Node_5_dev", "width": "50", "height": "50" },
+                     "position": { "x": 400, "y": 300 },
+                     "classes": ["router"]
+                  },
+                  {
+                     "data": { "id": "Node_6_dev", "label": "Node_6_dev", "width": "50", "height": "50" },
+                     "position": { "x": 600, "y": 200 },
+                     "classes": ["router"]
+                  }
+               ],
+               "edges": [
+                  {
+                     "data": { "id": "Link_1_2", "source": "Node_1_dev", "target": "Node_2_dev", "label": "99.1.2.0/24" },
+                     "classes": []
+                  },
+                  {
+                     "data": { "id": "Link_1_3", "source": "Node_1_dev", "target": "Node_3_dev", "label": "" },
+                     "classes": []
+                  },
+                  {
+                     "data": { "id": "Link_2_4", "source": "Node_2_dev", "target": "Node_4_dev", "label": "" },
+                     "classes": []
+                  },
+                  {
+                     "data": { "id": "Link_3_5", "source": "Node_3_dev", "target": "Node_5_dev", "label": "" },
+                     "classes": []
+                  },
+                  {
+                     "data": { "id": "Link_4_6", "source": "Node_4_dev", "target": "Node_6_dev", "label": "" },
+                     "classes": []
+                  },
+                  {
+                     "data": { "id": "Link_5_6", "source": "Node_5_dev", "target": "Node_6_dev", "label": "" },
+                     "classes": []
+                  }
+               ]
+            },
+            "commands": {
+               "Node_1_dev": [
+                  {
+                     "type": "request",
+                     "useEndpoint": "NSO",
+                     "displayResponseAs": "json",
+                     "title": "Ping local loopback",
+                     "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
+                     "method": "post",
+                     "data": {
+                        "input": {
+                           "args": "ping 1.1.1.1"
+                        }
+                     }
+                  },
+                  {
+                     "type": "request",
+                     "useEndpoint": "NSO",
+                     "displayResponseAs": "json",
+                     "title": "Ping Node_2_dev directly connected interface",
+                     "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
+                     "method": "post",
+                     "data": {
+                        "input": {
+                           "args": "ping 99.1.2.2"
+                        }
+                     }
+                  },
+                  {
+                     "type": "request",
+                     "useEndpoint": "NSO",
+                     "displayResponseAs": "json",
+                     "title": "Ping Node_6_dev - shall fail at this stage",
+                     "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
+                     "method": "post",
+                     "data": {
+                        "input": {
+                           "args": "ping 99.0.0.6"
+                        }
+                     }
+                  }
+               ]
+            }
+         }
+      },
+      "cleanup": {
+         "description": ["Cleaning up NSO configuration before starting a new demo"],
+         "continueOnFail": false,
+         "actions": [
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "Create",
+               "headerColor": "Green",
+               "title": "Add credential",
+               "description": "Configure credential to access devices",
+               "url": "restconf/data/tailf-ncs:devices/authgroups",
+               "method": "post",
+               "data": {
+                  "group": [
+                     {
+                        "name": "router",
+                        "default-map": {
+                           "remote-name": "admin",
+                           "remote-password": "$9$J1M0gZHBlR458pFPbfQIvjERzZC7gtP+lK5ZGqtlNZc=",
+                           "remote-secondary-password": "$9$uxoqHgAYbRup2n42YTqkMR7YUZw8nAFF++jBGC/CHoo="
+                        }
+                     }
+                  ]
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["201"]
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "Patch",
+               "headerColor": "Green",
+               "title": "Assure demo devices are part of NSO configuration",
+               "description": "Patch router configuration",
+               "url": "restconf/data/tailf-ncs:devices/device",
+               "method": "patch",
+               "data": {
+                  "device": [
+                     {
+                        "name": "Node_1_dev",
+                        "address": "10.76.230.248",
+                        "port": 22,
+                        "authgroup": "router",
+                        "device-type": {
+                           "cli": {
+                              "ned-id": "cisco-iosxr-cli-7.50:cisco-iosxr-cli-7.50"
+                           }
+                        },
+                        "ssh-algorithms": {
+                           "public-key": ["ssh-rsa"]
+                        },
+                        "state": {
+                           "admin-state": "unlocked"
+                        }
+                     },
+                     {
+                        "name": "Node_2_dev",
+                        "address": "10.76.230.249",
+                        "port": 22,
+                        "authgroup": "router",
+                        "device-type": {
+                           "cli": {
+                              "ned-id": "cisco-iosxr-cli-7.50:cisco-iosxr-cli-7.50"
+                           }
+                        },
+                        "ssh-algorithms": {
+                           "public-key": ["ssh-rsa"]
+                        },
+                        "state": {
+                           "admin-state": "unlocked"
+                        }
+                     },
+                     {
+                        "name": "Node_4_dev",
+                        "address": "10.76.230.250",
+                        "port": 22,
+                        "authgroup": "router",
+                        "device-type": {
+                           "cli": {
+                              "ned-id": "cisco-iosxr-cli-7.50:cisco-iosxr-cli-7.50"
+                           }
+                        },
+                        "ssh-algorithms": {
+                           "public-key": ["ssh-rsa"]
+                        },
+                        "state": {
+                           "admin-state": "unlocked"
+                        }
+                     },
+                     {
+                        "name": "Node_3_dev",
+                        "address": "10.76.230.251",
+                        "port": 22,
+                        "authgroup": "router",
+                        "device-type": {
+                           "cli": {
+                              "ned-id": "cisco-iosxr-cli-7.50:cisco-iosxr-cli-7.50"
+                           }
+                        },
+                        "ssh-algorithms": {
+                           "public-key": ["ssh-rsa"]
+                        },
+                        "state": {
+                           "admin-state": "unlocked"
+                        }
+                     },
+                     {
+                        "name": "Node_5_dev",
+                        "address": "10.76.230.252",
+                        "port": 22,
+                        "authgroup": "router",
+                        "device-type": {
+                           "cli": {
+                              "ned-id": "cisco-iosxr-cli-7.50:cisco-iosxr-cli-7.50"
+                           }
+                        },
+                        "ssh-algorithms": {
+                           "public-key": ["ssh-rsa"]
+                        },
+                        "state": {
+                           "admin-state": "unlocked"
+                        }
+                     },
+                     {
+                        "name": "Node_6_dev",
+                        "address": "10.76.230.253",
+                        "port": 22,
+                        "authgroup": "router",
+                        "device-type": {
+                           "cli": {
+                              "ned-id": "cisco-iosxr-cli-7.50:cisco-iosxr-cli-7.50"
+                           }
+                        },
+                        "ssh-algorithms": {
+                           "public-key": ["ssh-rsa"]
+                        },
+                        "state": {
+                           "admin-state": "unlocked"
+                        }
+                     }
+                  ]
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["204"]
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "SSH Keys",
+               "headerColor": "",
+               "title": "Fetch SSH keys",
+               "description": "Fetch SSH keys form the newly added routers",
+               "url": "restconf/data/tailf-ncs:devices/fetch-ssh-host-keys",
+               "method": "post",
+               "data": {},
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "fingerprint"
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "Delete",
+               "headerColor": "red",
+               "title": "Remove isis for Node_1_dev",
+               "description": "",
+               "url": "restconf/data/isis:isis=1",
+               "method": "delete",
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["204", "404"]
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "Delete",
+               "headerColor": "red",
+               "title": "Remove isis for Node_2_dev",
+               "description": "",
+               "url": "restconf/data/isis:isis=2",
+               "method": "delete",
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["204", "404"]
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "Delete",
+               "headerColor": "red",
+               "title": "Remove isis for Node_3_dev",
+               "description": "",
+               "url": "restconf/data/isis:isis=3",
+               "method": "delete",
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["204", "404"]
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "Delete",
+               "headerColor": "red",
+               "title": "Remove isis for Node_4_dev",
+               "description": "",
+               "url": "restconf/data/isis:isis=4",
+               "method": "delete",
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["204", "404"]
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "Delete",
+               "headerColor": "red",
+               "title": "Remove isis for Node_5_dev",
+               "description": "",
+               "url": "restconf/data/isis:isis=5",
+               "method": "delete",
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["204", "404"]
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "Delete",
+               "headerColor": "red",
+               "title": "Remove isis for Node_6_dev",
+               "description": "",
+               "url": "restconf/data/isis:isis=6",
+               "method": "delete",
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["204", "404"]
                   }
                ]
             },
@@ -359,198 +1086,7 @@
                      "value": "committed"
                   }
                ]
-            }
-         ],
-         "validations": [
-            {
-               "type": "request",
-               "useEndpoint": "NSO",
-               "header": "RPC",
-               "headerColor": "",
-               "title": "Request Node_1_eng to ping local interface",
-               "description": "Execute a local ping on Node_1_eng's loopback interface via a Remote Procedure Call",
-               "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
-               "method": "post",
-               "data": {
-                  "input": {
-                     "args": "ping 1.1.1.1"
-                  }
-               },
-               "expect": [
-                  {
-                     "type": "codeIs",
-                     "value": ["200"]
-                  },
-                  {
-                     "type": "bodyContain",
-                     "value": "tailf-ned-cisco-ios-xr-stats:output"
-                  }
-               ]
             },
-            {
-               "type": "request",
-               "useEndpoint": "NSO",
-               "header": "RPC",
-               "headerColor": "",
-               "title": "Ping Node_2_eng connected interface from Node_1_eng",
-               "description": "Execute a ping from Node_1_eng to Node_2_eng connected interface via a Remote Procedure Call",
-               "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
-               "method": "post",
-               "data": {
-                  "input": {
-                     "args": "ping 99.1.2.2"
-                  }
-               },
-               "expect": [
-                  {
-                     "type": "codeIs",
-                     "value": ["200"]
-                  },
-                  {
-                     "type": "bodyContain",
-                     "value": "tailf-ned-cisco-ios-xr-stats:output"
-                  }
-               ]
-            }
-         ],
-         "outcome": {
-            "summaryText": "Router are onboaded in NSO",
-            "elements": {
-               "nodes": [
-                  {
-                     "data": { "id": "Node_1_dev", "label": "Node_1_dev", "width": "50", "height": "50" },
-                     "position": { "x": 0, "y": 200 },
-                     "classes": ["router"]
-                  },
-                  {
-                     "data": { "id": "Node_2_dev", "label": "Node_2_dev", "width": "50", "height": "50" },
-                     "position": { "x": 200, "y": 100 },
-                     "classes": ["router"]
-                  },
-                  {
-                     "data": { "id": "Node_3_dev", "label": "Node_3_dev", "width": "50", "height": "50" },
-                     "position": { "x": 200, "y": 300 },
-                     "classes": ["router"]
-                  },
-                  {
-                     "data": { "id": "Node_4_dev", "label": "Node_4_dev", "width": "50", "height": "50" },
-                     "position": { "x": 400, "y": 100 },
-                     "classes": ["router"]
-                  },
-                  {
-                     "data": { "id": "Node_5_dev", "label": "Node_5_dev", "width": "50", "height": "50" },
-                     "position": { "x": 400, "y": 300 },
-                     "classes": ["router"]
-                  },
-                  {
-                     "data": { "id": "Node_6_dev", "label": "Node_6_dev", "width": "50", "height": "50" },
-                     "position": { "x": 600, "y": 200 },
-                     "classes": ["router"]
-                  }
-               ],
-               "edges": [
-                  {
-                     "data": { "id": "Link_1_2", "source": "Node_1_dev", "target": "Node_2_dev", "label": "99.1.2.0/24" },
-                     "classes": []
-                  },
-                  {
-                     "data": { "id": "Link_1_3", "source": "Node_1_dev", "target": "Node_3_dev", "label": "" },
-                     "classes": []
-                  },
-                  {
-                     "data": { "id": "Link_2_4", "source": "Node_2_dev", "target": "Node_4_dev", "label": "" },
-                     "classes": []
-                  },
-                  {
-                     "data": { "id": "Link_3_5", "source": "Node_3_dev", "target": "Node_5_dev", "label": "" },
-                     "classes": []
-                  },
-                  {
-                     "data": { "id": "Link_4_6", "source": "Node_4_dev", "target": "Node_6_dev", "label": "" },
-                     "classes": []
-                  },
-                  {
-                     "data": { "id": "Link_5_6", "source": "Node_5_dev", "target": "Node_6_dev", "label": "" },
-                     "classes": []
-                  }
-               ]
-            },
-            "commands": {
-               "Node_1_dev": [
-                  {
-                     "type": "request",
-                     "useEndpoint": "NSO",
-                     "displayResponseAs": "json",
-                     "title": "Ping local loopback",
-                     "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
-                     "method": "post",
-                     "data": {
-                        "input": {
-                           "args": "ping 1.1.1.1"
-                        }
-                     }
-                  },
-                  {
-                     "type": "request",
-                     "useEndpoint": "NSO",
-                     "displayResponseAs": "json",
-                     "title": "Ping Node_2_dev directly connected interface",
-                     "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
-                     "method": "post",
-                     "data": {
-                        "input": {
-                           "args": "ping 99.1.2.2"
-                        }
-                     }
-                  },
-                  {
-                     "type": "request",
-                     "useEndpoint": "NSO",
-                     "displayResponseAs": "json",
-                     "title": "Ping Node_6_dev - shall fail at this stage",
-                     "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
-                     "method": "post",
-                     "data": {
-                        "input": {
-                           "args": "ping 6.6.6.6"
-                        }
-                     }
-                  }
-               ]
-            }
-         }
-      },
-      "step_2": {
-         "description": ["TBA"],
-         "continueOnFail": false,
-         "actions": [
-            {
-               "type": "request",
-               "useEndpoint": "NSO",
-               "header": "Create",
-               "headerColor": "Green",
-               "title": "Configure Authentication",
-               "description": "Add authentication group required to access network routers",
-               "url": "restconf/data/tailf-ncs:devices/authgroups/group=test",
-               "method": "post",
-               "data": "",
-               "expect": [
-                  {
-                     "type": "codeIs",
-                     "value": ["200"]
-                  }
-               ]
-            }
-         ],
-         "validations": [],
-         "outcome": {
-            "summaryText": "Melbourne to Sydney link has been created"
-         }
-      },
-      "cleanup": {
-         "description": ["Cleaning up NSO configuration before starting a new demo"],
-         "continueOnFail": false,
-         "actions": [
             {
                "type": "request",
                "useEndpoint": "NSO",
