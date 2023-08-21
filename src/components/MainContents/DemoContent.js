@@ -192,6 +192,7 @@ const DemoContent = (props) => {
          console.log("DEBUG - load value from localStorage");
       }
       return () => context.unregisterClearStateFunction("demoContent");
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
    useDidUpdateEffect(() => {

@@ -172,10 +172,10 @@ const ActionForm = (props) => {
    };
 
    useEffect(() => {
-      if (props.initValue) {
-         setInput({ ...props.initValue.action });
-      }
-   }, []);
+      if (!props.initValue) return;
+
+      setInput({ ...props.initValue.action });
+   }, [props.initValue]);
 
    useEffect(() => {
       for (let expect of input.expect) {

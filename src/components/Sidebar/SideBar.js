@@ -161,6 +161,7 @@ const SideBar = (props) => {
       return () => {
          context.unregisterClearStateFunction("sidebar");
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
    return (

@@ -3,7 +3,6 @@ import GlobalContext from "../contexts/ContextProvider";
 import { Modal } from "../../helper/modalHelper";
 import { normalRequest, pollingRequest } from "../../helper/actionHelper";
 import { ValidationDetail } from "./Validations";
-import _ from "lodash";
 import TopologyWrapper from "./TopologyWrapper";
 
 const CommandModal = (props) => {

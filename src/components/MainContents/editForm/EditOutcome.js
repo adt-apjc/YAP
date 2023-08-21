@@ -88,7 +88,6 @@ const AddCommandForm = (props) => {
 
    useEffect(() => {
       try {
-         console.log(data);
          let newCommands = _.cloneDeep(props.commands);
          newCommands[selectedCommandIndex].data = !data ? undefined : JSON.parse(data);
          props.setCommands(newCommands);
@@ -96,6 +95,7 @@ const AddCommandForm = (props) => {
       } catch (e) {
          setIsPayloadValid(false);
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [data]);
 
    useEffect(() => {
@@ -349,6 +349,7 @@ const AddNodeForm = (props) => {
             setEnableCommand(true);
          }
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [JSON.stringify(props.initValue)]);
 
    return (
@@ -489,6 +490,7 @@ const AddEdgeForm = (props) => {
             dashed: initValue.classes.includes("dashed"),
             curveline: initValue.classes.includes("curve-multiple"),
          });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [JSON.stringify(props.initValue)]);
 
    return (

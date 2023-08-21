@@ -8,5 +8,6 @@ export const useDidUpdateEffect = (fn, dependencies) => {
          return fn();
       }
       didMountRef.current = true;
-   }, dependencies);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [...dependencies]);
 };
