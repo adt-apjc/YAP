@@ -33,18 +33,22 @@ const DemoContent = (props) => {
       console.log("DEBUG - clear state from sidebar demoContent");
    };
 
-   const runActionWorkflowHandler = async () => {
+   const runActionWorkflowHandler = async (targetIndex = -1) => {
       let isCompleted = true;
       let { currentStepDetails } = props;
-      // clear old state before start
-      setCurrentRunning((prev) => ({ ...prev, action: null }));
-      setActionResults((prev) => ({ ...prev, [props.currentStep.name]: {} }));
-
       // validate if it has validation configured or not
       if (!currentStepDetails.actions) return null;
-      //
 
-      for (let [index, action] of currentStepDetails.actions.entries()) {
+      // set running status in global context
+      context.setRunningStatus(props.currentStep.name, "running");
+
+      // clear old state before start
+      setCurrentRunning((prev) => ({ ...prev, action: targetIndex >= 0 ? targetIndex : null }));
+      if (targetIndex < 0) setActionResults((prev) => ({ ...prev, [props.currentStep.name]: {} }));
+
+      let actionList = targetIndex >= 0 ? [currentStepDetails.actions[targetIndex]] : currentStepDetails.actions;
+      for (let [i, action] of actionList.entries()) {
+         let index = targetIndex >= 0 ? targetIndex : i;
          try {
             // SET current running state before start.
             setCurrentRunning((prev) => ({ ...prev, action: index }));
@@ -85,24 +89,30 @@ const DemoContent = (props) => {
       }
       // set status on section bar
       setIsActionCompleted((prev) => ({ ...prev, [props.currentStep.name]: isCompleted }));
+      // set running status in global context
+      context.setRunningStatus(props.currentStep.name, "");
       return isCompleted;
    };
 
-   const runValidationWorkflowHandler = async () => {
+   const runValidationWorkflowHandler = async (targetIndex = -1) => {
       let isCompleted = true;
       let { currentStepDetails } = props;
-      // clear old state before start
-      setCurrentRunning((prev) => ({ ...prev, validation: null }));
-      setValidationResults((prev) => ({ ...prev, [props.currentStep.name]: {} }));
-
       // validate if it has validation configured or not
       if (!currentStepDetails.validations) return true;
 
-      // start
-      for (let [index, validation] of currentStepDetails.validations.entries()) {
-         // SET current running state before start.
-         setCurrentRunning((prev) => ({ ...prev, validation: index }));
+      // set running status in global context
+      context.setRunningStatus(props.currentStep.name, "running");
+
+      // clear old state before start
+      setCurrentRunning((prev) => ({ ...prev, validation: targetIndex >= 0 ? targetIndex : null }));
+      if (targetIndex < 0) setValidationResults((prev) => ({ ...prev, [props.currentStep.name]: {} }));
+
+      let validationList = targetIndex >= 0 ? [currentStepDetails.validations[targetIndex]] : currentStepDetails.validations;
+      for (let [i, validation] of validationList.entries()) {
+         let index = targetIndex >= 0 ? targetIndex : i;
          try {
+            // SET current running state before start.
+            setCurrentRunning((prev) => ({ ...prev, validation: index }));
             let response;
             if (validation.type === "request") {
                // normal request
@@ -141,12 +151,12 @@ const DemoContent = (props) => {
       }
       // set status on section bar
       setIsValidationCompleted((prev) => ({ ...prev, [props.currentStep.name]: isCompleted }));
+      // set running status in global context
+      context.setRunningStatus(props.currentStep.name, "");
       return isCompleted;
    };
 
    const startWorkflowHandler = async () => {
-      // set running status in global context
-      context.setRunningStatus(props.currentStep.name, "running");
       // clear complete status of current step before start
       setIsActionCompleted((prev) => ({ ...prev, [props.currentStep.name]: false }));
       setIsValidationCompleted((prev) => ({ ...prev, [props.currentStep.name]: false }));
@@ -162,9 +172,7 @@ const DemoContent = (props) => {
       }
       // after action complete delay 500 ms and start validation
       setTimeout(async () => {
-         let isValidationCompleted = await runValidationWorkflowHandler();
-         // set globalContext status on sidebar
-         context.setRunningStatus(props.currentStep.name, isActionCompleted && isValidationCompleted ? "success" : "fail");
+         await runValidationWorkflowHandler();
       }, 500);
    };
 
@@ -186,12 +194,24 @@ const DemoContent = (props) => {
       return () => context.unregisterClearStateFunction("demoContent");
    }, []);
 
-   // saveStateToLocalStorage
    useDidUpdateEffect(() => {
+      // saveStateToLocalStorage
       window.localStorage.setItem(
          "mainContentState",
          JSON.stringify({ actionResults, validationResults, isActionCompleted, isValidationCompleted }),
       );
+      // try to update sidebar status foreach step
+      if (!actionResults[props.currentStep.name]) return;
+      if (!validationResults[props.currentStep.name]) return;
+      let _actionResults = Object.values(actionResults[props.currentStep.name]);
+      if (_actionResults.length !== props.currentStepDetails.actions.length) return;
+      let _validationResults = Object.values(validationResults[props.currentStep.name]);
+      if (_validationResults.length !== props.currentStepDetails.validations.length) return;
+
+      let isAllValidationCompleted = _validationResults.every((el) => el.success);
+      let isAllActionCompleted = _actionResults.every((el) => el.success);
+      // set globalContext status on sidebar
+      context.setRunningStatus(props.currentStep.name, isAllActionCompleted && isAllValidationCompleted ? "success" : "fail");
    }, [actionResults, validationResults, isActionCompleted, isValidationCompleted]);
 
    let description = props.currentStepDetails.description;
@@ -378,6 +398,7 @@ const DemoContent = (props) => {
                currentStepDetails={props.currentStepDetails}
                currentRunning={currentRunning.validation}
                results={validationResults[props.currentStep.name]}
+               workflowHandler={runValidationWorkflowHandler}
             />
          </div>
          {/* OUTCOME */}

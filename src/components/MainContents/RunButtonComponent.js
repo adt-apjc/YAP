@@ -2,7 +2,7 @@ import React from "react";
 
 const RunButtonComponent = ({ currentRunning, workflowHandler, disable = false }) => {
    return (
-      <div className="mx-3 text-primary">
+      <div className="btn-run mx-3">
          {currentRunning ? (
             <i className="fas fa-spinner fa-spin " />
          ) : (

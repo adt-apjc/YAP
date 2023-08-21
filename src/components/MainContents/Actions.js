@@ -124,11 +124,14 @@ const Actions = (props) => {
                            </div>
                            {action.title ? action.title : "NO TITLE"}
                         </div>
-                        {isActionRunning(index) ? <i className="fas fa-spinner fa-spin m-2 text-primary" /> : ""}
                         {runResultStatus}
                      </div>
                      <div className="d-flex align-items-center">
-                        <RunButtonComponent currentRunning={null} workflowHandler={() => null} disable={true} />
+                        <RunButtonComponent
+                           currentRunning={isActionRunning(index)}
+                           workflowHandler={() => props.workflowHandler(index)}
+                           disable={isActionRunning(index)}
+                        />
                         {context.mode === "edit" && (
                            <div className="d-flex align-items-center">
                               <span

@@ -193,3 +193,11 @@ span {
    color: var(--bs-gray-500);
    pointer-events: none;
 }
+
+.btn-run {
+   color: var(--bs-primary);
+}
+
+.btn-run :hover {
+   color: #005478;
+}
