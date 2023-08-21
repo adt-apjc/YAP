@@ -673,6 +673,34 @@
             {
                "type": "request",
                "useEndpoint": "NSO",
+               "header": "Create",
+               "headerColor": "Green",
+               "title": "Add credential",
+               "description": "Configure credential to access devices",
+               "url": "restconf/data/tailf-ncs:devices/authgroups",
+               "method": "post",
+               "data": {
+                  "group": [
+                     {
+                        "name": "router",
+                        "default-map": {
+                           "remote-name": "admin",
+                           "remote-password": "$9$J1M0gZHBlR458pFPbfQIvjERzZC7gtP+lK5ZGqtlNZc=",
+                           "remote-secondary-password": "$9$uxoqHgAYbRup2n42YTqkMR7YUZw8nAFF++jBGC/CHoo="
+                        }
+                     }
+                  ]
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["201"]
+                  }
+               ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
                "header": "Patch",
                "headerColor": "Green",
                "title": "Assure demo devices are part of NSO configuration",
