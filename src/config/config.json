@@ -534,6 +534,33 @@
          ],
          "validations": [
             {
+               "type": "polling",
+               "useEndpoint": "NSO",
+               "header": "RPC",
+               "headerColor": "",
+               "title": "Polling routing table to assess ISIS convergence",
+               "description": "This step leverage the polling (every 2 seconds max 20 times) mode to assess that ISIS converged and the routing table learned the Node_6_dev looback via ISIS",
+               "interval": "2000",
+               "maxRetry": "20",
+               "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
+               "method": "post",
+               "data": {
+                  "input": {
+                     "args": "show route 99.0.0.6"
+                  }
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "Known via \"isis 1\""
+                  }
+               ]
+            },
+            {
                "type": "request",
                "useEndpoint": "NSO",
                "header": "RPC",
@@ -544,7 +571,7 @@
                "method": "post",
                "data": {
                   "input": {
-                     "args": "ping 99.0.6"
+                     "args": "ping 99.0.0.6"
                   }
                },
                "expect": [
@@ -673,12 +700,12 @@
             {
                "type": "request",
                "useEndpoint": "NSO",
-               "header": "Create",
+               "header": "Patch",
                "headerColor": "Green",
-               "title": "Add credential",
+               "title": "Assure router credential is part of NSO configuration",
                "description": "Configure credential to access devices",
-               "url": "restconf/data/tailf-ncs:devices/authgroups",
-               "method": "post",
+               "url": "restconf/data/tailf-ncs:devices/authgroups/group=router",
+               "method": "patch",
                "data": {
                   "group": [
                      {
@@ -694,7 +721,7 @@
                "expect": [
                   {
                      "type": "codeIs",
-                     "value": ["201"]
+                     "value": ["204"]
                   }
                ]
             },
