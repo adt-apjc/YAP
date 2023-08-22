@@ -1,7 +1,7 @@
 import React from "react";
 import GlobalContext from "../contexts/ContextProvider";
-import Preface from "./Preface";
-import DemoContent from "./DemoContent";
+import Preface from "./Preface/Preface";
+import DemoContent from "./DemoContent/DemoContent";
 
 import _ from "lodash";
 

@@ -1,17 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
-import GlobalContext from "../contexts/ContextProvider";
-import { useDidUpdateEffect } from "../contexts/CustomHooks";
-import { normalRequest, pollingRequest } from "../../helper/actionHelper";
-import { Modal } from "../../helper/modalHelper";
-import ModalContentSelector from "./editForm/ModalContentSelector";
+import GlobalContext from "../../contexts/ContextProvider";
+import { useDidUpdateEffect } from "../../contexts/CustomHooks";
+import { normalRequest, pollingRequest } from "../../../helper/actionHelper";
+import { Modal } from "../../../helper/modalHelper";
+import ModalContentSelector from "../editForm/ModalContentSelector";
 import Actions from "./Actions";
 import Validations from "./Validations";
 import Outcome from "./Outcome";
 
 import _ from "lodash";
-import Logo from "./Logo";
+import Logo from "../Logo";
 import PreCheck from "./PreCheck";
-import RunButtonComponent from "./RunButtonComponent";
+import RunButtonComponent from "../RunButtonComponent";
 
 const DemoContent = (props) => {
    const context = useContext(GlobalContext);
@@ -411,9 +411,7 @@ const DemoContent = (props) => {
                <div>
                   <span className="font-weight-bold">Outcome</span>
                   <span className="font-weight-light mx-5">
-                     {props.currentStepDetails.outcome && context.runningStatus[props.currentStep.name] === "success"
-                        ? props.currentStepDetails.outcome.summaryText
-                        : ""}
+                     {props.currentStepDetails.outcome && props.currentStepDetails.outcome.summaryText}
                   </span>
                </div>
                <div>

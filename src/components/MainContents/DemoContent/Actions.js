@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
 import ReactJson from "@uiw/react-json-view";
-import GlobalContext from "../contexts/ContextProvider";
-import { Modal } from "../../helper/modalHelper";
-import ModalContentSelector from "./editForm/ModalContentSelector";
-import RunButtonComponent from "./RunButtonComponent";
+import GlobalContext from "../../contexts/ContextProvider";
+import { Modal } from "../../../helper/modalHelper";
+import ModalContentSelector from "../editForm/ModalContentSelector";
+import RunButtonComponent from "../RunButtonComponent";
 
 const ActionDetail = (props) => {
    const getStringFromObject = (obj, path) => {

@@ -1,8 +1,8 @@
 import React, { useState, useContext } from "react";
 import ReactJson from "@uiw/react-json-view";
-import GlobalContext from "../contexts/ContextProvider";
-import { Modal } from "../../helper/modalHelper";
-import ModalContentSelector from "./editForm/ModalContentSelector";
+import GlobalContext from "../../contexts/ContextProvider";
+import { Modal } from "../../../helper/modalHelper";
+import ModalContentSelector from "../editForm/ModalContentSelector";
 
 export const ValidationDetail = ({ show, response, request }) => {
    const getStringFromObject = (obj, path) => {
