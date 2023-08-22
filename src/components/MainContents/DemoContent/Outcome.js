@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import GlobalContext from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
 import { normalRequest, pollingRequest } from "../../../helper/actionHelper";
-import { ValidationDetail } from "./Validations";
+import { PostCheckDetail } from "./PostCheck";
 import TopologyWrapper from "../TopologyWrapper";
 
 const CommandModal = (props) => {
@@ -69,7 +69,7 @@ const CommandModal = (props) => {
                )}
             </button>
          </div>
-         <ValidationDetail show={cmdResults ? true : false} response={cmdResults} request={action} />
+         <PostCheckDetail show={cmdResults ? true : false} response={cmdResults} request={action} />
       </div>
    );
 };

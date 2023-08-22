@@ -36,6 +36,7 @@
       "step_1": {
          "description": ["Onboard device on NSO instance"],
          "continueOnFail": false,
+         "preCheck": [],
          "actions": [
             {
                "type": "request",
@@ -176,7 +177,7 @@
                ]
             }
          ],
-         "validations": [
+         "postCheck": [
             {
                "type": "request",
                "useEndpoint": "NSO",
@@ -313,6 +314,7 @@
       "step_2": {
          "description": ["TBA"],
          "continueOnFail": false,
+         "preCheck": [],
          "actions": [
             {
                "type": "request",
@@ -332,7 +334,7 @@
                ]
             }
          ],
-         "validations": [],
+         "postCheck": [],
          "outcome": {
             "summaryText": "Melbourne to Sydney link has been created"
          }
@@ -340,6 +342,7 @@
       "cleanup": {
          "description": ["Cleaning up NSO configuration before starting a new demo"],
          "continueOnFail": false,
+         "preCheck": [],
          "actions": [
             {
                "type": "request",
@@ -374,7 +377,7 @@
                ]
             }
          ],
-         "validations": []
+         "postCheck": []
       }
    }
 }

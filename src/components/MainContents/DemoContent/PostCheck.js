@@ -4,7 +4,7 @@ import GlobalContext from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
 import ModalContentSelector from "../editForm/ModalContentSelector";
 
-export const ValidationDetail = ({ show, response, request }) => {
+export const PostCheckDetail = ({ show, response, request }) => {
    const getStringFromObject = (obj, path) => {
       let result = obj;
       try {
@@ -66,7 +66,7 @@ export const ValidationDetail = ({ show, response, request }) => {
    );
 };
 
-const Validations = (props) => {
+const PostCheck = (props) => {
    const context = useContext(GlobalContext);
    const [modal, setModal] = useState({ modalShow: false, modalContentType: null, selectedAction: null });
    const [curExpandRow, setCurExpandRow] = useState([]);
@@ -79,7 +79,7 @@ const Validations = (props) => {
       }
    };
 
-   const isValidationRunning = (index) => {
+   const isPostCheckRunning = (index) => {
       return props.currentRunning === index;
    };
 
@@ -87,8 +87,8 @@ const Validations = (props) => {
    if (!props.show) return null;
 
    let apiList;
-   if (props.currentStepDetails.validations && props.currentStepDetails.validations.length > 0) {
-      apiList = props.currentStepDetails.validations.map((validation, index) => {
+   if (props.currentStepDetails.postCheck && props.currentStepDetails.postCheck.length > 0) {
+      apiList = props.currentStepDetails.postCheck.map((postCheck, index) => {
          let runResultStatus =
             props.results && props.results[index] ? (
                props.results[index].success ? (
@@ -102,7 +102,7 @@ const Validations = (props) => {
                {/* API DETAILS */}
                <div
                   className={`shadow-sm p-3 mb-3 bg-light text-secondary rounded pointer ${
-                     isValidationRunning(index) ? "border" : ""
+                     isPostCheckRunning(index) ? "border" : ""
                   }`}
                   onClick={() => expandDetailHandler(index)}
                >
@@ -112,14 +112,14 @@ const Validations = (props) => {
                         <div>
                            <div
                               className={`api-method-badge text-light me-3 rounded`}
-                              style={{ backgroundColor: validation.headerColor ? validation.headerColor : "#007cad" }}
+                              style={{ backgroundColor: postCheck.headerColor ? postCheck.headerColor : "#007cad" }}
                            >
-                              {validation.header ? validation.header : "NO HEADER"}
+                              {postCheck.header ? postCheck.header : "NO HEADER"}
                            </div>
-                           {validation.title ? validation.title : "NO TITLE"}
+                           {postCheck.title ? postCheck.title : "NO TITLE"}
                         </div>
                         {/* RUNNING SPINNER */}
-                        {isValidationRunning(index) ? <i className="fas fa-spinner fa-spin m-2 text-primary" /> : ""}
+                        {isPostCheckRunning(index) ? <i className="fas fa-spinner fa-spin m-2 text-primary" /> : ""}
                         {/* RESULT ICON */}
                         {runResultStatus}
                      </div>
@@ -132,8 +132,8 @@ const Validations = (props) => {
                                     e.stopPropagation();
                                     setModal({
                                        modalShow: true,
-                                       modalContentType: "validation",
-                                       selectedAction: { action: validation, actionIndex: index },
+                                       modalContentType: "postCheck",
+                                       selectedAction: { action: postCheck, actionIndex: index },
                                     });
                                  }}
                               >
@@ -146,7 +146,7 @@ const Validations = (props) => {
                                     setModal({
                                        modalShow: true,
                                        modalContentType: "actionDeleteConfirm",
-                                       selectedAction: { action: validation, actionIndex: index, tab: "validations" },
+                                       selectedAction: { action: postCheck, actionIndex: index, tab: "postCheck" },
                                     });
                                  }}
                               >
@@ -161,10 +161,10 @@ const Validations = (props) => {
                </div>
 
                {/* API RESPONSE DETAILS*/}
-               <ValidationDetail
+               <PostCheckDetail
                   show={curExpandRow.includes(index)}
                   response={props.results && props.results[index] ? props.results[index] : null}
-                  request={validation}
+                  request={postCheck}
                />
             </div>
          );
@@ -191,4 +191,4 @@ const Validations = (props) => {
    );
 };
 
-export default Validations;
+export default PostCheck;

@@ -8,10 +8,12 @@ import EditOutcome from "./EditOutcome";
 class ModalContentSelector extends React.Component {
    render() {
       const { contentType } = this.props;
-      if (contentType === "action") {
+      if (contentType === "preCheck") {
+         return <ActionForm {...this.props} tab={"preCheck"} />;
+      } else if (contentType === "action") {
          return <ActionForm {...this.props} tab={"actions"} />;
-      } else if (contentType === "validation") {
-         return <ActionForm {...this.props} tab={"validations"} />;
+      } else if (contentType === "postCheck") {
+         return <ActionForm {...this.props} tab={"postCheck"} />;
       } else if (contentType === "actionDeleteConfirm") {
          return <ActionDeleteConfirmation {...this.props} />;
       } else if (contentType === "editStepDescription") {

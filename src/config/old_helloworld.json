@@ -30,6 +30,7 @@
       "step_1": {
          "description": ["API Request to mockAPI"],
          "continueOnFail": false,
+         "preCheck": [],
          "actions": [
             {
                "type": "polling",
@@ -80,7 +81,7 @@
                }
             }
          ],
-         "validations": [
+         "postCheck": [
             {
                "type": "request",
                "useEndpoint": "mockAPI",
@@ -133,6 +134,7 @@
       "step_2": {
          "description": ["API Request to mockAPI"],
          "continueOnFail": false,
+         "preCheck": [],
          "actions": [
             {
                "type": "request",
@@ -150,7 +152,7 @@
                }
             }
          ],
-         "validations": [
+         "postCheck": [
             {
                "type": "request",
                "useEndpoint": "mockAPI",
@@ -220,6 +222,7 @@
             "The follwoing procedure is required to clean and assure there is no corrupted service (i.e. Zombies services) left behind"
          ],
          "continueOnFail": false,
+         "preCheck": [],
          "actions": [
             {
                "type": "request",
@@ -252,7 +255,7 @@
                "method": "delete"
             }
          ],
-         "validations": [
+         "postCheck": [
             {
                "type": "request",
                "useEndpoint": "mockAPI",
