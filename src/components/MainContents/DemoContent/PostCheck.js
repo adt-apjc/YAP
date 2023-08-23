@@ -36,7 +36,7 @@ export const PostCheckDetail = ({ show, response, request }) => {
       responseViewer = response ? <pre className="p-2">{getStringFromObject(response.data, request.objectPath)}</pre> : "";
    } else {
       // default display response as JSON
-      responseViewer = response ? <ReactJson value={typeof response.data === "object" ? response.data : {}} collapsed={1} /> : "";
+      responseViewer = response ? <ReactJson value={typeof response.data === "object" ? response.data : {}} collapsed={4} /> : "";
    }
 
    if (!show) return null;
