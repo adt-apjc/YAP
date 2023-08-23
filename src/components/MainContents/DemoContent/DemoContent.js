@@ -48,10 +48,15 @@ const DemoContent = (props) => {
 
       // clear old state before start
       setCurrentRunning((prev) => ({ ...prev, preCheck: targetIndex >= 0 ? targetIndex : null }));
-      if (targetIndex < 0) setPreCheckResults((prev) => ({ ...prev, [props.currentStep.name]: {} }));
 
       let preCheckList = targetIndex >= 0 ? [currentStepDetails.preCheck[targetIndex]] : currentStepDetails.preCheck;
       for (let [i, preCheck] of preCheckList.entries()) {
+         // clear old result
+         setPreCheckResults((prev) => {
+            if (prev[props.currentStep.name]) delete prev[props.currentStep.name][index];
+            return prev;
+         });
+
          let index = targetIndex >= 0 ? targetIndex : i;
          try {
             // SET current running state before start.
@@ -106,12 +111,17 @@ const DemoContent = (props) => {
       // set running status in global context
       context.setRunningStatus(props.currentStep.name, "running");
 
-      // clear old state before start
+      // clear running state before start
       setCurrentRunning((prev) => ({ ...prev, action: targetIndex >= 0 ? targetIndex : null }));
-      if (targetIndex < 0) setActionResults((prev) => ({ ...prev, [props.currentStep.name]: {} }));
 
       let actionList = targetIndex >= 0 ? [currentStepDetails.actions[targetIndex]] : currentStepDetails.actions;
       for (let [i, action] of actionList.entries()) {
+         // clear old result
+         setActionResults((prev) => {
+            if (prev[props.currentStep.name]) delete prev[props.currentStep.name][index];
+            return prev;
+         });
+
          let index = targetIndex >= 0 ? targetIndex : i;
          try {
             // SET current running state before start.
@@ -168,10 +178,15 @@ const DemoContent = (props) => {
 
       // clear old state before start
       setCurrentRunning((prev) => ({ ...prev, postCheck: targetIndex >= 0 ? targetIndex : null }));
-      if (targetIndex < 0) setPostCheckResults((prev) => ({ ...prev, [props.currentStep.name]: {} }));
 
       let postCheckList = targetIndex >= 0 ? [currentStepDetails.postCheck[targetIndex]] : currentStepDetails.postCheck;
       for (let [i, postCheck] of postCheckList.entries()) {
+         // clear old result
+         setPostCheckResults((prev) => {
+            if (prev[props.currentStep.name]) delete prev[props.currentStep.name][index];
+            return prev;
+         });
+
          let index = targetIndex >= 0 ? targetIndex : i;
          try {
             // SET current running state before start.
