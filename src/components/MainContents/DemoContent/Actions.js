@@ -4,6 +4,7 @@ import GlobalContext from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
 import ModalContentSelector from "../editForm/ModalContentSelector";
 import RunButtonComponent from "../RunButtonComponent";
+import WithInfoPopup from "../../Popper/InfoPopper";
 
 const ActionDetail = (props) => {
    const getStringFromObject = (obj, path) => {
@@ -42,13 +43,53 @@ const ActionDetail = (props) => {
       ) : null;
    }
 
+   console.log(props.request.expect);
    if (!props.show) return null;
    return (
       <div className="container position-relative bg-light pt-2 pb-3" style={{ top: "-15px" }}>
          <div className="p-2">{props.request ? props.request.description : ""}</div>
-         <div className="p-2 d-inline-block mb-2">
-            Endpoint{" "}
-            <span className="font-weight-light bg-secondary text-light p-1 ms-4 rounded">{props.request.useEndpoint}</span>
+         <div className="d-flex justify-content-between p-2 mb-2">
+            <div>
+               Endpoint{" "}
+               <WithInfoPopup
+                  PopperComponent={
+                     <div className="d-flex p-2 text-nowrap text-dark">
+                        <small>{`${props.request.url}`}</small>
+                     </div>
+                  }
+                  placement="right"
+               >
+                  <span className="font-weight-light bg-secondary text-light p-1 ms-4 rounded">{props.request.useEndpoint}</span>
+               </WithInfoPopup>
+            </div>
+            <div>
+               <WithInfoPopup
+                  PopperComponent={
+                     <div className="d-flex flex-column p-2 text-nowrap text-dark">
+                        {props.request.expect.length > 0 ? (
+                           <>
+                              {props.request.expect.map((item) => {
+                                 let type = item.type;
+                                 if (item.type === "codeIs") type = "responseCodeIs";
+
+                                 return (
+                                    <div className="d-flex">
+                                       <small style={{ minWidth: "130px" }}>{type}: </small>
+                                       <small>{item.value}</small>
+                                    </div>
+                                 );
+                              })}
+                           </>
+                        ) : (
+                           <small>none</small>
+                        )}
+                     </div>
+                  }
+                  placement="left"
+               >
+                  <div className="badge text-bg-secondary">Expect</div>
+               </WithInfoPopup>
+            </div>
          </div>
          <div className="bg-white p-2 rounded shadow-sm mb-2">
             <div className="d-flex">
