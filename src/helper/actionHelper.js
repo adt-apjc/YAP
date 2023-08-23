@@ -7,31 +7,29 @@ const validateExpect = (expect, response) => {
    for (let condition of expect) {
       switch (condition.type) {
          case "bodyContain":
-            if (JSON.stringify(response.data).includes(condition.value)) {
-               return true;
+            if (!JSON.stringify(response.data).includes(condition.value)) {
+               console.log(`DEBUG - ${condition.type} ${condition.value} didn't match`);
+               return false;
             }
             break;
          case "bodyNotContain":
             if (JSON.stringify(response.data).includes(condition.value)) {
+               console.log(`DEBUG - ${condition.type} ${condition.value} didn't match`);
                return false;
-            } else {
-               return true;
             }
             break;
          case "codeIs":
             // code may be a single string or an array of string, where one need to match the value expected
-            console.log("DEBUG condition (response.status/condition.value): ", response.status, condition.value);
-            if (condition.value.includes(response.status.toString())) {
-               return true;
+            if (!condition.value.includes(response.status.toString())) {
+               console.log(`DEBUG - ${condition.type} ${condition.value} didn't match (Response {response.status})`);
+               return false;
             }
             break;
          default:
             console.log(`ERROR - Unknown expect type ${condition.type}`);
       }
    }
-   // By default the condition is not matched
-   console.log("DEBUG - validateExpect, No condition have been matched");
-   return false;
+   return true;
 };
 
 const processMatchResponse = (actionObject, response) => {

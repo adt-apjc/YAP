@@ -51,6 +51,10 @@
                "data": {},
                "expect": [
                   {
+                     "type": "codeIs",
+                     "value": ["200"]
+                  },
+                  {
                      "type": "bodyContain",
                      "value": ["ietf-restconf:restconf"]
                   }
