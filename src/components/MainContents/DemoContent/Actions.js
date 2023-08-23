@@ -43,7 +43,6 @@ const ActionDetail = (props) => {
       ) : null;
    }
 
-   console.log(props.request.expect);
    if (!props.show) return null;
    return (
       <div className="container position-relative bg-light pt-2 pb-3" style={{ top: "-15px" }}>
