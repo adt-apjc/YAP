@@ -97,7 +97,7 @@ const PreCheck = (props) => {
       apiList = props.currentStepDetails.preCheck.map((preCheck, index) => {
          //
          let runResultStatus =
-            props.results && props.results[index] ? (
+            props.results && props.results[index] && !isPreCheckRunning(index) ? (
                props.results[index].success ? (
                   <i className="fad fa-check-circle m-2 text-success" />
                ) : (

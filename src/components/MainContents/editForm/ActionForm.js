@@ -97,13 +97,7 @@ const ExpectForm = (props) => {
                   <i
                      type="button"
                      className="fad fa-plus text-info icon-hover-highlight"
-                     onClick={() =>
-                        props.setExpect([
-                           ...props.expect,
-                           { type: "bodyContain", value: "" },
-                           { type: "bodyNotContain", value: "" },
-                        ])
-                     }
+                     onClick={() => props.setExpect([...props.expect, { type: "bodyContain", value: "" }])}
                   />
                </div>
             </div>

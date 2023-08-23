@@ -3,6 +3,7 @@ import ReactJson from "@uiw/react-json-view";
 import GlobalContext from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
 import ModalContentSelector from "../editForm/ModalContentSelector";
+import RunButtonComponent from "../RunButtonComponent";
 
 export const PostCheckDetail = ({ show, response, request }) => {
    const getStringFromObject = (obj, path) => {
@@ -90,7 +91,7 @@ const PostCheck = (props) => {
    if (props.currentStepDetails.postCheck && props.currentStepDetails.postCheck.length > 0) {
       apiList = props.currentStepDetails.postCheck.map((postCheck, index) => {
          let runResultStatus =
-            props.results && props.results[index] ? (
+            props.results && props.results[index] && !isPostCheckRunning(index) ? (
                props.results[index].success ? (
                   <i className="fad fa-check-circle m-2 text-success" />
                ) : (
@@ -118,12 +119,15 @@ const PostCheck = (props) => {
                            </div>
                            {postCheck.title ? postCheck.title : "NO TITLE"}
                         </div>
-                        {/* RUNNING SPINNER */}
-                        {isPostCheckRunning(index) ? <i className="fas fa-spinner fa-spin m-2 text-primary" /> : ""}
                         {/* RESULT ICON */}
                         {runResultStatus}
                      </div>
-                     <div>
+                     <div className="d-flex align-items-center">
+                        <RunButtonComponent
+                           currentRunning={isPostCheckRunning(index)}
+                           workflowHandler={() => props.workflowHandler(index)}
+                           disable={isPostCheckRunning(index)}
+                        />
                         {context.mode === "edit" && (
                            <>
                               <span

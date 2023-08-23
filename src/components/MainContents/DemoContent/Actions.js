@@ -98,7 +98,7 @@ const Actions = (props) => {
       apiList = props.currentStepDetails.actions.map((action, index) => {
          //
          let runResultStatus =
-            props.results && props.results[index] ? (
+            props.results && props.results[index] && !isActionRunning(index) ? (
                props.results[index].success ? (
                   <i className="fad fa-check-circle m-2 text-success" />
                ) : (
