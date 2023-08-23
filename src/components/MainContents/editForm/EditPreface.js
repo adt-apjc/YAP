@@ -61,7 +61,7 @@ const EditPreface = (props) => {
                theme="github"
                height="500px"
                width="100%"
-               defaultValue={state.bodyArr}
+               value={state.bodyArr}
                onChange={(value) => setState({ ...state, bodyArr: value })}
                placeholder="html content"
                name="data"

@@ -381,7 +381,7 @@ const ActionForm = (props) => {
                         theme="github"
                         height="300px"
                         width="100%"
-                        defaultValue={JSON.stringify(input.data, null, 4)}
+                        value={JSON.stringify(input.data, null, 4)}
                         onChange={payloadInputHandler}
                         name="data"
                         className="rounded border"
