@@ -65,12 +65,12 @@ export const PostCheckDetail = ({ show, response, request }) => {
                      <div className="d-flex flex-column p-2 text-nowrap text-dark">
                         {request.expect.length > 0 ? (
                            <>
-                              {request.expect.map((item) => {
+                              {request.expect.map((item, i) => {
                                  let type = item.type;
                                  if (item.type === "codeIs") type = "responseCodeIs";
 
                                  return (
-                                    <div className="d-flex">
+                                    <div className="d-flex" key={i}>
                                        <small style={{ minWidth: "130px" }}>{type}: </small>
                                        <small>{item.value}</small>
                                     </div>
