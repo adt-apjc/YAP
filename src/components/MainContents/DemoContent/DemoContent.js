@@ -91,8 +91,7 @@ const DemoContent = (props) => {
             if (!currentStepDetails.continueOnFail) break;
          }
       }
-      // set status on section bar
-      setIsPreCheckCompleted((prev) => ({ ...prev, [props.currentStep.name]: isCompleted }));
+
       // set running status in global context
       context.setRunningStatus(props.currentStep.name, "");
       return isCompleted;
@@ -152,8 +151,7 @@ const DemoContent = (props) => {
             if (!currentStepDetails.continueOnFail) break;
          }
       }
-      // set status on section bar
-      setIsActionCompleted((prev) => ({ ...prev, [props.currentStep.name]: isCompleted }));
+
       // set running status in global context
       context.setRunningStatus(props.currentStep.name, "");
       return isCompleted;
@@ -214,8 +212,7 @@ const DemoContent = (props) => {
             if (!currentStepDetails.continueOnFail) break;
          }
       }
-      // set status on section bar
-      setIsPostCheckCompleted((prev) => ({ ...prev, [props.currentStep.name]: isCompleted }));
+
       // set running status in global context
       context.setRunningStatus(props.currentStep.name, "");
       return isCompleted;
@@ -286,26 +283,40 @@ const DemoContent = (props) => {
             isPostCheckCompleted,
          }),
       );
+      let isAllPreCheckCompleted = undefined;
+      let isAllActionCompleted = undefined;
+      let isAllPostCheckCompleted = undefined;
       // try to update sidebar status foreach step
-      if (!preCheckResults[props.currentStep.name]) return;
-      if (!actionResults[props.currentStep.name]) return;
-      if (!postCheckResults[props.currentStep.name]) return;
-      let _preCheckResults = Object.values(preCheckResults[props.currentStep.name]);
-      if (_preCheckResults.length !== props.currentStepDetails.preCheck.length) return;
-      let _actionResults = Object.values(actionResults[props.currentStep.name]);
-      if (_actionResults.length !== props.currentStepDetails.actions.length) return;
-      let _postCheckResults = Object.values(postCheckResults[props.currentStep.name]);
-      if (_postCheckResults.length !== props.currentStepDetails.postCheck.length) return;
+      if (preCheckResults[props.currentStep.name]) {
+         let _preCheckResults = Object.values(preCheckResults[props.currentStep.name]);
+         if (_preCheckResults.length === props.currentStepDetails.preCheck.length)
+            isAllPreCheckCompleted = _preCheckResults.every((el) => el.success);
+      }
+      if (actionResults[props.currentStep.name]) {
+         let _actionResults = Object.values(actionResults[props.currentStep.name]);
+         if (_actionResults.length === props.currentStepDetails.actions.length)
+            isAllActionCompleted = _actionResults.every((el) => el.success);
+      }
+      if (postCheckResults[props.currentStep.name]) {
+         let _postCheckResults = Object.values(postCheckResults[props.currentStep.name]);
+         if (_postCheckResults.length === props.currentStepDetails.postCheck.length)
+            isAllPostCheckCompleted = _postCheckResults.every((el) => el.success);
+      }
 
-      let isAllPreCheckCompleted = _preCheckResults.every((el) => el.success);
-      let isAllActionCompleted = _actionResults.every((el) => el.success);
-      let isAllPostCheckCompleted = _postCheckResults.every((el) => el.success);
+      // set status on section bar
+      if (isAllPreCheckCompleted !== undefined)
+         setIsPreCheckCompleted((prev) => ({ ...prev, [props.currentStep.name]: isAllPreCheckCompleted }));
+      if (isAllActionCompleted !== undefined)
+         setIsActionCompleted((prev) => ({ ...prev, [props.currentStep.name]: isAllActionCompleted }));
+      if (isAllPostCheckCompleted !== undefined)
+         setIsPostCheckCompleted((prev) => ({ ...prev, [props.currentStep.name]: isAllPostCheckCompleted }));
       // set globalContext status on sidebar
-      context.setRunningStatus(
-         props.currentStep.name,
-         isAllPreCheckCompleted && isAllActionCompleted && isAllPostCheckCompleted ? "success" : "fail",
-      );
-   }, [preCheckResults, actionResults, postCheckResults, isPreCheckCompleted, isActionCompleted, isPostCheckCompleted]);
+      if (isAllPreCheckCompleted !== undefined && isAllActionCompleted !== undefined && isAllPostCheckCompleted !== undefined)
+         context.setRunningStatus(
+            props.currentStep.name,
+            isAllPreCheckCompleted && isAllActionCompleted && isAllPostCheckCompleted ? "success" : "fail",
+         );
+   }, [preCheckResults, actionResults, postCheckResults]);
 
    let description = props.currentStepDetails.description;
    if (_.isArray(description)) {
