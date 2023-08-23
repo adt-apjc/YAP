@@ -6,7 +6,7 @@ import ModalContentSelector from "../editForm/ModalContentSelector";
 import RunButtonComponent from "../RunButtonComponent";
 import WithInfoPopup from "../../Popper/InfoPopper";
 
-export const PostCheckDetail = ({ show, response, request }) => {
+export const PostCheckDetail = ({ show, response, request, context }) => {
    const getStringFromObject = (obj, path) => {
       let result = obj;
       try {
@@ -51,7 +51,7 @@ export const PostCheckDetail = ({ show, response, request }) => {
                <WithInfoPopup
                   PopperComponent={
                      <div className="d-flex p-2 text-nowrap text-dark">
-                        <small>{`${request.url}`}</small>
+                        <small>{`${context.config.endpoints[request.useEndpoint].baseURL}`}</small>
                      </div>
                   }
                   placement="right"
@@ -210,6 +210,7 @@ const PostCheck = (props) => {
                   show={curExpandRow.includes(index)}
                   response={props.results && props.results[index] ? props.results[index] : null}
                   request={postCheck}
+                  context={context}
                />
             </div>
          );

@@ -53,7 +53,7 @@ const PreCheckDetail = (props) => {
                <WithInfoPopup
                   PopperComponent={
                      <div className="d-flex p-2 text-nowrap text-dark">
-                        <small>{`${props.request.url}`}</small>
+                        <small>{`${props.context.config.endpoints[props.request.useEndpoint].baseURL}`}</small>
                      </div>
                   }
                   placement="right"
@@ -209,6 +209,7 @@ const PreCheck = (props) => {
                   show={curExpandRow.includes(index)}
                   response={props.results && props.results[index] ? props.results[index] : null}
                   request={preCheck}
+                  context={context}
                />
             </div>
          );
