@@ -121,6 +121,8 @@ const ActionForm = (props) => {
       objectPath: "",
       expect: [],
       data: undefined,
+      maxRetry: "",
+      interval: "",
    });
    const [isPayloadValid, setIsPayloadValid] = useState(true);
    const [isExpectConfigValid, setIsExpectConfigValid] = useState(true);
@@ -230,16 +232,53 @@ const ActionForm = (props) => {
                      </div>
                   </div>
                   <div className="col-9">
-                     <select
-                        className="form-select"
-                        name="useEndpoint"
-                        onChange={(e) => onChangeHandler(e)}
-                        value={input.useEndpoint}
-                        required
-                     >
-                        <option value="">Choose endpoint...</option>
-                        {renderEndpointOptions()}
-                     </select>
+                     <div className="row">
+                        <div className={`${input.type === "polling" ? "col-3" : "form-check form-check-inline"}`}>
+                           <div className="col">
+                              <small className="mb-1">Endpoint</small>
+                              <select
+                                 className="form-select form-select-sm"
+                                 name="useEndpoint"
+                                 onChange={(e) => onChangeHandler(e)}
+                                 value={input.useEndpoint}
+                                 required
+                              >
+                                 <option value="">Choose endpoint...</option>
+                                 {renderEndpointOptions()}
+                              </select>
+                           </div>
+                        </div>
+                        <div className="col-9">
+                           {input.type === "polling" ? (
+                              <>
+                                 <div className="row">
+                                    <div className="col-6">
+                                       <small className="mb-1">Max Retry</small>
+                                       <input
+                                          type="text"
+                                          className="form-control form-control-sm"
+                                          name="maxRetry"
+                                          placeholder="maxRetry default = 10"
+                                          value={input.maxRetry}
+                                          onChange={(e) => onChangeHandler(e)}
+                                       />
+                                    </div>
+                                    <div className="col-6">
+                                       <small className="mb-1">Interval</small>
+                                       <input
+                                          type="text"
+                                          className="form-control form-control-sm"
+                                          name="interval"
+                                          placeholder="Interval default = 5000ms"
+                                          value={input.interval}
+                                          onChange={(e) => onChangeHandler(e)}
+                                       />
+                                    </div>
+                                 </div>
+                              </>
+                           ) : null}
+                        </div>
+                     </div>
                   </div>
                </div>
                <div className="input-group my-3">
@@ -266,8 +305,9 @@ const ActionForm = (props) => {
                      onChange={(e) => onChangeHandler(e)}
                   />
                </div>
-               <div className="row mb-2">
+               <div className="row mb-3">
                   <div className="col-sm-3">
+                     <small className="mb-1">Header Text</small>
                      <input
                         type="text"
                         className="form-control form-control-sm"
@@ -279,6 +319,7 @@ const ActionForm = (props) => {
                      />
                   </div>
                   <div className="col-sm-2">
+                     <small className="mb-1">Header Color</small>
                      <input
                         type="text"
                         className="form-control form-control-sm"
@@ -289,6 +330,7 @@ const ActionForm = (props) => {
                      />
                   </div>
                   <div className="col">
+                     <small className="mb-1">Title Text</small>
                      <input
                         type="text"
                         className="form-control form-control-sm"
@@ -302,6 +344,7 @@ const ActionForm = (props) => {
                </div>
                <div className="row mb-3">
                   <div className="col">
+                     <small>Description</small>
                      <textarea
                         className="form-control form-control-sm"
                         name="description"
@@ -337,32 +380,7 @@ const ActionForm = (props) => {
                      </div>
                   )}
                </div>
-               {input.type === "polling" ? (
-                  <>
-                     <div className="row mb-3">
-                        <div className="col">
-                           <input
-                              type="text"
-                              className="form-control form-control-sm"
-                              name="maxRetry"
-                              placeholder="maxRetry default = 10"
-                              value={input.maxRetry}
-                              onChange={(e) => onChangeHandler(e)}
-                           />
-                        </div>
-                        <div className="col">
-                           <input
-                              type="text"
-                              className="form-control form-control-sm"
-                              name="interval"
-                              placeholder="Interval default = 5000ms"
-                              value={input.interval}
-                              onChange={(e) => onChangeHandler(e)}
-                           />
-                        </div>
-                     </div>
-                  </>
-               ) : null}
+
                <ExpectForm expect={input.expect} setExpect={setExpect} />
                <div className="row">
                   <div className="col">
