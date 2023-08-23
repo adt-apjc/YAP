@@ -224,8 +224,8 @@
                      "value": ["200"]
                   },
                   {
-                     "type": "bodyContain",
-                     "value": "fingerprint"
+                     "type": "bodyNotContain",
+                     "value": "\"result\": \"failed\""
                   }
                ]
             },
@@ -245,8 +245,8 @@
                      "value": ["200"]
                   },
                   {
-                     "type": "bodyContain",
-                     "value": "fingerprint"
+                     "type": "bodyNotContain",
+                     "value": "\"result\": false"
                   }
                ]
             }
@@ -268,12 +268,8 @@
                },
                "expect": [
                   {
-                     "type": "codeIs",
-                     "value": ["200"]
-                  },
-                  {
-                     "type": "bodyContain",
-                     "value": "tailf-ned-cisco-ios-xr-stats:output"
+                     "type": "bodyNotContain",
+                     "value": "Success rate is 0 percent"
                   }
                ]
             },
@@ -293,12 +289,8 @@
                },
                "expect": [
                   {
-                     "type": "codeIs",
-                     "value": ["200"]
-                  },
-                  {
-                     "type": "bodyContain",
-                     "value": "tailf-ned-cisco-ios-xr-stats:output"
+                     "type": "bodyNotContain",
+                     "value": "Success rate is 0 percent"
                   }
                ]
             }
@@ -413,7 +405,25 @@
       "step_2": {
          "description": ["Deploy ISIS routing across the network using an NSO service abstraction."],
          "continueOnFail": false,
-         "preCheck": [],
+         "preCheck": [
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "Get",
+               "headerColor": "",
+               "title": "Validate all devices are in sync",
+               "description": "Response shall not include out-of-sync statement",
+               "url": "restconf/data/tailf-ncs:devices/check-sync",
+               "method": "post",
+               "data": {},
+               "expect": [
+                  {
+                     "type": "bodyNotContain",
+                     "value": ["\"result\": \"out-of-sync\""]
+                  }
+               ]
+            }
+         ],
          "actions": [
             {
                "type": "request",
@@ -600,8 +610,8 @@
                      "value": ["200"]
                   },
                   {
-                     "type": "bodyContain",
-                     "value": "tailf-ned-cisco-ios-xr-stats:output"
+                     "type": "bodyNotContain",
+                     "value": "Success rate is 0 percent"
                   }
                ]
             }

@@ -3,10 +3,18 @@ import axios from "axios";
 const validateExpect = (expect, response) => {
    if (expect.length === 0) return true;
    // expect is an array of conditions. As MVP0 all (AND) must be true to return a true value
+
    for (let condition of expect) {
       switch (condition.type) {
          case "bodyContain":
             if (JSON.stringify(response.data).includes(condition.value)) {
+               return true;
+            }
+            break;
+         case "bodyNotContain":
+            if (JSON.stringify(response.data).includes(condition.value)) {
+               return false;
+            } else {
                return true;
             }
             break;

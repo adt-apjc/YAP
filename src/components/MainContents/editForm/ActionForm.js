@@ -46,6 +46,7 @@ const ExpectForm = (props) => {
                         onChange={(e) => handleExpectTypeChange(e, index)}
                      >
                         <option value="bodyContain">bodyContain</option>
+                        <option value="bodyNotContain">bodyNotContain</option>
                         <option value="codeIs">HttpResponseCodeIs</option>
                      </select>
                   </div>
@@ -96,7 +97,13 @@ const ExpectForm = (props) => {
                   <i
                      type="button"
                      className="fad fa-plus text-info icon-hover-highlight"
-                     onClick={() => props.setExpect([...props.expect, { type: "bodyContain", value: "" }])}
+                     onClick={() =>
+                        props.setExpect([
+                           ...props.expect,
+                           { type: "bodyContain", value: "" },
+                           { type: "bodyNotContain", value: "" },
+                        ])
+                     }
                   />
                </div>
             </div>
