@@ -37,7 +37,7 @@ const ExpectForm = (props) => {
          props.expect &&
          props.expect.map((el, index) => {
             return (
-               <div key={index} className="row mb-3">
+               <div key={index} className="row mb-2">
                   <div className="col-3">
                      <select
                         className="form-select form-select-sm"
@@ -106,6 +106,80 @@ const ExpectForm = (props) => {
    );
 };
 
+const VariableForm = (props) => {
+   const [isEnable, setIsEnable] = useState(false);
+
+   const handleExpectEnableChange = (e) => {
+      if (!e.target.checked) props.setMatch(undefined);
+      setIsEnable(e.target.checked);
+   };
+
+   useEffect(() => {
+      if (props.match) setIsEnable(true);
+   }, [props.match]);
+
+   return (
+      <>
+         <div className="form-check">
+            <input
+               type="checkbox"
+               className="form-check-input"
+               id="enableVarCheckBox"
+               checked={isEnable}
+               onChange={handleExpectEnableChange}
+            />
+            <label className="form-check-label" htmlFor="enableVarCheckBox">
+               Variable
+            </label>
+         </div>
+         {isEnable ? (
+            <div className="row mb-2">
+               <div className="col-md-3">
+                  <small className="mb-1">Object path</small>
+                  <input
+                     className="form-control form-control-sm"
+                     type="text"
+                     name="objectPath"
+                     value={props.match ? props.match.objectPath : ""}
+                     onChange={(e) => props.setMatch({ ...props.match, [e.target.name]: e.target.value })}
+                  />
+               </div>
+               <div className="col-md-3">
+                  <small className="mb-1">RegEx.</small>
+                  <input
+                     className="form-control form-control-sm"
+                     type="text"
+                     name="regEx"
+                     value={props.match ? props.match.regEx : ""}
+                     onChange={(e) => props.setMatch({ ...props.match, [e.target.name]: e.target.value })}
+                  />
+               </div>
+               <div className="col-md-3">
+                  <small className="mb-1">Variable name</small>
+                  <input
+                     className="form-control form-control-sm"
+                     type="text"
+                     name="storeAs"
+                     value={props.match ? props.match.storeAs : ""}
+                     onChange={(e) => props.setMatch({ ...props.match, [e.target.name]: e.target.value })}
+                  />
+               </div>
+               <div className="col-md-3">
+                  <small className="mb-1">Match group</small>
+                  <input
+                     className="form-control form-control-sm"
+                     type="number"
+                     name="matchGroup"
+                     value={props.match ? props.match.matchGroup : 0}
+                     onChange={(e) => props.setMatch({ ...props.match, [e.target.name]: parseInt(e.target.value) })}
+                  />
+               </div>
+            </div>
+         ) : null}
+      </>
+   );
+};
+
 const ActionForm = (props) => {
    const context = useContext(GlobalContext);
    const [input, setInput] = useState({
@@ -123,12 +197,21 @@ const ActionForm = (props) => {
       data: undefined,
       maxRetry: "",
       interval: "",
+      match: undefined,
    });
    const [isPayloadValid, setIsPayloadValid] = useState(true);
    const [isExpectConfigValid, setIsExpectConfigValid] = useState(true);
 
    const setExpect = (val) => {
       setInput((prev) => ({ ...prev, expect: val }));
+   };
+
+   const setMatchObject = (val) => {
+      if (!val) {
+         setInput((prev) => ({ ...prev, match: undefined }));
+         return;
+      }
+      setInput((prev) => ({ ...prev, match: val }));
    };
 
    const onChangeHandler = (e) => {
@@ -281,7 +364,7 @@ const ActionForm = (props) => {
                      </div>
                   </div>
                </div>
-               <div className="input-group my-3">
+               <div className="input-group my-2">
                   <select
                      style={{ maxWidth: 150 }}
                      className="form-select form-select-sm"
@@ -305,7 +388,7 @@ const ActionForm = (props) => {
                      onChange={(e) => onChangeHandler(e)}
                   />
                </div>
-               <div className="row mb-3">
+               <div className="row mb-2">
                   <div className="col-sm-3">
                      <small className="mb-1">Header Text</small>
                      <input
@@ -342,7 +425,7 @@ const ActionForm = (props) => {
                      />
                   </div>
                </div>
-               <div className="row mb-3">
+               <div className="row mb-2">
                   <div className="col">
                      <small>Description</small>
                      <textarea
@@ -354,7 +437,7 @@ const ActionForm = (props) => {
                      />
                   </div>
                </div>
-               <div className="row mb-3">
+               <div className="row mb-2">
                   <div className="col-sm-12 col-md-2">DisplayResponseAs</div>
                   <div className="col-sm-12 col-md-3">
                      <select
@@ -382,6 +465,7 @@ const ActionForm = (props) => {
                </div>
 
                <ExpectForm expect={input.expect} setExpect={setExpect} />
+               <VariableForm match={input.match} setMatch={setMatchObject} />
                <div className="row">
                   <div className="col">
                      <div>

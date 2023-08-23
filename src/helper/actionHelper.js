@@ -34,26 +34,29 @@ const validateExpect = (expect, response) => {
 
 const processMatchResponse = (actionObject, response) => {
    if (actionObject.match) {
-      let targetValue = getStringFromObject(response.data, actionObject.match.objectPath);
+      let { objectPath, regEx, storeAs, matchGroup } = actionObject.match;
+      let targetValue = getStringFromObject(response.data, objectPath);
       // If RegEx configured
-      let re = new RegExp(actionObject.match.regEx);
+      let re = new RegExp(regEx);
       let matchedValue = targetValue.match(re);
       if (matchedValue) {
          // If RegEx match
-         for (let variable of actionObject.match.variables) {
-            sessionStorage.setItem(variable.storeAs, matchedValue[variable.matchGroup ? variable.matchGroup : 0]);
-            console.log("DEBUG:", matchedValue[variable.matchGroup ? variable.matchGroup : 0], "store as", variable.storeAs);
-         }
+         sessionStorage.setItem(storeAs, matchedValue[matchGroup ? matchGroup : 0]);
+         console.log("DEBUG:", matchedValue[matchGroup ? matchGroup : 0], "store as", storeAs);
       }
    }
 };
 
 const getStringFromObject = (obj, path) => {
    let result = obj;
-   for (let attr of path.split(".")) {
-      result = result[attr];
+   try {
+      for (let attr of path.split(".")) {
+         result = result[attr];
+      }
+      return result.toString();
+   } catch (err) {
+      return "";
    }
-   return result.toString();
 };
 
 const replaceStrWithParams = (text) => {
