@@ -167,20 +167,21 @@ export const pollingRequest = (actionObject, endpoints) => {
    return new Promise((resolve, reject) => {
       let timer = setInterval(async () => {
          try {
+            response = await axios(config);
             if (counterFlag <= maxRetry) {
-               response = await axios(config);
                console.log("polling", counterFlag, response, actionObject.expect);
                // if expect has any condition, we shall validate them before assume a success: true state
-               if (actionObject.expect && validateExpect(actionObject.expect, response)) {
+               if (actionObject.expect.length > 0 && validateExpect(actionObject.expect, response)) {
                   console.log("INFO - Resolved and testing condition have been met", actionObject.expect);
                   clearInterval(timer);
                   resolve({ ...response, success: true });
                }
             } else {
                clearInterval(timer);
-               if (actionObject.expect) {
+               if (actionObject.expect.length > 0) {
                   // this case mean runtime exceed maxRetry and expect was set and it still not hit the criteria
                   reject({
+                     ...response,
                      status: "Error Timeout - ",
                      statusText: "Criteria was not meet in the proposed polling time",
                      success: false,
@@ -198,7 +199,7 @@ export const pollingRequest = (actionObject, endpoints) => {
             // if 404 is returned as a code, check if it is acceptable as condition, if it is:
             // - set the special case flag e.response.success to true;
             // resolve the promise sucessfully
-            if (actionObject.expect && validateExpect(actionObject.expect, e.response)) {
+            if (e.response && actionObject.expect.length > 0 && validateExpect(actionObject.expect, e.response)) {
                console.log("DEBUG - Criteria hit on 404 which is accepted");
                clearInterval(timer);
                resolve({ ...e.response, success: true });
