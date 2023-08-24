@@ -5,22 +5,9 @@ import { Modal } from "../../../helper/modalHelper";
 import ModalContentSelector from "../editForm/ModalContentSelector";
 import RunButtonComponent from "../RunButtonComponent";
 import WithInfoPopup from "../../Popper/InfoPopper";
+import { getStringFromObject, getVariableDetails } from "../../contexts/Utility";
 
 const ActionDetail = (props) => {
-   const getStringFromObject = (obj, path) => {
-      let result = obj;
-      try {
-         if (!path) return JSON.stringify(result, null, 3);
-         for (let attr of path.split(".")) {
-            result = result[attr];
-         }
-         return JSON.stringify(result, null, 3);
-      } catch (e) {
-         console.log(e);
-         return `Cannot find value in path ${path}`;
-      }
-   };
-
    let responseViewer;
    let responseStatus = props.response ? `${props.response.status} ${props.response.statusText}` : "";
    let failureCause = props.response && props.response.failureCause ? props.response.failureCause : "";
@@ -44,6 +31,33 @@ const ActionDetail = (props) => {
       ) : null;
    }
 
+   const renderVariableDetails = () => {
+      const variableDetails = getVariableDetails(props.request, props.variableLookup);
+      return (
+         <>
+            {variableDetails.length > 0 && (
+               <WithInfoPopup
+                  PopperComponent={
+                     <div className="d-flex flex-column p-2 text-nowrap text-dark">
+                        {variableDetails.map((item, i) => {
+                           return (
+                              <div className="d-flex" key={i}>
+                                 <small style={{ minWidth: "90px" }}>{item.key}: </small>
+                                 <small>{item.val}</small>
+                              </div>
+                           );
+                        })}
+                     </div>
+                  }
+                  placement="left"
+               >
+                  <div className="badge text-bg-secondary">Variable</div>
+               </WithInfoPopup>
+            )}
+         </>
+      );
+   };
+
    if (!props.show) return null;
    return (
       <div className="container position-relative bg-light pt-2 pb-3" style={{ top: "-15px" }}>
@@ -62,12 +76,15 @@ const ActionDetail = (props) => {
                   <span className="font-weight-light bg-secondary text-light p-1 ms-4 rounded">{props.request.useEndpoint}</span>
                </WithInfoPopup>
             </div>
-            <div>
-               <WithInfoPopup
-                  PopperComponent={
-                     <div className="d-flex flex-column p-2 text-nowrap text-dark">
-                        {props.request.expect.length > 0 ? (
-                           <>
+            <div className="d-flex justify-content-between">
+               {/* Variable */}
+               <div className="me-2">{renderVariableDetails()}</div>
+               {/* Expect */}
+               <div>
+                  {props.request.expect.length > 0 && (
+                     <WithInfoPopup
+                        PopperComponent={
+                           <div className="d-flex flex-column p-2 text-nowrap text-dark">
                               {props.request.expect.map((item, i) => {
                                  let type = item.type;
                                  if (item.type === "codeIs") type = "responseCodeIs";
@@ -79,16 +96,14 @@ const ActionDetail = (props) => {
                                     </div>
                                  );
                               })}
-                           </>
-                        ) : (
-                           <small>none</small>
-                        )}
-                     </div>
-                  }
-                  placement="left"
-               >
-                  <div className="badge text-bg-secondary">Expect</div>
-               </WithInfoPopup>
+                           </div>
+                        }
+                        placement="left"
+                     >
+                        <div className="badge text-bg-secondary">Expect</div>
+                     </WithInfoPopup>
+                  )}
+               </div>
             </div>
          </div>
          <div className="bg-white p-2 rounded shadow-sm mb-2">
@@ -221,6 +236,7 @@ const Actions = (props) => {
                   response={props.results && props.results[index] ? props.results[index] : null}
                   request={action}
                   context={context}
+                  variableLookup={props.variableLookup}
                />
             </div>
          );

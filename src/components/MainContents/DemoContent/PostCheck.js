@@ -5,68 +5,93 @@ import { Modal } from "../../../helper/modalHelper";
 import ModalContentSelector from "../editForm/ModalContentSelector";
 import RunButtonComponent from "../RunButtonComponent";
 import WithInfoPopup from "../../Popper/InfoPopper";
+import { getStringFromObject, getVariableDetails } from "../../contexts/Utility";
 
-export const PostCheckDetail = ({ show, response, request, context }) => {
-   const getStringFromObject = (obj, path) => {
-      let result = obj;
-      try {
-         if (!path) return JSON.stringify(result, null, 3);
-         for (let attr of path.split(".")) {
-            result = result[attr];
-         }
-         return JSON.stringify(result, null, 3);
-      } catch (e) {
-         console.log(e);
-         return `Cannot find value in path ${path}`;
-      }
-   };
-
+export const PostCheckDetail = (props) => {
    let responseViewer;
-   let responseStatus = response ? `${response.status} ${response.statusText}` : "";
-   let failureCause = response && response.failureCause ? response.failureCause : "";
+   let responseStatus = props.response ? `${props.response.status} ${props.response.statusText}` : "";
+   let failureCause = props.response && props.response.failureCause ? props.response.failureCause : "";
    let payloadViewer =
-      request && request.data ? (
+      props.request && props.request.data ? (
          <div className="p-2">
             payload
-            <ReactJson value={request.data} collapsed={4} />
+            <ReactJson value={props.request.data} collapsed={4} />
          </div>
       ) : (
          ""
       );
    let colorMapper = { get: "primary", post: "success", put: "info", patch: "warning", delete: "danger" };
 
-   if (request && request.displayResponseAs === "text") {
-      responseViewer = response ? <pre className="p-2">{getStringFromObject(response.data, request.objectPath)}</pre> : "";
+   if (props.request && props.request.displayResponseAs === "text") {
+      responseViewer = props.response ? (
+         <pre className="p-2">{getStringFromObject(props.response.data, props.request.objectPath)}</pre>
+      ) : (
+         ""
+      );
    } else {
       // default display response as JSON
-      responseViewer = response ? <ReactJson value={typeof response.data === "object" ? response.data : {}} collapsed={4} /> : "";
+      responseViewer = props.response ? (
+         <ReactJson value={typeof props.response.data === "object" ? props.response.data : {}} collapsed={4} />
+      ) : (
+         ""
+      );
    }
 
-   if (!show) return null;
+   const renderVariableDetails = () => {
+      const variableDetails = getVariableDetails(props.request, props.variableLookup);
+      return (
+         <>
+            {variableDetails.length > 0 && (
+               <WithInfoPopup
+                  PopperComponent={
+                     <div className="d-flex flex-column p-2 text-nowrap text-dark">
+                        {variableDetails.map((item, i) => {
+                           return (
+                              <div className="d-flex" key={i}>
+                                 <small style={{ minWidth: "90px" }}>{item.key}: </small>
+                                 <small>{item.val}</small>
+                              </div>
+                           );
+                        })}
+                     </div>
+                  }
+                  placement="left"
+               >
+                  <div className="badge text-bg-secondary">Variable</div>
+               </WithInfoPopup>
+            )}
+         </>
+      );
+   };
+
+   if (!props.show) return null;
    return (
       <div className="container position-relative bg-light pt-2 pb-3" style={{ top: "-15px" }}>
-         <div className="p-2">{request ? request.description : ""}</div>
+         <div className="p-2">{props.request ? props.request.description : ""}</div>
          <div className="d-flex justify-content-between p-2 mb-2">
             <div>
                Endpoint{" "}
                <WithInfoPopup
                   PopperComponent={
                      <div className="d-flex p-2 text-nowrap text-dark">
-                        <small>{`${context.config.endpoints[request.useEndpoint].baseURL}`}</small>
+                        <small>{`${props.context.config.endpoints[props.request.useEndpoint].baseURL}`}</small>
                      </div>
                   }
                   placement="right"
                >
-                  <span className="font-weight-light bg-secondary text-light p-1 ms-4 rounded">{request.useEndpoint}</span>
+                  <span className="font-weight-light bg-secondary text-light p-1 ms-4 rounded">{props.request.useEndpoint}</span>
                </WithInfoPopup>
             </div>
-            <div>
-               <WithInfoPopup
-                  PopperComponent={
-                     <div className="d-flex flex-column p-2 text-nowrap text-dark">
-                        {request.expect.length > 0 ? (
-                           <>
-                              {request.expect.map((item, i) => {
+            <div className="d-flex justify-content-between">
+               {/* Variable */}
+               <div className="me-2">{renderVariableDetails()}</div>
+               {/* Expect */}
+               <div>
+                  {props.request.expect.length > 0 && (
+                     <WithInfoPopup
+                        PopperComponent={
+                           <div className="d-flex flex-column p-2 text-nowrap text-dark">
+                              {props.request.expect.map((item, i) => {
                                  let type = item.type;
                                  if (item.type === "codeIs") type = "responseCodeIs";
 
@@ -77,22 +102,22 @@ export const PostCheckDetail = ({ show, response, request, context }) => {
                                     </div>
                                  );
                               })}
-                           </>
-                        ) : (
-                           <small>none</small>
-                        )}
-                     </div>
-                  }
-                  placement="left"
-               >
-                  <div className="badge text-bg-secondary">Expect</div>
-               </WithInfoPopup>
+                           </div>
+                        }
+                        placement="left"
+                     >
+                        <div className="badge text-bg-secondary">Expect</div>
+                     </WithInfoPopup>
+                  )}
+               </div>
             </div>
          </div>
          <div className="bg-white p-2 rounded shadow-sm mb-2">
             <div className="d-flex">
-               <div className={`me-3 font-weight-bolder text-${colorMapper[request.method]}`}>{request.method.toUpperCase()}</div>
-               <div className="text-dark">{request.url}</div>
+               <div className={`me-3 font-weight-bolder text-${colorMapper[props.request.method]}`}>
+                  {props.request.method.toUpperCase()}
+               </div>
+               <div className="text-dark">{props.request.url}</div>
             </div>
             {payloadViewer}
          </div>
@@ -221,6 +246,7 @@ const PostCheck = (props) => {
                   response={props.results && props.results[index] ? props.results[index] : null}
                   request={postCheck}
                   context={context}
+                  variableLookup={props.variableLookup}
                />
             </div>
          );
