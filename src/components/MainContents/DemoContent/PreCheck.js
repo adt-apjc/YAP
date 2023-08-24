@@ -77,6 +77,28 @@ const PreCheckDetail = (props) => {
                </WithInfoPopup>
             </div>
             <div className="d-flex justify-content-between">
+               {/* Polling */}
+               <div className="me-2">
+                  {props.request.type === "polling" && (
+                     <WithInfoPopup
+                        PopperComponent={
+                           <div className="d-flex flex-column p-2 text-nowrap text-dark">
+                              <div className="d-flex">
+                                 <small style={{ minWidth: "130px" }}>Max Retry: </small>
+                                 <small>{props.request.maxRetry}</small>
+                              </div>
+                              <div className="d-flex">
+                                 <small style={{ minWidth: "130px" }}>Interval: </small>
+                                 <small>{props.request.interval}</small>
+                              </div>
+                           </div>
+                        }
+                        placement="left"
+                     >
+                        <div className="badge text-bg-secondary">Polling</div>
+                     </WithInfoPopup>
+                  )}
+               </div>
                {/* Variable */}
                <div className="me-2">{renderVariableDetails()}</div>
                {/* Expect */}
