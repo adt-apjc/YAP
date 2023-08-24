@@ -110,8 +110,9 @@ const VariableForm = (props) => {
    const [isEnable, setIsEnable] = useState(false);
 
    const handleExpectEnableChange = (e) => {
-      if (!e.target.checked) props.setMatch(undefined);
       setIsEnable(e.target.checked);
+      if (!e.target.checked) props.setMatch(undefined);
+      else props.setMatch({ regEx: ".*", matchGroup: 0 });
    };
 
    useEffect(() => {
