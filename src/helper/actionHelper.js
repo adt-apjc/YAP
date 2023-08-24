@@ -7,14 +7,17 @@ const validateExpect = (expect, response) => {
    for (let condition of expect) {
       switch (condition.type) {
          case "bodyContain":
-            if (!JSON.stringify(response.data).includes(condition.value)) {
-               console.log(`DEBUG - ${condition.type} ${condition.value} didn't match`);
+            // Note: using JSON.stringify(condition.value) on condition.value to add the proper escapes buut forced to slice(1, -1)
+            // to remove start and stop " added by the stringify function on a string that would preclude the match
+
+            if (!JSON.stringify(response.data).includes(JSON.stringify(condition.value).slice(1, -1))) {
+               console.log(`DEBUG - ${condition.type} ${JSON.stringify(condition.value).slice(1, -1)} didn't match`);
                return false;
             }
             break;
          case "bodyNotContain":
-            if (JSON.stringify(response.data).includes(condition.value)) {
-               console.log(`DEBUG - ${condition.type} ${condition.value} didn't match`);
+            if (JSON.stringify(response.data).includes(JSON.stringify(condition.value).slice(1, -1))) {
+               console.log(`DEBUG - ${condition.type} ${JSON.stringify(condition.value).slice(1, -1)} didn't match`);
                return false;
             }
             break;
