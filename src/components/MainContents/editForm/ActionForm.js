@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import GlobalContext from "../../contexts/ContextProvider";
 import AceEditor from "react-ace";
+import _ from "lodash";
 import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-github";
@@ -9,14 +10,14 @@ const ExpectForm = (props) => {
    const [isExpectEnable, setIsExpectEnable] = useState(false);
 
    const handleExpectTypeChange = (e, index) => {
-      let currentExpect = [...props.expect];
+      let currentExpect = _.cloneDeep(props.expect);
       currentExpect[index].type = e.target.value;
       currentExpect[index].value = e.target.value === "codeIs" ? [] : "";
       props.setExpect(currentExpect);
    };
 
    const handleExpectValueChange = (e, index) => {
-      let currentExpect = [...props.expect];
+      let currentExpect = _.cloneDeep(props.expect);
       currentExpect[index].value =
          currentExpect[index].type === "codeIs" ? e.target.value.split(",").map((el) => el.trim()) : e.target.value;
       props.setExpect(currentExpect);
@@ -55,6 +56,7 @@ const ExpectForm = (props) => {
                         className="form-control form-control-sm"
                         type="text"
                         name="value"
+                        required
                         value={props.expect[index].value}
                         onChange={(e) => handleExpectValueChange(e, index)}
                      />
@@ -141,6 +143,7 @@ const VariableForm = (props) => {
                      className="form-control form-control-sm"
                      type="text"
                      name="objectPath"
+                     required
                      value={props.match ? props.match.objectPath : ""}
                      onChange={(e) => props.setMatch({ ...props.match, [e.target.name]: e.target.value })}
                   />
@@ -151,6 +154,7 @@ const VariableForm = (props) => {
                      className="form-control form-control-sm"
                      type="text"
                      name="regEx"
+                     required
                      value={props.match ? props.match.regEx : ""}
                      onChange={(e) => props.setMatch({ ...props.match, [e.target.name]: e.target.value })}
                   />
@@ -161,6 +165,7 @@ const VariableForm = (props) => {
                      className="form-control form-control-sm"
                      type="text"
                      name="storeAs"
+                     required
                      value={props.match ? props.match.storeAs : ""}
                      onChange={(e) => props.setMatch({ ...props.match, [e.target.name]: e.target.value })}
                   />
@@ -171,6 +176,7 @@ const VariableForm = (props) => {
                      className="form-control form-control-sm"
                      type="number"
                      name="matchGroup"
+                     required
                      value={props.match ? props.match.matchGroup : 0}
                      onChange={(e) => props.setMatch({ ...props.match, [e.target.name]: parseInt(e.target.value) })}
                   />
@@ -201,7 +207,6 @@ const ActionForm = (props) => {
       match: undefined,
    });
    const [isPayloadValid, setIsPayloadValid] = useState(true);
-   const [isExpectConfigValid, setIsExpectConfigValid] = useState(true);
 
    const setExpect = (val) => {
       setInput((prev) => ({ ...prev, expect: val }));
@@ -263,16 +268,6 @@ const ActionForm = (props) => {
 
       setInput({ ...props.initValue.action });
    }, [props.initValue]);
-
-   useEffect(() => {
-      for (let expect of input.expect) {
-         if (expect.value.length === 1 && expect.value[0] === "") {
-            setIsExpectConfigValid(false);
-            return;
-         }
-      }
-      setIsExpectConfigValid(true);
-   }, [input.expect]);
 
    return (
       <>
@@ -493,11 +488,7 @@ const ActionForm = (props) => {
             <button type="button" className="btn btn-sm" onClick={props.onHide}>
                Close
             </button>
-            <button
-               type="submit"
-               className={`btn btn-primary btn-sm ${!isExpectConfigValid ? "disabled" : ""}`}
-               form="actionForm"
-            >
+            <button type="submit" className="btn btn-primary btn-sm" form="actionForm">
                {props.initValue ? "Update" : "Add"}
             </button>
          </div>
