@@ -23,6 +23,7 @@ export const PostCheckDetail = ({ show, response, request, context }) => {
 
    let responseViewer;
    let responseStatus = response ? `${response.status} ${response.statusText}` : "";
+   let failureCause = response && response.failureCause ? response.failureCause : "";
    let payloadViewer =
       request && request.data ? (
          <div className="p-2">
@@ -99,7 +100,7 @@ export const PostCheckDetail = ({ show, response, request, context }) => {
             <div className="d-flex justify-content-between">
                Response
                <div className="font-weight-light" style={{ fontSize: "12px" }}>
-                  {responseStatus}
+                  {responseStatus} {failureCause && `- ${failureCause}`}
                </div>
             </div>
             {responseViewer}
@@ -136,7 +137,16 @@ const PostCheck = (props) => {
                props.results[index].success ? (
                   <i className="fad fa-check-circle m-2 text-success" />
                ) : (
-                  <i className="fad fa-exclamation-circle m-2 text-danger" />
+                  <WithInfoPopup
+                     PopperComponent={
+                        <div className="d-flex p-2 text-nowrap text-dark">
+                           <small>{props.results[index].failureCause}</small>
+                        </div>
+                     }
+                     placement="right"
+                  >
+                     <i className="fad fa-exclamation-circle m-2 text-danger" />
+                  </WithInfoPopup>
                )
             ) : null;
          return (

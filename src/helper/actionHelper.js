@@ -3,6 +3,7 @@ import axios from "axios";
 const validateExpect = (expect, response) => {
    if (expect.length === 0) return true;
    // expect is an array of conditions. As MVP0 all (AND) must be true to return a true value
+   let failureCause = "";
 
    for (let condition of expect) {
       switch (condition.type) {
@@ -12,27 +13,30 @@ const validateExpect = (expect, response) => {
 
             if (!JSON.stringify(response.data).includes(JSON.stringify(condition.value).slice(1, -1))) {
                console.log(`DEBUG - ${condition.type} ${JSON.stringify(condition.value).slice(1, -1)} didn't match`);
-               return false;
+               failureCause = "Expect criteria bodyContain didn't match.";
+               return { expectCriteriaMet: false, failureCause };
             }
             break;
          case "bodyNotContain":
             if (JSON.stringify(response.data).includes(JSON.stringify(condition.value).slice(1, -1))) {
                console.log(`DEBUG - ${condition.type} ${JSON.stringify(condition.value).slice(1, -1)} didn't match`);
-               return false;
+               failureCause = "Expect criteria bodyNotContain didn't match.";
+               return { expectCriteriaMet: false, failureCause };
             }
             break;
          case "codeIs":
             // code may be a single string or an array of string, where one need to match the value expected
             if (!condition.value.includes(response.status.toString())) {
-               console.log(`DEBUG - ${condition.type} ${condition.value} didn't match (Response {response.status})`);
-               return false;
+               console.log(`DEBUG - ${condition.type} ${condition.value} didn't match (Response ${response.status})`);
+               failureCause = "Expect criteria HttpResponseCodeIs didn't match.";
+               return { expectCriteriaMet: false, failureCause };
             }
             break;
          default:
             console.log(`ERROR - Unknown expect type ${condition.type}`);
       }
    }
-   return true;
+   return { expectCriteriaMet: true, failureCause };
 };
 
 const processMatchResponse = (actionObject, response) => {
@@ -119,21 +123,23 @@ export const normalRequest = (actionObject, endpoints) => {
          // process Match response if configured
          processMatchResponse(actionObject, response);
          // if expect has any condition, we shall validate them before assume a success: true state
-         if (actionObject.expect && !validateExpect(actionObject.expect, response)) {
+         let { expectCriteriaMet, failureCause } = validateExpect(actionObject.expect, response);
+         if (actionObject.expect.length > 0 && !expectCriteriaMet) {
             console.log("DEBUG - conditions haven't been met", actionObject.expect);
-            reject({ ...response, success: false });
+            reject({ ...response, failureCause, success: false });
          }
          resolve({ ...response, success: true });
       } catch (e) {
          console.log("REQUEST ERROR - ", e);
          if (e.response) {
-            if (actionObject.expect && validateExpect(actionObject.expect, e.response)) {
+            let { expectCriteriaMet, failureCause } = validateExpect(actionObject.expect, e.response);
+            if (actionObject.expect.length > 0 && expectCriteriaMet) {
                // special case to handle 404 exception (which may be acceptable) - TBA any other case?
                e.response.success = true;
                console.log("DEBUG - Criteria hit on 404 which is accepted");
                resolve(e.response);
             } else {
-               reject({ ...e.response, success: false });
+               reject({ ...e.response, failureCause: "Response with HTTP error code (4XX/5XX).", success: false });
             }
          } else {
             reject({ status: "Error", statusText: "connect ECONNREFUSED", success: false });
@@ -171,7 +177,8 @@ export const pollingRequest = (actionObject, endpoints) => {
             if (counterFlag <= maxRetry) {
                console.log("polling", counterFlag, response, actionObject.expect);
                // if expect has any condition, we shall validate them before assume a success: true state
-               if (actionObject.expect.length > 0 && validateExpect(actionObject.expect, response)) {
+               let { expectCriteriaMet } = validateExpect(actionObject.expect, response);
+               if (actionObject.expect.length > 0 && expectCriteriaMet) {
                   console.log("INFO - Resolved and testing condition have been met", actionObject.expect);
                   clearInterval(timer);
                   resolve({ ...response, success: true });
@@ -182,8 +189,7 @@ export const pollingRequest = (actionObject, endpoints) => {
                   // this case mean runtime exceed maxRetry and expect was set and it still not hit the criteria
                   reject({
                      ...response,
-                     status: "Error Timeout - ",
-                     statusText: "Criteria was not meet in the proposed polling time",
+                     failureCause: "Criteria was not met in the proposed polling time",
                      success: false,
                   });
                } else {
@@ -199,7 +205,8 @@ export const pollingRequest = (actionObject, endpoints) => {
             // if 404 is returned as a code, check if it is acceptable as condition, if it is:
             // - set the special case flag e.response.success to true;
             // resolve the promise sucessfully
-            if (e.response && actionObject.expect.length > 0 && validateExpect(actionObject.expect, e.response)) {
+            let { expectCriteriaMet } = validateExpect(actionObject.expect, e.response);
+            if (e.response && actionObject.expect.length > 0 && expectCriteriaMet) {
                console.log("DEBUG - Criteria hit on 404 which is accepted");
                clearInterval(timer);
                resolve({ ...e.response, success: true });

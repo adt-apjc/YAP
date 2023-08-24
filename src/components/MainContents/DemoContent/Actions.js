@@ -23,6 +23,7 @@ const ActionDetail = (props) => {
 
    let responseViewer;
    let responseStatus = props.response ? `${props.response.status} ${props.response.statusText}` : "";
+   let failureCause = props.response && props.response.failureCause ? props.response.failureCause : "";
    let payloadViewer =
       props.request && props.request.data ? (
          <div className="p-2">
@@ -103,7 +104,7 @@ const ActionDetail = (props) => {
             <div className="d-flex justify-content-between">
                Response
                <div className="font-weight-light" style={{ fontSize: "12px" }}>
-                  {responseStatus}
+                  {responseStatus} {failureCause && `- ${failureCause}`}
                </div>
             </div>
             {responseViewer}
@@ -142,7 +143,16 @@ const Actions = (props) => {
                props.results[index].success ? (
                   <i className="fad fa-check-circle m-2 text-success" />
                ) : (
-                  <i className="fad fa-exclamation-circle m-2 text-danger" />
+                  <WithInfoPopup
+                     PopperComponent={
+                        <div className="d-flex p-2 text-nowrap text-dark">
+                           <small>{props.results[index].failureCause}</small>
+                        </div>
+                     }
+                     placement="right"
+                  >
+                     <i className="fad fa-exclamation-circle m-2 text-danger" />
+                  </WithInfoPopup>
                )
             ) : null;
          return (
