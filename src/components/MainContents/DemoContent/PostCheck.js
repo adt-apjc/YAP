@@ -64,6 +64,7 @@ export const PostCheckDetail = (props) => {
       );
    };
 
+   // TODO why  props.show is true for outcome?
    if (!props.show) return null;
    return (
       <div className="container position-relative bg-light pt-2 pb-3" style={{ top: "-15px" }}>
@@ -109,7 +110,7 @@ export const PostCheckDetail = (props) => {
                <div className="me-2">{renderVariableDetails()}</div>
                {/* Expect */}
                <div>
-                  {props.request.expect.length > 0 && (
+                  {props.request.expect && props.request.expect.length > 0 && (
                      <WithInfoPopup
                         PopperComponent={
                            <div className="d-flex flex-column p-2 text-nowrap text-dark">

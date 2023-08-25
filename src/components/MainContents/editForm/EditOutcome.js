@@ -45,6 +45,7 @@ const AddCommandForm = (props) => {
             displayResponseAs: "json",
             objectPath: "",
             data: undefined,
+            expect: [],
          },
       ]);
    };

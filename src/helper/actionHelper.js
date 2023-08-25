@@ -99,6 +99,9 @@ const replaceStrWithParams = (text) => {
 };
 
 export const normalRequest = (actionObject, endpoints) => {
+   if (!("expect" in actionObject)) {
+      actionObject = { ...actionObject, expect: [] };
+   }
    let config = {
       baseURL: actionObject.baseURL ? actionObject.baseURL : endpoints[actionObject.useEndpoint].baseURL,
       headers: actionObject.headers
@@ -113,8 +116,6 @@ export const normalRequest = (actionObject, endpoints) => {
       config.headers.Authorization =
          "Basic " + btoa(`${endpoints[actionObject.useEndpoint].username}:${endpoints[actionObject.useEndpoint].password}`);
    }
-   console.log("action", actionObject);
-   console.log("axiosConfig", config);
 
    return new Promise(async (resolve, reject) => {
       try {
@@ -123,10 +124,12 @@ export const normalRequest = (actionObject, endpoints) => {
          // process Match response if configured
          processMatchResponse(actionObject, response);
          // if expect has any condition, we shall validate them before assume a success: true state
-         let { expectCriteriaMet, failureCause } = validateExpect(actionObject.expect, response);
-         if (actionObject.expect.length > 0 && !expectCriteriaMet) {
-            console.log("DEBUG - conditions haven't been met", actionObject.expect);
-            reject({ ...response, failureCause, success: false });
+         if (actionObject.expect.length > 0) {
+            let { expectCriteriaMet, failureCause } = validateExpect(actionObject.expect, response);
+            if (!expectCriteriaMet) {
+               console.log("DEBUG - conditions haven't been met", actionObject.expect);
+               reject({ ...response, failureCause, success: false });
+            }
          }
          resolve({ ...response, success: true });
       } catch (e) {
@@ -151,6 +154,9 @@ export const normalRequest = (actionObject, endpoints) => {
 export const pollingRequest = (actionObject, endpoints) => {
    let interval = actionObject.interval ? parseInt(actionObject.interval) : 5000;
    let maxRetry = actionObject.maxRetry ? parseInt(actionObject.maxRetry) : 10;
+   if (!("expect" in actionObject)) {
+      actionObject = { ...actionObject, expect: [] };
+   }
    let config = {
       baseURL: actionObject.baseURL ? actionObject.baseURL : endpoints[actionObject.useEndpoint].baseURL,
       headers: actionObject.headers

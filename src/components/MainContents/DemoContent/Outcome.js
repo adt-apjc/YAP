@@ -69,7 +69,7 @@ const CommandModal = (props) => {
                )}
             </button>
          </div>
-         <PostCheckDetail show={cmdResults ? true : false} response={cmdResults} request={action} />
+         <PostCheckDetail show={cmdResults ? true : false} response={cmdResults} request={action} context={context} />
       </div>
    );
 };
