@@ -12,7 +12,6 @@ import _ from "lodash";
 import Logo from "../Logo";
 import PreCheck from "./PreCheck";
 import RunButtonComponent from "../RunButtonComponent";
-import { getStringFromObject } from "../../contexts/Utility";
 
 const DemoContent = (props) => {
    const context = useContext(GlobalContext);
@@ -25,7 +24,6 @@ const DemoContent = (props) => {
    const [actionResults, setActionResults] = useState({ cleanup: {} });
    const [postCheckResults, setPostCheckResults] = useState({ cleanup: {} });
    const [sectionExpand, setSectionExpand] = useState({ preCheck: false, action: false, postCheck: false, outcome: false });
-   const [variableLookup, setVariableLookup] = useState({});
 
    const clearStateHandler = () => {
       setIsPreCheckCompleted({ cleanup: false });
@@ -37,13 +35,6 @@ const DemoContent = (props) => {
       setPostCheckResults((prev) => ({ cleanup: prev.cleanup }));
       setModal({ modalShow: false, modalContentType: null });
       console.log("DEBUG - clear state from sidebar demoContent");
-   };
-
-   const extractVariableHandler = (match, response, section) => {
-      let key = match ? `{{${match.storeAs}}}` : "";
-      let value = "";
-      if (response) value = getStringFromObject(response.data, match.objectPath).slice(1, -1);
-      setVariableLookup((prev) => ({ ...prev, [section]: { ...prev[section], [key]: value } }));
    };
 
    const runPreCheckWorkflowHandler = async (targetIndex = -1) => {
@@ -78,9 +69,6 @@ const DemoContent = (props) => {
                // polling request
                response = await pollingRequest(preCheck, context.config.endpoints);
             }
-
-            // extract the variable value from response payload
-            if (preCheck.match && preCheck.match !== undefined) extractVariableHandler(preCheck.match, response, "preCheck");
 
             //
             if (!response.success) isCompleted = false;
@@ -148,9 +136,6 @@ const DemoContent = (props) => {
                response = await pollingRequest(action, context.config.endpoints);
             }
 
-            // extract the variable value from response payload
-            if (action.match && action.match !== undefined) extractVariableHandler(action.match, response, "actions");
-
             //
             if (!response.success) isCompleted = false;
             // update state actionResults for specific step
@@ -216,9 +201,6 @@ const DemoContent = (props) => {
                // polling request
                response = await pollingRequest(postCheck, context.config.endpoints);
             }
-
-            // extract the variable value from response payload
-            if (postCheck.match && postCheck.match !== undefined) extractVariableHandler(postCheck.match, response, "postCheck");
 
             //
             if (!response.success) isCompleted = false;
@@ -462,7 +444,6 @@ const DemoContent = (props) => {
                currentRunning={currentRunning.preCheck}
                results={preCheckResults[props.currentStep.name]}
                workflowHandler={runPreCheckWorkflowHandler}
-               variableLookup={variableLookup.preCheck ? variableLookup.preCheck : {}}
             />
          </div>
          {/* ACTION */}
@@ -513,7 +494,6 @@ const DemoContent = (props) => {
                currentRunning={currentRunning.action}
                results={actionResults[props.currentStep.name]}
                workflowHandler={runActionWorkflowHandler}
-               variableLookup={variableLookup.actions ? variableLookup.actions : {}}
             />
          </div>
          {/* POST-CHECK */}
@@ -563,7 +543,6 @@ const DemoContent = (props) => {
                currentRunning={currentRunning.postCheck}
                results={postCheckResults[props.currentStep.name]}
                workflowHandler={runPostCheckWorkflowHandler}
-               variableLookup={variableLookup.postCheck ? variableLookup.postCheck : {}}
             />
          </div>
          {/* OUTCOME */}

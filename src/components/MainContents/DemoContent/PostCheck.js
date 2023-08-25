@@ -38,17 +38,20 @@ export const PostCheckDetail = (props) => {
    }
 
    const renderVariableDetails = () => {
-      const variableDetails = getVariableDetails(props.request, props.variableLookup);
+      const variableDetails = getVariableDetails(props.request);
+
       return (
          <>
             {variableDetails.length > 0 && (
                <WithInfoPopup
                   PopperComponent={
-                     <div className="d-flex flex-column p-2 text-nowrap text-dark">
+                     <div className="d-flex flex-column p-2 text-dark" style={{ maxWidth: "800px" }}>
                         {variableDetails.map((item, i) => {
                            return (
                               <div className="d-flex" key={i}>
-                                 <small style={{ minWidth: "90px" }}>{item.key}: </small>
+                                 <small className="me-3" style={{ minWidth: "90px" }}>
+                                    {item.key}:
+                                 </small>
                                  <small>{item.val}</small>
                               </div>
                            );
@@ -57,7 +60,7 @@ export const PostCheckDetail = (props) => {
                   }
                   placement="left"
                >
-                  <div className="badge text-bg-secondary">Variable</div>
+                  <div className="badge text-bg-secondary">Variables</div>
                </WithInfoPopup>
             )}
          </>
@@ -73,7 +76,7 @@ export const PostCheckDetail = (props) => {
                Endpoint{" "}
                <WithInfoPopup
                   PopperComponent={
-                     <div className="d-flex p-2 text-nowrap text-dark">
+                     <div className="d-flex p-2 text-dark" style={{ maxWidth: "800px" }}>
                         <small>{`${props.context.config.endpoints[props.request.useEndpoint].baseURL}`}</small>
                      </div>
                   }
@@ -88,13 +91,17 @@ export const PostCheckDetail = (props) => {
                   {props.request.type === "polling" && (
                      <WithInfoPopup
                         PopperComponent={
-                           <div className="d-flex flex-column p-2 text-nowrap text-dark">
+                           <div className="d-flex flex-column p-2  text-dark" style={{ maxWidth: "800px" }}>
                               <div className="d-flex">
-                                 <small style={{ minWidth: "130px" }}>Max Retry: </small>
+                                 <small className="me-3" style={{ minWidth: "100px" }}>
+                                    Max Retry:{" "}
+                                 </small>
                                  <small>{props.request.maxRetry}</small>
                               </div>
                               <div className="d-flex">
-                                 <small style={{ minWidth: "130px" }}>Interval: </small>
+                                 <small className="me-3" style={{ minWidth: "100px" }}>
+                                    Interval:{" "}
+                                 </small>
                                  <small>{props.request.interval}</small>
                               </div>
                            </div>
@@ -112,14 +119,16 @@ export const PostCheckDetail = (props) => {
                   {props.request.expect && props.request.expect.length > 0 && (
                      <WithInfoPopup
                         PopperComponent={
-                           <div className="d-flex flex-column p-2 text-nowrap text-dark">
+                           <div className="d-flex flex-column p-2 text-dark" style={{ maxWidth: "800px" }}>
                               {props.request.expect.map((item, i) => {
                                  let type = item.type;
                                  if (item.type === "codeIs") type = "responseCodeIs";
 
                                  return (
                                     <div className="d-flex" key={i}>
-                                       <small style={{ minWidth: "130px" }}>{type}: </small>
+                                       <small className="me-3" style={{ minWidth: "100px" }}>
+                                          {type}:{" "}
+                                       </small>
                                        <small>{`${item.type === "codeIs" ? `${item.value.join(", ")}` : `${item.value}`}`}</small>
                                     </div>
                                  );
@@ -268,7 +277,6 @@ const PostCheck = (props) => {
                   response={props.results && props.results[index] ? props.results[index] : null}
                   request={postCheck}
                   context={context}
-                  variableLookup={props.variableLookup}
                />
             </div>
          );
