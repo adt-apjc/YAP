@@ -1,85 +1,79 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
+import { useDidUpdateEffect } from "../contexts/CustomHooks";
 import CytoscapeComponent from "react-cytoscapejs";
 import stylesheet from "./cytoscapeStyle.json";
 import _ from "lodash";
 
-class TopologyWrapper extends React.Component {
-   setUpEventListeners = () => {
-      this.cy.on("tap", "node,edge", (event) => {
+const TopologyWrapper = (props) => {
+   let cyRef = useRef(null);
+
+   const setUpEventListeners = () => {
+      cyRef.current.on("tap", "node,edge", (event) => {
          let selectedEle = event.target;
          // console.log(selectedEle);
-         if (this.props.onNodeClick) {
-            this.props.onNodeClick(selectedEle);
+         if (props.onNodeClick) {
+            props.onNodeClick(selectedEle);
          }
       });
    };
 
-   getObjectData = () => {
-      // use for return current cy object elements
-      let topologyObj = {};
-      topologyObj["nodes"] = this.cy.nodes().map((el) => ({
-         data: el.data(),
-         position: el.position(),
-         classes: el.classes(),
-      }));
-      topologyObj["edges"] = this.cy.edges().map((el) => ({ data: el.data(), classes: el.classes() }));
-      return topologyObj;
-   };
+   useEffect(() => {
+      return () => {
+         cyRef.current.removeAllListeners();
+         cyRef.current.destroy();
+         console.log("topology cleaned up");
+      };
+   }, []);
 
-   componentWillUnmount() {
-      this.cy.removeAllListeners();
-      this.cy.destroy();
-      console.log("topology cleaned up");
-   }
-
-   componentDidUpdate() {
-      if (this.props.outcomeConfig.elements) {
-         this.props.outcomeConfig.elements.nodes.forEach((ele) => {
+   useDidUpdateEffect(() => {
+      if (props.outcomeConfig.elements) {
+         props.outcomeConfig.elements.nodes.forEach((ele) => {
             if (ele.data.width) {
-               this.cy.$("#" + ele.data.id).style("width", ele.data.width);
+               cyRef.current.$("#" + ele.data.id).style("width", ele.data.width);
             }
             if (ele.data.height) {
-               this.cy.$("#" + ele.data.id).style("height", ele.data.height);
+               cyRef.current.$("#" + ele.data.id).style("height", ele.data.height);
             }
          });
       }
-   }
+      // re-center topology
+      if (!cyRef.current) return;
+      cyRef.current.zoomingEnabled(true);
+      cyRef.current.panningEnabled(true);
+      cyRef.current.center();
+      cyRef.current.zoomingEnabled(false);
+      cyRef.current.panningEnabled(false);
+   }, [props.outcomeConfig]);
 
-   componentDidMount() {
-      this.cy.ready(() => {
-         this.cy.center();
-         this.cy.zoomingEnabled(false);
-         this.cy.panningEnabled(false);
-         this.cy.boxSelectionEnabled(false);
-         this.setUpEventListeners();
-         if (this.props.outcomeConfig.elements) {
-            this.props.outcomeConfig.elements.nodes.forEach((ele) => {
+   useEffect(() => {
+      if (!cyRef.current) return;
+      if (typeof props.cy === "function") props.cy(cyRef.current);
+      cyRef.current.ready(() => {
+         cyRef.current.center();
+         cyRef.current.boxSelectionEnabled(false);
+         setUpEventListeners();
+         if (props.outcomeConfig.elements) {
+            props.outcomeConfig.elements.nodes.forEach((ele) => {
                if (ele.data.width) {
-                  this.cy.$("#" + ele.data.id).style("width", ele.data.width);
+                  cyRef.current.$("#" + ele.data.id).style("width", ele.data.width);
                }
                if (ele.data.height) {
-                  this.cy.$("#" + ele.data.id).style("height", ele.data.height);
+                  cyRef.current.$("#" + ele.data.id).style("height", ele.data.height);
                }
             });
          }
       });
-   }
+   }, [cyRef.current]);
 
-   render() {
-      let { outcomeConfig } = this.props;
-
-      return (
-         <CytoscapeComponent
-            // must cloneDeep because CytoscapeComponent take element as pointer and try to change/remember the last state of every element.
-            elements={CytoscapeComponent.normalizeElements(_.cloneDeep(outcomeConfig.elements || {}))}
-            style={{ width: "100%", height: outcomeConfig.canvasHeight ? outcomeConfig.canvasHeight : "500px" }}
-            stylesheet={stylesheet}
-            cy={(cy) => {
-               this.cy = cy;
-            }}
-         />
-      );
-   }
-}
+   return (
+      <CytoscapeComponent
+         // must cloneDeep because CytoscapeComponent take element as pointer and try to change/remember the last state of every element.
+         elements={CytoscapeComponent.normalizeElements(_.cloneDeep(props.outcomeConfig.elements || {}))}
+         style={{ width: "100%", height: props.outcomeConfig.canvasHeight ? props.outcomeConfig.canvasHeight : "100%" }}
+         stylesheet={stylesheet}
+         cy={(cy) => (cyRef.current = cy)}
+      />
+   );
+};
 
 export default TopologyWrapper;

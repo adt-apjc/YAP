@@ -135,7 +135,7 @@ export const normalRequest = (actionObject, endpoints) => {
       } catch (e) {
          console.log("REQUEST ERROR - ", e);
          if (e.response) {
-            let { expectCriteriaMet, failureCause } = validateExpect(actionObject.expect, e.response);
+            let { expectCriteriaMet } = validateExpect(actionObject.expect, e.response);
             if (actionObject.expect.length > 0 && expectCriteriaMet) {
                // special case to handle 404 exception (which may be acceptable) - TBA any other case?
                e.response.success = true;

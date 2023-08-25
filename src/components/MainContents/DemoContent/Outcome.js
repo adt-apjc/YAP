@@ -98,7 +98,7 @@ const Outcome = (props) => {
       );
 
    return (
-      <div className="container-fluid">
+      <div className="container-fluid" style={{ height: 500 }}>
          <TopologyWrapper outcomeConfig={outcomeConfig} onNodeClick={handleNodeClick} />
          <Modal show={modal.modalShow} onHide={onModalHide}>
             <div className="modal-header">

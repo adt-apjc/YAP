@@ -587,12 +587,24 @@ const AddEdgeForm = (props) => {
 };
 
 const EditOutcome = (props) => {
-   const topologyRef = useRef();
+   const cyRef = useRef();
    const context = useContext(GlobalContext);
    const [outcome, setOutcome] = useState({ elements: { nodes: [], edges: [] }, commands: {}, ...props.initValue });
    const [selectedNode, setSelectedNode] = useState(null);
    const [selectedEdge, setSelectedEdge] = useState(null);
    const [renderForm, setRenderForm] = useState("node");
+
+   const getTopologyObject = () => {
+      // use for return current cy object elements
+      let topologyObj = {};
+      topologyObj["nodes"] = cyRef.current.nodes().map((el) => ({
+         data: el.data(),
+         position: el.position(),
+         classes: el.classes(),
+      }));
+      topologyObj["edges"] = cyRef.current.edges().map((el) => ({ data: el.data(), classes: el.classes() }));
+      return topologyObj;
+   };
 
    const deleteElementHandler = () => {
       let newOutcome = _.cloneDeep(outcome);
@@ -620,7 +632,7 @@ const EditOutcome = (props) => {
    };
 
    const saveHandler = () => {
-      let currentObjectData = topologyRef.current.getObjectData();
+      let currentObjectData = getTopologyObject();
       let currentConfig = _.cloneDeep(context.config);
       console.log(currentObjectData);
       currentConfig.mainContent[context.currentStep.name].outcome.elements = { ...currentObjectData };
@@ -780,8 +792,8 @@ const EditOutcome = (props) => {
                      Click on the element below to edit parameters
                   </span>
                </div>
-               <div className="border rounded">
-                  <TopologyWrapper ref={topologyRef} outcomeConfig={outcome} onNodeClick={elementClickHandler} />
+               <div className="border rounded" style={{ height: 500 }}>
+                  <TopologyWrapper cy={(cy) => (cyRef.current = cy)} outcomeConfig={outcome} onNodeClick={elementClickHandler} />
                </div>
             </div>
          </div>
