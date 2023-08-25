@@ -59,6 +59,23 @@
                      "value": ["ietf-restconf:restconf"]
                   }
                ]
+            },
+            {
+               "type": "request",
+               "useEndpoint": "NSO",
+               "header": "Validate",
+               "headerColor": "",
+               "title": "Confirm demo clean-up before progressing",
+               "description": "Expect no authgroups group router",
+               "url": "restconf/data/tailf-ncs:devices/authgroups/group=router",
+               "method": "get",
+               "data": {},
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["404"]
+                  }
+               ]
             }
          ],
          "actions": [
@@ -735,12 +752,12 @@
             {
                "type": "request",
                "useEndpoint": "NSO",
-               "header": "Patch",
+               "header": "Create",
                "headerColor": "Green",
                "title": "Assure router credential is part of NSO configuration",
                "description": "Configure credential to access devices",
                "url": "restconf/data/tailf-ncs:devices/authgroups/group=router",
-               "method": "patch",
+               "method": "put",
                "data": {
                   "group": [
                      {
@@ -756,14 +773,14 @@
                "expect": [
                   {
                      "type": "codeIs",
-                     "value": ["204"]
+                     "value": ["201", "204"]
                   }
                ]
             },
             {
                "type": "request",
                "useEndpoint": "NSO",
-               "header": "Patch",
+               "header": "Create",
                "headerColor": "Green",
                "title": "Assure demo devices are part of NSO configuration",
                "description": "Patch router configuration",
@@ -878,7 +895,7 @@
                "expect": [
                   {
                      "type": "codeIs",
-                     "value": ["204"]
+                     "value": ["201", "204"]
                   }
                ]
             },
