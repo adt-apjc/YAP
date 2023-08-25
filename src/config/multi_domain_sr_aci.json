@@ -140,6 +140,7 @@
                "description": "Create ODN templates as stateless SRTE object on the network edge devices, ready to trigger SRTE policies.",
                "url": "/restconf/data/cisco-sr-te-cfp:sr-te/cisco-sr-te-cfp-sr-odn:odn/odn-template=URLLC",
                "method": "put",
+               "expect": [],
                "data": {
                   "cisco-sr-te-cfp-sr-odn:odn-template": {
                      "name": "URLLC",
@@ -190,6 +191,7 @@
                "objectPath": "tailf-ned-cisco-ios-xr-stats:output.result",
                "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                "method": "post",
+               "expect": [],
                "data": {
                   "input": { "args": "show configuration commit changes last 1" }
                }
@@ -226,6 +228,7 @@
                "objectPath": "tailf-ned-cisco-ios-xr-stats:output.result",
                "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                "method": "post",
+               "expect": [],
                "data": {
                   "input": { "args": "show segment-routing traffic-eng policy tabular" }
                }
@@ -361,6 +364,7 @@
                      "title": "show segment-routing traffic-eng on-demand color detail",
                      "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show segment-routing traffic-eng on-demand color detail" }
                      }
@@ -373,6 +377,7 @@
                      "title": "show segment-routing traffic-eng policy tabular",
                      "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show segment-routing traffic-eng policy tabular" }
                      }
@@ -385,6 +390,7 @@
                      "title": "show configuration commit changes last 1",
                      "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show configuration commit changes last 1" }
                      }
@@ -397,6 +403,7 @@
                      "title": "show running-config segment-routing",
                      "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show running-config segment-routing" }
                      }
@@ -411,6 +418,7 @@
                      "title": "show segment-routing traffic-eng on-demand color detail",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show segment-routing traffic-eng on-demand color detail" }
                      }
@@ -423,6 +431,7 @@
                      "title": "show segment-routing traffic-eng policy tabular",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show segment-routing traffic-eng policy tabular" }
                      }
@@ -435,6 +444,7 @@
                      "title": "show configuration commit changes last 1",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show configuration commit changes last 1" }
                      }
@@ -447,6 +457,7 @@
                      "title": "show running-config segment-routing",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show running-config segment-routing" }
                      }
@@ -461,6 +472,7 @@
                      "title": "show pce lsp summary",
                      "url": "/restconf/operations/devices/device=SR_PCE/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show pce lsp summary" }
                      }
@@ -473,6 +485,7 @@
                      "title": "show pce ipv4 peer",
                      "url": "/restconf/operations/devices/device=SR_PCE/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show pce ipv4 peer" }
                      }
@@ -487,6 +500,7 @@
                      "title": "Check connectivity to UPF (deployed in ACI DC)",
                      "url": "/restconf/operations/devices/device=gNodeB_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "ping vrf ran 99.100.40.2" }
                      }
@@ -501,6 +515,7 @@
                      "title": "Check connectivity to remote gNodeB",
                      "url": "/restconf/operations/devices/device=UPF/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "ping vrf vlan_40 99.1.112.112" }
                      }
@@ -529,6 +544,7 @@
                "description": "The infrastructure SR interconnect comprises of the EVPN overlay and BGP-LU underlay providing the stitching between the transport and DC.",
                "url": "/restconf/data/cisco-dc-transport:dc-transport-network=DC-PE-Network",
                "method": "put",
+               "expect": [],
                "data": {
                   "cisco-dc-transport:dc-transport-network": [
                      {
@@ -659,6 +675,7 @@
                "objectPath": "tailf-ned-cisco-ios-xr-stats:output.result",
                "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                "method": "post",
+               "expect": [],
                "data": {
                   "input": { "args": "show configuration commit changes last 1" }
                }
@@ -674,6 +691,7 @@
                "objectPath": "tailf-ned-cisco-ios-xr-stats:output.result",
                "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                "method": "post",
+               "expect": [],
                "data": {
                   "input": { "args": "show bgp neighbor brief" }
                }
@@ -687,7 +705,8 @@
                "description": "DC-SDN CFP supports allocation of IP addresses for the interconnect (i.e. DCI transport and ACI EVPN lookback)",
                "displayResponseAs": "json",
                "url": "/restconf/data/resource-pools/ipaddress-allocator:ip-address-pool",
-               "method": "get"
+               "method": "get",
+               "expect": []
             },
             {
                "type": "request",
@@ -698,7 +717,8 @@
                "description": "DC-SDN CFP supports allocation of IDs and in this context, allocated a SID-ID for the SR interconnect",
                "displayResponseAs": "json",
                "url": "/restconf/data/resource-pools/id-allocator:id-pool",
-               "method": "get"
+               "method": "get",
+               "expect": []
             }
          ],
          "outcome": {
@@ -843,6 +863,7 @@
                      "objectPath": "tailf-ned-cisco-ios-xr-stats:output.result",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show bgp neighbor brief" }
                      }
@@ -856,6 +877,7 @@
                      "objectPath": "tailf-ned-cisco-ios-xr-stats:output.result",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show bgp 100.100.2.1" }
                      }
@@ -871,6 +893,7 @@
                      "objectPath": "tailf-ned-cisco-ios-xr-stats:output.result",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show configuration commit changes last 1" }
                      }
@@ -897,7 +920,8 @@
                      "description": "DC-SDN CFP supports allocation of IP addresses for the interconnect (i.e. DCI transport and ACI EVPN lookback)",
                      "displayResponseAs": "json",
                      "url": "/restconf/data/resource-pools/ipaddress-allocator:ip-address-pool",
-                     "method": "get"
+                     "method": "get",
+                     "expect": []
                   },
                   {
                      "type": "request",
@@ -908,7 +932,8 @@
                      "description": "DC-SDN CFP supports allocation of IDs and in this context, allocated a SID-ID for the SR interconnect",
                      "displayResponseAs": "json",
                      "url": "/restconf/data/resource-pools/id-allocator:id-pool",
-                     "method": "get"
+                     "method": "get",
+                     "expect": []
                   }
                ],
                "gNodeB_1": [
@@ -920,6 +945,7 @@
                      "title": "Check connectivity to UPF (deployed in ACI DC)",
                      "url": "/restconf/operations/devices/device=gNodeB_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "ping vrf ran 99.100.40.2" }
                      }
@@ -934,6 +960,7 @@
                      "title": "Check connectivity to remote gNodeB",
                      "url": "/restconf/operations/devices/device=UPF/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "ping vrf vlan_40 99.1.112.112" }
                      }
@@ -963,6 +990,7 @@
                "description": "TBA",
                "url": "/restconf/data/cisco-dc:dc-controller=APIC_1/cisco-dc:tenant-service",
                "method": "patch",
+               "expect": [],
                "data": {
                   "cisco-dc:tenant-service": [
                      {
@@ -1101,6 +1129,7 @@
                "title": "Check connectivity from UPF to Backend",
                "url": "/restconf/operations/devices/device=UPF/live-status/exec/any",
                "method": "post",
+               "expect": [],
                "data": {
                   "input": { "args": "ping vrf vlan_40 99.100.40.3" }
                }
@@ -1163,6 +1192,7 @@
                      "title": "Check connectivity to Backend",
                      "url": "/restconf/operations/devices/device=UPF/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "ping vrf vlan_40 99.100.40.3" }
                      }
@@ -1175,6 +1205,7 @@
                      "title": "Check connectivity to Bridge Domain",
                      "url": "/restconf/operations/devices/device=UPF/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "ping vrf vlan_40 99.100.40.1" }
                      }
@@ -1189,6 +1220,7 @@
                      "title": "Check connectivity to UPF",
                      "url": "/restconf/operations/devices/device=Backend/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "ping vrf vlan_40 99.100.40.2" }
                      }
@@ -1201,6 +1233,7 @@
                      "title": "Check connectivity to Bridge Domain",
                      "url": "/restconf/operations/devices/device=Backend/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "ping vrf vlan_40 99.100.40.1" }
                      }
@@ -1228,6 +1261,7 @@
                "description": "Creating a route-policy that will be used for the L3VPN overlay in the next step. This demo specifies the service intent, in a separate stage will demonstrate how simple it is to request a new transport behavior without changing the transport configuration but in a real implementation, it will be set when the slice is created.",
                "url": "/restconf/data/cisco-flat-L3vpn-fp:l3vpn-route-policy=RP-VRF_Toyota",
                "method": "put",
+               "expect": [],
                "data": {
                   "cisco-flat-L3vpn-fp:l3vpn-route-policy": {
                      "name": "RP-VRF_Toyota"
@@ -1243,6 +1277,7 @@
                "description": "Configuring the remote site (i.e. RAN site) of an end to end L3VPN overlay, that will serve the Toyota slice",
                "url": "/restconf/data/cisco-flat-L3vpn-fp:flat-L3vpn=VRF_Toyota",
                "method": "put",
+               "expect": [],
                "data": {
                   "cisco-flat-L3vpn-fp:flat-L3vpn": {
                      "name": "VRF_Toyota",
@@ -1305,6 +1340,7 @@
                "description": "APIC/ACI tenant l3out configuration requires a route-policy to identify the IP routes to advertise. BGP communities (including the color for specifying an intent) are optional and will be specified in the next stage of this demo for demonstration purposes only.",
                "url": "/restconf/data/cisco-dc:dc-controller=APIC_1/cisco-dc:dc-route-policy=outbound-rmap",
                "method": "put",
+               "expect": [],
                "data": {
                   "cisco-dc:dc-route-policy": [
                      {
@@ -1375,6 +1411,7 @@
                "description": "Creating APIC/ACI Toyota tenant l3out that leverages the infrastructure SR DC interconnect created in the previous stage",
                "url": "/restconf/data/cisco-dc-transport:dc-transport-network=DC-PE-Network/tenant=Toyota",
                "method": "put",
+               "expect": [],
                "data": {
                   "cisco-dc-transport:tenant": [
                      {
@@ -1454,15 +1491,12 @@
                "description": "DC controller generates a dynamic name for the l3out-security-service, which is required for the next configuraiton steps. This value can be retrieved, from the tenant' state",
                "url": "/restconf/data/cisco-dc-transport:dc-transport-network=DC-PE-Network/tenant=Toyota/dct-l3-vpn=VRF_Toyota/modified",
                "method": "get",
+               "expect": [],
                "match": {
                   "objectPath": "cisco-dc-transport:modified.services",
                   "regEx": "name='VRF_Toyota-([A-Za-z0-9]+)'",
-                  "variables": [
-                     {
-                        "matchGroup": 1,
-                        "storeAs": "l3out-security-service"
-                     }
-                  ]
+                  "matchGroup": 1,
+                  "storeAs": "l3out-security-service"
                }
             },
             {
@@ -1474,6 +1508,7 @@
                "description": "As the last step in the creation of a tenant l3out is the creation of a l3out EPG and contract update to support the end to end traffic. NOTE - here we need to assure that the l3out-security-service name is correct capturing the dynamic name with /restconf/data/cisco-dc-transport:dc-transport-network=DC-PE-Network/tenant=Toyota/dct-l3-vpn=VRF_Toyota/modified/services",
                "url": "/restconf/data/cisco-dc:dc-controller=APIC_1/l3out-security-service=VRF_Toyota-{{l3out-security-service}}",
                "method": "put",
+               "expect": [],
                "data": {
                   "cisco-dc:l3out-security-service": {
                      "name": "VRF_Toyota-{{l3out-security-service}}",
@@ -1542,6 +1577,7 @@
                "objectPath": "tailf-ned-cisco-ios-xr-stats:output.result",
                "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                "method": "post",
+               "expect": [],
                "data": {
                   "input": { "args": "show bgp vrf VRF_Toyota 99.100.40.0/29" }
                }
@@ -1557,6 +1593,7 @@
                "objectPath": "tailf-ned-cisco-ios-stats:output.result",
                "url": "/restconf/operations/devices/device=gNodeB_1/live-status/exec/any",
                "method": "post",
+               "expect": [],
                "data": {
                   "input": { "args": "ping vrf ran 99.100.40.2" }
                }
@@ -1572,6 +1609,7 @@
                "objectPath": "tailf-ned-cisco-ios-xr-stats:output.result",
                "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                "method": "post",
+               "expect": [],
                "data": {
                   "input": { "args": "show segment-routing traffic-eng policy color 1000 tabular" }
                }
@@ -1737,6 +1775,7 @@
                      "title": "show bgp vrf VRF_Toyota",
                      "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show bgp vrf VRF_Toyota" }
                      }
@@ -1749,6 +1788,7 @@
                      "title": "show bgp vrf VRF_Toyota 99.100.40.0/29 (ACI tenant route)",
                      "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show bgp vrf VRF_Toyota 99.100.40.0/29" }
                      }
@@ -1761,6 +1801,7 @@
                      "title": "show segment-routing traffic-eng policy tabular",
                      "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show segment-routing traffic-eng policy tabular" }
                      }
@@ -1773,6 +1814,7 @@
                      "title": "show configuration commit changes last 1",
                      "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show configuration commit changes last 1" }
                      }
@@ -1785,6 +1827,7 @@
                      "title": "show running-config segment-routing",
                      "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show running-config segment-routing" }
                      }
@@ -1799,6 +1842,7 @@
                      "title": "show bgp l2vpn evpn",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show bgp l2vpn evpn" }
                      }
@@ -1811,6 +1855,7 @@
                      "title": "show bgp vrf VRF_Toyota",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show bgp vrf VRF_Toyota" }
                      }
@@ -1823,6 +1868,7 @@
                      "title": "show bgp vrf VRF_Toyota 99.100.40.0/29 (ACI tenant route)",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show bgp vrf VRF_Toyota 99.100.40.0/29" }
                      }
@@ -1835,6 +1881,7 @@
                      "title": "show bgp vrf VRF_Toyota 99.1.112.0/24 (RAN side route)",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show bgp vrf VRF_Toyota 99.1.112.0/24" }
                      }
@@ -1847,6 +1894,7 @@
                      "title": "show segment-routing traffic-eng policy tabular",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show segment-routing traffic-eng policy tabular" }
                      }
@@ -1859,6 +1907,7 @@
                      "title": "show configuration commit changes last 1",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show configuration commit changes last 1" }
                      }
@@ -1871,6 +1920,7 @@
                      "title": "show running-config segment-routing",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show running-config segment-routing" }
                      }
@@ -1885,6 +1935,7 @@
                      "title": "show pce lsp",
                      "url": "/restconf/operations/devices/device=SR_PCE/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show pce lsp" }
                      }
@@ -1897,6 +1948,7 @@
                      "title": "show pce ipv4 peer",
                      "url": "/restconf/operations/devices/device=SR_PCE/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show pce ipv4 peer" }
                      }
@@ -1911,6 +1963,7 @@
                      "title": "Check connectivity to UPF (deployed in ACI DC)",
                      "url": "/restconf/operations/devices/device=gNodeB_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "ping vrf ran 99.100.40.2" }
                      }
@@ -1925,6 +1978,7 @@
                      "title": "Check connectivity to remote gNodeB",
                      "url": "/restconf/operations/devices/device=UPF/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "ping vrf vlan_40 99.1.112.112" }
                      }
@@ -1954,6 +2008,7 @@
                "description": "TBA",
                "url": "/restconf/data/cisco-flat-L3vpn-fp:l3vpn-route-policy=RP-VRF_Toyota",
                "method": "put",
+               "expect": [],
                "data": {
                   "cisco-flat-L3vpn-fp:l3vpn-route-policy": {
                      "name": "RP-VRF_Toyota",
@@ -1995,6 +2050,7 @@
                "description": "",
                "url": "/restconf/data/cisco-dc:dc-controller=APIC_1/cisco-dc:dc-route-policy=outbound-rmap",
                "method": "put",
+               "expect": [],
                "data": {
                   "cisco-dc:dc-route-policy": [
                      {
@@ -2082,6 +2138,7 @@
                "objectPath": "tailf-ned-cisco-ios-xr-stats:output.result",
                "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                "method": "post",
+               "expect": [],
                "data": {
                   "input": { "args": "show bgp vrf VRF_Toyota 99.100.40.0/29" }
                }
@@ -2097,6 +2154,7 @@
                "objectPath": "tailf-ned-cisco-ios-xr-stats:output.result",
                "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                "method": "post",
+               "expect": [],
                "data": {
                   "input": { "args": "show cef vrf VRF_Toyota 99.100.40.0/29" }
                }
@@ -2112,6 +2170,7 @@
                "objectPath": "tailf-ned-cisco-ios-xr-stats:output.result",
                "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                "method": "post",
+               "expect": [],
                "data": {
                   "input": { "args": "show segment-routing traffic-eng policy color 1000 tabular" }
                }
@@ -2127,6 +2186,7 @@
                "objectPath": "tailf-ned-cisco-ios-xr-stats:output.result",
                "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                "method": "post",
+               "expect": [],
                "data": {
                   "input": { "args": "show segment-routing traffic-eng policy color 1000" }
                }
@@ -2142,6 +2202,7 @@
                "objectPath": "tailf-ned-cisco-ios-stats:output.result",
                "url": "/restconf/operations/devices/device=gNodeB_1/live-status/exec/any",
                "method": "post",
+               "expect": [],
                "data": {
                   "input": { "args": "ping vrf ran 99.100.40.2" }
                }
@@ -2157,6 +2218,7 @@
                "objectPath": "tailf-ned-cisco-ios-xr-stats:output.result",
                "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                "method": "post",
+               "expect": [],
                "data": {
                   "input": { "args": "show segment-routing traffic-eng forwarding policy color 1000 tabular" }
                }
@@ -2332,6 +2394,7 @@
                      "title": "show segment-routing traffic-eng policy tabular",
                      "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show segment-routing traffic-eng policy tabular" }
                      }
@@ -2344,6 +2407,7 @@
                      "title": "show segment-routing traffic-eng forwarding policy tabular ",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show segment-routing traffic-eng forwarding policy tabular" }
                      }
@@ -2356,6 +2420,7 @@
                      "title": "show bgp vrf VRF_Toyota",
                      "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show bgp vrf VRF_Toyota" }
                      }
@@ -2368,6 +2433,7 @@
                      "title": "show bgp vrf VRF_Toyota 99.100.40.0/29  (ACI tenant route)",
                      "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show bgp vrf VRF_Toyota 99.100.40.0/29" }
                      }
@@ -2380,6 +2446,7 @@
                      "title": "show configuration commit changes last 1",
                      "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show configuration commit changes last 1" }
                      }
@@ -2392,6 +2459,7 @@
                      "title": "show running-config segment-routing",
                      "url": "/restconf/operations/devices/device=Node_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show running-config segment-routing" }
                      }
@@ -2406,6 +2474,7 @@
                      "title": "show segment-routing traffic-eng policy tabular",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show segment-routing traffic-eng policy tabular" }
                      }
@@ -2418,6 +2487,7 @@
                      "title": "show segment-routing traffic-eng forwarding policy tabular ",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show segment-routing traffic-eng forwarding policy tabular" }
                      }
@@ -2430,6 +2500,7 @@
                      "title": "show bgp vrf VRF_Toyota",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show bgp vrf VRF_Toyota" }
                      }
@@ -2442,6 +2513,7 @@
                      "title": "show bgp vrf VRF_Toyota 99.100.40.0/29 (ACI tenant route)",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show bgp vrf VRF_Toyota 99.100.40.0/29" }
                      }
@@ -2454,6 +2526,7 @@
                      "title": "show bgp VRF_Toyota 99.1.112.0/24 (RAN side route)",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show bgp vrf VRF_Toyota 99.1.112.0/24" }
                      }
@@ -2466,6 +2539,7 @@
                      "title": "show configuration commit changes last 1",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show configuration commit changes last 1" }
                      }
@@ -2478,6 +2552,7 @@
                      "title": "show running-config segment-routing",
                      "url": "/restconf/operations/devices/device=Node_10/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show running-config segment-routing" }
                      }
@@ -2492,6 +2567,7 @@
                      "title": "show pce lsp summary",
                      "url": "/restconf/operations/devices/device=SR_PCE/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show pce lsp summary" }
                      }
@@ -2504,6 +2580,7 @@
                      "title": "show pce lsp detail",
                      "url": "/restconf/operations/devices/device=SR_PCE/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show pce lsp detail" }
                      }
@@ -2516,6 +2593,7 @@
                      "title": "show pce ipv4 peer",
                      "url": "/restconf/operations/devices/device=SR_PCE/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "show pce ipv4 peer" }
                      }
@@ -2530,6 +2608,7 @@
                      "title": "Check connectivity to UPF (deployed in ACI DC)",
                      "url": "/restconf/operations/devices/device=gNodeB_1/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "ping vrf ran 99.100.40.2" }
                      }
@@ -2544,6 +2623,7 @@
                      "title": "Check connectivity to remote gNodeB",
                      "url": "/restconf/operations/devices/device=UPF/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": { "args": "ping vrf vlan_40 99.1.112.112" }
                      }
@@ -2661,10 +2741,8 @@
                "match": {
                   "objectPath": "cisco-dc-transport:modified.services",
                   "regEx": "name='VRF_Toyota-([A-Za-z0-9]+)'",
-                  "variables": {
-                     "matchGroup": 1,
-                     "storeAs": "l3out-security-service"
-                  }
+                  "matchGroup": 1,
+                  "storeAs": "l3out-security-service"
                }
             },
             {

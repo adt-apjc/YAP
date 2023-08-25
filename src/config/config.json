@@ -387,6 +387,7 @@
                      "title": "Ping local loopback",
                      "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": {
                            "args": "ping 99.0.0.1"
@@ -400,6 +401,7 @@
                      "title": "Ping Node_2_dev directly connected interface",
                      "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": {
                            "args": "ping 99.1.2.2"
@@ -413,6 +415,7 @@
                      "title": "Ping Node_6_dev loopback - shall fail at this stage",
                      "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": {
                            "args": "ping 99.0.0.6"
@@ -708,6 +711,7 @@
                      "title": "Ping local loopback",
                      "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": {
                            "args": "ping 99.0.0.1"
@@ -721,6 +725,7 @@
                      "title": "Ping Node_2_dev directly connected interface",
                      "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": {
                            "args": "ping 99.1.2.2"
@@ -734,6 +739,7 @@
                      "title": "Ping Node_6_dev loopback",
                      "url": "restconf/operations/devices/device=Node_1_dev/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": {
                            "args": "ping 99.0.0.6"

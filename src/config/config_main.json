@@ -260,6 +260,7 @@
                      "title": "Ping interface Node_9",
                      "url": "restconf/operations/devices/device=Node_8/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": {
                            "args": "ping 99.8.9.9"
@@ -273,6 +274,7 @@
                      "title": "Ping loopback Node_9",
                      "url": "restconf/operations/devices/device=Node_8/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": {
                            "args": "ping 9.9.9.9"
@@ -288,6 +290,7 @@
                      "title": "Ping interface Node_8",
                      "url": "restconf/operations/devices/device=Node_8/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": {
                            "args": "ping 99.8.9.8"
@@ -301,6 +304,7 @@
                      "title": "Ping loopback Node_8",
                      "url": "restconf/operations/devices/device=Node_9/live-status/exec/any",
                      "method": "post",
+                     "expect": [],
                      "data": {
                         "input": {
                            "args": "ping 8.8.8.8"
