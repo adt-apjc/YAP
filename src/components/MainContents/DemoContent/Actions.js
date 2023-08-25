@@ -114,7 +114,7 @@ const ActionDetail = (props) => {
                                  return (
                                     <div className="d-flex" key={i}>
                                        <small style={{ minWidth: "130px" }}>{type}: </small>
-                                       <small>{item.value}</small>
+                                       <small>{`${item.type === "codeIs" ? `${item.value.join(", ")}` : `${item.value}`}`}</small>
                                     </div>
                                  );
                               })}

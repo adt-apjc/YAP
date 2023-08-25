@@ -24,7 +24,7 @@ const DemoContent = (props) => {
    const [preCheckResults, setPreCheckResults] = useState({ cleanup: {} });
    const [actionResults, setActionResults] = useState({ cleanup: {} });
    const [postCheckResults, setPostCheckResults] = useState({ cleanup: {} });
-   const [sectionExpand, setSectionExpand] = useState({ preCheck: false, action: false, postCheck: false, outcome: true });
+   const [sectionExpand, setSectionExpand] = useState({ preCheck: false, action: false, postCheck: false, outcome: false });
    const [variableLookup, setVariableLookup] = useState({});
 
    const clearStateHandler = () => {
@@ -284,7 +284,7 @@ const DemoContent = (props) => {
    };
 
    useEffect(() => {
-      setSectionExpand({ preCheck: false, action: false, postCheck: false, outcome: true });
+      setSectionExpand({ preCheck: false, action: false, postCheck: false, outcome: false });
    }, [props.currentStep.name]);
 
    useEffect(() => {
@@ -315,7 +315,7 @@ const DemoContent = (props) => {
             isPreCheckCompleted,
             isActionCompleted,
             isPostCheckCompleted,
-         })
+         }),
       );
       let isAllPreCheckCompleted = undefined;
       let isAllActionCompleted = undefined;
@@ -348,7 +348,7 @@ const DemoContent = (props) => {
       if (isAllPreCheckCompleted !== undefined && isAllActionCompleted !== undefined && isAllPostCheckCompleted !== undefined)
          context.setRunningStatus(
             props.currentStep.name,
-            isAllPreCheckCompleted && isAllActionCompleted && isAllPostCheckCompleted ? "success" : "fail"
+            isAllPreCheckCompleted && isAllActionCompleted && isAllPostCheckCompleted ? "success" : "fail",
          );
    }, [preCheckResults, actionResults, postCheckResults]);
 

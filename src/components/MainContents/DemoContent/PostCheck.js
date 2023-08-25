@@ -64,7 +64,6 @@ export const PostCheckDetail = (props) => {
       );
    };
 
-   // TODO why  props.show is true for outcome?
    if (!props.show) return null;
    return (
       <div className="container position-relative bg-light pt-2 pb-3" style={{ top: "-15px" }}>
@@ -121,7 +120,7 @@ export const PostCheckDetail = (props) => {
                                  return (
                                     <div className="d-flex" key={i}>
                                        <small style={{ minWidth: "130px" }}>{type}: </small>
-                                       <small>{item.value}</small>
+                                       <small>{`${item.type === "codeIs" ? `${item.value.join(", ")}` : `${item.value}`}`}</small>
                                     </div>
                                  );
                               })}
