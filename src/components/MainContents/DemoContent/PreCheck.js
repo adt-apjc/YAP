@@ -67,16 +67,27 @@ const PreCheckDetail = (props) => {
          <div className="d-flex justify-content-between p-2 mb-2">
             <div>
                Endpoint{" "}
-               <WithInfoPopup
-                  PopperComponent={
-                     <div className="d-flex p-2 text-dark" style={{ maxWidth: "800px" }}>
-                        <small>{`${props.context.config.endpoints[props.request.useEndpoint].baseURL}`}</small>
-                     </div>
-                  }
-                  placement="right"
-               >
-                  <span className="font-weight-light bg-secondary text-light p-1 ms-4 rounded">{props.request.useEndpoint}</span>
-               </WithInfoPopup>
+               {props.request.useEndpoint ? (
+                  <WithInfoPopup
+                     PopperComponent={
+                        <div className="d-flex p-2 text-dark" style={{ maxWidth: "800px" }}>
+                           <small>{`${
+                              props.context.config.endpoints[props.request.useEndpoint] &&
+                              props.context.config.endpoints[props.request.useEndpoint].baseURL
+                                 ? props.context.config.endpoints[props.request.useEndpoint].baseURL
+                                 : "baseURL not configured"
+                           }`}</small>
+                        </div>
+                     }
+                     placement="right"
+                  >
+                     <span className="font-weight-light bg-secondary text-light p-1 ms-4 rounded">
+                        {props.request.useEndpoint}
+                     </span>
+                  </WithInfoPopup>
+               ) : (
+                  <span className="font-weight-light bg-secondary text-light p-1 ms-4 rounded">Not Configured</span>
+               )}
             </div>
             <div className="d-flex justify-content-between">
                {/* Polling */}
