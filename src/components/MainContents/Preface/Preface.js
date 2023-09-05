@@ -38,8 +38,7 @@ const Preface = (props) => {
 
    return (
       <div className="pb-3">
-         <div className="btn-toolbar justify-content-between position-relative">
-            <Logo />
+         <div className="btn-toolbar justify-content-end position-relative">
             <div className="d-flex align-items-center mt-1">
                <ul className="nav nav-tabs preface-nav">
                   {context.config.preface.map((element, stepIndex) => {

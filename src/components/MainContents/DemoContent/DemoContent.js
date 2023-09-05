@@ -9,7 +9,6 @@ import PostCheck from "./PostCheck";
 import Outcome from "./Outcome";
 
 import _ from "lodash";
-import Logo from "../Logo";
 import PreCheck from "./PreCheck";
 import RunButtonComponent from "../RunButtonComponent";
 
@@ -355,7 +354,6 @@ const DemoContent = (props) => {
          <div className="d-flex justify-content-between">
             <div className="d-flex flex-column">
                <div className="d-flex">
-                  <Logo />
                   <div style={{ fontSize: "25px" }}>{props.currentStep.label}</div>
                </div>
                <div className="my-2 me-3">{description}</div>
@@ -420,7 +418,7 @@ const DemoContent = (props) => {
                   <RunButtonComponent
                      currentRunning={currentRunning.preCheck !== null}
                      workflowHandler={runPreCheckWorkflowHandler}
-                     disable={props.currentStepDetails.preCheck.length === 0}
+                     disable={props.currentStepDetails.preCheck && props.currentStepDetails.preCheck.length === 0}
                   />
                   <div>
                      {context.mode === "edit" && (
@@ -471,7 +469,7 @@ const DemoContent = (props) => {
                   <RunButtonComponent
                      currentRunning={currentRunning.action !== null}
                      workflowHandler={runActionWorkflowHandler}
-                     disable={props.currentStepDetails.actions.length === 0}
+                     disable={props.currentStepDetails.actions && props.currentStepDetails.actions.length === 0}
                   />
                   {context.mode === "edit" && (
                      <span
@@ -520,7 +518,7 @@ const DemoContent = (props) => {
                   <RunButtonComponent
                      currentRunning={currentRunning.postCheck !== null}
                      workflowHandler={runPostCheckWorkflowHandler}
-                     disable={props.currentStepDetails.postCheck.length === 0}
+                     disable={props.currentStepDetails.postCheck && props.currentStepDetails.postCheck.length === 0}
                   />
                   {context.mode === "edit" && (
                      <span

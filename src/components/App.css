@@ -63,54 +63,109 @@ span {
 }
 
 .main-content {
-   margin-left: var(--side-width);
-   /* minus the size of navbar */
-   /* height: calc(100% - var(--navbar-height)); */
+   padding-left: var(--side-width);
+   padding-top: var(--navbar-height);
    height: 100%;
-   width: calc(100% - var(--side-width));
+   width: 100%;
+}
+
+.navbar {
+   display: flex;
+   align-items: center;
+   height: var(--navbar-height);
+   width: 100%;
+   padding: 10px 20px;
+   background-color: var(--side-bg-color);
+   color: #fef6f9;
+   position: fixed;
+   z-index: 1000;
+   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+.nav-title {
+   font-size: 16px;
+   padding: 2px 8px;
+   cursor: pointer;
+}
+
+.nav-title:hover {
+   background-color: rgba(152, 152, 154, 0.187);
+   border-radius: 8px;
+}
+
+.nav-logo {
+   position: relative;
+   top: -2px;
+   width: 40px;
+   margin-right: 12px;
+}
+
+.nav-action {
+   border: 1px solid #fef6f949;
+   border-radius: 8px;
+   padding: 2px 8px;
+   cursor: pointer;
+}
+
+.nav-action:hover {
+   border: 1px solid #fef6f98e;
+   background-color: rgba(18, 18, 19, 0.187);
 }
 
 .sidenav {
-   height: 100%; /* Full-height: remove this if you want "auto" height */
+   height: 100%; /* Full-height: remove this if you want "auto" height*/
    width: var(--side-width); /* Set the width of the sidebar */
    position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-   z-index: 1000;
-   top: 0;
+   top: var(--navbar-height);
    left: 0;
-   background-color: var(--side-bg-color);
+   background-color: #f6f8fa;
+   border: 1px solid #eaeaea;
    overflow-x: hidden; /* Disable horizontal scroll */
    transition: 0.2s;
-   min-width: 60px;
-   padding: 0 10px;
+   /* min-width: 60px; */
+   padding: 30px 10px 60px 10px;
 }
 
 .side-item {
    display: flex;
-   color: #fef6f9;
+   color: #212529;
 }
+
 .side-item.disabled {
-   color: #aaa;
+   color: var(--bs-gray-500);
+   pointer-events: none;
 }
 
-.sidenav-container {
-   position: sticky;
-   z-index: 10;
-   width: 100%;
-   left: 0;
-   top: 0;
-   background-color: var(--side-bg-color);
-   padding-bottom: 1rem;
-   /* border: 1px solid #01719c; */
-}
-
-.sidenav-footer {
-   width: calc(100% - 20px);
-   position: absolute;
-   bottom: 0;
-}
-
-.collapse-icon {
+.step-label-text {
    font-size: 13px;
+   color: #212529;
+}
+
+.step-label-text.curr-selected {
+   font-weight: 700;
+   color: var(--side-bg-color);
+}
+
+.status-icon {
+   width: 28px;
+   line-height: 25px;
+   border-radius: 50%;
+   text-align: center;
+   font-size: 12px;
+   margin: 0 10px;
+   border: 1px solid var(--bs-gray-500);
+}
+
+.status-icon.normal {
+   border: 1px solid var(--side-bg-color);
+   font-weight: 700;
+}
+
+.status-icon.curr-selected {
+   background-color: var(--side-bg-color);
+   color: #fef6f9;
+   border: 1px solid var(--side-bg-color);
+   font-weight: 700;
 }
 
 /* 
@@ -169,12 +224,6 @@ span {
    padding: 20px;
 }
 
-.cisco-logo {
-   position: relative;
-   top: -8px;
-   width: 55px;
-}
-
 .custom-text-success {
    color: #70fd70;
 }
@@ -200,4 +249,32 @@ span {
 
 .btn-run :hover {
    color: #005478;
+}
+
+.custom-dropdown {
+   padding: 4px;
+   margin: 4px 2px;
+   text-align: left;
+   width: 100%;
+   cursor: pointer;
+   font-size: 0.875em;
+}
+
+.custom-dropdown:hover {
+   background-color: rgba(152, 152, 154, 0.187);
+   border-radius: 6px;
+   padding: 4px;
+}
+
+.custom-dropdown-text {
+   padding: 4px;
+   margin: 4px 2px;
+   text-align: left;
+   width: 100%;
+   font-size: 0.875em;
+}
+
+.custom-dropdown.disabled {
+   color: var(--bs-gray-500);
+   cursor: none;
 }

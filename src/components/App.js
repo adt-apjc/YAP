@@ -4,11 +4,13 @@ import MainContents from "./MainContents";
 import "./App.css";
 //
 import { ContextProvider } from "./contexts/ContextProvider";
+import NavigationBar from "./NavigationBar/NavigationBar";
 
 const App = () => {
    document.title = "Workflow Demo";
    return (
       <ContextProvider>
+         <NavigationBar />
          <SideBar />
          {/* main-content div will set the flag for 100% width and 100% height */}
          <div className="main-content">
