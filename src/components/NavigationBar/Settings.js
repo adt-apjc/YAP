@@ -1,18 +1,18 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import WithDropdown from "../Popper/Dropdown";
-import GlobalContext from "../contexts/ContextProvider";
+import { useGlobalContext } from "../contexts/ContextProvider";
 import ModalContentSelector from "../Sidebar/ModalContentSelector";
 import { Modal } from "../../helper/modalHelper";
 
 const SettingsTooltipContent = ({ setIsOpen, setModalShow }) => {
-   const context = useContext(GlobalContext);
+   const { context, dispatch } = useGlobalContext();
 
    return (
       <div className="text-dark px-2 py-1" style={{ minWidth: "10rem" }}>
          <div
             className="custom-dropdown"
             onClick={() => {
-               context.toggleMode();
+               dispatch({ type: "toggleMode" });
                setIsOpen(false);
             }}
          >
@@ -21,7 +21,7 @@ const SettingsTooltipContent = ({ setIsOpen, setModalShow }) => {
          <div
             className="custom-dropdown"
             onClick={() => {
-               context.clearConfig();
+               dispatch({ type: "clearConfig" });
                setIsOpen(false);
             }}
          >

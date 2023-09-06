@@ -1,9 +1,8 @@
-import React, { useContext, useState, useEffect } from "react";
-import GlobalContext from "../../contexts/ContextProvider";
+import React, { useState, useEffect } from "react";
+import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
 import ModalContentSelector from "../editForm/ModalContentSelector";
 import { isArray } from "lodash";
-import Logo from "../Logo";
 
 const PrefaceContent = ({ config, index }) => {
    if (!config) return null;
@@ -23,7 +22,7 @@ const PrefaceContent = ({ config, index }) => {
 };
 
 const Preface = (props) => {
-   const context = useContext(GlobalContext);
+   const { context } = useGlobalContext();
    const [state, setState] = useState({
       preface: context.config.preface[0],
       index: 0,

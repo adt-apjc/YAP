@@ -1,12 +1,12 @@
-import React, { useContext, useState } from "react";
-import GlobalContext from "../../contexts/ContextProvider";
+import React, { useState } from "react";
+import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
 import { normalRequest, pollingRequest } from "../../../helper/actionHelper";
 import { PostCheckDetail } from "./PostCheck";
 import TopologyWrapper from "../TopologyWrapper";
 
 const CommandModal = (props) => {
-   const context = useContext(GlobalContext);
+   const { context } = useGlobalContext();
    const [isRunning, setIsRunning] = useState(false);
    const [cmdResults, setCmdResults] = useState(null);
    const [action, setAction] = useState(null);

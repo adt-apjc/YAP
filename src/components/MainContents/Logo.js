@@ -1,9 +1,9 @@
-import React, { useContext, useState } from "react";
-import GlobalContext from "../contexts/ContextProvider";
+import React, { useState } from "react";
+import { useGlobalContext } from "../contexts/ContextProvider";
 import _ from "lodash";
 
 const Logo = () => {
-   const context = useContext(GlobalContext);
+   const { context, dispatch } = useGlobalContext();
    const [state, setState] = useState({
       activeEditMainTitle: false,
       titleInput: "",
@@ -12,7 +12,7 @@ const Logo = () => {
    const editTitleNameHandler = () => {
       let currentConfig = _.cloneDeep(context.config);
       currentConfig.title = state.titleInput;
-      context.updateConfig(currentConfig);
+      dispatch({ type: "loadConfig", payload: currentConfig });
       setState((prev) => ({ ...prev, activeEditMainTitle: false }));
    };
 
@@ -44,7 +44,9 @@ const Logo = () => {
          ) : (
             <div
                className={`nav-title  ${isSomeStepRunning() ? "disabled" : ""}`}
-               onClick={() => context.setCurrentStep(context.config.preface ? {} : { ...context.config.sidebar[0] })}
+               onClick={() =>
+                  dispatch({ type: "setCurrentStep", payload: context.config.preface ? {} : { ...context.config.sidebar[0] } })
+               }
             >
                {`${
                   context.config.navbar && context.config.navbar.title

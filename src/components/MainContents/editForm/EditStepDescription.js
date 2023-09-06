@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import GlobalContext from "../../contexts/ContextProvider";
+import React, { useState } from "react";
+import { useGlobalContext } from "../../contexts/ContextProvider";
 
 import AceEditor from "react-ace";
 import "ace-builds/webpack-resolver";
@@ -9,7 +9,7 @@ import "ace-builds/src-noconflict/theme-github";
 import { cloneDeep } from "lodash";
 
 const EditStepDescription = (props) => {
-   const context = useContext(GlobalContext);
+   const { context, dispatch } = useGlobalContext();
    const [state, setState] = useState({
       descriptionInput: props.initValue && props.initValue.description ? props.initValue.description.join("\n") : "",
       titleInput: props.initValue ? props.initValue.title : "",
@@ -26,7 +26,7 @@ const EditStepDescription = (props) => {
       let currentConfig = cloneDeep(context.config);
       currentConfig.mainContent[context.currentStep.name].description = state.descriptionInput.trim().split("\n");
       currentConfig.sidebar[findCurrentStepIndex()].label = state.titleInput;
-      context.updateConfig(currentConfig);
+      dispatch({ type: "loadConfig", payload: currentConfig });
       props.onHide();
    };
 

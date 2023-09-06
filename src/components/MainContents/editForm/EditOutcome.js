@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import GlobalContext from "../../contexts/ContextProvider";
+import React, { useEffect, useRef, useState } from "react";
+import { useGlobalContext } from "../../contexts/ContextProvider";
 import TopologyWrapper from "../TopologyWrapper";
 import AceEditor from "react-ace";
 import "ace-builds/webpack-resolver";
@@ -11,7 +11,7 @@ const AddCommandForm = (props) => {
    const [data, setData] = useState("");
    const [isPayloadValid, setIsPayloadValid] = useState(true);
    const [selectedCommandIndex, setSelectedCommandIndex] = useState(null);
-   const context = useContext(GlobalContext);
+   const { context } = useGlobalContext();
 
    const handleInputChange = (e) => {
       let newCommands = _.cloneDeep(props.commands);
@@ -588,7 +588,7 @@ const AddEdgeForm = (props) => {
 
 const EditOutcome = (props) => {
    const cyRef = useRef();
-   const context = useContext(GlobalContext);
+   const { context, dispatch } = useGlobalContext();
    const [outcome, setOutcome] = useState({ elements: { nodes: [], edges: [] }, commands: {}, ...props.initValue });
    const [selectedNode, setSelectedNode] = useState(null);
    const [selectedEdge, setSelectedEdge] = useState(null);
@@ -637,7 +637,7 @@ const EditOutcome = (props) => {
       console.log(currentObjectData);
       currentConfig.mainContent[context.currentStep.name].outcome.elements = { ...currentObjectData };
       currentConfig.mainContent[context.currentStep.name].outcome.commands = { ...outcome.commands };
-      context.updateConfig(currentConfig);
+      dispatch({ type: "loadConfig", payload: currentConfig });
       props.onHide();
    };
 

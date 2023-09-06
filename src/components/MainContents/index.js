@@ -1,31 +1,28 @@
 import React from "react";
-import GlobalContext from "../contexts/ContextProvider";
+import { useGlobalContext } from "../contexts/ContextProvider";
 import Preface from "./Preface/Preface";
 import DemoContent from "./DemoContent/DemoContent";
 
 import _ from "lodash";
 
-class MainContents extends React.Component {
-   render() {
-      const Context = this.context;
-      const currentStepDetails =
-         Context.currentStep.name === "cleanup"
-            ? Context.config.mainContent.cleanup
-            : Context.config.mainContent[Context.currentStep.name];
-      return (
-         <div className="container-fluid">
-            <div className="container-fluid pb-3">
-               {_.isEmpty(Context.currentStep) ? (
-                  <Preface config={Context.config.preface} />
-               ) : (
-                  <DemoContent currentStep={Context.currentStep} currentStepDetails={currentStepDetails} />
-               )}
-            </div>
-         </div>
-      );
-   }
-}
+const MainContents = () => {
+   const { context } = useGlobalContext();
+   const currentStepDetails =
+      context.currentStep.name === "cleanup"
+         ? context.config.mainContent.cleanup
+         : context.config.mainContent[context.currentStep.name];
 
-MainContents.contextType = GlobalContext;
+   return (
+      <div className="container-fluid">
+         <div className="container-fluid pb-3">
+            {_.isEmpty(context.currentStep) ? (
+               <Preface config={context.config.preface} />
+            ) : (
+               <DemoContent currentStep={context.currentStep} currentStepDetails={currentStepDetails} />
+            )}
+         </div>
+      </div>
+   );
+};
 
 export default MainContents;

@@ -1,13 +1,13 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal } from "../../helper/modalHelper";
-import GlobalContext from "../contexts/ContextProvider";
+import { useGlobalContext } from "../contexts/ContextProvider";
 import _ from "lodash";
 
 const DeleteConfirmation = (props) => {
-   const context = useContext(GlobalContext);
+   const { dispatch } = useGlobalContext();
 
    const onDeleteHandler = () => {
-      context.deleteStep(props.selectedStep.name);
+      dispatch({ type: "deleteStep", payload: { name: props.selectedStep.name } });
       props.onHide();
    };
 
@@ -36,7 +36,7 @@ const DeleteConfirmation = (props) => {
 };
 
 const SideBar = (props) => {
-   const context = useContext(GlobalContext);
+   const { context, dispatch } = useGlobalContext();
    const [state, setState] = useState({
       activeAddStep: false,
       input: "",
@@ -45,7 +45,7 @@ const SideBar = (props) => {
    });
 
    const clearStateHandler = () => {
-      context.setRunningStatus();
+      dispatch({ type: "setRunningStatus" });
       console.log("DEBUG - clear state from sidebar run");
    };
 
@@ -57,7 +57,7 @@ const SideBar = (props) => {
    };
 
    const addNewStageHandler = () => {
-      context.addStep(state.input);
+      dispatch({ type: "addStep", payload: { name: state.input } });
       setState((prev) => ({ ...prev, activeAddStep: false }));
    };
 
@@ -96,7 +96,7 @@ const SideBar = (props) => {
                   isSomeStepRunning() ? "disabled" : ""
                }`}
                style={{ fontSize: "20px" }}
-               onClick={() => context.setCurrentStep(element)}
+               onClick={() => dispatch({ type: "setCurrentStep", payload: element })}
             >
                <div className="d-flex text-center align-items-center">
                   {statusIcon}
@@ -137,9 +137,9 @@ const SideBar = (props) => {
    };
 
    useEffect(() => {
-      context.registerClearStateFunction(clearStateHandler, "sidebar");
+      dispatch({ type: "registerClearStateFunction", payload: { key: "sidebar", func: clearStateHandler } });
       return () => {
-         context.unregisterClearStateFunction("sidebar");
+         dispatch({ type: "unregisterClearStateFunction", payload: { key: "sidebar" } });
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);

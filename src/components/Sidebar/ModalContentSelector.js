@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
-import GlobalContext from "../contexts/ContextProvider";
+import React, { useEffect, useState } from "react";
+import { useGlobalContext } from "../contexts/ContextProvider";
 
 const EndpointEditor = (props) => {
    const [state, setState] = useState({ input: { name: "", baseURL: "" }, inputHeader: [] });
-   const context = useContext(GlobalContext);
+   const { dispatch } = useGlobalContext();
 
    const onChangeHandler = (e) => {
       setState((prev) => ({ ...prev, input: { ...prev.input, [e.target.name]: e.target.value } }));
@@ -16,7 +16,11 @@ const EndpointEditor = (props) => {
    };
 
    const onHeaderSaveHandler = () => {
-      context.addEndpoint(state.input.name, state.input.baseURL, state.inputHeader);
+      dispatch({
+         type: "addEndpoint",
+         payload: { name: state.input.name, baseURL: state.input.baseURL, headerList: state.inputHeader },
+      });
+
       props.onClose();
    };
 
@@ -114,7 +118,7 @@ const EndpointEditor = (props) => {
 };
 
 const EndpointViewer = (props) => {
-   const context = useContext(GlobalContext);
+   const { context, dispatch } = useGlobalContext();
    const [state, setState] = useState({ showDeleteEndpoint: [] });
 
    const onSelectHandler = (name, el) => {
@@ -150,7 +154,7 @@ const EndpointViewer = (props) => {
                         </span>
                         <span
                            className="pointer font-sm text-danger mx-2 text-hover-highlight"
-                           onClick={() => context.deleteEndpoint(endpointName)}
+                           onClick={() => dispatch({ type: "deleteEndpoint", payload: { name: endpointName } })}
                         >
                            Delete
                         </span>

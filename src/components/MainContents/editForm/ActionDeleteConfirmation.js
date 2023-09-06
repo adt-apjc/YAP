@@ -1,11 +1,15 @@
-import React, { useContext } from "react";
-import GlobalContext from "../../contexts/ContextProvider";
+import React from "react";
+import { useGlobalContext } from "../../contexts/ContextProvider";
 
 const ActionDeleteConfirmation = (props) => {
-   const context = useContext(GlobalContext);
+   const { context, dispatch } = useGlobalContext();
 
    const onDeleteHandler = () => {
-      context.deleteAction(props.initValue.tab, context.currentStep.name, props.initValue.actionIndex);
+      dispatch({
+         type: "deleteAction",
+         payload: { stepKey: context.currentStep.name, tab: props.initValue.tab, index: props.initValue.actionIndex },
+      });
+
       props.onHide();
    };
 

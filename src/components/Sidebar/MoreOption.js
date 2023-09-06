@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Modal } from "../../helper/modalHelper";
 import { Popper } from "../../helper/popperHelper";
 import ModalContentSelector from "./ModalContentSelector";
-import GlobalContext from "../contexts/ContextProvider";
+import { useGlobalContext } from "../contexts/ContextProvider";
 
 const MoreOption = (props) => {
    const [popupShow, setPopupShow] = useState(false);
@@ -10,7 +10,7 @@ const MoreOption = (props) => {
    const triggerRef = useRef();
    const warpperRef = useRef();
 
-   const context = useContext(GlobalContext);
+   const { context, dispatch } = useGlobalContext();
 
    const togglePopupShow = () => {
       setPopupShow((prev) => !prev);
@@ -40,7 +40,7 @@ const MoreOption = (props) => {
                <button
                   className="list-group-item list-group-item-action"
                   onClick={() => {
-                     context.toggleMode();
+                     dispatch({ type: "toggleMode" });
                      setPopupShow(false);
                   }}
                >
@@ -49,7 +49,7 @@ const MoreOption = (props) => {
                <button
                   className="list-group-item list-group-item-action"
                   onClick={() => {
-                     context.clearConfig();
+                     dispatch({ type: "clearConfig" });
                      setPopupShow(false);
                   }}
                >

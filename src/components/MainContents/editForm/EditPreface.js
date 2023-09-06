@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import GlobalContext from "../../contexts/ContextProvider";
+import React, { useState } from "react";
+import { useGlobalContext } from "../../contexts/ContextProvider";
 
 import AceEditor from "react-ace";
 import "ace-builds/webpack-resolver";
@@ -9,7 +9,7 @@ import "ace-builds/src-noconflict/theme-github";
 import { cloneDeep } from "lodash";
 
 const EditPreface = (props) => {
-   const context = useContext(GlobalContext);
+   const { context, dispatch } = useGlobalContext();
    const [state, setState] = useState({
       bodyArr: props.initValue ? props.initValue.config.bodyArr.join("\n") : "",
       title: props.initValue ? props.initValue.config.title : "",
@@ -31,7 +31,7 @@ const EditPreface = (props) => {
             stepDesc: state.stepDesc,
          });
       }
-      context.updateConfig(currentConfig);
+      dispatch({ type: "loadConfig", payload: currentConfig });
       props.onHide();
    };
 

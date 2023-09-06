@@ -1,142 +1,171 @@
-import React from "react";
+import React, { useEffect, useReducer } from "react";
 import config from "../../config/config.json";
+import _ from "lodash";
 
 const GlobalContext = React.createContext();
 
-export class ContextProvider extends React.Component {
-   constructor(props) {
-      super(props);
-      // Method to update state
-      this.setCurrentStep = (step) => {
-         this.setState({ currentStep: { ...step } });
-      };
-      this.toggleMode = () => {
-         this.setState({ mode: this.state.mode === "edit" ? "presentation" : "edit" });
-      };
-      this.setRunningStatus = (step = null, status = null) => {
-         if (step === null && status === null) {
-            this.setState({ runningStatus: {} });
+let initState = {
+   currentStep: config.preface ? {} : { ...config.sidebar[0] },
+   runningStatus: {},
+   clearStateFunction: {},
+   config: config,
+   mode: "edit",
+};
+
+function addAction(state, payload) {
+   let clonedState = _.cloneDeep(state);
+   if (payload.index !== null) {
+      // this block is for edit
+      clonedState.config.mainContent[payload.stepKey][payload.tab][payload.index] = payload.actionObject;
+   } else {
+      // this block is for add new action
+      if (clonedState.config.mainContent[payload.stepKey][payload.tab]) {
+         clonedState.config.mainContent[payload.stepKey][payload.tab].push(payload.actionObject);
+      } else {
+         clonedState.config.mainContent[payload.stepKey][payload.tab] = [payload.actionObject];
+      }
+   }
+   console.log(clonedState.config.mainContent[payload.stepKey][payload.tab]);
+   return clonedState;
+}
+
+function deleteAction(state, payload) {
+   let clonedState = _.cloneDeep(state);
+   state.config.mainContent[payload.stepKey][payload.tab].splice(payload.index, 1);
+   return clonedState;
+}
+
+function addStep(state, payload) {
+   let clonedState = _.cloneDeep(state);
+   let newStepName = `Step_${clonedState.config.sidebar.length + 1}`;
+   clonedState.config.sidebar.push({ name: newStepName, label: payload.name });
+   clonedState.config.mainContent[newStepName] = { preCheck: [], actions: [], postCheck: [], outcome: {} };
+   return clonedState;
+}
+function deleteStep(state, payload) {
+   let clonedState = _.cloneDeep(state);
+   clonedState.config.sidebar = clonedState.config.sidebar.filter((el) => el.name !== payload.name);
+   delete clonedState.config.mainContent[payload.name];
+   if (payload.name === clonedState.currentStep.name) {
+      return { ...clonedState, currentStep: {} };
+   } else {
+      return clonedState;
+   }
+}
+function addEndpoint(state, payload) {
+   let clonedState = _.cloneDeep(state);
+   clonedState.config.endpoints[payload.name] = {
+      baseURL: payload.baseURL,
+      headers: payload.headerList.reduce((result, item) => {
+         result[item.key] = item.value;
+         return result;
+      }, {}),
+   };
+   return clonedState;
+}
+function deleteEndpoint(state, payload) {
+   let clonedState = _.cloneDeep(state);
+   delete clonedState.config.endpoints[payload.name];
+   return clonedState;
+}
+
+function globalContextreducer(state, action) {
+   switch (action.type) {
+      case "setCurrentStep":
+         return { ...state, currentStep: { ...action.payload } };
+
+      case "toggleMode":
+         return { ...state, mode: state.mode === "edit" ? "presentation" : "edit" };
+
+      case "setRunningStatus":
+         if (!action.payload) {
+            return { ...state, runningStatus: {} };
          } else {
-            this.setState({ runningStatus: { ...this.state.runningStatus, [step]: status } }, () =>
-               window.localStorage.setItem("runningStatus", JSON.stringify(this.state.runningStatus))
-            );
+            return { ...state, runningStatus: { ...state.runningStatus, [action.payload.step]: action.payload.status } };
          }
-      };
-      this.clearStateHandler = () => {
-         for (let key in this.state.clearStateFunction) {
-            if (typeof this.state.clearStateFunction[key] === "function") {
-               this.state.clearStateFunction[key]();
+
+      case "clearStateHandler":
+         for (let key in state.clearStateFunction) {
+            if (typeof state.clearStateFunction[key] === "function") {
+               state.clearStateFunction[key]();
             }
          }
-      };
-      this.unregisterClearStateFunction = (key) => {
-         delete this.state.clearStateFunction[key];
-      };
-      this.registerClearStateFunction = (func, key) => {
-         console.log("DEBUG - register cleanup function from", key);
-         this.setState({ clearStateFunction: { ...this.state.clearStateFunction, [key]: func } });
-      };
-      this.addAction = (actionObject, tab, stepKey, index = null) => {
-         let currentConfig = this.state.config;
-         if (index !== null) {
-            // this block is for edit
-            currentConfig.mainContent[stepKey][tab][index] = actionObject;
-         } else {
-            // this block is for add new action
-            if (currentConfig.mainContent[stepKey][tab]) {
-               currentConfig.mainContent[stepKey][tab].push(actionObject);
-            } else {
-               currentConfig.mainContent[stepKey][tab] = [actionObject];
-            }
-         }
-         this.setState({ config: { ...currentConfig } });
-      };
-      this.deleteAction = (tab, stepKey, index) => {
-         let currentConfig = this.state.config;
-         currentConfig.mainContent[stepKey][tab].splice(index, 1);
-         this.setState({ config: { ...currentConfig } });
-      };
-      this.addStep = (name) => {
-         let currentConfig = this.state.config;
-         let newStepName = `Step_${currentConfig.sidebar.length + 1}`;
-         currentConfig.sidebar.push({ name: newStepName, label: name });
-         currentConfig.mainContent[newStepName] = {};
-         this.setState({ config: { ...currentConfig } });
-      };
-      this.deleteStep = (name) => {
-         let currentConfig = this.state.config;
-         currentConfig.sidebar = currentConfig.sidebar.filter((el) => el.name !== name);
-         delete currentConfig.mainContent[name];
-         if (name === this.state.currentStep.name) {
-            this.setState({ config: { ...currentConfig }, currentStep: {} });
-         } else {
-            this.setState({ config: { ...currentConfig } });
-         }
-      };
-      this.addEndpoint = (name, baseURL, headerList) => {
-         let currentConfig = this.state.config;
-         currentConfig.endpoints[name] = {
-            baseURL,
-            headers: headerList.reduce((result, item) => {
-               result[item.key] = item.value;
-               return result;
-            }, {}),
-         };
-         this.setState({ config: { ...currentConfig } });
-      };
-      this.deleteEndpoint = (name) => {
-         let currentConfig = this.state.config;
-         delete currentConfig.endpoints[name];
-         this.setState({ config: { ...currentConfig } });
-      };
-      this.updateConfig = (config) => {
-         this.setState({ config: { ...config } });
-      };
-      this.clearConfig = () => {
+         return { ...state };
+
+      case "registerClearStateFunction":
+         console.log("DEBUG - register cleanup function from", action.payload.key);
+         return { ...state, clearStateFunction: { ...state.clearStateFunction, [action.payload.key]: action.payload.func } };
+
+      case "unregisterClearStateFunction":
+         delete state.clearStateFunction[action.payload.key];
+         return { ...state };
+
+      case "addAction":
+         return { ...addAction(state, action.payload) };
+
+      case "deleteAction":
+         return { ...deleteAction(state, action.payload) };
+
+      case "addStep":
+         return { ...addStep(state, action.payload) };
+
+      case "deleteStep":
+         return { ...deleteStep(state, action.payload) };
+
+      case "addEndpoint":
+         return { ...addEndpoint(state, action.payload) };
+
+      case "deleteEndpoint":
+         return { ...deleteEndpoint(state, action.payload) };
+
+      case "loadConfig":
+         return { ...state, config: { ...action.payload } };
+
+      case "loadRunningStatus":
+         return { ...state, runningStatus: { ...action.payload } };
+
+      case "clearConfig":
          window.localStorage.clear();
-         this.setState({ config: { ...config }, currentStep: {} }, this.clearStateHandler);
-      };
-      // Context state
-      this.state = {
-         currentStep: config.preface ? {} : { ...config.sidebar[0] },
-         runningStatus: {},
-         clearStateFunction: {},
-         config: config,
-         mode: "edit",
-         toggleMode: this.toggleMode,
-         setCurrentStep: this.setCurrentStep,
-         setRunningStatus: this.setRunningStatus,
-         clearStateHandler: this.clearStateHandler,
-         unregisterClearStateFunction: this.unregisterClearStateFunction,
-         registerClearStateFunction: this.registerClearStateFunction,
-         addAction: this.addAction,
-         deleteAction: this.deleteAction,
-         addStep: this.addStep,
-         deleteStep: this.deleteStep,
-         addEndpoint: this.addEndpoint,
-         deleteEndpoint: this.deleteEndpoint,
-         updateConfig: this.updateConfig,
-         clearConfig: this.clearConfig,
-      };
-   }
+         window.sessionStorage.clear();
+         for (let key in state.clearStateFunction) {
+            if (typeof state.clearStateFunction[key] === "function") {
+               state.clearStateFunction[key]();
+            }
+         }
+         return { ...state, config: { ...config }, currentStep: {} };
 
-   componentDidMount() {
-      const consigData = window.localStorage.getItem("configData");
-      const runningStatus = window.localStorage.getItem("runningStatus");
-      // load config from localStorage if exist
-      if (consigData) {
-         this.setState({ config: { ...JSON.parse(consigData) } });
-      }
-      // load runningStatus from localStorage if exist
-      if (runningStatus) {
-         this.setState({ runningStatus: { ...JSON.parse(runningStatus) } });
-      }
-   }
-
-   render() {
-      const { children } = this.props;
-      return <GlobalContext.Provider value={this.state}>{children}</GlobalContext.Provider>;
+      default:
+         throw new Error(`Unhandled action type: ${action.type}`);
    }
 }
 
-export default GlobalContext;
+function useGlobalContext() {
+   const context = React.useContext(GlobalContext);
+
+   if (!context) {
+      throw new Error("useGlobalContext must be used within a ContextProvider");
+   }
+   return { context: context.state, dispatch: context.dispatch };
+}
+
+function ContextProvider({ children }) {
+   const [state, dispatch] = useReducer(globalContextreducer, initState);
+   useEffect(() => {
+      const configData = window.localStorage.getItem("configData");
+      const runningStatus = window.localStorage.getItem("runningStatus");
+      // load config from localStorage if exist
+      if (configData) dispatch({ type: "loadConfig", payload: JSON.parse(configData) });
+
+      // load runningStatus from localStorage if exist
+      if (runningStatus) dispatch({ type: "loadRunningStatus", payload: JSON.parse(runningStatus) });
+   }, []);
+
+   useEffect(() => {
+      if (!_.isEmpty(state.runningStatus)) window.localStorage.setItem("runningStatus", JSON.stringify(state.runningStatus));
+   }, [JSON.stringify(state.runningStatus)]);
+
+   const value = { state, dispatch };
+   return <GlobalContext.Provider value={value}>{children}</GlobalContext.Provider>;
+}
+
+export { ContextProvider, useGlobalContext };

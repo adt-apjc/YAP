@@ -1,12 +1,12 @@
-import React, { useContext } from "react";
+import React from "react";
 import Logo from "../MainContents/Logo";
-import GlobalContext from "../contexts/ContextProvider";
+import { useGlobalContext } from "../contexts/ContextProvider";
 import Actions from "./Actions";
 import About from "./About";
 import Settings from "./Settings";
 
 const NavigationBar = () => {
-   const context = useContext(GlobalContext);
+   const { context } = useGlobalContext();
 
    return (
       <div

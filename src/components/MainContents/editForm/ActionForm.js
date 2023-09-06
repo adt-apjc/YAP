@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import GlobalContext from "../../contexts/ContextProvider";
+import React, { useEffect, useState } from "react";
+import { useGlobalContext } from "../../contexts/ContextProvider";
 import AceEditor from "react-ace";
 import _ from "lodash";
 import "ace-builds/webpack-resolver";
@@ -188,7 +188,7 @@ const VariableForm = (props) => {
 };
 
 const ActionForm = (props) => {
-   const context = useContext(GlobalContext);
+   const { context, dispatch } = useGlobalContext();
    const [input, setInput] = useState({
       type: "request",
       useEndpoint: "",
@@ -230,8 +230,11 @@ const ActionForm = (props) => {
 
       const { initValue } = props;
       const actionIndex = initValue ? initValue.actionIndex : null;
-
-      context.addAction(input, props.tab, context.currentStep.name, actionIndex);
+      console.log(actionIndex);
+      dispatch({
+         type: "addAction",
+         payload: { stepKey: context.currentStep.name, tab: props.tab, index: actionIndex, actionObject: input },
+      });
       props.onHide();
    };
 

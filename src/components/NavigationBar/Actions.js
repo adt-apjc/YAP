@@ -1,11 +1,11 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import WithDropdown from "../Popper/Dropdown";
 import _ from "lodash";
-import GlobalContext from "../contexts/ContextProvider";
+import { useGlobalContext } from "../contexts/ContextProvider";
 import { saveAs } from "file-saver";
 
 const ActionTooltipContent = ({ setIsOpen }) => {
-   const context = useContext(GlobalContext);
+   const { context, dispatch } = useGlobalContext();
    const importRef = useRef();
 
    const exportProjectHandler = () => {
@@ -32,9 +32,9 @@ const ActionTooltipContent = ({ setIsOpen }) => {
                const config = JSON.parse(contentString);
                console.log("DEBUG", config);
                // reset currentStep, running Status and clear currentState before load configuration
-               context.clearConfig();
+               dispatch({ type: "clearConfig" });
                // change config context
-               context.updateConfig(config);
+               dispatch({ type: "loadConfig", payload: config });
                window.localStorage.setItem("configData", contentString);
                importRef.current.value = "";
                setIsOpen(false);
@@ -54,9 +54,9 @@ const ActionTooltipContent = ({ setIsOpen }) => {
             className="custom-dropdown"
             onClick={() => {
                if (_.isEmpty(context.config.mainContent.cleanup)) {
-                  context.clearStateHandler();
+                  dispatch({ type: "clearStateHandler" });
                } else {
-                  context.setCurrentStep({ name: "cleanup", label: "clean up" });
+                  dispatch({ type: "setCurrentStep", payload: { name: "cleanup", label: "clean up" } });
                }
             }}
          >

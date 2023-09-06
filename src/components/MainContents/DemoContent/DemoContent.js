@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import GlobalContext from "../../contexts/ContextProvider";
+import React, { useEffect, useState } from "react";
+import { useGlobalContext } from "../../contexts/ContextProvider";
 import { useDidUpdateEffect } from "../../contexts/CustomHooks";
 import { normalRequest, pollingRequest } from "../../../helper/actionHelper";
 import { Modal } from "../../../helper/modalHelper";
@@ -13,7 +13,7 @@ import PreCheck from "./PreCheck";
 import RunButtonComponent from "../RunButtonComponent";
 
 const DemoContent = (props) => {
-   const context = useContext(GlobalContext);
+   const { context, dispatch } = useGlobalContext();
    const [modal, setModal] = useState({ modalShow: false, modalContentType: null, paramValues: null });
    const [currentRunning, setCurrentRunning] = useState({ preCheck: null, action: null, postCheck: null });
    const [isPreCheckCompleted, setIsPreCheckCompleted] = useState({ cleanup: false });
@@ -44,7 +44,7 @@ const DemoContent = (props) => {
       if (currentStepDetails.preCheck.length === 0) return true;
 
       // set running status in global context
-      context.setRunningStatus(props.currentStep.name, "running");
+      dispatch({ type: "setRunningStatus", payload: { step: props.currentStep.name, status: "running" } });
 
       // clear old state before start
       setCurrentRunning((prev) => ({ ...prev, preCheck: targetIndex >= 0 ? targetIndex : null }));
@@ -97,6 +97,7 @@ const DemoContent = (props) => {
             if (!currentStepDetails.continueOnFail) break;
          }
       }
+      dispatch({ type: "setRunningStatus", payload: { step: props.currentStep.name, status: "" } });
       return isCompleted;
    };
 
@@ -108,7 +109,7 @@ const DemoContent = (props) => {
       if (currentStepDetails.actions.length === 0) return true;
 
       // set running status in global context
-      context.setRunningStatus(props.currentStep.name, "running");
+      dispatch({ type: "setRunningStatus", payload: { step: props.currentStep.name, status: "running" } });
 
       // clear running state before start
       setCurrentRunning((prev) => ({ ...prev, action: targetIndex >= 0 ? targetIndex : null }));
@@ -161,6 +162,7 @@ const DemoContent = (props) => {
             if (!currentStepDetails.continueOnFail) break;
          }
       }
+      dispatch({ type: "setRunningStatus", payload: { step: props.currentStep.name, status: "" } });
       return isCompleted;
    };
 
@@ -172,7 +174,7 @@ const DemoContent = (props) => {
       if (currentStepDetails.postCheck.length === 0) return true;
 
       // set running status in global context
-      context.setRunningStatus(props.currentStep.name, "running");
+      dispatch({ type: "setRunningStatus", payload: { step: props.currentStep.name, status: "running" } });
 
       // clear old state before start
       setCurrentRunning((prev) => ({ ...prev, postCheck: targetIndex >= 0 ? targetIndex : null }));
@@ -226,6 +228,7 @@ const DemoContent = (props) => {
             if (!currentStepDetails.continueOnFail) break;
          }
       }
+      dispatch({ type: "setRunningStatus", payload: { step: props.currentStep.name, status: "" } });
       return isCompleted;
    };
 
@@ -238,20 +241,20 @@ const DemoContent = (props) => {
       // Run pre checks
       let isPreCheckCompleted = await runPreCheckWorkflowHandler();
       if (!isPreCheckCompleted && !props.currentStepDetails.continueOnFail) {
-         context.setRunningStatus(props.currentStep.name, "fail");
+         dispatch({ type: "setRunningStatus", payload: { step: props.currentStep.name, status: "fail" } });
          return;
       }
 
       // Run action when pre check is successful
       let isActionCompleted = await runActionWorkflowHandler();
       if (!isActionCompleted && !props.currentStepDetails.continueOnFail) {
-         context.setRunningStatus(props.currentStep.name, "fail");
+         dispatch({ type: "setRunningStatus", payload: { step: props.currentStep.name, status: "fail" } });
          return;
       }
 
       // if it is cleanup module also run clearStateHandler() after runAction complete successfully
       if (props.currentStep.name === "cleanup" && isPreCheckCompleted && isActionCompleted) {
-         context.clearStateHandler();
+         dispatch({ type: "clearStateHandler" });
          sessionStorage.clear();
       }
 
@@ -267,7 +270,7 @@ const DemoContent = (props) => {
 
    useEffect(() => {
       const savedState = JSON.parse(window.localStorage.getItem("mainContentState"));
-      context.registerClearStateFunction(clearStateHandler, "demoContent");
+      dispatch({ type: "registerClearStateFunction", payload: { key: "demoContent", func: clearStateHandler } });
       // load config from localStorage if exist
       if (savedState) {
          setIsPreCheckCompleted(savedState.isPreCheckCompleted);
@@ -278,7 +281,7 @@ const DemoContent = (props) => {
          setPostCheckResults(savedState.postCheckResults);
          console.log("DEBUG - load value from localStorage");
       }
-      return () => context.unregisterClearStateFunction("demoContent");
+      return () => dispatch({ type: "unregisterClearStateFunction", payload: { key: "demoContent" } });
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
@@ -327,14 +330,15 @@ const DemoContent = (props) => {
       if (props.currentStepDetails.preCheck.length === 0) isAllPreCheckCompleted = true;
       if (props.currentStepDetails.actions.length === 0) isAllActionCompleted = true;
       if (props.currentStepDetails.postCheck.length === 0) isAllPostCheckCompleted = true;
+
       if (isAllPreCheckCompleted !== undefined && isAllActionCompleted !== undefined && isAllPostCheckCompleted !== undefined)
-         context.setRunningStatus(
-            props.currentStep.name,
-            isAllPreCheckCompleted && isAllActionCompleted && isAllPostCheckCompleted ? "success" : "fail",
-         );
-      else {
-         context.setRunningStatus(props.currentStep.name, "");
-      }
+         dispatch({
+            type: "setRunningStatus",
+            payload: {
+               step: props.currentStep.name,
+               status: isAllPreCheckCompleted && isAllActionCompleted && isAllPostCheckCompleted ? "success" : "fail",
+            },
+         });
    }, [preCheckResults, actionResults, postCheckResults]);
 
    let description = props.currentStepDetails.description;

@@ -1,6 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import ReactJson from "@uiw/react-json-view";
-import GlobalContext from "../../contexts/ContextProvider";
+import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
 import ModalContentSelector from "../editForm/ModalContentSelector";
 import RunButtonComponent from "../RunButtonComponent";
@@ -177,7 +177,7 @@ export const PostCheckDetail = (props) => {
 };
 
 const PostCheck = (props) => {
-   const context = useContext(GlobalContext);
+   const { context } = useGlobalContext();
    const [modal, setModal] = useState({ modalShow: false, modalContentType: null, selectedAction: null });
    const [curExpandRow, setCurExpandRow] = useState([]);
 
