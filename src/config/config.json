@@ -14,6 +14,12 @@
          "label": "Enable Connectivity"
       }
    ],
+   "navbar": {
+      "logoUrl": "",
+      "title": "",
+      "navBgColor": "",
+      "navFontColor": ""
+   },
    "preface": [
       {
          "title": "Yet Another Presentation",
@@ -62,6 +68,7 @@
       "step_1": {
          "description": ["Create a new project in the mockup server."],
          "continueOnFail": false,
+         "prefaceRef": 1,
          "preCheck": [],
          "actions": [
             {
@@ -128,6 +135,7 @@
       "step_2": {
          "description": ["Add to the project two new routers."],
          "continueOnFail": false,
+         "prefaceRef": 2,
          "preCheck": [
             {
                "type": "request",
@@ -328,6 +336,7 @@
             "Modify the status of the routers'interfaces from down to up to enable connectivity betweeen the devices."
          ],
          "continueOnFail": false,
+         "prefaceRef": 3,
          "preCheck": [],
          "actions": [
             {
