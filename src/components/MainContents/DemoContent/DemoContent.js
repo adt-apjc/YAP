@@ -41,6 +41,7 @@ const DemoContent = (props) => {
       let { currentStepDetails } = props;
       // validate if it has preCheck configured or not
       if (!currentStepDetails.preCheck) return null;
+      if (currentStepDetails.preCheck.length === 0) return true;
 
       // set running status in global context
       context.setRunningStatus(props.currentStep.name, "running");
@@ -96,9 +97,6 @@ const DemoContent = (props) => {
             if (!currentStepDetails.continueOnFail) break;
          }
       }
-
-      // set running status in global context
-      context.setRunningStatus(props.currentStep.name, "");
       return isCompleted;
    };
 
@@ -107,6 +105,7 @@ const DemoContent = (props) => {
       let { currentStepDetails } = props;
       // validate if it has action configured or not
       if (!currentStepDetails.actions) return null;
+      if (currentStepDetails.actions.length === 0) return true;
 
       // set running status in global context
       context.setRunningStatus(props.currentStep.name, "running");
@@ -162,9 +161,6 @@ const DemoContent = (props) => {
             if (!currentStepDetails.continueOnFail) break;
          }
       }
-
-      // set running status in global context
-      context.setRunningStatus(props.currentStep.name, "");
       return isCompleted;
    };
 
@@ -173,6 +169,7 @@ const DemoContent = (props) => {
       let { currentStepDetails } = props;
       // validate if it has postCheck configured or not
       if (!currentStepDetails.postCheck) return null;
+      if (currentStepDetails.postCheck.length === 0) return true;
 
       // set running status in global context
       context.setRunningStatus(props.currentStep.name, "running");
@@ -229,9 +226,6 @@ const DemoContent = (props) => {
             if (!currentStepDetails.continueOnFail) break;
          }
       }
-
-      // set running status in global context
-      context.setRunningStatus(props.currentStep.name, "");
       return isCompleted;
    };
 
@@ -325,12 +319,19 @@ const DemoContent = (props) => {
          setIsActionCompleted((prev) => ({ ...prev, [props.currentStep.name]: isAllActionCompleted }));
       if (isAllPostCheckCompleted !== undefined)
          setIsPostCheckCompleted((prev) => ({ ...prev, [props.currentStep.name]: isAllPostCheckCompleted }));
+
       // set globalContext status on sidebar
+      if (props.currentStepDetails.preCheck.length === 0) isAllPreCheckCompleted = true;
+      if (props.currentStepDetails.actions.length === 0) isAllActionCompleted = true;
+      if (props.currentStepDetails.postCheck.length === 0) isAllPostCheckCompleted = true;
       if (isAllPreCheckCompleted !== undefined && isAllActionCompleted !== undefined && isAllPostCheckCompleted !== undefined)
          context.setRunningStatus(
             props.currentStep.name,
             isAllPreCheckCompleted && isAllActionCompleted && isAllPostCheckCompleted ? "success" : "fail",
          );
+      else {
+         context.setRunningStatus(props.currentStep.name, "");
+      }
    }, [preCheckResults, actionResults, postCheckResults]);
 
    let description = props.currentStepDetails.description;
