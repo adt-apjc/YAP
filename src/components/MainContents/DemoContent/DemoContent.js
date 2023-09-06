@@ -231,7 +231,9 @@ const DemoContent = (props) => {
 
    const startWorkflowHandler = async () => {
       // clear complete status of current step before start
-      clearStateHandler();
+      setPreCheckResults((prev) => ({ ...prev, [props.currentStep.name]: undefined }));
+      setActionResults((prev) => ({ ...prev, [props.currentStep.name]: undefined }));
+      setPostCheckResults((prev) => ({ ...prev, [props.currentStep.name]: undefined }));
 
       // Run pre checks
       let isPreCheckCompleted = await runPreCheckWorkflowHandler();
