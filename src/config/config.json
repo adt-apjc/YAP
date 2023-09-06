@@ -257,8 +257,7 @@
                      "type": "bodyContain",
                      "value": "Success rate is 0 percent"
                   }
-               ],
-               "match": {}
+               ]
             }
          ],
          "outcome": {
@@ -416,8 +415,7 @@
                      "type": "bodyContain",
                      "value": "Success rate is 100 percent"
                   }
-               ],
-               "match": {}
+               ]
             }
          ],
          "outcome": {
@@ -509,8 +507,7 @@
                      "type": "codeIs",
                      "value": ["200"]
                   }
-               ],
-               "match": {}
+               ]
             }
          ],
          "postCheck": []
