@@ -75,23 +75,25 @@ const replaceStrWithParams = (text) => {
    if (typeof text === "string") {
       let match = text.match(regex);
       if (match) {
+         let replacedText = text;
          for (let varname of match) {
             let stripedVarname = varname.replace(/[{}]/g, "");
-            let replacedText = text.replace(varname, sessionStorage.getItem(stripedVarname));
+            replacedText = replacedText.replace(varname, sessionStorage.getItem(stripedVarname));
             console.log("DEBUG - params replaced", replacedText);
-            return replacedText;
          }
+         return replacedText;
       }
    } else if (typeof text === "object") {
       let strText = JSON.stringify(text);
       let match = strText.match(regex);
       if (match) {
+         let replacedText = strText;
          for (let varname of match) {
             let stripedVarname = varname.replace(/[{}]/g, "");
-            let replacedText = strText.replace(varname, sessionStorage.getItem(stripedVarname));
+            replacedText = replacedText.replace(varname, sessionStorage.getItem(stripedVarname));
             console.log("DEBUG - params replaced", replacedText);
-            return JSON.parse(replacedText);
          }
+         return JSON.parse(replacedText);
       }
    }
    // return original one if not match
