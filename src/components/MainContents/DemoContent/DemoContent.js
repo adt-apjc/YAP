@@ -250,6 +250,7 @@ const DemoContent = (props) => {
       // if it is cleanup module also run clearStateHandler() after runAction complete successfully
       if (props.currentStep.name === "cleanup" && isPreCheckCompleted && isActionCompleted) {
          context.clearStateHandler();
+         sessionStorage.clear();
       }
 
       // after action complete delay 500 ms and start post check
