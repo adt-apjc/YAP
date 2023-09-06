@@ -66,7 +66,7 @@ const ActionTooltipContent = ({ setIsOpen }) => {
 
          {context.mode === "edit" && (
             <>
-               <hr className="m-0" />
+               <hr className="mx-0 my-2" />
                <div
                   className="custom-dropdown"
                   onClick={() => {

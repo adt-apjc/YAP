@@ -136,16 +136,6 @@ span {
    pointer-events: none;
 }
 
-.step-label-text {
-   font-size: 13px;
-   color: #212529;
-}
-
-.step-label-text.curr-selected {
-   font-weight: 700;
-   color: var(--side-bg-color);
-}
-
 .status-icon {
    width: 28px;
    line-height: 25px;
@@ -156,16 +146,49 @@ span {
    border: 1px solid var(--bs-gray-500);
 }
 
-.status-icon.normal {
-   border: 1px solid var(--side-bg-color);
-   font-weight: 700;
-}
-
 .status-icon.curr-selected {
    background-color: var(--side-bg-color);
    color: #fef6f9;
-   border: 1px solid var(--side-bg-color);
-   font-weight: 700;
+   font-weight: 600;
+}
+
+.step-label-text {
+   font-size: 13px;
+   color: #212529;
+}
+
+.step-label-text.curr-selected {
+   font-weight: 600;
+   color: var(--side-bg-color);
+}
+
+.step-label-text.bold {
+   font-weight: 600;
+}
+
+.icon-success {
+   border: 1.5px solid #212529;
+   font-weight: 1000;
+}
+
+.status-icon.normal {
+   border: 1.5px solid var(--side-bg-color);
+   font-weight: 600;
+}
+
+.status-icon.normal {
+   border: 1.5px solid var(--side-bg-color);
+   font-weight: 600;
+}
+
+.status-icon.bold {
+   border: 1.5px solid #212529;
+   font-weight: 600;
+}
+
+.delete-step {
+   font-weight: 600;
+   color: var(--side-bg-color);
 }
 
 /* 
@@ -252,23 +275,26 @@ span {
 }
 
 .custom-dropdown {
-   padding: 4px;
-   margin: 4px 2px;
+   position: relative;
+   padding: 6px 8px;
+   margin: 4px 1px;
    text-align: left;
-   width: 100%;
    cursor: pointer;
    font-size: 0.875em;
+   width: 100%;
 }
 
 .custom-dropdown:hover {
    background-color: rgba(152, 152, 154, 0.187);
+   padding-right: 10px;
    border-radius: 6px;
-   padding: 4px;
+   padding: 6px 8px;
+   margin: 4px 1px;
 }
 
 .custom-dropdown-text {
-   padding: 4px;
-   margin: 4px 2px;
+   padding: 6px;
+   margin-right: 8px;
    text-align: left;
    width: 100%;
    font-size: 0.875em;

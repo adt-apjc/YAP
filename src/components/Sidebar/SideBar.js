@@ -66,19 +66,19 @@ const SideBar = (props) => {
          let statusIcon;
          if (context.runningStatus[element.name] === "success") {
             statusIcon = (
-               <div className={`status-icon text-success ${context.currentStep.name === element.name ? "normal" : ""} `}>
+               <div className={`status-icon text-success  ${context.currentStep.name === element.name ? "normal" : "bold"} `}>
                   <i className="fas fa-check" />
                </div>
             );
          } else if (context.runningStatus[element.name] === "running") {
             statusIcon = (
-               <div className={`status-icon text-primary ${context.currentStep.name === element.name ? "normal" : ""} `}>
+               <div className={`status-icon text-primary ${context.currentStep.name === element.name ? "normal" : "bold"} `}>
                   <i className={"fas fa-spinner fa-spin"} />
                </div>
             );
          } else if (context.runningStatus[element.name] === "fail") {
             statusIcon = (
-               <div className={`status-icon text-danger ${context.currentStep.name === element.name ? "normal" : ""} `}>
+               <div className={`status-icon text-danger ${context.currentStep.name === element.name ? "normal" : "bold"} `}>
                   <i className="fas fa-times" />
                </div>
             );
@@ -103,6 +103,10 @@ const SideBar = (props) => {
                   <span
                      className={`step-label-text text-nowrap ${isSomeStepRunning() ? "disabled" : ""} ${
                         context.currentStep.name === element.name ? "curr-selected " : ""
+                     } ${
+                        context.runningStatus[element.name] === "success" || context.runningStatus[element.name] === "fail"
+                           ? "bold"
+                           : ""
                      }`}
                   >
                      {element.label}
@@ -110,7 +114,17 @@ const SideBar = (props) => {
                </div>
                {context.mode === "edit" && (
                   <i
-                     className="fal fa-trash fa-sm ms-2 icon-hover-highlight"
+                     title="delete"
+                     className={`step-label-text fal fa-trash-alt fa-sm ms-2 icon-hover-highlight ${
+                        context.currentStep.name === element.name ? "curr-selected" : ""
+                     }
+                     ${
+                        context.runningStatus[element.name] === "success" || context.runningStatus[element.name] === "fail"
+                           ? "bold"
+                           : ""
+                     }
+                     ${isSomeStepRunning() ? "disabled" : ""}
+                     `}
                      onClick={(e) => {
                         e.stopPropagation();
                         setState((prev) => ({ ...prev, modalShow: true, selectedStep: element }));
