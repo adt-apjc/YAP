@@ -24,12 +24,19 @@ const PrefaceContent = ({ config, index }) => {
 const Preface = (props) => {
    const { context } = useGlobalContext();
    const [state, setState] = useState({
-      preface: context.config.preface[0],
-      index: 0,
+      preface: props.prefaceRef ? context.config.preface[props.prefaceRef] : context.config.preface[0],
+      index: props.prefaceRef ? props.prefaceRef : 0,
       modalShow: false,
       modalContentType: null,
       paramValues: null,
    });
+
+   useEffect(() => {
+      console.log(">>>>", props.prefaceRef);
+      setState({ ...state, index: props.prefaceRef, preface: context.config.preface[props.prefaceRef] });
+   }, [props.prefaceRef]);
+
+   console.log(state);
 
    useEffect(() => {
       setState({ ...state, preface: context.config.preface[state.index] }); // eslint-disable-next-line react-hooks/exhaustive-deps

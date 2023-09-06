@@ -304,3 +304,47 @@ span {
    color: var(--bs-gray-500);
    cursor: none;
 }
+
+.canvas-container {
+   position: absolute;
+   z-index: 1000;
+}
+
+.toggle-canvas {
+   display: flex;
+   position: fixed;
+   align-items: center;
+   top: var(--navbar-height);
+   margin-top: 1px;
+   height: 28px;
+   background-color: #fafafa;
+   padding: 2px;
+   border-radius: 0px 5px 5px 0px;
+   color: var(--side-bg-color);
+   box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2);
+   border: 1px solid #fef6f949;
+}
+
+.toggle-canvas:hover {
+   background-color: rgba(152, 152, 154, 0.187);
+}
+
+.toggle-canvas.open {
+   position: absolute;
+   top: -1px;
+   right: -21px;
+}
+
+.canvas-window.open {
+   display: flex;
+   box-sizing: border-box;
+   position: fixed;
+   top: var(--navbar-height);
+   height: calc(100% - var(--navbar-height));
+   width: calc(100% - var(--side-width) - 150px);
+   box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2);
+   border-radius: 0px 0px 12px 0px;
+   z-index: 1000;
+   background-color: #f6f8fa;
+   border: 1px solid #eaeaea;
+}
