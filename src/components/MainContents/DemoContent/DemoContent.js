@@ -22,7 +22,7 @@ const DemoContent = (props) => {
    const [preCheckResults, setPreCheckResults] = useState({ cleanup: {} });
    const [actionResults, setActionResults] = useState({ cleanup: {} });
    const [postCheckResults, setPostCheckResults] = useState({ cleanup: {} });
-   const [sectionExpand, setSectionExpand] = useState({ preCheck: false, action: false, postCheck: false, outcome: false });
+   const [sectionExpand, setSectionExpand] = useState({ preCheck: false, action: false, postCheck: false, outcome: true });
 
    const clearStateHandler = () => {
       setIsPreCheckCompleted({ cleanup: false });
@@ -265,7 +265,7 @@ const DemoContent = (props) => {
    };
 
    useEffect(() => {
-      setSectionExpand({ preCheck: false, action: false, postCheck: false, outcome: false });
+      setSectionExpand({ preCheck: false, action: false, postCheck: false, outcome: true });
    }, [props.currentStep.name]);
 
    useEffect(() => {
@@ -296,7 +296,7 @@ const DemoContent = (props) => {
             isPreCheckCompleted,
             isActionCompleted,
             isPostCheckCompleted,
-         }),
+         })
       );
       let isAllPreCheckCompleted = undefined;
       let isAllActionCompleted = undefined;

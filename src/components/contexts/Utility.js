@@ -13,24 +13,36 @@ export const getStringFromObject = (obj, path) => {
 };
 
 export const getVariableDetails = (request) => {
-   let varDetails = [];
-   // when user set a variable with regex expression
-   // the value of the set variable will be coming from the response
+   // A YAP variable may come from a storeAs statement, a URL and potentially a body statement
+
+   const variables = new Set(); // using set to avoid to duplicate the variable string in the returned array of objects
+
+   // when user set a variable with regex expression the value of the set variable will be coming from the response
    // and will be stored and used in succeding request
-   let varKeyToMatch = (request.match || request.match !== undefined) && `${request.match.storeAs}`;
-   if (varKeyToMatch) {
-      // get variable value from session storage
-      const val = window.sessionStorage.getItem(varKeyToMatch);
-      if (val || val !== null || val !== undefined) varDetails.push({ key: varKeyToMatch, val });
+
+   if ((request.match || request.match !== undefined) && `${request.match.storeAs}`) variables.add(request.match.storeAs);
+
+   // when user used the variable as params in url i.e "{{}}" to be used in the API request
+   // value will be coming from the previous response
+
+   const regexp = /{{[0-9A-Za-z]+}}/g;
+
+   const variablesInUrl = request.url.match(regexp) || [];
+   for (const item of variablesInUrl) {
+      variables.add(item.slice(2, item.length - 2));
    }
 
-   // when user used the variable as params in url i.e "{{}}"
-   // to be used in the API request
-   // value will be coming from the previous response
-   let variableKeyAsParam = request.url.split("/").find((e) => e.includes("{{"));
-   if (variableKeyAsParam || variableKeyAsParam !== undefined) {
-      const val = window.sessionStorage.getItem(variableKeyAsParam.replace(/[^a-zA-Z ]/g, ""));
-      if (val || val !== null || val !== undefined) varDetails.push({ key: variableKeyAsParam, val });
+   // Considering use case where the variable is in the request body
+
+   const variablesInRequestBody = JSON.stringify(request.data).match(regexp) || [];
+   for (const item of variablesInRequestBody) {
+      variables.add(item.slice(2, item.length - 2));
+   }
+
+   // Finally converting the set of variables in an array of object, adding the variable value
+   let varDetails = [];
+   for (const variable of variables) {
+      varDetails.push({ key: variable, val: window.sessionStorage.getItem(variable) });
    }
 
    return varDetails;

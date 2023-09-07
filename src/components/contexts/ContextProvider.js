@@ -9,7 +9,7 @@ let initState = {
    runningStatus: {},
    clearStateFunction: {},
    config: config,
-   mode: "edit",
+   mode: "presentation",
 };
 
 function addAction(state, payload) {
