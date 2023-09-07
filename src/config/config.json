@@ -104,33 +104,35 @@
             }
          ],
          "postCheck": [],
-         "outcome": {
-            "summaryText": "A new clean project has been created - Click on the highligher cloud and execute the get details command.",
-            "elements": {
-               "nodes": [
-                  {
-                     "data": { "id": "Project", "label": "My New Project" },
-                     "position": { "x": 400, "y": -100 },
-                     "classes": "size-xxxlg-rect highlight l3vpn"
-                  }
-               ]
-            },
-            "commands": {
-               "Project": [
-                  {
-                     "type": "request",
-                     "useEndpoint": "MOCKUP",
-                     "displayResponseAs": "json",
-                     "objectPath": "",
-                     "title": "get project detials",
-                     "url": "/api/project/{{projectId}}",
-                     "method": "get",
-                     "expect": [],
-                     "data": {}
-                  }
-               ]
+         "outcome": [
+            {
+               "summaryText": "A new clean project has been created - Click on the highligher cloud and execute the get details command.",
+               "elements": {
+                  "nodes": [
+                     {
+                        "data": { "id": "Project", "label": "My New Project" },
+                        "position": { "x": 400, "y": -100 },
+                        "classes": "size-xxxlg-rect highlight l3vpn"
+                     }
+                  ]
+               },
+               "commands": {
+                  "Project": [
+                     {
+                        "type": "request",
+                        "useEndpoint": "MOCKUP",
+                        "displayResponseAs": "json",
+                        "objectPath": "",
+                        "title": "get project detials",
+                        "url": "/api/project/{{projectId}}",
+                        "method": "get",
+                        "expect": [],
+                        "data": {}
+                     }
+                  ]
+               }
             }
-         }
+         ]
       },
       "step_2": {
          "description": ["Add to the project two new routers."],
@@ -260,75 +262,77 @@
                ]
             }
          ],
-         "outcome": {
-            "summaryText": "Two routers are added but there is no connectivity. Test connectivity with ping command on Node_1 and check the interface status.",
-            "elements": {
-               "nodes": [
-                  {
-                     "data": { "id": "Project", "label": "My New Project" },
-                     "position": { "x": 50, "y": 0 },
-                     "classes": "size-xxxlg-rect l3vpn"
-                  },
-                  {
-                     "data": { "id": "Node_1", "label": "Node_1" },
-                     "position": { "x": -100, "y": 40 },
-                     "classes": "size-lg highlight router"
-                  },
-                  {
-                     "data": { "id": "Node_2", "label": "Node_2" },
-                     "position": { "x": 200, "y": 40 },
-                     "classes": "size-lg router"
-                  }
-               ],
-               "edges": [
-                  {
-                     "data": { "source": "Node_1", "target": "Node_2" },
-                     "classes": "dashed"
-                  }
-               ]
-            },
-            "commands": {
-               "Project": [
-                  {
-                     "type": "request",
-                     "useEndpoint": "MOCKUP",
-                     "displayResponseAs": "json",
-                     "objectPath": "",
-                     "title": "get project details",
-                     "url": "/api/project/{{projectId}}",
-                     "method": "get",
-                     "expect": [],
-                     "data": {}
-                  }
-               ],
-               "Node_1": [
-                  {
-                     "type": "request",
-                     "useEndpoint": "MOCKUP",
-                     "displayResponseAs": "json",
-                     "objectPath": "",
-                     "title": "get router details",
-                     "url": "/api/project/{{projectId}}/router/{{routerId1}}",
-                     "method": "get",
-                     "data": {}
-                  },
-                  {
-                     "type": "request",
-                     "useEndpoint": "MOCKUP",
-                     "displayResponseAs": "json",
-                     "objectPath": "",
-                     "title": "Ping Node_2 interface",
-                     "url": "api/project/{{projectId}}/router/{{routerId1}}/live-status/exec/any",
-                     "method": "post",
-                     "data": {
-                        "input": {
-                           "args": "ping 1.1.1.2 source 1.1.1.1"
+         "outcome": [
+            {
+               "summaryText": "Two routers are added but there is no connectivity. Test connectivity with ping command on Node_1 and check the interface status.",
+               "elements": {
+                  "nodes": [
+                     {
+                        "data": { "id": "Project", "label": "My New Project" },
+                        "position": { "x": 50, "y": 0 },
+                        "classes": "size-xxxlg-rect l3vpn"
+                     },
+                     {
+                        "data": { "id": "Node_1", "label": "Node_1" },
+                        "position": { "x": -100, "y": 40 },
+                        "classes": "size-lg highlight router"
+                     },
+                     {
+                        "data": { "id": "Node_2", "label": "Node_2" },
+                        "position": { "x": 200, "y": 40 },
+                        "classes": "size-lg router"
+                     }
+                  ],
+                  "edges": [
+                     {
+                        "data": { "source": "Node_1", "target": "Node_2" },
+                        "classes": "dashed"
+                     }
+                  ]
+               },
+               "commands": {
+                  "Project": [
+                     {
+                        "type": "request",
+                        "useEndpoint": "MOCKUP",
+                        "displayResponseAs": "json",
+                        "objectPath": "",
+                        "title": "get project details",
+                        "url": "/api/project/{{projectId}}",
+                        "method": "get",
+                        "expect": [],
+                        "data": {}
+                     }
+                  ],
+                  "Node_1": [
+                     {
+                        "type": "request",
+                        "useEndpoint": "MOCKUP",
+                        "displayResponseAs": "json",
+                        "objectPath": "",
+                        "title": "get router details",
+                        "url": "/api/project/{{projectId}}/router/{{routerId1}}",
+                        "method": "get",
+                        "data": {}
+                     },
+                     {
+                        "type": "request",
+                        "useEndpoint": "MOCKUP",
+                        "displayResponseAs": "json",
+                        "objectPath": "",
+                        "title": "Ping Node_2 interface",
+                        "url": "api/project/{{projectId}}/router/{{routerId1}}/live-status/exec/any",
+                        "method": "post",
+                        "data": {
+                           "input": {
+                              "args": "ping 1.1.1.2 source 1.1.1.1"
+                           }
                         }
                      }
-                  }
-               ]
+                  ]
+               }
             }
-         }
+         ]
       },
       "step_3": {
          "description": [
@@ -418,74 +422,76 @@
                ]
             }
          ],
-         "outcome": {
-            "summaryText": "Established connectivity between the routers. Test connectivity with ping command on Node_1.",
-            "elements": {
-               "nodes": [
-                  {
-                     "data": { "id": "Project", "label": "My New Project" },
-                     "position": { "x": 50, "y": 0 },
-                     "classes": "size-xxxlg-rect l3vpn"
-                  },
-                  {
-                     "data": { "id": "Node_1", "label": "Node_1" },
-                     "position": { "x": -100, "y": 40 },
-                     "classes": "size-lg highlight router"
-                  },
-                  {
-                     "data": { "id": "Node_2", "label": "Node_2" },
-                     "position": { "x": 200, "y": 40 },
-                     "classes": "size-lg router"
-                  }
-               ],
-               "edges": [
-                  {
-                     "data": { "source": "Node_1", "target": "Node_2" }
-                  }
-               ]
-            },
-            "commands": {
-               "Project": [
-                  {
-                     "type": "request",
-                     "useEndpoint": "MOCKUP",
-                     "displayResponseAs": "json",
-                     "objectPath": "",
-                     "title": "get project details",
-                     "url": "/api/project/{{projectId}}",
-                     "method": "get",
-                     "expect": [],
-                     "data": {}
-                  }
-               ],
-               "Node_1": [
-                  {
-                     "type": "request",
-                     "useEndpoint": "MOCKUP",
-                     "displayResponseAs": "json",
-                     "objectPath": "",
-                     "title": "get router details",
-                     "url": "/api/project/{{projectId}}/router/{{routerId1}}",
-                     "method": "get",
-                     "data": {}
-                  },
-                  {
-                     "type": "request",
-                     "useEndpoint": "MOCKUP",
-                     "displayResponseAs": "json",
-                     "objectPath": "",
-                     "title": "Ping Node_2 interface",
-                     "url": "api/project/{{projectId}}/router/{{routerId1}}/live-status/exec/any",
-                     "method": "post",
-                     "data": {
-                        "input": {
-                           "args": "ping 1.1.1.2 source 1.1.1.1"
+         "outcome": [
+            {
+               "summaryText": "Established connectivity between the routers. Test connectivity with ping command on Node_1.",
+               "elements": {
+                  "nodes": [
+                     {
+                        "data": { "id": "Project", "label": "My New Project" },
+                        "position": { "x": 50, "y": 0 },
+                        "classes": "size-xxxlg-rect l3vpn"
+                     },
+                     {
+                        "data": { "id": "Node_1", "label": "Node_1" },
+                        "position": { "x": -100, "y": 40 },
+                        "classes": "size-lg highlight router"
+                     },
+                     {
+                        "data": { "id": "Node_2", "label": "Node_2" },
+                        "position": { "x": 200, "y": 40 },
+                        "classes": "size-lg router"
+                     }
+                  ],
+                  "edges": [
+                     {
+                        "data": { "source": "Node_1", "target": "Node_2" }
+                     }
+                  ]
+               },
+               "commands": {
+                  "Project": [
+                     {
+                        "type": "request",
+                        "useEndpoint": "MOCKUP",
+                        "displayResponseAs": "json",
+                        "objectPath": "",
+                        "title": "get project details",
+                        "url": "/api/project/{{projectId}}",
+                        "method": "get",
+                        "expect": [],
+                        "data": {}
+                     }
+                  ],
+                  "Node_1": [
+                     {
+                        "type": "request",
+                        "useEndpoint": "MOCKUP",
+                        "displayResponseAs": "json",
+                        "objectPath": "",
+                        "title": "get router details",
+                        "url": "/api/project/{{projectId}}/router/{{routerId1}}",
+                        "method": "get",
+                        "data": {}
+                     },
+                     {
+                        "type": "request",
+                        "useEndpoint": "MOCKUP",
+                        "displayResponseAs": "json",
+                        "objectPath": "",
+                        "title": "Ping Node_2 interface",
+                        "url": "api/project/{{projectId}}/router/{{routerId1}}/live-status/exec/any",
+                        "method": "post",
+                        "data": {
+                           "input": {
+                              "args": "ping 1.1.1.2 source 1.1.1.1"
+                           }
                         }
                      }
-                  }
-               ]
+                  ]
+               }
             }
-         }
+         ]
       },
       "cleanup": {
          "description": ["Delete the project from the mockup server"],

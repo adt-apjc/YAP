@@ -79,7 +79,7 @@ const Outcome = (props) => {
 
    const handleNodeClick = (nodeElement) => {
       let nodeData = nodeElement.data();
-      let outcomeConfig = props.currentStepDetails.outcome;
+      let outcomeConfig = props.currentStepDetails.outcome[0];
       // check if selected node has configured commands ?
       if (outcomeConfig.commands && outcomeConfig.commands[nodeData.id]) {
          setModal({ selectedElement: nodeData, modalShow: true });
@@ -88,7 +88,8 @@ const Outcome = (props) => {
 
    const onModalHide = () => setModal({ modalShow: false, selectedElement: null });
 
-   let outcomeConfig = props.currentStepDetails.outcome;
+   // TODO future planning is to support multiple outcomes
+   let outcomeConfig = props.currentStepDetails.outcome[0];
    if (!props.show) return null;
    if (!outcomeConfig)
       return (

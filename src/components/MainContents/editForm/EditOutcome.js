@@ -589,7 +589,7 @@ const AddEdgeForm = (props) => {
 const EditOutcome = (props) => {
    const cyRef = useRef();
    const { context, dispatch } = useGlobalContext();
-   const [outcome, setOutcome] = useState({ elements: { nodes: [], edges: [] }, commands: {}, ...props.initValue });
+   const [outcome, setOutcome] = useState({ elements: { nodes: [], edges: [] }, commands: {}, ...props.initValue[0] });
    const [selectedNode, setSelectedNode] = useState(null);
    const [selectedEdge, setSelectedEdge] = useState(null);
    const [renderForm, setRenderForm] = useState("node");
@@ -635,8 +635,9 @@ const EditOutcome = (props) => {
       let currentObjectData = getTopologyObject();
       let currentConfig = _.cloneDeep(context.config);
       console.log(currentObjectData);
-      currentConfig.mainContent[context.currentStep.name].outcome.elements = { ...currentObjectData };
-      currentConfig.mainContent[context.currentStep.name].outcome.commands = { ...outcome.commands };
+      // TODO future planning is to support multiple outcomes
+      currentConfig.mainContent[context.currentStep.name].outcome[0].elements = { ...currentObjectData };
+      currentConfig.mainContent[context.currentStep.name].outcome[0].commands = { ...outcome.commands };
       dispatch({ type: "loadConfig", payload: currentConfig });
       props.onHide();
    };
