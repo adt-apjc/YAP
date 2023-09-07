@@ -39,7 +39,7 @@ function addStep(state, payload) {
    let clonedState = _.cloneDeep(state);
    let newStepName = `Step_${clonedState.config.sidebar.length + 1}`;
    clonedState.config.sidebar.push({ name: newStepName, label: payload.name });
-   clonedState.config.mainContent[newStepName] = { preCheck: [], actions: [], postCheck: [], outcome: {} };
+   clonedState.config.mainContent[newStepName] = { preCheck: [], actions: [], postCheck: [], outcome: [{}] };
    return clonedState;
 }
 function deleteStep(state, payload) {

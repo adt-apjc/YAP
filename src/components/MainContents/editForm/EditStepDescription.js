@@ -27,6 +27,7 @@ const EditStepDescription = (props) => {
       currentConfig.mainContent[context.currentStep.name].description = state.descriptionInput.trim().split("\n");
       currentConfig.sidebar[findCurrentStepIndex()].label = state.titleInput;
       dispatch({ type: "loadConfig", payload: currentConfig });
+      dispatch({ type: "setCurrentStep", payload: { ...context.currentStep, label: state.titleInput } });
       props.onHide();
    };
 
