@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
 import { normalRequest, pollingRequest } from "../../../helper/actionHelper";
@@ -76,6 +76,7 @@ const CommandModal = (props) => {
 
 const Outcome = (props) => {
    const [modal, setModal] = useState({ modalShow: false, selectedElement: null });
+   const [collapseCount, setCollapseCount] = useState(0);
 
    const handleNodeClick = (nodeElement) => {
       let nodeData = nodeElement.data();
@@ -88,9 +89,13 @@ const Outcome = (props) => {
 
    const onModalHide = () => setModal({ modalShow: false, selectedElement: null });
 
+   useEffect(() => {
+      setCollapseCount((prev) => prev + 1);
+   }, [props.sectionExpand]);
+
    // TODO future planning is to support multiple outcomes
    let outcomeConfig = props.currentStepDetails.outcome[0];
-   if (!props.show) return null;
+   if (!props.sectionExpand.outcome) return null;
    if (!outcomeConfig)
       return (
          <div className="container">
@@ -99,7 +104,7 @@ const Outcome = (props) => {
       );
 
    return (
-      <div className="container-fluid" style={{ height: 500 }}>
+      <div className="container-fluid" style={{ height: 500 + (collapseCount % 2) }}>
          <TopologyWrapper outcomeConfig={outcomeConfig} onNodeClick={handleNodeClick} />
          <Modal show={modal.modalShow} onHide={onModalHide}>
             <div className="modal-header">

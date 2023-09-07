@@ -582,7 +582,7 @@ const DemoContent = (props) => {
                   <i className={`p-2 fas fa-caret-${sectionExpand.outcome ? "down" : "right"}`}></i>
                </div>
             </div>
-            <Outcome show={sectionExpand.outcome} currentStepDetails={props.currentStepDetails} />
+            <Outcome sectionExpand={sectionExpand} currentStepDetails={props.currentStepDetails} />
          </div>
          <Modal
             show={modal.modalShow}
