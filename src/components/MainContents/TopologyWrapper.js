@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useDidUpdateEffect } from "../contexts/CustomHooks";
 import CytoscapeComponent from "react-cytoscapejs";
-import stylesheet from "./cytoscapeStyle.json";
+import { stylesheet } from "./cytoscapeStyle";
 import _ from "lodash";
 
 const TopologyWrapper = (props) => {
