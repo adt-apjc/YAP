@@ -92,7 +92,7 @@ const SideBar = (props) => {
          return (
             <div
                key={index}
-               className={`side-item mb-3 justify-content-between align-items-center pointer ${
+               className={`d-flex mb-3 justify-content-between align-items-center pointer ${
                   isSomeStepRunning() ? "disabled" : ""
                }`}
                style={{ fontSize: "20px" }}

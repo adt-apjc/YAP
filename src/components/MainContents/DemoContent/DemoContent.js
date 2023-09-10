@@ -11,6 +11,7 @@ import Outcome from "./Outcome";
 import _ from "lodash";
 import PreCheck from "./PreCheck";
 import RunButtonComponent from "../RunButtonComponent";
+import OffCanvas from "../../OffCanvas/OffCanvas";
 
 const DemoContent = (props) => {
    const { context, dispatch } = useGlobalContext();
@@ -23,6 +24,7 @@ const DemoContent = (props) => {
    const [actionResults, setActionResults] = useState({ cleanup: {} });
    const [postCheckResults, setPostCheckResults] = useState({ cleanup: {} });
    const [sectionExpand, setSectionExpand] = useState({ preCheck: false, action: false, postCheck: false, outcome: true });
+   const [showOffCanvas, setShowOffCanvas] = useState(false);
 
    const clearStateHandler = () => {
       setIsPreCheckCompleted({ cleanup: false });
@@ -296,7 +298,7 @@ const DemoContent = (props) => {
             isPreCheckCompleted,
             isActionCompleted,
             isPostCheckCompleted,
-         })
+         }),
       );
       let isAllPreCheckCompleted = undefined;
       let isAllActionCompleted = undefined;
@@ -359,46 +361,55 @@ const DemoContent = (props) => {
    return (
       <>
          {/* HEADER SECTION */}
-         <div className="d-flex justify-content-between">
-            <div className="d-flex flex-column">
-               <div className="d-flex">
-                  <div style={{ fontSize: "25px" }}>{props.currentStep.label}</div>
-               </div>
-               <div className="my-2 me-3">{description}</div>
-               {context.mode === "edit" && (
-                  <div className="d-flex">
-                     <span
-                        className="text-info font-sm pointer text-hover-highlight"
-                        onClick={() =>
-                           setModal({
-                              modalShow: true,
-                              modalContentType: "editStepDescription",
-                              paramValues: {
-                                 title: props.currentStep.label,
-                                 description: props.currentStepDetails.description,
-                              },
-                           })
-                        }
-                     >
-                        Edit
-                     </span>
+         <div className="d-flex  flex-column">
+            <div className="d-flex justify-content-between">
+               {/* Step label */}
+               <div style={{ fontSize: "25px" }}>{props.currentStep.label}</div>
+               {/* Actions*/}
+               <div className="d-flex align-items-center demo-content-actions">
+                  <div
+                     title="run all"
+                     type="button"
+                     className="demo-content-action text-primary"
+                     onClick={startWorkflowHandler}
+                     disabled={Object.values(currentRunning).some((el) => el !== null)}
+                  >
+                     {Object.values(currentRunning).some((el) => el !== null) ? (
+                        <i className="fas fa-spinner fa-spin" />
+                     ) : (
+                        <i className="fad fa-play-circle" />
+                     )}
                   </div>
-               )}
+                  <div
+                     title="show preface"
+                     type="button"
+                     className="demo-content-action"
+                     onClick={() => setShowOffCanvas(!showOffCanvas)}
+                  >
+                     <i className="fal fa-bars" />
+                  </div>
+               </div>
             </div>
-
-            <div className="text-nowrap">
-               <button
-                  className="btn btn-sm btn-primary float-right align-self-center"
-                  onClick={startWorkflowHandler}
-                  disabled={Object.values(currentRunning).some((el) => el !== null)}
-               >
-                  {Object.values(currentRunning).some((el) => el !== null) ? (
-                     <i className="fas fa-spinner fa-spin m-1" />
-                  ) : (
-                     "Run All"
-                  )}
-               </button>
-            </div>
+            <div className="my-2 me-3">{description}</div>
+            {context.mode === "edit" && (
+               <div className="d-flex">
+                  <span
+                     className="text-info font-sm pointer text-hover-highlight"
+                     onClick={() =>
+                        setModal({
+                           modalShow: true,
+                           modalContentType: "editStepDescription",
+                           paramValues: {
+                              title: props.currentStep.label,
+                              description: props.currentStepDetails.description,
+                           },
+                        })
+                     }
+                  >
+                     Edit
+                  </span>
+               </div>
+            )}
          </div>
          <div className="mt-3 mb-4" style={{ borderBottom: "1px solid #eaeaea" }}></div>
          {/* PRE-CHECK */}
@@ -584,6 +595,7 @@ const DemoContent = (props) => {
             </div>
             <Outcome sectionExpand={sectionExpand} currentStepDetails={props.currentStepDetails} />
          </div>
+         {/* MODAL */}
          <Modal
             show={modal.modalShow}
             onHide={() => setModal({ modalShow: false, modalContentType: null, paramValues: null })}
@@ -595,6 +607,8 @@ const DemoContent = (props) => {
                contentType={modal.modalContentType}
             />
          </Modal>
+         {/* OFFCANVAS */}
+         <OffCanvas showOffCanvas={showOffCanvas} setShowOffCanvas={setShowOffCanvas} />
       </>
    );
 };

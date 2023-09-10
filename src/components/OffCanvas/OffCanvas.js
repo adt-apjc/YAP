@@ -3,9 +3,8 @@ import Preface from "../MainContents/Preface/Preface";
 import { useGlobalContext } from "../contexts/ContextProvider";
 import _ from "lodash";
 
-const Canvas = () => {
+const OffCanvas = (props) => {
    const { context } = useGlobalContext();
-   const [showCanvas, setShowCanvas] = useState(false);
    const [prefaceRef, setPrefaceRef] = useState(0);
 
    useEffect(() => {
@@ -22,28 +21,21 @@ const Canvas = () => {
    if (_.isEmpty(context.currentStep)) return;
 
    return (
-      <div className="canvas-container">
-         {showCanvas ? (
-            <div className={`canvas-window open`}>
-               <div className="container-fluid m-5">
-                  <Preface config={context.config.preface} prefaceRef={prefaceRef} />
+      <div className="d-flex" style={{ zIndex: "999" }}>
+         <div className={`offcanvas-window ${props.showOffCanvas ? "open" : ""}`}>
+            <div className="offcanvas-content">
+               <div title="close" className="d-flex justify-content-end mb-3">
+                  <i type="button" className="fal fa-times closeButton" onClick={() => props.setShowOffCanvas(false)} />
                </div>
-               <div
-                  title="toggle preface"
-                  type="button"
-                  className={`toggle-canvas open`}
-                  onClick={() => setShowCanvas(!showCanvas)}
-               >
-                  <i className={`far fa-arrow-to-left`} />
-               </div>
+               {props.showOffCanvas && <Preface config={context.config.preface} prefaceRef={prefaceRef} />}
             </div>
-         ) : (
-            <div title="toggle preface" type="button" className={`toggle-canvas`} onClick={() => setShowCanvas(!showCanvas)}>
-               <i className={`far fa-arrow-to-right`} />
-            </div>
-         )}
+            <div
+               className={`offcanvas-backdrop ${props.showOffCanvas ? "show" : ""}`}
+               onClick={() => props.setShowOffCanvas(false)}
+            ></div>
+         </div>
       </div>
    );
 };
 
-export default Canvas;
+export default OffCanvas;

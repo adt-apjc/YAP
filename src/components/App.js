@@ -5,7 +5,6 @@ import "./App.css";
 //
 import { ContextProvider } from "./contexts/ContextProvider";
 import NavigationBar from "./NavigationBar/NavigationBar";
-import Canvas from "./Canvas/Canvas";
 
 const App = () => {
    document.title = "Workflow Demo";
@@ -22,7 +21,6 @@ const App = () => {
             */}
 
             <div className="h-100 w-100 pt-4 pb-4 d-flex">
-               <Canvas />
                <MainContents />
             </div>
          </div>

@@ -10,7 +10,7 @@ const PrefaceContent = ({ config, index }) => {
    let texts;
    if (isArray(config.bodyArr))
       texts = config.bodyArr.map((element, textIndex) => {
-         return <div key={textIndex} className="card-text text-justify p-2 m-0" dangerouslySetInnerHTML={{ __html: element }} />;
+         return <div key={textIndex} className="text-justify p-2 m-0" dangerouslySetInnerHTML={{ __html: element }} />;
       });
 
    return (
