@@ -24,7 +24,7 @@ const OffCanvas = (props) => {
       <div className="d-flex" style={{ zIndex: "999" }}>
          <div className={`offcanvas-window ${props.showOffCanvas ? "open" : ""}`}>
             <div className="offcanvas-content">
-               <div title="close" className="d-flex justify-content-end mb-3">
+               <div title="close" className="d-flex justify-content-end">
                   <i type="button" className="fal fa-times closeButton" onClick={() => props.setShowOffCanvas(false)} />
                </div>
                {props.showOffCanvas && <Preface config={context.config.preface} prefaceRef={prefaceRef} />}

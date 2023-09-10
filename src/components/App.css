@@ -6,6 +6,7 @@
    --text-light: #fef6f9;
    --text-dark: #212529;
    --text-success: rgba(25, 135, 84, 1);
+   --text-danger: rgba(220, 53, 69, 1);
    --box-shadow-color: rgba(0, 0, 0, 0.2);
    --hover-bg-color: rgba(152, 152, 154, 0.187);
    --hover-bg-color-light: #f8f9fa;
@@ -176,39 +177,41 @@ span {
 .status-icon.curr-selected {
    background-color: var(--navbar-bg-color);
    color: var(--text-light);
-   font-weight: 600;
+   font-weight: 500;
 }
 
 .step-label-text {
+   /* text-align: center; */
    font-size: 13px;
 }
 
 .step-label-text.curr-selected {
-   font-weight: 600;
+   font-weight: 500;
    color: var(--navbar-bg-color);
 }
 
 .step-label-text.bold {
-   font-weight: 600;
+   font-weight: 500;
 }
 
 .status-icon.normal {
-   border: 1.5px solid var(--navbar-bg-color);
-   font-weight: 600;
+   font-weight: 500;
 }
 
-.status-icon.normal {
-   border: 1.5px solid var(--navbar-bg-color);
-   font-weight: 600;
+.status-icon.success {
+   color: var(--text-success);
+   border: 1.5px solid var(--text-success);
+   font-weight: 500;
 }
 
-.status-icon.bold {
-   border: 1.5px solid var(--text-dark);
-   font-weight: 600;
+.status-icon.danger {
+   color: var(--text-danger);
+   border: 1.5px solid var(--text-danger);
+   font-weight: 500;
 }
 
 .delete-step {
-   font-weight: 600;
+   font-weight: 500;
    color: var(--navbar-bg-color);
 }
 
@@ -369,11 +372,11 @@ span {
 }
 
 .closeButton {
-   padding: 5px 8px;
+   padding: 4px;
 }
 
 .closeButton:hover {
    background-color: var(--hover-bg-color);
-   padding: 5px 8px;
+   padding: 4px;
    border-radius: 6px;
 }

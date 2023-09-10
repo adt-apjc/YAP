@@ -32,18 +32,15 @@ const Preface = (props) => {
    });
 
    useEffect(() => {
-      console.log(">>>>", props.prefaceRef);
       setState({ ...state, index: props.prefaceRef, preface: context.config.preface[props.prefaceRef] });
    }, [props.prefaceRef]);
-
-   console.log(state);
 
    useEffect(() => {
       setState({ ...state, preface: context.config.preface[state.index] }); // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [context.config.preface]);
 
    return (
-      <div className="pb-3">
+      <div className="p-1">
          <div className="btn-toolbar justify-content-end position-relative">
             <div className="d-flex align-items-center mt-1">
                <ul className="nav nav-tabs preface-nav">

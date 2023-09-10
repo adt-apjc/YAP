@@ -66,25 +66,25 @@ const SideBar = (props) => {
          let statusIcon;
          if (context.runningStatus[element.name] === "success") {
             statusIcon = (
-               <div className={`status-icon text-success  ${context.currentStep.name === element.name ? "normal" : "bold"} `}>
+               <div className={`status-icon success`}>
                   <i className="fas fa-check" />
                </div>
             );
          } else if (context.runningStatus[element.name] === "running") {
             statusIcon = (
-               <div className={`status-icon text-primary ${context.currentStep.name === element.name ? "normal" : "bold"} `}>
+               <div className={`status-icon normal`}>
                   <i className={"fas fa-spinner fa-spin"} />
                </div>
             );
          } else if (context.runningStatus[element.name] === "fail") {
             statusIcon = (
-               <div className={`status-icon text-danger ${context.currentStep.name === element.name ? "normal" : "bold"} `}>
+               <div className={`status-icon danger`}>
                   <i className="fas fa-times" />
                </div>
             );
          } else {
             statusIcon = (
-               <div className={`status-icon s-2 me-3  ${context.currentStep.name === element.name ? "curr-selected" : ""} `}>
+               <div className={`status-icon ${context.currentStep.name === element.name ? "curr-selected" : ""} `}>
                   {`${index + 1}`}
                </div>
             );
@@ -92,16 +92,14 @@ const SideBar = (props) => {
          return (
             <div
                key={index}
-               className={`d-flex mb-3 justify-content-between align-items-center pointer ${
-                  isSomeStepRunning() ? "disabled" : ""
-               }`}
+               className={`d-flex mb-3 justify-content-between pointer ${isSomeStepRunning() ? "disabled" : ""}`}
                style={{ fontSize: "20px" }}
                onClick={() => dispatch({ type: "setCurrentStep", payload: element })}
             >
-               <div className="d-flex text-center align-items-center">
-                  {statusIcon}
+               <div className="d-flex">
+                  <div>{statusIcon}</div>
                   <span
-                     className={`step-label-text text-nowrap ${isSomeStepRunning() ? "disabled" : ""} ${
+                     className={`step-label-text  ${isSomeStepRunning() ? "disabled" : ""} ${
                         context.currentStep.name === element.name ? "curr-selected " : ""
                      } ${
                         context.runningStatus[element.name] === "success" || context.runningStatus[element.name] === "fail"
@@ -112,6 +110,7 @@ const SideBar = (props) => {
                      {element.label}
                   </span>
                </div>
+
                {context.mode === "edit" && (
                   <i
                      title="delete"
