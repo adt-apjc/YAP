@@ -94,7 +94,7 @@ const Outcome = (props) => {
    }, [props.sectionExpand]);
 
    // TODO future planning is to support multiple outcomes
-   let outcomeConfig = props.currentStepDetails.outcome[0];
+   let outcomeConfig = props.currentStepDetails.outcome && props.currentStepDetails.outcome[0];
    if (!props.sectionExpand.outcome) return null;
    if (!outcomeConfig)
       return (
