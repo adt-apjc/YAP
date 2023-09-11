@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal } from "../../helper/modalHelper";
 import { useGlobalContext } from "../contexts/ContextProvider";
-import _ from "lodash";
 
 const DeleteConfirmation = (props) => {
    const { dispatch } = useGlobalContext();

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import ReactJson from "@uiw/react-json-view";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
@@ -40,6 +40,27 @@ const ActionDetail = (props) => {
                <WithInfoPopup
                   PopperComponent={
                      <div className="d-flex flex-column p-2 text-dark" style={{ maxWidth: "800px" }}>
+                        {props.context.config.globalVariables && Object.keys(props.context.config.globalVariables).length > 0 && (
+                           <>
+                              <div>
+                                 <div className="mb-2">
+                                    <small className="badge rounded-pill  text-bg-light">Global Variables</small>
+                                 </div>
+                                 {Object.keys(props.context.config.globalVariables).map((item, i) => {
+                                    return (
+                                       <div className="d-flex" key={i}>
+                                          <small className="me-3" style={{ minWidth: "90px" }}>
+                                             {item}:
+                                          </small>
+                                          <small>{props.context.config.globalVariables[item]}</small>
+                                       </div>
+                                    );
+                                 })}
+                              </div>
+                              <hr className="my-2" />
+                           </>
+                        )}
+
                         {variableDetails.map((item, i) => {
                            return (
                               <div className="d-flex" key={i}>

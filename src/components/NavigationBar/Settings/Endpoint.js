@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useGlobalContext } from "../contexts/ContextProvider";
+import { useGlobalContext } from "../../contexts/ContextProvider";
 
 const EndpointEditor = (props) => {
    const [state, setState] = useState({ input: { name: "", baseURL: "" }, inputHeader: [] });
@@ -79,10 +79,15 @@ const EndpointEditor = (props) => {
 
    return (
       <div className="endpoint-form">
-         <div className="d-flex align-items-center">
+         <div className="d-flex align-items-center justify-content-between">
             <div>New Endpoint</div>
-            <div className="btn btn-sm btn-info ms-auto" onClick={onHeaderSaveHandler}>
-               Save
+            <div className="d-flex">
+               <div className="btn btn-sm text-info ms-auto" onClick={onHeaderSaveHandler}>
+                  Save
+               </div>
+               <div className="btn btn-sm ms-auto" onClick={props.onClose}>
+                  Cancel
+               </div>
             </div>
          </div>
          <div className="col-11">
@@ -126,6 +131,9 @@ const EndpointViewer = (props) => {
    };
 
    const renderEndpoint = () => {
+      if (!context.config.endpoints || Object.keys(context.config.endpoints).length === 0)
+         return <small className="text-muted">No Endpoints</small>;
+
       return Object.keys(context.config.endpoints).map((endpointName, index) => {
          return (
             <div key={index} className="row">
@@ -176,49 +184,29 @@ const EndpointViewer = (props) => {
    return <div className="mb-3">{renderEndpoint()}</div>;
 };
 
-const Settings = (props) => {
+const Endpoint = () => {
    const [state, setState] = useState({ selectedEndpoint: null, showEndpointEditor: false });
 
    return (
       <>
-         <div className="modal-header">
-            <span className="modal-title">Settings</span>
-            <button type="button" className="btn-close" onClick={props.onHide}></button>
+         <div className="mb-3">
+            Endpoint
+            <span
+               className="mx-3 font-sm text-info pointer text-hover-highlight"
+               onClick={() => setState({ showEndpointEditor: true })}
+            >
+               Add
+            </span>
          </div>
-         <div className="modal-body">
-            <div className="mb-3">
-               Endpoint
-               <span
-                  className="mx-3 font-sm text-info pointer text-hover-highlight"
-                  onClick={() => setState({ showEndpointEditor: true })}
-               >
-                  Add
-               </span>
-            </div>
-            <EndpointViewer onSelect={(el) => setState({ selectedEndpoint: el, showEndpointEditor: true })} />
-            {state.showEndpointEditor && (
-               <EndpointEditor
-                  initValue={state.selectedEndpoint}
-                  onClose={() => setState({ showEndpointEditor: false, selectedEndpoint: null })}
-               />
-            )}
-         </div>
-         <div className="modal-footer">
-            <button type="button" className="btn btn-sm btn-danger" onClick={props.onHide}>
-               Close
-            </button>
-         </div>
+         <EndpointViewer onSelect={(el) => setState({ selectedEndpoint: el, showEndpointEditor: true })} />
+         {state.showEndpointEditor && (
+            <EndpointEditor
+               initValue={state.selectedEndpoint}
+               onClose={() => setState({ showEndpointEditor: false, selectedEndpoint: null })}
+            />
+         )}
       </>
    );
 };
 
-const ModalContentSelector = (props) => {
-   let { contentType } = props;
-   if (contentType === "settings") {
-      return <Settings {...props} />;
-   } else {
-      return null;
-   }
-};
-
-export default ModalContentSelector;
+export default Endpoint;

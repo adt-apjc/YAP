@@ -1,9 +1,9 @@
 import React from "react";
 import Logo from "../MainContents/Logo";
 import { useGlobalContext } from "../contexts/ContextProvider";
-import Actions from "./Actions";
+import Actions from "./Actions/Actions";
 import About from "./About";
-import Settings from "./Settings";
+import Settings from "./Settings/Settings";
 
 const NavigationBar = () => {
    const { context } = useGlobalContext();

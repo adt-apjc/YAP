@@ -33,6 +33,7 @@ const Preface = (props) => {
 
    useEffect(() => {
       setState({ ...state, index: props.prefaceRef, preface: context.config.preface[props.prefaceRef] });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [props.prefaceRef]);
 
    useEffect(() => {
