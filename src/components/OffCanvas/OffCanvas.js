@@ -18,7 +18,7 @@ const OffCanvas = (props) => {
       else setPrefaceRef(context.config.mainContent[context.currentStep.name].prefaceRef);
    }, [context.currentStep]);
 
-   if (_.isEmpty(context.currentStep)) return;
+   if (!context.currentStep.name) return;
 
    return (
       <div className="d-flex" style={{ zIndex: "999" }}>

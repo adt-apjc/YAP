@@ -1,18 +1,19 @@
 import React, { useEffect, useReducer } from "react";
 import config from "../../config/config.json";
 import _ from "lodash";
+import * as TYPE from "./ContextTypes";
 
-const GlobalContext = React.createContext();
+const GlobalContext = React.createContext<TYPE.ContextType | null>(null);
 
-let initState = {
-   currentStep: config.preface ? {} : { ...config.sidebar[0] },
+let initState: TYPE.StateType = {
+   currentStep: config.preface ? { name: null, label: null } : { ...config.sidebar[0] },
    runningStatus: {},
    clearStateFunction: {},
    config: config,
    mode: "presentation",
 };
 
-function addAction(state, payload) {
+function addAction(state: TYPE.StateType, payload: { index: number; stepKey: string; tab: string; actionObject: any }) {
    let clonedState = _.cloneDeep(state);
    if (payload.index !== null) {
       // this block is for edit
@@ -29,53 +30,53 @@ function addAction(state, payload) {
    return clonedState;
 }
 
-function deleteAction(state, payload) {
+function deleteAction(state: TYPE.StateType, payload: { index: number; stepKey: string; tab: string }) {
    let clonedState = _.cloneDeep(state);
    state.config.mainContent[payload.stepKey][payload.tab].splice(payload.index, 1);
    return clonedState;
 }
 
-function addStep(state, payload) {
+function addStep(state: TYPE.StateType, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
    let newStepName = `Step_${clonedState.config.sidebar.length + 1}`;
    clonedState.config.sidebar.push({ name: newStepName, label: payload.name });
    clonedState.config.mainContent[newStepName] = { preCheck: [], actions: [], postCheck: [], outcome: [{}] };
    return clonedState;
 }
-function deleteStep(state, payload) {
+function deleteStep(state: TYPE.StateType, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
-   clonedState.config.sidebar = clonedState.config.sidebar.filter((el) => el.name !== payload.name);
+   clonedState.config.sidebar = clonedState.config.sidebar.filter((el: any) => el.name !== payload.name);
    delete clonedState.config.mainContent[payload.name];
    if (payload.name === clonedState.currentStep.name) {
-      return { ...clonedState, currentStep: {} };
+      return { ...clonedState, currentStep: { name: null, label: null } };
    } else {
       return clonedState;
    }
 }
-function addEndpoint(state, payload) {
+function addEndpoint(state: TYPE.StateType, payload: { name: string; baseURL: string; headerList: { key: any; value: any }[] }) {
    let clonedState = _.cloneDeep(state);
    clonedState.config.endpoints[payload.name] = {
       baseURL: payload.baseURL,
-      headers: payload.headerList.reduce((result, item) => {
+      headers: payload.headerList.reduce((result: any, item) => {
          result[item.key] = item.value;
          return result;
       }, {}),
    };
    return clonedState;
 }
-function deleteEndpoint(state, payload) {
+function deleteEndpoint(state: TYPE.StateType, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
    delete clonedState.config.endpoints[payload.name];
    return clonedState;
 }
 
-function globalContextreducer(state, action) {
+function globalContextreducer(state: TYPE.StateType, action: TYPE.ContextActionType) {
    switch (action.type) {
       case "setCurrentStep":
          return { ...state, currentStep: { ...action.payload } };
 
       case "toggleMode":
-         return { ...state, mode: state.mode === "edit" ? "presentation" : "edit" };
+         return { ...state, mode: state.mode === "edit" ? ("presentation" as const) : ("edit" as const) };
 
       case "setRunningStatus":
          if (!action.payload) {
@@ -100,7 +101,7 @@ function globalContextreducer(state, action) {
          return { ...state, clearStateFunction: { ...state.clearStateFunction, [action.payload.key]: action.payload.func } };
 
       case "unregisterClearStateFunction":
-         delete state.clearStateFunction[action.payload.key];
+         if (state.clearStateFunction) delete state.clearStateFunction[action.payload.key];
          return { ...state };
 
       case "addAction":
@@ -130,7 +131,7 @@ function globalContextreducer(state, action) {
             }
          }
          window.localStorage.setItem("configData", JSON.stringify(action.payload));
-         return { ...state, currentStep: {}, runningStatus: {}, config: { ...action.payload } };
+         return { ...state, currentStep: { name: null, label: null }, runningStatus: null, config: { ...action.payload } };
 
       case "loadRunningStatus":
          return { ...state, runningStatus: { ...action.payload } };
@@ -143,10 +144,10 @@ function globalContextreducer(state, action) {
                state.clearStateFunction[key]();
             }
          }
-         return { ...state, currentStep: {}, runningStatus: {}, config: { ...config } };
+         return { ...state, currentStep: { name: null, label: null }, runningStatus: null, config: { ...config } };
 
       default:
-         throw new Error(`Unhandled action type: ${action.type}`);
+         throw new Error("Unhandled action");
    }
 }
 
@@ -159,8 +160,9 @@ function useGlobalContext() {
    return { context: context.state, dispatch: context.dispatch };
 }
 
-function ContextProvider({ children }) {
+function ContextProvider({ children }: { children: React.ReactNode }) {
    const [state, dispatch] = useReducer(globalContextreducer, initState);
+
    useEffect(() => {
       const configData = window.localStorage.getItem("configData");
       const runningStatus = window.localStorage.getItem("runningStatus");
