@@ -240,6 +240,7 @@ const ActionForm = (props) => {
 
    const payloadInputHandler = (value) => {
       if (value === "") {
+         setInput({ ...input, data: undefined });
          setIsPayloadValid(true);
          return;
       }
