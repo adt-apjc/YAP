@@ -298,7 +298,7 @@ const DemoContent = (props) => {
             isPreCheckCompleted,
             isActionCompleted,
             isPostCheckCompleted,
-         }),
+         })
       );
       let isAllPreCheckCompleted = undefined;
       let isAllActionCompleted = undefined;
@@ -571,7 +571,7 @@ const DemoContent = (props) => {
                <div>
                   <span className="font-weight-bold">Outcome</span>
                   <span className="font-weight-light mx-5">
-                     {props.currentStepDetails.outcome && props.currentStepDetails.outcome.summaryText}
+                     {props.currentStepDetails.outcome && props.currentStepDetails.outcome[0].summaryText}
                   </span>
                </div>
                <div>
