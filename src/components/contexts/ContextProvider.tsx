@@ -13,8 +13,12 @@ let initState: TYPE.StateType = {
    mode: "presentation",
 };
 
-function addAction(state: TYPE.StateType, payload: { index: number; stepKey: string; tab: string; actionObject: any }) {
+function addAction(
+   state: TYPE.StateType,
+   payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any }
+) {
    let clonedState = _.cloneDeep(state);
+
    if (payload.index !== null) {
       // this block is for edit
       clonedState.config.mainContent[payload.stepKey][payload.tab][payload.index] = payload.actionObject;
@@ -30,7 +34,10 @@ function addAction(state: TYPE.StateType, payload: { index: number; stepKey: str
    return clonedState;
 }
 
-function deleteAction(state: TYPE.StateType, payload: { index: number; stepKey: string; tab: string }) {
+function deleteAction(
+   state: TYPE.StateType,
+   payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" }
+) {
    let clonedState = _.cloneDeep(state);
    state.config.mainContent[payload.stepKey][payload.tab].splice(payload.index, 1);
    return clonedState;
@@ -40,7 +47,13 @@ function addStep(state: TYPE.StateType, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
    let newStepName = `Step_${clonedState.config.sidebar.length + 1}`;
    clonedState.config.sidebar.push({ name: newStepName, label: payload.name });
-   clonedState.config.mainContent[newStepName] = { preCheck: [], actions: [], postCheck: [], outcome: [{}] };
+   clonedState.config.mainContent[newStepName] = {
+      continueOnFail: false,
+      preCheck: [],
+      actions: [],
+      postCheck: [],
+      outcome: [{}],
+   };
    return clonedState;
 }
 function deleteStep(state: TYPE.StateType, payload: { name: string }) {
