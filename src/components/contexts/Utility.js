@@ -34,7 +34,7 @@ export const getVariableDetails = (request) => {
 
    // Considering use case where the variable is in the request body
 
-   const variablesInRequestBody = JSON.stringify(request.data).match(regexp) || [];
+   const variablesInRequestBody = !request.data ? [] : JSON.stringify(request.data).match(regexp) || [];
    for (const item of variablesInRequestBody) {
       variables.add(item.slice(2, item.length - 2));
    }
