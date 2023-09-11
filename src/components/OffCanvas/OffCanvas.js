@@ -8,7 +8,6 @@ const OffCanvas = (props) => {
    const [prefaceRef, setPrefaceRef] = useState(0);
 
    useEffect(() => {
-      // console.log(context.config.mainContent[context.currentStep.name].prefaceRef);
       if (
          !context.config.mainContent[context.currentStep.name] ||
          !context.config.mainContent[context.currentStep.name].prefaceRef ||
@@ -16,6 +15,7 @@ const OffCanvas = (props) => {
       )
          setPrefaceRef(0);
       else setPrefaceRef(context.config.mainContent[context.currentStep.name].prefaceRef);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [context.currentStep]);
 
    if (!context.currentStep.name) return;

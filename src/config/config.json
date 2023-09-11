@@ -64,6 +64,9 @@
          }
       }
    },
+   "globalVariables": {
+      "id": "test123"
+   },
    "mainContent": {
       "step_1": {
          "description": ["Create a new project in the mockup server."],

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import WithDropdown from "../Popper/Dropdown";
-import { useGlobalContext } from "../contexts/ContextProvider";
-import ModalContentSelector from "../Sidebar/ModalContentSelector";
-import { Modal } from "../../helper/modalHelper";
+import WithDropdown from "../../Popper/Dropdown";
+import { useGlobalContext } from "../../contexts/ContextProvider";
+import ModalContentSelector from "../ModalContentSelector";
+import { Modal } from "../../../helper/modalHelper";
 
 const SettingsTooltipContent = ({ setIsOpen, setModalShow }) => {
    const { context, dispatch } = useGlobalContext();

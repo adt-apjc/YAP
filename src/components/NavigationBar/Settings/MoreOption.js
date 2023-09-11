@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Modal } from "../../helper/modalHelper";
-import { Popper } from "../../helper/popperHelper";
-import ModalContentSelector from "./ModalContentSelector";
-import { useGlobalContext } from "../contexts/ContextProvider";
+import { Modal } from "../../../helper/modalHelper";
+import { Popper } from "../../../helper/popperHelper";
+import ModalContentSelector from "../ModalContentSelector";
+import { useGlobalContext } from "../../contexts/ContextProvider";
 
 const MoreOption = (props) => {
    const [popupShow, setPopupShow] = useState(false);

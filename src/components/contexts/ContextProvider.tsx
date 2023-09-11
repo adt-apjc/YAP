@@ -69,6 +69,19 @@ function deleteEndpoint(state: TYPE.StateType, payload: { name: string }) {
    delete clonedState.config.endpoints[payload.name];
    return clonedState;
 }
+function addGlobalVar(state: TYPE.StateType, payload: { name: string; val: any }) {
+   let clonedState = _.cloneDeep(state);
+   clonedState.config.globalVariables = {
+      ...clonedState.config.globalVariables,
+      [payload.name]: payload.val,
+   };
+   return clonedState;
+}
+function deleteGlobalVar(state: TYPE.StateType, payload: { name: string }) {
+   let clonedState = _.cloneDeep(state);
+   delete clonedState.config.globalVariables[payload.name];
+   return clonedState;
+}
 
 function globalContextreducer(state: TYPE.StateType, action: TYPE.ContextActionType) {
    switch (action.type) {
@@ -121,6 +134,12 @@ function globalContextreducer(state: TYPE.StateType, action: TYPE.ContextActionT
 
       case "deleteEndpoint":
          return { ...deleteEndpoint(state, action.payload) };
+
+      case "addGlobalVar":
+         return { ...addGlobalVar(state, action.payload) };
+
+      case "deleteGlobalVar":
+         return { ...deleteGlobalVar(state, action.payload) };
 
       case "loadConfig":
          window.localStorage.clear();
@@ -175,6 +194,7 @@ function ContextProvider({ children }: { children: React.ReactNode }) {
 
    useEffect(() => {
       if (!_.isEmpty(state.runningStatus)) window.localStorage.setItem("runningStatus", JSON.stringify(state.runningStatus));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [JSON.stringify(state.runningStatus)]);
 
    const value = { state, dispatch };
