@@ -90,42 +90,42 @@ export const stylesheet = [
       },
    },
    {
+      selector: "node.sr_pce",
+      style: { "background-fit": "cover", "background-image": "/assets/sr_pce.png", "background-opacity": 0 },
+   },
+   {
       selector: "node.storage",
-      style: {
-         "background-fit": "cover",
-         "background-image": `${process.env.PUBLIC_URL}/assets/storage.png`,
-         "background-opacity": 0,
-      },
+      style: { "background-fit": "cover", "background-image": "/assets/storage.png", "background-opacity": 0 },
+   },
+   {
+      selector: "node.upf",
+      style: { "background-fit": "cover", "background-image": "/assets/upf.png", "background-opacity": 0 },
    },
    {
       selector: "node.l3vpn",
-      style: {
-         "background-fit": "contain",
-         "background-image": `${process.env.PUBLIC_URL}/assets/l3vpn.png`,
-         "background-opacity": 0,
-      },
+      style: { "background-fit": "contain", "background-image": "/assets/l3vpn.png", "background-opacity": 0 },
    },
    {
       selector: "node.router",
-      style: {
-         "background-fit": "cover",
-         "background-image": `${process.env.PUBLIC_URL}/assets/router.png`,
-         "background-opacity": 0,
-      },
+      style: { "background-fit": "cover", "background-image": "/assets/router.png", "background-opacity": 0 },
    },
    {
       selector: "node.apic",
-      style: {
-         "background-fit": "cover",
-         "background-image": `${process.env.PUBLIC_URL}/assets/apic.png`,
-         "background-opacity": 0,
-      },
+      style: { "background-fit": "cover", "background-image": "/assets/apic.png", "background-opacity": 0 },
+   },
+   {
+      selector: "node.contract",
+      style: { "background-fit": "cover", "background-image": "/assets/contract.png", "background-opacity": 0 },
+   },
+   {
+      selector: "node.epg",
+      style: { "background-fit": "cover", "background-image": "/assets/epg.png", "background-opacity": 0 },
    },
    {
       selector: "node.antenna",
       style: {
          "background-fit": "cover",
-         "background-image": `${process.env.PUBLIC_URL}/assets/antenna.png`,
+         "background-image": "/assets/antenna.png",
          "background-opacity": 0,
       },
    },
@@ -133,7 +133,15 @@ export const stylesheet = [
       selector: "node.dc",
       style: {
          "background-fit": "cover",
-         "background-image": `${process.env.PUBLIC_URL}/assets/dc.png`,
+         "background-image": "/assets/dc.png",
+         "background-opacity": 0,
+      },
+   },
+   {
+      selector: "node.dc1",
+      style: {
+         "background-fit": "cover",
+         "background-image": "/assets/dc1.png",
          "background-opacity": 0,
       },
    },
