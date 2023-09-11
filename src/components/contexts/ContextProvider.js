@@ -84,6 +84,9 @@ function globalContextreducer(state, action) {
             return { ...state, runningStatus: { ...state.runningStatus, [action.payload.step]: action.payload.status } };
          }
 
+      case "replaceConfig":
+         return { ...state, config: { ...action.payload } };
+
       case "clearStateHandler":
          for (let key in state.clearStateFunction) {
             if (typeof state.clearStateFunction[key] === "function") {
@@ -119,7 +122,15 @@ function globalContextreducer(state, action) {
          return { ...deleteEndpoint(state, action.payload) };
 
       case "loadConfig":
-         return { ...state, config: { ...action.payload } };
+         window.localStorage.clear();
+         window.sessionStorage.clear();
+         for (let key in state.clearStateFunction) {
+            if (typeof state.clearStateFunction[key] === "function") {
+               state.clearStateFunction[key]();
+            }
+         }
+         window.localStorage.setItem("configData", JSON.stringify(action.payload));
+         return { ...state, currentStep: {}, runningStatus: {}, config: { ...action.payload } };
 
       case "loadRunningStatus":
          return { ...state, runningStatus: { ...action.payload } };
@@ -132,7 +143,7 @@ function globalContextreducer(state, action) {
                state.clearStateFunction[key]();
             }
          }
-         return { ...state, config: { ...config }, currentStep: {} };
+         return { ...state, currentStep: {}, runningStatus: {}, config: { ...config } };
 
       default:
          throw new Error(`Unhandled action type: ${action.type}`);

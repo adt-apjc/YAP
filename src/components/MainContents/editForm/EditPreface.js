@@ -31,7 +31,7 @@ const EditPreface = (props) => {
             stepDesc: state.stepDesc,
          });
       }
-      dispatch({ type: "loadConfig", payload: currentConfig });
+      dispatch({ type: "replaceConfig", payload: currentConfig });
       props.onHide();
    };
 

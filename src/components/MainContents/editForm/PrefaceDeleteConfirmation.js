@@ -8,7 +8,7 @@ const PrefaceDeleteConfirmation = (props) => {
    const onDeleteHandler = () => {
       let currentConfig = cloneDeep(context.config);
       currentConfig.preface = currentConfig.preface.filter((el, index) => index !== props.initValue.index);
-      dispatch({ type: "loadConfig", payload: currentConfig });
+      dispatch({ type: "replaceConfig", payload: currentConfig });
       props.onHide();
    };
 

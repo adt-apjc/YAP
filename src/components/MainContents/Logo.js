@@ -12,7 +12,7 @@ const Logo = () => {
    const editTitleNameHandler = () => {
       let currentConfig = _.cloneDeep(context.config);
       currentConfig.title = state.titleInput;
-      dispatch({ type: "loadConfig", payload: currentConfig });
+      dispatch({ type: "replaceConfig", payload: currentConfig });
       setState((prev) => ({ ...prev, activeEditMainTitle: false }));
    };
 

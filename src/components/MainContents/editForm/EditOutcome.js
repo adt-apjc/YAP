@@ -638,7 +638,7 @@ const EditOutcome = (props) => {
       // TODO future planning is to support multiple outcomes
       currentConfig.mainContent[context.currentStep.name].outcome[0].elements = { ...currentObjectData };
       currentConfig.mainContent[context.currentStep.name].outcome[0].commands = { ...outcome.commands };
-      dispatch({ type: "loadConfig", payload: currentConfig });
+      dispatch({ type: "replaceConfig", payload: currentConfig });
       props.onHide();
    };
 

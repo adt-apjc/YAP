@@ -25,17 +25,12 @@ const ActionTooltipContent = ({ setIsOpen }) => {
          reader.onabort = () => console.log("file reading was aborted");
          reader.onerror = () => console.log("file reading has failed");
          reader.onloadend = () => {
-            // Do whatever you want with the file contents
             const contentString = reader.result;
-
             try {
                const config = JSON.parse(contentString);
                console.log("DEBUG", config);
-               // reset currentStep, running Status and clear currentState before load configuration
-               dispatch({ type: "clearConfig" });
-               // change config context
+               // load config context
                dispatch({ type: "loadConfig", payload: config });
-               window.localStorage.setItem("configData", contentString);
                importRef.current.value = "";
                setIsOpen(false);
             } catch (e) {
