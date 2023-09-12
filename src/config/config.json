@@ -496,6 +496,13 @@
             }
          ]
       },
+      "stage": {
+         "description": ["Run stage when a demo required a setup that doesn't need to be exposed in the demo flow"],
+         "continueOnFail": false,
+         "preCheck": [],
+         "actions": [],
+         "postCheck": []
+      },
       "cleanup": {
          "description": ["Delete the project from the mockup server"],
          "continueOnFail": false,
@@ -519,6 +526,15 @@
                ]
             }
          ],
+         "postCheck": []
+      },
+      "unstage": {
+         "description": [
+            "Run unstage when you need to release some demo resources and you don't need to expose these actions in the demo flow"
+         ],
+         "continueOnFail": false,
+         "preCheck": [],
+         "actions": [],
          "postCheck": []
       }
    }

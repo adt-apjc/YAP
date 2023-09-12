@@ -45,23 +45,44 @@ const ActionTooltipContent = ({ setIsOpen }) => {
 
    return (
       <div className="text-dark px-2 py-1" style={{ minWidth: "10rem" }}>
+         <div className="custom-dropdown" onClick={() => {}}>
+            <i type="button" className="fal fa-broom me-1" />
+            Stage (TBA)
+         </div>
          <div
             className="custom-dropdown"
             onClick={() => {
                if (_.isEmpty(context.config.mainContent.cleanup)) {
                   dispatch({ type: "clearStateHandler" });
                } else {
-                  dispatch({ type: "setCurrentStep", payload: { name: "cleanup", label: "clean up" } });
+                  dispatch({ type: "setCurrentStep", payload: { name: "cleanup", label: "Reset Demo" } });
                }
             }}
          >
             <i type="button" className="fal fa-broom me-1" />
-            Cleanup
+            Clean Up
          </div>
-
+         <div className="custom-dropdown" onClick={() => {}}>
+            <i type="button" className="fal fa-broom me-1" />
+            Unstage (TBA)
+         </div>
          {context.mode === "edit" && (
             <>
                <hr className="mx-0 my-2" />
+               <div
+                  className="custom-dropdown"
+                  onClick={() => {
+                     dispatch({ type: "clearConfig" });
+                     setIsOpen(false);
+                  }}
+               >
+                  <i type="button" className="fal fa-eraser me-2" />
+                  Reset
+               </div>
+               <div className="custom-dropdown" onClick={() => {}}>
+                  <i type="button" className="fal fa-eraser me-2" />
+                  New (TBA)
+               </div>
                <div
                   className="custom-dropdown"
                   onClick={() => {

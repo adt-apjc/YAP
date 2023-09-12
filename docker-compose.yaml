@@ -1,9 +1,9 @@
 version: "3.7"
 
 services:
-  yap:
-    build:
-      context: .
-    ports:
-      - 4000:3000
-    restart: always
+   yap:
+      build:
+         context: .
+      ports:
+         - 80:3000
+      restart: always
