@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
 import { normalRequest, pollingRequest } from "../../../helper/actionHelper";
@@ -17,10 +17,10 @@ const CommandModal = (props) => {
          let response;
          if (action && action.type === "request") {
             // normal request
-            response = await normalRequest(action, context.config.endpoints);
+            response = await normalRequest(action, context.config);
          } else if (action && action.type === "polling") {
             // polling request
-            response = await pollingRequest(action, context.config.endpoints);
+            response = await pollingRequest(action, context.config);
          }
          // update state actionResults for specific step
          setIsRunning(false);
@@ -78,14 +78,17 @@ const Outcome = (props) => {
    const [modal, setModal] = useState({ modalShow: false, selectedElement: null });
    const [collapseCount, setCollapseCount] = useState(0);
 
-   const handleNodeClick = (nodeElement) => {
-      let nodeData = nodeElement.data();
-      let outcomeConfig = props.currentStepDetails.outcome[0];
-      // check if selected node has configured commands ?
-      if (outcomeConfig.commands && outcomeConfig.commands[nodeData.id]) {
-         setModal({ selectedElement: nodeData, modalShow: true });
-      }
-   };
+   const handleNodeClick = useCallback(
+      (nodeElement) => {
+         let nodeData = nodeElement.data();
+         let outcomeConfig = props.currentStepDetails.outcome[0];
+         // check if selected node has configured commands ?
+         if (outcomeConfig.commands && outcomeConfig.commands[nodeData.id]) {
+            setModal({ selectedElement: nodeData, modalShow: true });
+         }
+      },
+      [JSON.stringify(props.currentStepDetails)]
+   );
 
    const onModalHide = () => setModal({ modalShow: false, selectedElement: null });
 

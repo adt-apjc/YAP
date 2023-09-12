@@ -66,10 +66,10 @@ const DemoContent = (props) => {
             let response;
             if (preCheck.type === "request") {
                // normal request
-               response = await normalRequest(preCheck, context.config.endpoints);
+               response = await normalRequest(preCheck, context.config);
             } else if (preCheck.type === "polling") {
                // polling request
-               response = await pollingRequest(preCheck, context.config.endpoints);
+               response = await pollingRequest(preCheck, context.config);
             }
 
             //
@@ -131,10 +131,10 @@ const DemoContent = (props) => {
             let response;
             if (action.type === "request") {
                // normal request
-               response = await normalRequest(action, context.config.endpoints);
+               response = await normalRequest(action, context.config);
             } else if (action.type === "polling") {
                // polling request
-               response = await pollingRequest(action, context.config.endpoints);
+               response = await pollingRequest(action, context.config);
             }
 
             //
@@ -196,10 +196,10 @@ const DemoContent = (props) => {
             let response;
             if (postCheck.type === "request") {
                // normal request
-               response = await normalRequest(postCheck, context.config.endpoints);
+               response = await normalRequest(postCheck, context.config);
             } else if (postCheck.type === "polling") {
                // polling request
-               response = await pollingRequest(postCheck, context.config.endpoints);
+               response = await pollingRequest(postCheck, context.config);
             }
 
             //

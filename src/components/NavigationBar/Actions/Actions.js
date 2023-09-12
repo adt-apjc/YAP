@@ -48,20 +48,47 @@ const ActionTooltipContent = ({ setIsOpen }) => {
          <div
             className="custom-dropdown"
             onClick={() => {
-               if (_.isEmpty(context.config.mainContent.cleanup)) {
-                  dispatch({ type: "clearStateHandler" });
-               } else {
-                  dispatch({ type: "setCurrentStep", payload: { name: "cleanup", label: "clean up" } });
-               }
+               dispatch({ type: "setCurrentStep", payload: { name: "stage", label: "Stage Demo" } });
             }}
          >
-            <i type="button" className="fal fa-broom me-1" />
-            Cleanup
+            <i type="button" className="fal fa-wrench me-1" />
+            Stage
          </div>
-
+         <div
+            className="custom-dropdown"
+            onClick={() => {
+               dispatch({ type: "setCurrentStep", payload: { name: "cleanup", label: "Reset Demo" } });
+            }}
+         >
+            <i type="button" className="fal fa-redo me-1" />
+            Clean Up
+         </div>
+         <div
+            className="custom-dropdown"
+            onClick={() => {
+               dispatch({ type: "setCurrentStep", payload: { name: "unstage", label: "Unstage Demo" } });
+            }}
+         >
+            <i type="button" className="fal fa-recycle me-1" />
+            Unstage
+         </div>
          {context.mode === "edit" && (
             <>
                <hr className="mx-0 my-2" />
+               <div
+                  className="custom-dropdown"
+                  onClick={() => {
+                     dispatch({ type: "clearConfig" });
+                     setIsOpen(false);
+                  }}
+               >
+                  <i type="button" className="fal fa-eraser me-2" />
+                  Reset
+               </div>
+               <div className="custom-dropdown" onClick={() => {}}>
+                  <i type="button" className="fal fa-file me-2" />
+                  New (TBA)
+               </div>
                <div
                   className="custom-dropdown"
                   onClick={() => {

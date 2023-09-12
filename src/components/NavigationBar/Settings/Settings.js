@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import WithDropdown from "../../Popper/Dropdown";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import ModalContentSelector from "../ModalContentSelector";
@@ -17,15 +17,6 @@ const SettingsTooltipContent = ({ setIsOpen, setModalShow }) => {
             }}
          >
             Switch to <span className="text-primary">{context.mode === "presentation" ? "Edit" : "Presentation"} mode</span>
-         </div>
-         <div
-            className="custom-dropdown"
-            onClick={() => {
-               dispatch({ type: "clearConfig" });
-               setIsOpen(false);
-            }}
-         >
-            Clear Configuration
          </div>
          <div
             className="custom-dropdown"

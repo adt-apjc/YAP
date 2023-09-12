@@ -61,7 +61,7 @@ Step 1 - open a terminal and clone the project with Git
 git clone https://github.com/adt-apjc/YAP.git
 ```
 
-Step 2 (optional) - REACT application runs on TCP porty 3000 and docker-compose expose this port as 4000. If YAP must answer to a different TCP port, update the ports statement in docker-compose.yaml.
+Step 2 (optional) - REACT application runs on TCP porty 3000 and docker-compose expose this port as 80. If YAP must answer to a different TCP port, update the ports statement in docker-compose.yaml.
 
 Step 3 - Build and run YAP container (remove the -d to run interactively).
 

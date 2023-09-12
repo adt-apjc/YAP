@@ -36,7 +36,7 @@
          "bodyArr": [
             "In this first step, we will create a project container for our network.",
             "The primary purpose of this activity is to explain how to execute a POST action toward our endpoint, evaluate the return code and payload, and store the UUID allocated for the project for other activities.",
-            "This first exposes in the Outcome section an empty project container that allows you to test executing API calls toward any graphical elements. Just click on the cloud, select \"Get Project Details\" from the list of available commands and click on Run to execute the call."
+            "The outcome section propose an empty project container and you can test executing API calls toward any graphical elements. Just click on the cloud, select \"Get Project Details\" from the list of available commands and click on Run to execute the call."
          ]
       },
       {
@@ -53,7 +53,10 @@
       {
          "title": "Enable Connectivity",
          "stepDesc": "Enable Connectivity",
-         "bodyArr": [""]
+         "bodyArr": [
+            "The trird step enable the connectivity between the two routers in our project",
+            "This activity is performed by two PATCH call on the resources created in the previous step, changing the status of the newly created interfaces to up."
+         ]
       }
    ],
    "endpoints": {
@@ -65,11 +68,16 @@
       }
    },
    "globalVariables": {
-      "id": "test123"
+      "projectName": "My Project",
+      "node1_ip": "1.1.1.1"
    },
    "mainContent": {
       "step_1": {
-         "description": ["Create a new project in the mockup server."],
+         "description": [
+            "Create a new project in the mockup server.",
+            "The proposed payload for the POST action describes how to enclose a variable name between curly braces ({{<varibale name>}}) for the project name.",
+            "YAP supports variable substitution in the URL and the payload. You can configure static variables in the Settings section or capture the value from a call response payload. For example, the proposed project creation call, captures the project UUID for later reference."
+         ],
          "continueOnFail": false,
          "prefaceRef": 1,
          "preCheck": [],
@@ -80,11 +88,11 @@
                "header": "Create",
                "headerColor": "Green",
                "title": "Add new project",
-               "description": "",
+               "description": "The proposed payload for the POST action describe how to embed a variable in the",
                "url": "api/project",
                "method": "post",
                "data": {
-                  "name": "My project",
+                  "name": "{{projectName}}",
                   "description": "Mockup project to demonstrate YAP functionalities",
                   "routers": []
                },
@@ -113,7 +121,7 @@
                "elements": {
                   "nodes": [
                      {
-                        "data": { "id": "Project", "label": "My New Project" },
+                        "data": { "id": "Project", "label": "My Project" },
                         "position": { "x": 400, "y": -100 },
                         "classes": "size-xxxlg-rect highlight l3vpn"
                      }
@@ -177,7 +185,7 @@
                   "intefaces": [
                      {
                         "name": "Ge0/0/0/0",
-                        "ip": "1.1.1.1/24",
+                        "ip": "{{node1_ip}}/24",
                         "status": "down"
                      }
                   ]
@@ -328,7 +336,7 @@
                         "method": "post",
                         "data": {
                            "input": {
-                              "args": "ping 1.1.1.2 source 1.1.1.1"
+                              "args": "ping 1.1.1.2 source {{node1_ip}}"
                            }
                         }
                      }
@@ -496,8 +504,21 @@
             }
          ]
       },
+      "stage": {
+         "description": [
+            "Run stage when a demo required a setup that doesn't need to be exposed in the demo flow.",
+            "There is no stage activity in this Hello World demo."
+         ],
+         "continueOnFail": false,
+         "preCheck": [],
+         "actions": [],
+         "postCheck": []
+      },
       "cleanup": {
-         "description": ["Delete the project from the mockup server"],
+         "description": [
+            "Run the cleanup function between demos, without releasing the staged resources.Delete the project from the mockup server,",
+            "In this demo, just delete the newly created project."
+         ],
          "continueOnFail": false,
          "preCheck": [],
          "actions": [
@@ -519,6 +540,16 @@
                ]
             }
          ],
+         "postCheck": []
+      },
+      "unstage": {
+         "description": [
+            "Run unstage when you need to release some demo resources and you don't need to expose these actions in the demo flow",
+            "There is no unstage activity in this Hello World demo."
+         ],
+         "continueOnFail": false,
+         "preCheck": [],
+         "actions": [],
          "postCheck": []
       }
    }
