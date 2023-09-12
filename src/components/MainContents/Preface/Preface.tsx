@@ -1,10 +1,19 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
 import ModalContentSelector from "../editForm/ModalContentSelector";
 import { isArray } from "lodash";
+import { PrefaceConfig } from "../../contexts/ContextTypes";
 
-const PrefaceContent = ({ config, index }) => {
+type PrefaceState = {
+   preface: PrefaceConfig;
+   index: number;
+   modalShow: boolean;
+   modalContentType: string | null;
+   paramValues: any;
+};
+
+const PrefaceContent = ({ config }: { config: PrefaceConfig }) => {
    if (!config) return null;
 
    let texts;
@@ -21,10 +30,10 @@ const PrefaceContent = ({ config, index }) => {
    );
 };
 
-const Preface = (props) => {
+const Preface = (props: { prefaceRef: number; config: PrefaceConfig[] }) => {
    const { context } = useGlobalContext();
-   const [state, setState] = useState({
-      preface: props.prefaceRef ? context.config.preface[props.prefaceRef] : context.config.preface[0],
+   const [state, setState] = useState<PrefaceState>({
+      preface: props.prefaceRef ? props.config[props.prefaceRef] : props.config[0],
       index: props.prefaceRef ? props.prefaceRef : 0,
       modalShow: false,
       modalContentType: null,
@@ -32,20 +41,16 @@ const Preface = (props) => {
    });
 
    useEffect(() => {
-      setState({ ...state, index: props.prefaceRef, preface: context.config.preface[props.prefaceRef] });
+      if (props.prefaceRef) setState({ ...state, index: props.prefaceRef, preface: props.config[props.prefaceRef] });
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [props.prefaceRef]);
-
-   useEffect(() => {
-      setState({ ...state, preface: context.config.preface[state.index] }); // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [context.config.preface]);
 
    return (
       <div className="p-1">
          <div className="btn-toolbar justify-content-end position-relative">
             <div className="d-flex align-items-center mt-1">
                <ul className="nav nav-tabs preface-nav">
-                  {context.config.preface.map((element, stepIndex) => {
+                  {props.config.map((element, stepIndex) => {
                      return (
                         <li
                            key={stepIndex}
@@ -53,7 +58,7 @@ const Preface = (props) => {
                            onClick={() =>
                               setState({
                                  ...state,
-                                 preface: context.config.preface[stepIndex],
+                                 preface: props.config[stepIndex],
                                  index: stepIndex,
                               })
                            }
@@ -107,7 +112,7 @@ const Preface = (props) => {
                      </span>
                   </div>
                )}
-               <PrefaceContent config={state.preface} index={state.index} />
+               <PrefaceContent config={state.preface} />
             </div>
          </div>
          <Modal

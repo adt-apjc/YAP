@@ -18,7 +18,7 @@ const OffCanvas = (props) => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [context.currentStep]);
 
-   if (_.isEmpty(context.currentStep)) return;
+   if (!context.currentStep.name) return;
 
    return (
       <div className="d-flex" style={{ zIndex: "999" }}>

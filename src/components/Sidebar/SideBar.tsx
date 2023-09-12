@@ -1,12 +1,19 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Modal } from "../../helper/modalHelper";
 import { useGlobalContext } from "../contexts/ContextProvider";
 
-const DeleteConfirmation = (props) => {
+type StepConfig = { name: string; label: string };
+
+type DeleteConfirmationProps = {
+   onHide: () => void;
+   selectedStep: StepConfig | null;
+};
+
+const DeleteConfirmation = (props: DeleteConfirmationProps) => {
    const { dispatch } = useGlobalContext();
 
    const onDeleteHandler = () => {
-      dispatch({ type: "deleteStep", payload: { name: props.selectedStep.name } });
+      dispatch({ type: "deleteStep", payload: { name: props.selectedStep!.name } });
       props.onHide();
    };
 
@@ -34,9 +41,16 @@ const DeleteConfirmation = (props) => {
    );
 };
 
-const SideBar = (props) => {
+type SideBarState = {
+   activeAddStep: boolean;
+   input: string;
+   modalShow: boolean;
+   selectedStep: StepConfig | null;
+};
+
+const SideBar = () => {
    const { context, dispatch } = useGlobalContext();
-   const [state, setState] = useState({
+   const [state, setState] = useState<SideBarState>({
       activeAddStep: false,
       input: "",
       modalShow: false,
@@ -63,7 +77,13 @@ const SideBar = (props) => {
    const renderSiteMenuList = () => {
       return context.config.sidebar.map((element, index) => {
          let statusIcon;
-         if (context.runningStatus[element.name] === "success") {
+         if (!context.runningStatus || !context.runningStatus[element.name]) {
+            statusIcon = (
+               <div className={`status-icon ${context.currentStep.name === element.name ? "curr-selected" : ""} `}>
+                  {`${index + 1}`}
+               </div>
+            );
+         } else if (context.runningStatus[element.name] === "success") {
             statusIcon = (
                <div className={`status-icon success`}>
                   <i className="fas fa-check" />
@@ -81,12 +101,6 @@ const SideBar = (props) => {
                   <i className="fas fa-times" />
                </div>
             );
-         } else {
-            statusIcon = (
-               <div className={`status-icon ${context.currentStep.name === element.name ? "curr-selected" : ""} `}>
-                  {`${index + 1}`}
-               </div>
-            );
          }
          return (
             <div
@@ -101,7 +115,8 @@ const SideBar = (props) => {
                      className={`step-label-text  ${isSomeStepRunning() ? "disabled" : ""} ${
                         context.currentStep.name === element.name ? "curr-selected " : ""
                      } ${
-                        context.runningStatus[element.name] === "success" || context.runningStatus[element.name] === "fail"
+                        context.runningStatus &&
+                        (context.runningStatus[element.name] === "success" || context.runningStatus[element.name] === "fail")
                            ? "bold"
                            : ""
                      }`}
@@ -115,13 +130,7 @@ const SideBar = (props) => {
                      title="delete"
                      className={`step-label-text fal fa-trash-alt fa-sm ms-2 icon-hover-highlight ${
                         context.currentStep.name === element.name ? "curr-selected" : ""
-                     }
-                     ${
-                        context.runningStatus[element.name] === "success" || context.runningStatus[element.name] === "fail"
-                           ? "bold"
-                           : ""
-                     }
-                     ${isSomeStepRunning() ? "disabled" : ""}
+                     } ${isSomeStepRunning() ? "disabled" : ""}
                      `}
                      onClick={(e) => {
                         e.stopPropagation();
@@ -156,7 +165,7 @@ const SideBar = (props) => {
                      value={state.input}
                      onChange={(e) => setState((prev) => ({ ...prev, input: e.target.value }))}
                   />
-                  <span type="button" className=" icon-hover-higlight" onClick={addNewStageHandler}>
+                  <span className=" icon-hover-higlight pointer" onClick={addNewStageHandler}>
                      <i className="far fa-check text-success ms-2" />
                   </span>
                </div>
@@ -182,6 +191,5 @@ const SideBar = (props) => {
       </>
    );
 };
-// SideBar.contextType = GlobalContext;
 
 export default SideBar;

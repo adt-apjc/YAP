@@ -15,7 +15,7 @@ const MainContents = () => {
    return (
       <div className="container-fluid">
          <div className="container-fluid pb-3">
-            {_.isEmpty(context.currentStep) ? (
+            {!context.currentStep.name ? (
                <Preface config={context.config.preface} />
             ) : (
                <DemoContent currentStep={context.currentStep} currentStepDetails={currentStepDetails} />

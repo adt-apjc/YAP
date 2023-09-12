@@ -1,14 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { usePopper } from "react-popper";
+import type { Placement } from "@popperjs/core";
 
-const DropdownElement = React.forwardRef((props, ref) => {
-   const selfRef = useRef(null);
+type DropdownElementProps = {
+   styles: { [key: string]: React.CSSProperties };
+   attributes: any;
+   children: React.ReactNode;
+   interactive: boolean;
+   bindToRoot: boolean;
+   onRequestClose: () => any;
+};
+
+const DropdownElement = React.forwardRef((props: DropdownElementProps, ref) => {
+   const selfRef = useRef<HTMLDivElement | null>(null);
    const { onRequestClose, interactive } = props;
 
    useEffect(() => {
-      const handleClickOutside = (event) => {
-         if (!interactive || (selfRef.current && !selfRef.current.contains(event.target))) {
+      const handleClickOutside = (event: MouseEvent) => {
+         if (!interactive || (selfRef.current && !selfRef.current.contains(event.target as Node))) {
             onRequestClose && onRequestClose();
          }
       };
@@ -31,7 +41,7 @@ const DropdownElement = React.forwardRef((props, ref) => {
                {props.children}
             </div>
          </div>,
-         document.getElementById("root"),
+         document.getElementById("root")!
       );
    } else {
       return (
@@ -49,11 +59,25 @@ const DropdownElement = React.forwardRef((props, ref) => {
    }
 });
 
-const WithDropdown = (props) => {
+type WithDropdownProps = {
+   className: string;
+   DropdownComponent: React.ReactNode;
+   children: React.ReactNode;
+   style: React.CSSProperties;
+   placement: Placement;
+   offset: [number, number];
+   open: boolean;
+   showArrow: boolean;
+   interactive: boolean;
+   bindToRoot: boolean;
+   onRequestClose: () => any;
+};
+
+const WithDropdown = (props: WithDropdownProps) => {
    const [showDropdown, setShowDropdown] = useState(false);
-   const [referenceElement, setReferenceElement] = useState(null);
-   const [popperElement, setPopperElement] = useState(null);
-   const [arrowElement, setArrowElement] = useState(null);
+   const [referenceElement, setReferenceElement] = useState<HTMLSpanElement | null>(null);
+   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
+   const [arrowElement, setArrowElement] = useState<HTMLElement | null>(null);
 
    const { styles, attributes } = usePopper(referenceElement, popperElement, {
       placement: props.placement || "bottom",

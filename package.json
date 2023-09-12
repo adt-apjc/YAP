@@ -7,6 +7,8 @@
       "@testing-library/jest-dom": "^5.11.6",
       "@testing-library/react": "^14.0.0",
       "@testing-library/user-event": "^14.4.3",
+      "@types/react": "^18.2.21",
+      "@types/react-dom": "^18.2.7",
       "@uiw/react-json-view": "^1.8.3",
       "axios": "^1.4.0",
       "bootstrap": "^5.3.1",
@@ -46,5 +48,8 @@
          "last 1 firefox version",
          "last 1 safari version"
       ]
+   },
+   "devDependencies": {
+      "@types/lodash": "^4.14.198"
    }
 }
