@@ -80,7 +80,7 @@ const EndpointEditor = (props) => {
    return (
       <div className="endpoint-form">
          <div className="d-flex align-items-center justify-content-between">
-            <div>New Endpoint</div>
+            <div>Endpoint</div>
             <div className="d-flex">
                <div className="btn btn-sm text-info ms-auto" onClick={onHeaderSaveHandler}>
                   Save
@@ -190,7 +190,7 @@ const Endpoint = () => {
    return (
       <>
          <div className="mb-3">
-            Endpoint
+            Endpoints
             <span
                className="mx-3 font-sm text-info pointer text-hover-highlight"
                onClick={() => setState({ showEndpointEditor: true })}

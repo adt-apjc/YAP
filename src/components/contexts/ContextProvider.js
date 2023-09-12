@@ -68,17 +68,17 @@ function deleteEndpoint(state, payload) {
    delete clonedState.config.endpoints[payload.name];
    return clonedState;
 }
-function addGlobalVar(state, payload) {
+function addStaticVar(state, payload) {
    let clonedState = _.cloneDeep(state);
-   clonedState.config.globalVariables = {
-      ...clonedState.config.globalVariables,
+   clonedState.config.staticVariables = {
+      ...clonedState.config.staticVariables,
       [payload.name]: payload.val,
    };
    return clonedState;
 }
-function deleteGlobalVar(state, payload) {
+function deleteStaticVar(state, payload) {
    let clonedState = _.cloneDeep(state);
-   delete clonedState.config.globalVariables[payload.name];
+   delete clonedState.config.staticVariables[payload.name];
    return clonedState;
 }
 
@@ -134,11 +134,11 @@ function globalContextreducer(state, action) {
       case "deleteEndpoint":
          return { ...deleteEndpoint(state, action.payload) };
 
-      case "addGlobalVar":
-         return { ...addGlobalVar(state, action.payload) };
+      case "addStaticVar":
+         return { ...addStaticVar(state, action.payload) };
 
-      case "deleteGlobalVar":
-         return { ...deleteGlobalVar(state, action.payload) };
+      case "deleteStaticVar":
+         return { ...deleteStaticVar(state, action.payload) };
 
       case "loadConfig":
          window.localStorage.clear();

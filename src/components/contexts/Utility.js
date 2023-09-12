@@ -47,3 +47,16 @@ export const getVariableDetails = (request) => {
 
    return varDetails;
 };
+
+export const checkStaticVarIfUsed = (varDetails, staticVariables) => {
+   let isUsed = false;
+
+   for (let item of varDetails) {
+      if (staticVariables && Object.keys(staticVariables).includes(item.key)) {
+         isUsed = true;
+         break;
+      }
+   }
+
+   return isUsed;
+};

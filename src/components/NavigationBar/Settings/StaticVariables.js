@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 
-const GlobalVarEditor = (props) => {
+const StaticVarEditor = (props) => {
    const [state, setState] = useState({ name: "", val: "" });
    const { dispatch } = useGlobalContext();
 
@@ -11,17 +11,23 @@ const GlobalVarEditor = (props) => {
 
    const onHeaderSaveHandler = () => {
       dispatch({
-         type: "addGlobalVar",
+         type: "addStaticVar",
          payload: { name: state.name, val: state.val },
       });
 
       props.onClose();
    };
 
+   useEffect(() => {
+      if (!props.initValue) return;
+
+      setState({ name: props.initValue.name, val: props.initValue.val });
+   }, [props.initValue]);
+
    return (
       <div className="endpoint-form">
          <div className="d-flex align-items-center justify-content-between">
-            <div>New Variable</div>
+            <div>Static Variable</div>
             <div className="d-flex">
                <div className="btn btn-sm text-info ms-auto" onClick={onHeaderSaveHandler}>
                   Save
@@ -58,41 +64,48 @@ const GlobalVarEditor = (props) => {
    );
 };
 
-const GlobalVarViewer = (props) => {
+const StaticVarViewer = (props) => {
    const { context, dispatch } = useGlobalContext();
-   const [state, setState] = useState({ showDeleteGlobalVar: [] });
+   const [state, setState] = useState({ showDeleteStaticVar: [] });
 
-   const renderGlobalVar = () => {
-      if (!context.config.globalVariables || Object.keys(context.config.globalVariables).length === 0)
-         return <small className="text-muted">No Global Variables</small>;
+   const onSelectHandler = (varName, val) => {
+      props.onSelect({ name: varName, val });
+   };
 
-      return Object.keys(context.config.globalVariables).map((varName, index) => {
+   const renderStaticVar = () => {
+      if (!context.config.staticVariables || Object.keys(context.config.staticVariables).length === 0)
+         return <small className="text-muted">No Static Variables</small>;
+
+      return Object.keys(context.config.staticVariables).map((varName, index) => {
          return (
             <div key={index} className="row">
                <div className="mb-2 col-10">
-                  <div className="input-group input-group-sm pointer">
+                  <div
+                     className="input-group input-group-sm pointer"
+                     onClick={() => onSelectHandler(varName, context.config.staticVariables[varName])}
+                  >
                      <div type="text" className="form-control col-3">
                         {varName}
                      </div>
                      <div type="text" className="form-control col-9">
-                        {context.config.globalVariables[varName]}
+                        {context.config.staticVariables[varName]}
                      </div>
                   </div>
                </div>
                <div className="col-2">
-                  {state.showDeleteGlobalVar.includes(index) ? (
+                  {state.showDeleteStaticVar.includes(index) ? (
                      <>
                         <span
                            className="pointer font-sm"
                            onClick={() =>
-                              setState({ showDeleteGlobalVar: state.showDeleteGlobalVar.filter((el) => el !== index) })
+                              setState({ showDeleteStaticVar: state.showDeleteStaticVar.filter((el) => el !== index) })
                            }
                         >
                            Cancel
                         </span>
                         <span
                            className="pointer font-sm text-danger mx-2 text-hover-highlight"
-                           onClick={() => dispatch({ type: "deleteGlobalVar", payload: { name: varName } })}
+                           onClick={() => dispatch({ type: "deleteStaticVar", payload: { name: varName } })}
                         >
                            Delete
                         </span>
@@ -100,7 +113,7 @@ const GlobalVarViewer = (props) => {
                   ) : (
                      <span
                         className="pointer"
-                        onClick={() => setState({ showDeleteGlobalVar: [...state.showDeleteGlobalVar, index] })}
+                        onClick={() => setState({ showDeleteStaticVar: [...state.showDeleteStaticVar, index] })}
                      >
                         {"\u00D7"}
                      </span>
@@ -111,24 +124,32 @@ const GlobalVarViewer = (props) => {
       });
    };
 
-   return <div className="mb-3">{renderGlobalVar()}</div>;
+   return <div className="mb-3">{renderStaticVar()}</div>;
 };
 
-const GlobalVariable = () => {
-   const [showGlobalVarEditor, setShowGlobalVarEditor] = useState(false);
+const StaticVariables = () => {
+   const [state, setState] = useState({ selectedVar: null, showStaticVarEditor: false });
 
    return (
       <>
          <div className="mt-4 mb-2">
-            Global Variables
-            <span className="mx-3 font-sm text-info pointer text-hover-highlight" onClick={() => setShowGlobalVarEditor(true)}>
+            Static Variables
+            <span
+               className="mx-3 font-sm text-info pointer text-hover-highlight"
+               onClick={() => setState({ showStaticVarEditor: true })}
+            >
                Add
             </span>
          </div>
-         <GlobalVarViewer />
-         {showGlobalVarEditor && <GlobalVarEditor onClose={() => setShowGlobalVarEditor(false)} />}
+         <StaticVarViewer onSelect={(el) => setState({ selectedVar: el, showStaticVarEditor: true })} />
+         {state.showStaticVarEditor && (
+            <StaticVarEditor
+               initValue={state.selectedVar}
+               onClose={() => setState({ showStaticVarEditor: false, selectedVar: null })}
+            />
+         )}
       </>
    );
 };
 
-export default GlobalVariable;
+export default StaticVariables;
