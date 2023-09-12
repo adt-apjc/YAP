@@ -15,8 +15,8 @@ export type ContextActionType =
    | { type: "deleteStep"; payload: { name: string } }
    | { type: "addEndpoint"; payload: { name: string; baseURL: string; headerList: [] } }
    | { type: "deleteEndpoint"; payload: { name: string } }
-   | { type: "addGlobalVar"; payload: { name: string; val: any } }
-   | { type: "deleteGlobalVar"; payload: { name: string } }
+   | { type: "addStaticVar"; payload: { name: string; val: any } }
+   | { type: "deleteStaticVar"; payload: { name: string } }
    | { type: "loadConfig"; payload: any }
    | { type: "loadRunningStatus"; payload: any }
    | { type: "clearConfig" };
@@ -57,7 +57,7 @@ export type config = {
          headers?: { [key: string]: string };
       };
    };
-   globalVariables: { [key: string]: string };
+   staticVariables: { [key: string]: string };
    mainContent: {
       [step: string]: {
          description?: string[];

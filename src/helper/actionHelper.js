@@ -66,7 +66,7 @@ const getStringFromObject = (obj, path) => {
    }
 };
 
-const replaceStrWithParams = (text, globalVariables) => {
+const replaceStrWithParams = (text, staticVariables) => {
    console.log("DEBUG - replacing params", text);
    let regex = /\{\{[A-Za-z_-]+[A-Za-z_0-9-]*\}\}/g;
    // if text is undefined or null return as it is.
@@ -78,8 +78,8 @@ const replaceStrWithParams = (text, globalVariables) => {
          let replacedText = text;
          for (let varname of match) {
             let stripedVarname = varname.replace(/[{}]/g, "");
-            if (globalVariables[stripedVarname]) {
-               replacedText = replacedText.replace(varname, globalVariables[stripedVarname]);
+            if (staticVariables[stripedVarname]) {
+               replacedText = replacedText.replace(varname, staticVariables[stripedVarname]);
             } else {
                replacedText = replacedText.replace(varname, sessionStorage.getItem(stripedVarname));
             }
@@ -94,8 +94,8 @@ const replaceStrWithParams = (text, globalVariables) => {
          let replacedText = strText;
          for (let varname of match) {
             let stripedVarname = varname.replace(/[{}]/g, "");
-            if (globalVariables[stripedVarname]) {
-               replacedText = replacedText.replace(varname, globalVariables[stripedVarname]);
+            if (staticVariables[stripedVarname]) {
+               replacedText = replacedText.replace(varname, staticVariables[stripedVarname]);
             } else {
                replacedText = replacedText.replace(varname, sessionStorage.getItem(stripedVarname));
             }
@@ -108,18 +108,18 @@ const replaceStrWithParams = (text, globalVariables) => {
    return text;
 };
 
-export const normalRequest = (actionObject, { endpoints, globalVariables }) => {
+export const normalRequest = (actionObject, { endpoints, staticVariables }) => {
    if (!("expect" in actionObject)) {
       actionObject = { ...actionObject, expect: [] };
    }
    let config = {
       baseURL: actionObject.baseURL ? actionObject.baseURL : endpoints[actionObject.useEndpoint].baseURL,
       headers: actionObject.headers
-         ? replaceStrWithParams(actionObject.headers, globalVariables)
-         : replaceStrWithParams(endpoints[actionObject.useEndpoint].headers, globalVariables),
-      url: replaceStrWithParams(actionObject.url, globalVariables),
+         ? replaceStrWithParams(actionObject.headers, staticVariables)
+         : replaceStrWithParams(endpoints[actionObject.useEndpoint].headers, staticVariables),
+      url: replaceStrWithParams(actionObject.url, staticVariables),
       method: actionObject.method,
-      data: replaceStrWithParams(actionObject.data, globalVariables),
+      data: replaceStrWithParams(actionObject.data, staticVariables),
    };
    // if username/password was set, overwrite Auth
    if (endpoints[actionObject.useEndpoint].username && endpoints[actionObject.useEndpoint].password) {
@@ -161,7 +161,7 @@ export const normalRequest = (actionObject, { endpoints, globalVariables }) => {
    });
 };
 
-export const pollingRequest = (actionObject, { endpoints, globalVariables }) => {
+export const pollingRequest = (actionObject, { endpoints, staticVariables }) => {
    let interval = actionObject.interval ? parseInt(actionObject.interval) : 5000;
    let maxRetry = actionObject.maxRetry ? parseInt(actionObject.maxRetry) : 10;
    if (!("expect" in actionObject)) {
@@ -170,11 +170,11 @@ export const pollingRequest = (actionObject, { endpoints, globalVariables }) => 
    let config = {
       baseURL: actionObject.baseURL ? actionObject.baseURL : endpoints[actionObject.useEndpoint].baseURL,
       headers: actionObject.headers
-         ? replaceStrWithParams(actionObject.headers, globalVariables)
-         : replaceStrWithParams(endpoints[actionObject.useEndpoint].headers, globalVariables),
-      url: replaceStrWithParams(actionObject.url, globalVariables),
+         ? replaceStrWithParams(actionObject.headers, staticVariables)
+         : replaceStrWithParams(endpoints[actionObject.useEndpoint].headers, staticVariables),
+      url: replaceStrWithParams(actionObject.url, staticVariables),
       method: actionObject.method,
-      data: replaceStrWithParams(actionObject.data, globalVariables),
+      data: replaceStrWithParams(actionObject.data, staticVariables),
    };
    // if username/password was set, overwrite Auth
    if (endpoints[actionObject.useEndpoint].username && endpoints[actionObject.useEndpoint].password) {

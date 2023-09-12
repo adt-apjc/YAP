@@ -25,7 +25,7 @@ export const getVariableDetails = (request) => {
    // when user used the variable as params in url i.e "{{}}" to be used in the API request
    // value will be coming from the previous response
 
-   const regexp = /{{[0-9A-Za-z]+}}/g;
+   const regexp = /{{\w+[0-9A-Za-z]+}}/g;
 
    const variablesInUrl = request.url.match(regexp) || [];
    for (const item of variablesInUrl) {
@@ -46,4 +46,17 @@ export const getVariableDetails = (request) => {
    }
 
    return varDetails;
+};
+
+export const checkStaticVarIfUsed = (varDetails, staticVariables) => {
+   let isUsed = false;
+
+   for (let item of varDetails) {
+      if (staticVariables && Object.keys(staticVariables).includes(item.key)) {
+         isUsed = true;
+         break;
+      }
+   }
+
+   return isUsed;
 };

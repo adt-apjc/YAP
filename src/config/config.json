@@ -67,7 +67,7 @@
          }
       }
    },
-   "globalVariables": {
+   "staticVariables": {
       "projectName": "My Project",
       "node1_ip": "1.1.1.1"
    },
