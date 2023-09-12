@@ -51,7 +51,6 @@ const TopologyWrapper = (props) => {
       cyRef.current.ready(() => {
          cyRef.current.center();
          cyRef.current.boxSelectionEnabled(false);
-         setUpEventListeners();
          if (props.outcomeConfig.elements) {
             props.outcomeConfig.elements.nodes.forEach((ele) => {
                if (ele.data.width) {
@@ -64,6 +63,11 @@ const TopologyWrapper = (props) => {
          }
       }); // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [cyRef.current]);
+
+   useEffect(() => {
+      if (!cyRef.current) return;
+      setUpEventListeners();
+   }, [props.onNodeClick]);
 
    return (
       <CytoscapeComponent
