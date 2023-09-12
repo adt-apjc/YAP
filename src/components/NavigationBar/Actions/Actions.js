@@ -45,26 +45,32 @@ const ActionTooltipContent = ({ setIsOpen }) => {
 
    return (
       <div className="text-dark px-2 py-1" style={{ minWidth: "10rem" }}>
-         <div className="custom-dropdown" onClick={() => {}}>
-            <i type="button" className="fal fa-broom me-1" />
-            Stage (TBA)
+         <div
+            className="custom-dropdown"
+            onClick={() => {
+               dispatch({ type: "setCurrentStep", payload: { name: "stage", label: "Stage Demo" } });
+            }}
+         >
+            <i type="button" className="fal fa-wrench me-1" />
+            Stage
          </div>
          <div
             className="custom-dropdown"
             onClick={() => {
-               if (_.isEmpty(context.config.mainContent.cleanup)) {
-                  dispatch({ type: "clearStateHandler" });
-               } else {
-                  dispatch({ type: "setCurrentStep", payload: { name: "cleanup", label: "Reset Demo" } });
-               }
+               dispatch({ type: "setCurrentStep", payload: { name: "cleanup", label: "Reset Demo" } });
             }}
          >
-            <i type="button" className="fal fa-broom me-1" />
+            <i type="button" className="fal fa-redo me-1" />
             Clean Up
          </div>
-         <div className="custom-dropdown" onClick={() => {}}>
-            <i type="button" className="fal fa-broom me-1" />
-            Unstage (TBA)
+         <div
+            className="custom-dropdown"
+            onClick={() => {
+               dispatch({ type: "setCurrentStep", payload: { name: "unstage", label: "Unstage Demo" } });
+            }}
+         >
+            <i type="button" className="fal fa-recycle me-1" />
+            Unstage
          </div>
          {context.mode === "edit" && (
             <>
@@ -80,7 +86,7 @@ const ActionTooltipContent = ({ setIsOpen }) => {
                   Reset
                </div>
                <div className="custom-dropdown" onClick={() => {}}>
-                  <i type="button" className="fal fa-eraser me-2" />
+                  <i type="button" className="fal fa-file me-2" />
                   New (TBA)
                </div>
                <div
