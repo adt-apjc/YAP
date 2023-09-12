@@ -1,4 +1,3 @@
-import React from "react";
 import SideBar from "./Sidebar/SideBar";
 import MainContents from "./MainContents";
 import "./App.css";

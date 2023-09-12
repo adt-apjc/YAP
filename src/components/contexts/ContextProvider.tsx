@@ -7,7 +7,7 @@ const GlobalContext = React.createContext<TYPE.ContextType | null>(null);
 
 let initState: TYPE.StateType = {
    currentStep: config.preface ? { name: null, label: null } : { ...config.sidebar[0] },
-   runningStatus: {},
+   runningStatus: null,
    clearStateFunction: {},
    config: config,
    mode: "presentation",
@@ -106,7 +106,7 @@ function globalContextreducer(state: TYPE.StateType, action: TYPE.ContextActionT
 
       case "setRunningStatus":
          if (!action.payload) {
-            return { ...state, runningStatus: {} };
+            return { ...state, runningStatus: null };
          } else {
             return { ...state, runningStatus: { ...state.runningStatus, [action.payload.step]: action.payload.status } };
          }

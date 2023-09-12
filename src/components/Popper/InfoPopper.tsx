@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import { usePopper } from "react-popper";
+import type { Placement } from "@popperjs/core";
 
-const PopperElement = React.forwardRef((props, ref) => {
+type PopperElementProps = {
+   styles: { [key: string]: React.CSSProperties };
+   attributes: any;
+   children: React.ReactNode;
+};
+
+const PopperElement = React.forwardRef((props: PopperElementProps, ref) => {
    return (
       <div
          className="info-popper border rounded bg-white shadow-sm"
@@ -14,10 +21,18 @@ const PopperElement = React.forwardRef((props, ref) => {
    );
 });
 
-const WithInfoPopup = (props) => {
+type WithInfoPopupProps = {
+   className: string;
+   placement: Placement;
+   PopperComponent: React.ReactNode;
+   children: React.ReactNode;
+   style: React.CSSProperties;
+};
+
+const WithInfoPopup = (props: WithInfoPopupProps) => {
    const [showPopper, setShowPopper] = useState(false);
-   const [referenceElement, setReferenceElement] = useState(null);
-   const [popperElement, setPopperElement] = useState(null);
+   const [referenceElement, setReferenceElement] = useState<HTMLSpanElement | null>(null);
+   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null);
 
    const { styles, attributes } = usePopper(referenceElement, popperElement, {
       placement: props.placement ? props.placement : "bottom",

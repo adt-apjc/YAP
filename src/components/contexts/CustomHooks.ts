@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export const useDidUpdateEffect = (fn, dependencies) => {
+export const useDidUpdateEffect = (fn: () => any, dependencies: []) => {
    const didMountRef = useRef(false);
 
    useEffect(() => {
