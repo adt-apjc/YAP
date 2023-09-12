@@ -17,10 +17,10 @@ const CommandModal = (props) => {
          let response;
          if (action && action.type === "request") {
             // normal request
-            response = await normalRequest(action, context.config.endpoints);
+            response = await normalRequest(action, context.config);
          } else if (action && action.type === "polling") {
             // polling request
-            response = await pollingRequest(action, context.config.endpoints);
+            response = await pollingRequest(action, context.config);
          }
          // update state actionResults for specific step
          setIsRunning(false);
