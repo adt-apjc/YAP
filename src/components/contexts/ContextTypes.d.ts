@@ -1,3 +1,6 @@
+import cytoscape from "cytoscape";
+import Outcome from "../MainContents/DemoContent/Outcome";
+
 export type ContextActionType =
    | { type: "setCurrentStep"; payload: { name: string; label: string } }
    | { type: "toggleMode" }
@@ -21,6 +24,23 @@ export type ContextActionType =
    | { type: "loadRunningStatus"; payload: any }
    | { type: "clearConfig" };
 
+export type OutcomeType = {
+   summaryText?: string;
+   elements?: { nodes: cytoscape.ElementDefinition[]; edges: cytoscape.ElementDefinition[] };
+   commands?: { [key: string]: OutcomeCommandType[] };
+};
+
+export type OutcomeCommandType = {
+   type: string;
+   title: string;
+   useEndpoint: string;
+   url: string;
+   method: string;
+   data?: any;
+   displayResponseAs?: string;
+   objectPath?: string; // objectPath use incase displayResponseAs:"text" as you need to show specific value
+};
+
 export type ActionType = {
    type: string;
    useEndpoint: string;
@@ -30,7 +50,9 @@ export type ActionType = {
    description: string;
    url: string;
    method: string;
-   data: any;
+   displayResponseAs?: string;
+   objectPath?: string; // objectPath use incase displayResponseAs:"text" as you need to show specific value
+   data?: any;
    expect: { type: string; value: any }[];
    match?: { objectPath: string; regEx: string; matchGroup: string; storeAs: string };
 };
@@ -66,7 +88,7 @@ export type config = {
          preCheck: ActionType[];
          actions: ActionType[];
          postCheck: ActionType[];
-         outcome?: any[];
+         outcome?: OutcomeType[];
       };
    };
 };

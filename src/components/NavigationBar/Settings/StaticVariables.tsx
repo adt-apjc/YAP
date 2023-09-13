@@ -1,11 +1,20 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 
-const StaticVarEditor = (props) => {
+type StaticVarEditorProps = {
+   initValue: { name: string; val: any } | null;
+   onClose: () => void;
+};
+
+type StaticVarViewerProps = {
+   onSelect: (v: { name: string; val: any }) => void;
+};
+
+const StaticVarEditor = (props: StaticVarEditorProps) => {
    const [state, setState] = useState({ name: "", val: "" });
    const { dispatch } = useGlobalContext();
 
-   const onChangeHandler = (e) => {
+   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
       setState({ ...state, [e.target.name]: e.target.value });
    };
 
@@ -64,11 +73,11 @@ const StaticVarEditor = (props) => {
    );
 };
 
-const StaticVarViewer = (props) => {
+const StaticVarViewer = (props: StaticVarViewerProps) => {
    const { context, dispatch } = useGlobalContext();
-   const [state, setState] = useState({ showDeleteStaticVar: [] });
+   const [showDeleteList, setShowDeleteList] = useState<number[]>([]);
 
-   const onSelectHandler = (varName, val) => {
+   const onSelectHandler = (varName: string, val: any) => {
       props.onSelect({ name: varName, val });
    };
 
@@ -84,22 +93,16 @@ const StaticVarViewer = (props) => {
                      className="input-group input-group-sm pointer"
                      onClick={() => onSelectHandler(varName, context.config.staticVariables[varName])}
                   >
-                     <div type="text" className="form-control col-3">
-                        {varName}
-                     </div>
-                     <div type="text" className="form-control col-9">
-                        {context.config.staticVariables[varName]}
-                     </div>
+                     <div className="form-control col-3">{varName}</div>
+                     <div className="form-control col-9">{context.config.staticVariables[varName]}</div>
                   </div>
                </div>
                <div className="col-2">
-                  {state.showDeleteStaticVar.includes(index) ? (
+                  {showDeleteList.includes(index) ? (
                      <>
                         <span
                            className="pointer font-sm"
-                           onClick={() =>
-                              setState({ showDeleteStaticVar: state.showDeleteStaticVar.filter((el) => el !== index) })
-                           }
+                           onClick={() => setShowDeleteList((prev) => prev.filter((el) => el !== index))}
                         >
                            Cancel
                         </span>
@@ -111,10 +114,7 @@ const StaticVarViewer = (props) => {
                         </span>
                      </>
                   ) : (
-                     <span
-                        className="pointer"
-                        onClick={() => setState({ showDeleteStaticVar: [...state.showDeleteStaticVar, index] })}
-                     >
+                     <span className="pointer" onClick={() => setShowDeleteList([...showDeleteList, index])}>
                         {"\u00D7"}
                      </span>
                   )}
@@ -127,8 +127,13 @@ const StaticVarViewer = (props) => {
    return <div className="mb-3">{renderStaticVar()}</div>;
 };
 
+type StaticVariablesState = { selectedVar: { name: string; val: any } | null; showStaticVarEditor: boolean };
+
 const StaticVariables = () => {
-   const [state, setState] = useState({ selectedVar: null, showStaticVarEditor: false });
+   const [state, setState] = useState<StaticVariablesState>({
+      selectedVar: null,
+      showStaticVarEditor: false,
+   });
 
    return (
       <>
@@ -136,7 +141,7 @@ const StaticVariables = () => {
             Static Variables
             <span
                className="mx-3 font-sm text-info pointer text-hover-highlight"
-               onClick={() => setState({ showStaticVarEditor: true })}
+               onClick={() => setState({ selectedVar: null, showStaticVarEditor: true })}
             >
                Add
             </span>

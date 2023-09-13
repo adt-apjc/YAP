@@ -125,7 +125,8 @@
                         "position": { "x": 400, "y": -100 },
                         "classes": "size-xxxlg-rect highlight l3vpn"
                      }
-                  ]
+                  ],
+                  "edges": []
                },
                "commands": {
                   "Project": [
@@ -133,11 +134,9 @@
                         "type": "request",
                         "useEndpoint": "MOCKUP",
                         "displayResponseAs": "json",
-                        "objectPath": "",
                         "title": "get project detials",
                         "url": "/api/project/{{projectId}}",
                         "method": "get",
-                        "expect": [],
                         "data": {}
                      }
                   ]
@@ -307,11 +306,9 @@
                         "type": "request",
                         "useEndpoint": "MOCKUP",
                         "displayResponseAs": "json",
-                        "objectPath": "",
                         "title": "get project details",
                         "url": "/api/project/{{projectId}}",
                         "method": "get",
-                        "expect": [],
                         "data": {}
                      }
                   ],
@@ -320,7 +317,6 @@
                         "type": "request",
                         "useEndpoint": "MOCKUP",
                         "displayResponseAs": "json",
-                        "objectPath": "",
                         "title": "get router details",
                         "url": "/api/project/{{projectId}}/router/{{routerId1}}",
                         "method": "get",
@@ -330,7 +326,6 @@
                         "type": "request",
                         "useEndpoint": "MOCKUP",
                         "displayResponseAs": "json",
-                        "objectPath": "",
                         "title": "Ping Node_2 interface",
                         "url": "api/project/{{projectId}}/router/{{routerId1}}/live-status/exec/any",
                         "method": "post",
@@ -466,11 +461,9 @@
                         "type": "request",
                         "useEndpoint": "MOCKUP",
                         "displayResponseAs": "json",
-                        "objectPath": "",
                         "title": "get project details",
                         "url": "/api/project/{{projectId}}",
                         "method": "get",
-                        "expect": [],
                         "data": {}
                      }
                   ],
@@ -479,7 +472,6 @@
                         "type": "request",
                         "useEndpoint": "MOCKUP",
                         "displayResponseAs": "json",
-                        "objectPath": "",
                         "title": "get router details",
                         "url": "/api/project/{{projectId}}/router/{{routerId1}}",
                         "method": "get",
@@ -489,7 +481,6 @@
                         "type": "request",
                         "useEndpoint": "MOCKUP",
                         "displayResponseAs": "json",
-                        "objectPath": "",
                         "title": "Ping Node_2 interface",
                         "url": "api/project/{{projectId}}/router/{{routerId1}}/live-status/exec/any",
                         "method": "post",

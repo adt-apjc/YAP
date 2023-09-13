@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import WithDropdown from "../Popper/Dropdown";
 
-const AboutTooltipContent = ({ setIsOpen }) => {
+const AboutTooltipContent = () => {
    return (
       <div className="text-dark px-2 py-1" style={{ minWidth: "10rem" }}>
          <div className="custom-dropdown-text text-muted mb-1">About</div>
@@ -22,7 +22,7 @@ const About = () => {
          offset={[35, -35]}
          open={isOpen}
          onRequestClose={() => setIsOpen(false)}
-         DropdownComponent={<AboutTooltipContent setIsOpen={setIsOpen} />}
+         DropdownComponent={<AboutTooltipContent />}
       >
          <div title="about" className="nav-action me-2" onClick={() => setIsOpen(true)}>
             <i className="fal fa-question-circle" />

@@ -1,8 +1,7 @@
-import React from "react";
 import Endpoint from "./Settings/Endpoint";
 import StaticVariables from "./Settings/StaticVariables";
 
-const Settings = (props) => {
+const Settings = (props: { onHide: () => any }) => {
    return (
       <>
          <div className="modal-header">
@@ -22,10 +21,10 @@ const Settings = (props) => {
    );
 };
 
-const ModalContentSelector = (props) => {
+const ModalContentSelector = (props: { contentType: string; onHide: () => any }) => {
    let { contentType } = props;
    if (contentType === "settings") {
-      return <Settings {...props} />;
+      return <Settings onHide={props.onHide} />;
    } else {
       return null;
    }
