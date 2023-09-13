@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactJson from "@uiw/react-json-view";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
@@ -212,6 +212,10 @@ const Actions = (props) => {
    const isActionRunning = (index) => {
       return props.currentRunning === index;
    };
+
+   useEffect(() => {
+      setCurExpandRow([]);
+   }, [context.currentStep]);
 
    // check if it collasped
    if (!props.show) return null;

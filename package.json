@@ -8,6 +8,7 @@
       "@testing-library/react": "^14.0.0",
       "@testing-library/user-event": "^14.4.3",
       "@types/react": "^18.2.21",
+      "@types/react-cytoscapejs": "^1.2.2",
       "@types/react-dom": "^18.2.7",
       "@uiw/react-json-view": "^1.8.3",
       "axios": "^1.4.0",
@@ -52,6 +53,7 @@
       ]
    },
    "devDependencies": {
+      "@types/file-saver": "^2.0.5",
       "@types/lodash": "^4.14.198"
    }
 }

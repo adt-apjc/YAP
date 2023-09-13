@@ -4,7 +4,12 @@ import { useGlobalContext } from "../../contexts/ContextProvider";
 import ModalContentSelector from "../ModalContentSelector";
 import { Modal } from "../../../helper/modalHelper";
 
-const SettingsTooltipContent = ({ setIsOpen, setModalShow }) => {
+type SettingsTooltipContentProps = {
+   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const SettingsTooltipContent = ({ setIsOpen, setModalShow }: SettingsTooltipContentProps) => {
    const { context, dispatch } = useGlobalContext();
 
    return (

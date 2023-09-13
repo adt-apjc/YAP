@@ -1,4 +1,3 @@
-import React from "react";
 import Logo from "../MainContents/Logo";
 import { useGlobalContext } from "../contexts/ContextProvider";
 import Actions from "./Actions/Actions";

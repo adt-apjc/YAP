@@ -7,8 +7,8 @@ type DropdownElementProps = {
    styles: { [key: string]: React.CSSProperties };
    attributes: any;
    children: React.ReactNode;
-   interactive: boolean;
-   bindToRoot: boolean;
+   interactive?: boolean;
+   bindToRoot?: boolean;
    onRequestClose: () => any;
 };
 
@@ -60,16 +60,16 @@ const DropdownElement = React.forwardRef((props: DropdownElementProps, ref) => {
 });
 
 type WithDropdownProps = {
-   className: string;
    DropdownComponent: React.ReactNode;
    children: React.ReactNode;
-   style: React.CSSProperties;
-   placement: Placement;
-   offset: [number, number];
    open: boolean;
-   showArrow: boolean;
-   interactive: boolean;
-   bindToRoot: boolean;
+   className?: string;
+   style?: React.CSSProperties;
+   placement?: Placement;
+   offset?: [number, number];
+   showArrow?: boolean;
+   interactive?: boolean;
+   bindToRoot?: boolean;
    onRequestClose: () => any;
 };
 

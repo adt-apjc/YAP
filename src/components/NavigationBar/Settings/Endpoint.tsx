@@ -1,15 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
+import { EndpointType } from "../../contexts/ContextTypes";
 
-const EndpointEditor = (props) => {
-   const [state, setState] = useState({ input: { name: "", baseURL: "" }, inputHeader: [] });
+type EndpointViewerProps = {
+   onSelect: (endpoint: { name: string } & EndpointType) => void;
+};
+type EndpointEditorProps = {
+   initValue: ({ name: string } & EndpointType) | null;
+   onClose: () => void;
+};
+
+type EndpointState = ({ name: string } & EndpointType) | null;
+
+type EndpointEditorState = { input: { name: string; baseURL: string }; inputHeader: { key: any; value: any }[] };
+
+const EndpointEditor = (props: EndpointEditorProps) => {
+   const [state, setState] = useState<EndpointEditorState>({
+      input: { name: "", baseURL: "" },
+      inputHeader: [],
+   });
    const { dispatch } = useGlobalContext();
 
-   const onChangeHandler = (e) => {
+   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
       setState((prev) => ({ ...prev, input: { ...prev.input, [e.target.name]: e.target.value } }));
    };
 
-   const onHeaderChangeHandler = (e, index) => {
+   const onHeaderChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
       let currentHeader = state.inputHeader;
       currentHeader[index] = { ...currentHeader[index], [e.target.name]: e.target.value };
       setState((prev) => ({ ...prev, inputHeader: currentHeader }));
@@ -24,12 +40,12 @@ const EndpointEditor = (props) => {
       props.onClose();
    };
 
-   const onHeaderDeleteHandler = (index) => {
-      setState((prev) => ({ ...prev, inputHeader: prev.inputHeader.filter((el, i) => i !== index) }));
+   const onHeaderDeleteHandler = (index: number) => {
+      setState((prev) => ({ ...prev, inputHeader: prev.inputHeader.filter((_, i) => i !== index) }));
    };
 
    const onHeaderAddHandler = () => {
-      setState((prev) => ({ ...prev, inputHeader: [...prev.inputHeader, {}] }));
+      setState((prev) => ({ ...prev, inputHeader: [...prev.inputHeader, { key: "", value: "" }] }));
    };
 
    const renderHeaderField = () => {
@@ -73,7 +89,10 @@ const EndpointEditor = (props) => {
 
       setState({
          input: { name: props.initValue.name, baseURL: props.initValue.baseURL },
-         inputHeader: Object.keys(props.initValue.headers).map((key) => ({ key: key, value: props.initValue.headers[key] })),
+         inputHeader:
+            props.initValue && props.initValue.headers
+               ? Object.keys(props.initValue.headers).map((key) => ({ key: key, value: props.initValue!.headers![key] }))
+               : [],
       });
    }, [props.initValue]);
 
@@ -116,18 +135,18 @@ const EndpointEditor = (props) => {
          <div className="mb-3">Header</div>
          <div className="row">{renderHeaderField()}</div>
          <div className="text-center text-info font-lg">
-            <i type="button" className="fad fa-plus-circle icon-hover-highlight" onClick={onHeaderAddHandler} />
+            <i className="fad fa-plus-circle icon-hover-highlight pointer" onClick={onHeaderAddHandler} />
          </div>
       </div>
    );
 };
 
-const EndpointViewer = (props) => {
+const EndpointViewer = (props: EndpointViewerProps) => {
    const { context, dispatch } = useGlobalContext();
-   const [state, setState] = useState({ showDeleteEndpoint: [] });
+   const [showDeleteList, setShowDeleteList] = useState<number[]>([]);
 
-   const onSelectHandler = (name, el) => {
-      props.onSelect({ name: name, baseURL: el.baseURL, headers: el.headers });
+   const onSelectHandler = (name: string, endpoint: EndpointType) => {
+      props.onSelect({ name: name, baseURL: endpoint.baseURL, headers: endpoint.headers });
    };
 
    const renderEndpoint = () => {
@@ -142,21 +161,17 @@ const EndpointViewer = (props) => {
                      className="input-group input-group-sm pointer"
                      onClick={() => onSelectHandler(endpointName, context.config.endpoints[endpointName])}
                   >
-                     <div type="text" className="form-control col-3">
-                        {endpointName}
-                     </div>
-                     <div type="text" className="form-control col-9">
-                        {context.config.endpoints[endpointName].baseURL}
-                     </div>
+                     <div className="form-control col-3">{endpointName}</div>
+                     <div className="form-control col-9">{context.config.endpoints[endpointName].baseURL}</div>
                   </div>
                </div>
 
                <div className="col-2">
-                  {state.showDeleteEndpoint.includes(index) ? (
+                  {showDeleteList.includes(index) ? (
                      <>
                         <span
                            className="pointer font-sm"
-                           onClick={() => setState({ showDeleteEndpoint: state.showDeleteEndpoint.filter((el) => el !== index) })}
+                           onClick={() => setShowDeleteList(showDeleteList.filter((el) => el !== index))}
                         >
                            Cancel
                         </span>
@@ -168,10 +183,7 @@ const EndpointViewer = (props) => {
                         </span>
                      </>
                   ) : (
-                     <span
-                        className="pointer"
-                        onClick={() => setState({ showDeleteEndpoint: [...state.showDeleteEndpoint, index] })}
-                     >
+                     <span className="pointer" onClick={() => setShowDeleteList([...showDeleteList, index])}>
                         {"\u00D7"}
                      </span>
                   )}
@@ -185,26 +197,24 @@ const EndpointViewer = (props) => {
 };
 
 const Endpoint = () => {
-   const [state, setState] = useState({ selectedEndpoint: null, showEndpointEditor: false });
+   const [selectedEndpoint, setSelectedEndpoint] = useState<EndpointState>(null);
+   const [showEditor, setShowEditor] = useState(false);
 
    return (
       <>
          <div className="mb-3">
             Endpoints
-            <span
-               className="mx-3 font-sm text-info pointer text-hover-highlight"
-               onClick={() => setState({ showEndpointEditor: true })}
-            >
+            <span className="mx-3 font-sm text-info pointer text-hover-highlight" onClick={() => setShowEditor(true)}>
                Add
             </span>
          </div>
-         <EndpointViewer onSelect={(el) => setState({ selectedEndpoint: el, showEndpointEditor: true })} />
-         {state.showEndpointEditor && (
-            <EndpointEditor
-               initValue={state.selectedEndpoint}
-               onClose={() => setState({ showEndpointEditor: false, selectedEndpoint: null })}
-            />
-         )}
+         <EndpointViewer
+            onSelect={(endpoint) => {
+               setSelectedEndpoint(endpoint);
+               setShowEditor(true);
+            }}
+         />
+         {showEditor && <EndpointEditor initValue={selectedEndpoint} onClose={() => setShowEditor(false)} />}
       </>
    );
 };
