@@ -12,7 +12,6 @@ const EditPreface = (props) => {
    const { context, dispatch } = useGlobalContext();
    const [state, setState] = useState({
       bodyMarkdown: props.initValue ? props.initValue.config.bodyMarkdown : "",
-      title: props.initValue ? props.initValue.config.title : "",
       stepDesc: props.initValue ? props.initValue.config.stepDesc : "",
    });
 
@@ -21,13 +20,11 @@ const EditPreface = (props) => {
       if (props.initValue) {
          // Edit mode
          currentConfig.preface[props.initValue.index].bodyMarkdown = state.bodyMarkdown.trim();
-         currentConfig.preface[props.initValue.index].title = state.title;
          currentConfig.preface[props.initValue.index].stepDesc = state.stepDesc;
       } else {
          // create new one
          currentConfig.preface.push({
             bodyMarkdown: state.bodyMarkdown.trim(),
-            title: state.title,
             stepDesc: state.stepDesc,
          });
       }
@@ -43,12 +40,6 @@ const EditPreface = (props) => {
          </div>
          <div className="modal-body">
             <div className="input-group">
-               <input
-                  className="form-control form-control-sm mb-2 col-6"
-                  placeholder="title"
-                  value={state.title}
-                  onChange={(e) => setState({ ...state, title: e.target.value })}
-               ></input>
                <input
                   className="form-control form-control-sm mb-2 col-6"
                   placeholder="Step title"
