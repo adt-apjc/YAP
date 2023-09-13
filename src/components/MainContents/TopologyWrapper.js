@@ -66,7 +66,7 @@ const TopologyWrapper = (props) => {
 
    useEffect(() => {
       if (!cyRef.current) return;
-      setUpEventListeners();
+      setUpEventListeners(); // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [props.onNodeClick]);
 
    return (

@@ -36,9 +36,8 @@ export type ActionType = {
 };
 
 export type PrefaceConfig = {
-   title: string;
    stepDesc: string;
-   bodyArr: string[];
+   bodyMarkdown: string;
 };
 
 export type config = {
@@ -60,7 +59,7 @@ export type config = {
    staticVariables: { [key: string]: string };
    mainContent: {
       [step: string]: {
-         description?: string[];
+         description?: string;
          prefaceRef?: number;
          continueOnFail: boolean;
          preCheck: ActionType[];

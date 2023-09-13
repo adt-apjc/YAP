@@ -86,8 +86,8 @@ const Outcome = (props) => {
          if (outcomeConfig.commands && outcomeConfig.commands[nodeData.id]) {
             setModal({ selectedElement: nodeData, modalShow: true });
          }
-      },
-      [JSON.stringify(props.currentStepDetails)]
+      }, // eslint-disable-next-line react-hooks/exhaustive-deps
+      [JSON.stringify(props.currentStepDetails)],
    );
 
    const onModalHide = () => setModal({ modalShow: false, selectedElement: null });

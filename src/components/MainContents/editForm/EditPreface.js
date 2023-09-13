@@ -11,7 +11,7 @@ import { cloneDeep } from "lodash";
 const EditPreface = (props) => {
    const { context, dispatch } = useGlobalContext();
    const [state, setState] = useState({
-      bodyArr: props.initValue ? props.initValue.config.bodyArr.join("\n") : "",
+      bodyMarkdown: props.initValue ? props.initValue.config.bodyMarkdown : "",
       title: props.initValue ? props.initValue.config.title : "",
       stepDesc: props.initValue ? props.initValue.config.stepDesc : "",
    });
@@ -20,13 +20,13 @@ const EditPreface = (props) => {
       let currentConfig = cloneDeep(context.config);
       if (props.initValue) {
          // Edit mode
-         currentConfig.preface[props.initValue.index].bodyArr = state.bodyArr.trim().split("\n");
+         currentConfig.preface[props.initValue.index].bodyMarkdown = state.bodyMarkdown.trim();
          currentConfig.preface[props.initValue.index].title = state.title;
          currentConfig.preface[props.initValue.index].stepDesc = state.stepDesc;
       } else {
          // create new one
          currentConfig.preface.push({
-            bodyArr: state.bodyArr.trim().split("\n"),
+            bodyMarkdown: state.bodyMarkdown.trim(),
             title: state.title,
             stepDesc: state.stepDesc,
          });
@@ -61,8 +61,8 @@ const EditPreface = (props) => {
                theme="github"
                height="500px"
                width="100%"
-               value={state.bodyArr}
-               onChange={(value) => setState({ ...state, bodyArr: value })}
+               value={state.bodyMarkdown}
+               onChange={(value) => setState({ ...state, bodyMarkdown: value })}
                placeholder="html content"
                name="data"
                className="rounded border"

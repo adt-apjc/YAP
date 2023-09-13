@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
 import Preface from "../MainContents/Preface/Preface";
 import { useGlobalContext } from "../contexts/ContextProvider";
-import _ from "lodash";
 
 type OffCanvasProps = {
    showOffCanvas: boolean;

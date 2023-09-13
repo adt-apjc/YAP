@@ -63,6 +63,7 @@ export const PostCheckDetail = (props) => {
                                                 <small>{props.context.config.staticVariables[item]}</small>
                                              </div>
                                           );
+                                       return null;
                                     })}
                                     <hr className="my-2" />
                                  </>
@@ -80,6 +81,7 @@ export const PostCheckDetail = (props) => {
                                     <small>{item.val}</small>
                                  </div>
                               );
+                           return null;
                         })}
                      </div>
                   }

@@ -11,7 +11,7 @@ import { cloneDeep } from "lodash";
 const EditStepDescription = (props) => {
    const { context, dispatch } = useGlobalContext();
    const [state, setState] = useState({
-      descriptionInput: props.initValue && props.initValue.description ? props.initValue.description.join("\n") : "",
+      descriptionInput: props.initValue && props.initValue.description ? props.initValue.description : "",
       titleInput: props.initValue ? props.initValue.title : "",
    });
 
@@ -24,7 +24,7 @@ const EditStepDescription = (props) => {
 
    const onEditHandler = () => {
       let currentConfig = cloneDeep(context.config);
-      currentConfig.mainContent[context.currentStep.name].description = state.descriptionInput.trim().split("\n");
+      currentConfig.mainContent[context.currentStep.name].description = state.descriptionInput;
       currentConfig.sidebar[findCurrentStepIndex()].label = state.titleInput;
       dispatch({ type: "replaceConfig", payload: currentConfig });
       dispatch({ type: "setCurrentStep", payload: { ...context.currentStep, label: state.titleInput } });

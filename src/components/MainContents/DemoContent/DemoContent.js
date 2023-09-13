@@ -7,11 +7,11 @@ import ModalContentSelector from "../editForm/ModalContentSelector";
 import Actions from "./Actions";
 import PostCheck from "./PostCheck";
 import Outcome from "./Outcome";
-
-import _ from "lodash";
 import PreCheck from "./PreCheck";
 import RunButtonComponent from "../RunButtonComponent";
 import OffCanvas from "../../OffCanvas/OffCanvas";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
 const DemoContent = (props) => {
    const { context, dispatch } = useGlobalContext();
@@ -298,7 +298,7 @@ const DemoContent = (props) => {
             isPreCheckCompleted,
             isActionCompleted,
             isPostCheckCompleted,
-         })
+         }),
       );
       let isAllPreCheckCompleted = undefined;
       let isAllActionCompleted = undefined;
@@ -344,19 +344,6 @@ const DemoContent = (props) => {
    }, [preCheckResults, actionResults, postCheckResults]);
 
    let description = props.currentStepDetails.description;
-   if (_.isArray(description)) {
-      description = props.currentStepDetails.description.map((el, i) => {
-         return (
-            <div
-               key={i}
-               className="text-justify"
-               dangerouslySetInnerHTML={{
-                  __html: el,
-               }}
-            ></div>
-         );
-      });
-   }
 
    return (
       <>
@@ -390,7 +377,13 @@ const DemoContent = (props) => {
                   </div>
                </div>
             </div>
-            <div className="my-2 me-3">{description}</div>
+            <div className="my-2 me-3">
+               <ReactMarkdown
+                  children={description}
+                  // @ts-ignore
+                  rehypePlugins={[rehypeRaw]}
+               />
+            </div>
             {context.mode === "edit" && (
                <div className="d-flex">
                   <span

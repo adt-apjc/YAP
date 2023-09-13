@@ -25,7 +25,7 @@ export const getVariableDetails = (request) => {
    // when user used the variable as params in url i.e "{{}}" to be used in the API request
    // value will be coming from the previous response
 
-   const regexp = /{{\w+[0-9A-Za-z]+}}/g;
+   const regexp = /{{[A-Za-z_-]+[A-Za-z_0-9-]*\}}/g;
 
    const variablesInUrl = request.url.match(regexp) || [];
    for (const item of variablesInUrl) {

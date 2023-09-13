@@ -56,6 +56,7 @@ const PreCheckDetail = (props) => {
                                                 <small>{props.context.config.staticVariables[item]}</small>
                                              </div>
                                           );
+                                       return null;
                                     })}
                                     <hr className="my-2" />
                                  </>
@@ -73,6 +74,7 @@ const PreCheckDetail = (props) => {
                                     <small>{item.val}</small>
                                  </div>
                               );
+                           return null;
                         })}
                      </div>
                   }

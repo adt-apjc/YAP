@@ -22,41 +22,20 @@
    },
    "preface": [
       {
-         "title": "Yet Another Presentation",
          "stepDesc": "Intro",
-         "bodyArr": [
-            "This demo describes Yet Another Presentation (YAP) tool functionalities by orchestrating a simple project in a safe mockup environment.",
-            "As a new user of YAP, after familiarizing yourself with this Hello World demo, you can start a new demo or modify this current demo to orchestrate your use case.",
-            "After experimenting in presentation mode, you can click on the top right wheel icon and switch to Edit mode to explore how these actions can be customized by clicking on the element icon string."
-         ]
+         "bodyMarkdown": "# Yet Another Presentation\n\n<br>\n\nThis demo describes Yet Another Presentation (YAP) tool functionalities by orchestrating a simple project in a safe mockup environment.\n\nAs a new user of YAP, after familiarizing yourself with this Hello World demo, you can start a new demo or modify this current demo to orchestrate your use case.\n\nAfter experimenting in presentation mode, you can click on the top right wheel icon and switch to Edit mode to explore how these actions can be customized by clicking on the element icon string."
       },
       {
-         "title": "Create Project",
          "stepDesc": "Create Project",
-         "bodyArr": [
-            "In this first step, we will create a project container for our network.",
-            "The primary purpose of this activity is to explain how to execute a POST action toward our endpoint, evaluate the return code and payload, and store the UUID allocated for the project for other activities.",
-            "The outcome section propose an empty project container and you can test executing API calls toward any graphical elements. Just click on the cloud, select \"Get Project Details\" from the list of available commands and click on Run to execute the call."
-         ]
+         "bodyMarkdown": "# Create Project\n\n<br>\n\nIn this first step, we will create a project container for our network.\n\nThe primary purpose of this activity is to explain how to execute a POST action toward our endpoint, evaluate the return code and payload, and store the UUID allocated for the project for other activities.\n\nThe outcome section propose an empty project container and you can test executing API calls toward any graphical elements. Just click on the cloud, select \"Get Project Details\" from the list of available commands and click on Run to execute the call."
       },
       {
-         "title": "Create Routers",
          "stepDesc": "Create Routers",
-         "bodyArr": [
-            "The second step in our Hello World demo is to add two routers to our project.",
-            "We will perform this activity with two basic POST actions to demonstrate how you can run all API calls by clicking on Run All or one at a time by clicking on the action play icon. Every demo and audience is different, but YAP provides this flexibility level in the demo delivery.",
-            "Step 2 introduces the concept of \"Post-Check\" actions, which behaves like the \"Actions\" but as the \"Pre-checks\", helps separate the purpose of your API calls.",
-            "Note that the Outcome diagram includes in this step more elements and highlights an aspect to remind the person delivering the presentation of the focus. A step contextual representation is more effective than a single diagram, including everything from the beginning.",
-            "Node_1 in the \"Outcome\" section exposes a command to ping the Node_2 interface, confirm that the ping is failing and a second command to check that the newly created interface is in a down state."
-         ]
+         "bodyMarkdown": "# Create Routers\n\n<br>\n\nThe second step in our Hello World demo is to add two routers to our project.\n\nWe will perform this activity with two basic POST actions to demonstrate how you can run all API calls by clicking on Run All or one at a time by clicking on the action play icon. Every demo and audience is different, but YAP provides this flexibility level in the demo delivery.\n\nStep 2 introduces the concept of \"Post-Check\" actions, which behaves like the \"Actions\" but as the \"Pre-checks\", helps separate the purpose of your API calls.\n\nNote that the Outcome diagram includes in this step more elements and highlights an aspect to remind the person delivering the presentation of the focus. A step contextual representation is more effective than a single diagram, including everything from the beginning.\n\nNode_1 in the \"Outcome\" section exposes a command to ping the Node_2 interface, confirm that the ping is failing and a second command to check that the newly created interface is in a down state."
       },
       {
-         "title": "Enable Connectivity",
          "stepDesc": "Enable Connectivity",
-         "bodyArr": [
-            "The trird step enable the connectivity between the two routers in our project",
-            "This activity is performed by two PATCH call on the resources created in the previous step, changing the status of the newly created interfaces to up."
-         ]
+         "bodyMarkdown": "# Enable Connectivity\n\n<br>\n\nThe trird step enable the connectivity between the two routers in our project\n\nThis activity is performed by two PATCH call on the resources created in the previous step, changing the status of the newly created interfaces to up."
       }
    ],
    "endpoints": {
@@ -73,11 +52,7 @@
    },
    "mainContent": {
       "step_1": {
-         "description": [
-            "Create a new project in the mockup server.",
-            "The proposed payload for the POST action describes how to enclose a variable name between curly braces ({{<varibale name>}}) for the project name.",
-            "YAP supports variable substitution in the URL and the payload. You can configure static variables in the Settings section or capture the value from a call response payload. For example, the proposed project creation call, captures the project UUID for later reference."
-         ],
+         "description": "Create a new project in the mockup server.<br>\nThe proposed payload for the POST action describes how to enclose a variable name between curly braces ({{<varibale name>}}) for the project name.<br>\nYAP supports variable substitution in the URL and the payload. You can configure static variables in the Settings section or capture the value from a call response payload.<br>\nFor example, the proposed project creation call, captures the project UUID for later reference.<br>\n",
          "continueOnFail": false,
          "prefaceRef": 1,
          "preCheck": [],
@@ -146,7 +121,7 @@
          ]
       },
       "step_2": {
-         "description": ["Add to the project two new routers."],
+         "description": "Add to the project two new routers.",
          "continueOnFail": false,
          "prefaceRef": 2,
          "preCheck": [
@@ -346,9 +321,7 @@
          ]
       },
       "step_3": {
-         "description": [
-            "Modify the status of the routers'interfaces from down to up to enable connectivity betweeen the devices."
-         ],
+         "description": "Modify the status of the routers'interfaces from down to up to enable connectivity betweeen the devices.",
          "continueOnFail": false,
          "prefaceRef": 3,
          "preCheck": [],
@@ -505,20 +478,14 @@
          ]
       },
       "stage": {
-         "description": [
-            "Run stage when a demo required a setup that doesn't need to be exposed in the demo flow.",
-            "There is no stage activity in this Hello World demo."
-         ],
+         "description": "Run stage when a demo required a setup that doesn't need to be exposed in the demo flow.<br>\nThere is no stage activity in this Hello World demo.",
          "continueOnFail": false,
          "preCheck": [],
          "actions": [],
          "postCheck": []
       },
       "cleanup": {
-         "description": [
-            "Run the cleanup function between demos, without releasing the staged resources.Delete the project from the mockup server,",
-            "In this demo, just delete the newly created project."
-         ],
+         "description": "Run the cleanup function between demos, without releasing the staged resources.<br>\nDelete the project from the mockup server.<br>\nIn this demo, just delete the newly created project.",
          "continueOnFail": false,
          "preCheck": [],
          "actions": [
@@ -543,10 +510,7 @@
          "postCheck": []
       },
       "unstage": {
-         "description": [
-            "Run unstage when you need to release some demo resources and you don't need to expose these actions in the demo flow",
-            "There is no unstage activity in this Hello World demo."
-         ],
+         "description": "Run unstage when you need to release some demo resources and you don't need to expose these actions in the demo flow.<br>\nThere is no unstage activity in this Hello World demo.",
          "continueOnFail": false,
          "preCheck": [],
          "actions": [],

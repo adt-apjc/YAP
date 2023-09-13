@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import WithDropdown from "../../Popper/Dropdown";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import ModalContentSelector from "../ModalContentSelector";

@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
 import ModalContentSelector from "../editForm/ModalContentSelector";
-import { isArray } from "lodash";
 import { PrefaceConfig } from "../../contexts/ContextTypes";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 
 type PrefaceState = {
    index: number;
@@ -15,17 +16,14 @@ type PrefaceState = {
 const PrefaceContent = ({ config }: { config: PrefaceConfig }) => {
    if (!config) return null;
 
-   let texts;
-   if (isArray(config.bodyArr))
-      texts = config.bodyArr.map((element, textIndex) => {
-         return <div key={textIndex} className="text-justify p-2 m-0" dangerouslySetInnerHTML={{ __html: element }} />;
-      });
-
    return (
-      <>
-         <h3 className="mx-auto d-block text-center px-3 pt-3 m-0">{config.title}</h3>
-         <div className="card-body m-0 pb-3 px-3">{texts}</div>
-      </>
+      <div className="p-5">
+         <ReactMarkdown
+            children={config.bodyMarkdown}
+            // @ts-ignore
+            rehypePlugins={[rehypeRaw]}
+         />
+      </div>
    );
 };
 

@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import WithDropdown from "../../Popper/Dropdown";
-import _ from "lodash";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { saveAs } from "file-saver";
 
