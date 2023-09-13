@@ -52,7 +52,7 @@
    },
    "mainContent": {
       "step_1": {
-         "description": "Create a new project in the mockup server.<br>\nThe proposed payload for the POST action describes how to enclose a variable name between curly braces ({{<varibale name>}}) for the project name.<br>\nYAP supports variable substitution in the URL and the payload. You can configure static variables in the Settings section or capture the value from a call response payload.<br>\nFor example, the proposed project creation call, captures the project UUID for later reference.<br>\n",
+         "description": "Create a new project in the mockup server.<br>\nThe proposed payload for the POST action describes how to enclose a variable name between curly braces ({{\\<varibale name>}}) for the project name.<br>\nYAP supports variable substitution in the URL and the payload. You can configure static variables in the Settings section or capture the value from a call response payload.<br>\nFor example, the proposed project creation call, captures the project UUID for later reference.<br>\n",
          "continueOnFail": false,
          "prefaceRef": 1,
          "preCheck": [],
