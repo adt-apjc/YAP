@@ -21,7 +21,7 @@ export type ContextActionType =
    | { type: "loadRunningStatus"; payload: any }
    | { type: "clearConfig" };
 
-type ActionType = {
+export type ActionType = {
    type: string;
    useEndpoint: string;
    header: string;

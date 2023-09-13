@@ -6,7 +6,6 @@ import { isArray } from "lodash";
 import { PrefaceConfig } from "../../contexts/ContextTypes";
 
 type PrefaceState = {
-   preface: PrefaceConfig;
    index: number;
    modalShow: boolean;
    modalContentType: string | null;
@@ -30,10 +29,9 @@ const PrefaceContent = ({ config }: { config: PrefaceConfig }) => {
    );
 };
 
-const Preface = (props: { prefaceRef: number; config: PrefaceConfig[] }) => {
+const Preface = (props: { prefaceRef: number | undefined; config: PrefaceConfig[] }) => {
    const { context } = useGlobalContext();
    const [state, setState] = useState<PrefaceState>({
-      preface: props.prefaceRef ? props.config[props.prefaceRef] : props.config[0],
       index: props.prefaceRef ? props.prefaceRef : 0,
       modalShow: false,
       modalContentType: null,
@@ -41,7 +39,9 @@ const Preface = (props: { prefaceRef: number; config: PrefaceConfig[] }) => {
    });
 
    useEffect(() => {
-      if (props.prefaceRef) setState({ ...state, index: props.prefaceRef, preface: props.config[props.prefaceRef] });
+      if (!props.prefaceRef) return;
+      if (props.prefaceRef < 0 || props.prefaceRef >= props.config.length) setState({ ...state, index: 0 });
+      else setState({ ...state, index: props.prefaceRef });
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [props.prefaceRef]);
 
@@ -58,7 +58,6 @@ const Preface = (props: { prefaceRef: number; config: PrefaceConfig[] }) => {
                            onClick={() =>
                               setState({
                                  ...state,
-                                 preface: props.config[stepIndex],
                                  index: stepIndex,
                               })
                            }
@@ -91,7 +90,7 @@ const Preface = (props: { prefaceRef: number; config: PrefaceConfig[] }) => {
                               ...state,
                               modalShow: true,
                               modalContentType: "editPreface",
-                              paramValues: { index: state.index, config: state.preface },
+                              paramValues: { index: state.index, config: props.config[state.index] },
                            })
                         }
                      >
@@ -104,7 +103,7 @@ const Preface = (props: { prefaceRef: number; config: PrefaceConfig[] }) => {
                               ...state,
                               modalShow: true,
                               modalContentType: "prefaceDeleteConfirm",
-                              paramValues: { index: state.index, config: state.preface },
+                              paramValues: { index: state.index, config: props.config[state.index] },
                            })
                         }
                      >
@@ -112,7 +111,7 @@ const Preface = (props: { prefaceRef: number; config: PrefaceConfig[] }) => {
                      </span>
                   </div>
                )}
-               <PrefaceContent config={state.preface} />
+               <PrefaceContent config={props.config[state.index]} />
             </div>
          </div>
          <Modal
