@@ -16,7 +16,7 @@ export type ContextActionType =
    | { type: "deleteAction"; payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" } }
    | { type: "addStep"; payload: { name: string } }
    | { type: "deleteStep"; payload: { name: string } }
-   | { type: "addEndpoint"; payload: { name: string; baseURL: string; headerList: [] } }
+   | { type: "addEndpoint"; payload: { name: string; baseURL: string; headerList: { key: any; value: any }[] } }
    | { type: "deleteEndpoint"; payload: { name: string } }
    | { type: "addStaticVar"; payload: { name: string; val: any } }
    | { type: "deleteStaticVar"; payload: { name: string } }
@@ -28,6 +28,11 @@ export type OutcomeType = {
    summaryText?: string;
    elements?: { nodes: cytoscape.ElementDefinition[]; edges: cytoscape.ElementDefinition[] };
    commands?: { [key: string]: OutcomeCommandType[] };
+};
+
+export type EndpointType = {
+   baseURL: string;
+   headers?: { [key: string]: string };
 };
 
 export type OutcomeCommandType = {
@@ -74,10 +79,7 @@ export type config = {
    };
    preface: PrefaceConfig[];
    endpoints: {
-      [name: string]: {
-         baseURL: string;
-         headers?: { [key: string]: string };
-      };
+      [name: string]: EndpointType;
    };
    staticVariables: { [key: string]: string };
    mainContent: {

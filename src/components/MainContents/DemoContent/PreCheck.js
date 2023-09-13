@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactJson from "@uiw/react-json-view";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
@@ -211,6 +211,11 @@ const PreCheck = (props) => {
       return props.currentRunning === index;
    };
 
+   useEffect(() => {
+      setCurExpandRow([]);
+   }, [context.currentStep]);
+
+   // check if it collasped
    if (!props.show) return null;
 
    let apiList;
