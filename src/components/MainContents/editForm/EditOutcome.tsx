@@ -7,26 +7,85 @@ import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-github";
 import _ from "lodash";
 import { NODE_APPEARANCE_OPTIONS } from "../../contexts/Utility";
+import { OutcomeCommandType, OutcomeType } from "../../contexts/ContextTypes";
+import cytoscape from "cytoscape";
 
-const AddCommandForm = (props) => {
+type EditOutcomeProps = {
+   onHide: () => void;
+   initValue: OutcomeType[];
+};
+
+type OutcomeSelectedElem = {
+   data: any;
+   style: cytoscape.CssStyleDeclaration;
+   classes: string[];
+   commands: OutcomeCommandType[];
+};
+
+type AddNodeParams = {
+   data: {
+      id: string;
+      label: string;
+      width: string;
+      height: string;
+   };
+   classes: string;
+   commands?: OutcomeCommandType[];
+};
+
+type AddEdgeParams = {
+   data: {
+      id: string;
+      source: string;
+      target: string;
+      label: string;
+   };
+   classes: string;
+};
+
+type AddEdgeFormProps = {
+   onAddElement: (elem: AddEdgeParams) => void;
+   nodeList: cytoscape.ElementDefinition[];
+   edgeList: cytoscape.ElementDefinition[];
+   initValue: OutcomeSelectedElem | null;
+};
+
+type AddNodeFormProps = {
+   onAddElement: (elem: AddNodeParams) => void;
+   nodeList: cytoscape.ElementDefinition[];
+   edgeList: cytoscape.ElementDefinition[];
+   initValue: OutcomeSelectedElem | null;
+};
+
+type AddCommandFormProps = {
+   nodeId: string;
+   enableCommand: boolean;
+   setEnableCommand: React.Dispatch<React.SetStateAction<boolean>>;
+   commands: OutcomeCommandType[];
+   setCommands: React.Dispatch<React.SetStateAction<OutcomeCommandType[]>>;
+};
+
+const AddCommandForm = (props: AddCommandFormProps) => {
    const [data, setData] = useState("");
    const [isPayloadValid, setIsPayloadValid] = useState(true);
-   const [selectedCommandIndex, setSelectedCommandIndex] = useState(null);
+   const [selectedCommandIndex, setSelectedCommandIndex] = useState<number | null>(null);
    const { context } = useGlobalContext();
 
-   const handleInputChange = (e) => {
+   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      if (!selectedCommandIndex) return;
+
       let newCommands = _.cloneDeep(props.commands);
-      newCommands[selectedCommandIndex][e.target.name] = e.target.value;
+      newCommands[selectedCommandIndex][e.target.name as keyof OutcomeCommandType] = e.target.value;
       props.setCommands(newCommands);
    };
 
-   const handleDeleteCommand = (e, index) => {
+   const handleDeleteCommand = (e: React.MouseEvent, index: number) => {
       e.stopPropagation();
       let newCommands = _.cloneDeep(props.commands);
       if (selectedCommandIndex === index) {
          setData("");
          setSelectedCommandIndex(null);
-      } else if (selectedCommandIndex > index) setSelectedCommandIndex((prev) => prev - 1);
+      } else if (selectedCommandIndex && selectedCommandIndex > index) setSelectedCommandIndex((prev) => prev! - 1);
 
       newCommands.splice(index, 1);
       props.setCommands(newCommands);
@@ -65,9 +124,8 @@ const AddCommandForm = (props) => {
                <span className="me-2">{el.title}</span>
                <span>
                   <i
-                     type="button"
                      title="delete"
-                     className="fal fa-times-circle icon-hover-highlight"
+                     className="fal fa-times-circle icon-hover-highlight pointer"
                      onClick={(e) => handleDeleteCommand(e, index)}
                   />
                </span>
@@ -90,6 +148,8 @@ const AddCommandForm = (props) => {
 
    useEffect(() => {
       try {
+         if (!selectedCommandIndex) return;
+
          let newCommands = _.cloneDeep(props.commands);
          newCommands[selectedCommandIndex].data = !data ? undefined : JSON.parse(data);
          props.setCommands(newCommands);
@@ -290,9 +350,9 @@ const AddCommandForm = (props) => {
    );
 };
 
-const AddNodeForm = (props) => {
+const AddNodeForm = (props: AddNodeFormProps) => {
    const [input, setInput] = useState({ id: "", label: "", type: "default", width: "30", height: "30", highlight: false });
-   const [commands, setCommands] = useState([]);
+   const [commands, setCommands] = useState<OutcomeCommandType[]>([]);
    const [enableCommand, setEnableCommand] = useState(false);
 
    const renderAppearanceOptions = () => {
@@ -316,11 +376,11 @@ const AddNodeForm = (props) => {
       setEnableCommand(false);
    };
 
-   const handleAddNode = (e) => {
+   const handleAddNode = (e: React.FormEvent) => {
       e.preventDefault();
       // add node to topology
       let uuid = Math.abs((Math.random() * 0xffffffff) | 0).toString(16);
-      let nodeObject = {
+      let nodeObject: AddNodeParams = {
          data: {
             id: input.id ? input.id : uuid,
             label: input.label,
@@ -334,15 +394,17 @@ const AddNodeForm = (props) => {
          nodeObject.commands = commands;
       } else {
          // disable command
-         nodeObject.commands = null;
+         nodeObject.commands = undefined;
       }
       console.log(nodeObject);
       props.onAddElement(nodeObject);
       clearInputbox();
    };
 
-   const handleInputChange = (e) => setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-   const handleInputCheck = (e) => setInput((prev) => ({ ...prev, [e.target.name]: e.target.checked }));
+   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+      setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+   const handleInputCheck = (e: React.ChangeEvent<HTMLInputElement>) =>
+      setInput((prev) => ({ ...prev, [e.target.name]: e.target.checked }));
 
    useEffect(() => {
       let { initValue } = props;
@@ -446,7 +508,7 @@ const AddNodeForm = (props) => {
    );
 };
 
-const AddEdgeForm = (props) => {
+const AddEdgeForm = (props: AddEdgeFormProps) => {
    const [input, setInput] = useState({
       id: "",
       source: "",
@@ -473,7 +535,7 @@ const AddEdgeForm = (props) => {
       });
    };
 
-   const handleAddEdge = (e) => {
+   const handleAddEdge = (e: React.FormEvent) => {
       e.preventDefault();
       let uuid = Math.abs((Math.random() * 0xffffffff) | 0).toString(16);
       let edgeObject = {
@@ -491,8 +553,10 @@ const AddEdgeForm = (props) => {
       clearInputbox();
    };
 
-   const handleInputChange = (e) => setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-   const handleInputCheck = (e) => setInput((prev) => ({ ...prev, [e.target.name]: e.target.checked }));
+   const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) =>
+      setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+   const handleInputCheck = (e: React.ChangeEvent<HTMLInputElement>) =>
+      setInput((prev) => ({ ...prev, [e.target.name]: e.target.checked }));
 
    useEffect(() => {
       let { initValue } = props;
@@ -603,17 +667,22 @@ const AddEdgeForm = (props) => {
    );
 };
 
-const EditOutcome = (props) => {
-   const cyRef = useRef();
+const EditOutcome = (props: EditOutcomeProps) => {
+   const cyRef = useRef<cytoscape.Core | null>(null);
    const { context, dispatch } = useGlobalContext();
    const [outcome, setOutcome] = useState({ elements: { nodes: [], edges: [] }, commands: {}, ...props.initValue[0] });
-   const [selectedNode, setSelectedNode] = useState(null);
-   const [selectedEdge, setSelectedEdge] = useState(null);
+   const [selectedNode, setSelectedNode] = useState<OutcomeSelectedElem | null>(null);
+   const [selectedEdge, setSelectedEdge] = useState<OutcomeSelectedElem | null>(null);
    const [renderForm, setRenderForm] = useState("node");
 
    const getTopologyObject = () => {
       // use for return current cy object elements
-      let topologyObj = {};
+      let topologyObj: { nodes: cytoscape.ElementDefinition[]; edges: cytoscape.ElementDefinition[] } = {
+         nodes: [],
+         edges: [],
+      };
+      if (!cyRef.current) return topologyObj;
+
       topologyObj["nodes"] = cyRef.current.nodes().map((el) => ({
          data: el.data(),
          position: el.position(),
@@ -649,17 +718,21 @@ const EditOutcome = (props) => {
    };
 
    const saveHandler = () => {
+      if (!context.currentStep.name) return;
+
       let currentObjectData = getTopologyObject();
       let currentConfig = _.cloneDeep(context.config);
       console.log(currentObjectData);
+
+      currentConfig.mainContent[context.currentStep.name].outcome![0].elements = { ...currentObjectData };
+      currentConfig.mainContent[context.currentStep.name].outcome![0].commands = { ...outcome.commands };
       // TODO future planning is to support multiple outcomes
-      currentConfig.mainContent[context.currentStep.name].outcome[0].elements = { ...currentObjectData };
-      currentConfig.mainContent[context.currentStep.name].outcome[0].commands = { ...outcome.commands };
+
       dispatch({ type: "replaceConfig", payload: currentConfig });
       props.onHide();
    };
 
-   const handleAddNode = (element) => {
+   const handleAddNode = (element: AddNodeParams) => {
       let id = element.data.id;
       let newOutcome = _.cloneDeep(outcome);
       let isElementExisted = newOutcome.elements.nodes.some((el) => el.data.id === id);
@@ -682,7 +755,7 @@ const EditOutcome = (props) => {
       setSelectedNode(null);
    };
 
-   const handleAddEdge = (element) => {
+   const handleAddEdge = (element: AddEdgeParams) => {
       let id = element.data.id;
       let newOutcome = _.cloneDeep(outcome);
       let isElementExisted = newOutcome.elements.edges.some((el) => el.data.id === id);
@@ -697,7 +770,7 @@ const EditOutcome = (props) => {
       setSelectedEdge(null);
    };
 
-   const elementClickHandler = (element) => {
+   const elementClickHandler = (element: cytoscape.SingularData) => {
       // console.log(element.position());
       if (element.isNode()) {
          setSelectedEdge(null);
@@ -762,9 +835,8 @@ const EditOutcome = (props) => {
                         </div>
                         <div className="mx-2">
                            <i
-                              type="button"
                               title="de-select"
-                              className="fal fa-times-circle icon-hover-highlight"
+                              className="fal fa-times-circle icon-hover-highlight pointer"
                               onClick={() => {
                                  setSelectedNode(null);
                                  setSelectedEdge(null);

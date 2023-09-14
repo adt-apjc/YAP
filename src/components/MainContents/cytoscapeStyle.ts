@@ -91,91 +91,91 @@ export const stylesheet = [
    },
    {
       selector: "node.router_new",
-      style: { "background-fit": "cover", "background-image": "/assets/router_new.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/router_new.png", "background-opacity": 0 },
    },
    {
       selector: "node.virtual_router",
-      style: { "background-fit": "cover", "background-image": "/assets/virtual_router.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/virtual_router.png", "background-opacity": 0 },
    },
    {
       selector: "node.switch",
-      style: { "background-fit": "cover", "background-image": "/assets/switch.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/switch.png", "background-opacity": 0 },
    },
    {
       selector: "node.layer3_switch",
-      style: { "background-fit": "cover", "background-image": "/assets/layer3_switch.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/layer3_switch.png", "background-opacity": 0 },
    },
    {
       selector: "node.ucs_switch",
-      style: { "background-fit": "cover", "background-image": "/assets/ucs_switch.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/ucs_switch.png", "background-opacity": 0 },
    },
    {
       selector: "node.generic_gateway",
-      style: { "background-fit": "cover", "background-image": "/assets/generic_gateway.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/generic_gateway.png", "background-opacity": 0 },
    },
    {
       selector: "node.firewall",
-      style: { "background-fit": "cover", "background-image": "/assets/firewall.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/firewall.png", "background-opacity": 0 },
    },
    {
       selector: "node.wireless_lan_controller",
-      style: { "background-fit": "cover", "background-image": "/assets/wireless_lan_controller.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/wireless_lan_controller.png", "background-opacity": 0 },
    },
    {
       selector: "node.wireless_lan_controller",
-      style: { "background-fit": "cover", "background-image": "/assets/wireless_lan_controller.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/wireless_lan_controller.png", "background-opacity": 0 },
    },
    {
       selector: "node.dc_networking_manager",
-      style: { "background-fit": "cover", "background-image": "/assets/dc_networking_manager.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/dc_networking_manager.png", "background-opacity": 0 },
    },
    {
       selector: "node.access_point",
-      style: { "background-fit": "cover", "background-image": "/assets/access_point.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/access_point.png", "background-opacity": 0 },
    },
    {
       selector: "node.apic_new",
-      style: { "background-fit": "cover", "background-image": "/assets/apic_new.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/apic_new.png", "background-opacity": 0 },
    },
    {
       selector: "node.file_server",
-      style: { "background-fit": "cover", "background-image": "/assets/file_server.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/file_server.png", "background-opacity": 0 },
    },
    {
       selector: "node.optical_transport",
-      style: { "background-fit": "cover", "background-image": "/assets/optical_transport.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/optical_transport.png", "background-opacity": 0 },
    },
    {
       selector: "node.terminal",
-      style: { "background-fit": "cover", "background-image": "/assets/terminal.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/terminal.png", "background-opacity": 0 },
    },
    {
       selector: "node.generic_building",
-      style: { "background-fit": "cover", "background-image": "/assets/generic_building.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/generic_building.png", "background-opacity": 0 },
    },
    {
       selector: "node.cloud",
-      style: { "background-fit": "cover", "background-image": "/assets/cloud.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/cloud.png", "background-opacity": 0 },
    },
    {
       selector: "node.satellite",
-      style: { "background-fit": "cover", "background-image": "/assets/satellite.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/satellite.png", "background-opacity": 0 },
    },
    {
       selector: "node.satellite_dish",
-      style: { "background-fit": "cover", "background-image": "/assets/satellite_dish.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/satellite_dish.png", "background-opacity": 0 },
    },
    {
       selector: "node.sr_pce",
-      style: { "background-fit": "cover", "background-image": "/assets/sr_pce.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/sr_pce.png", "background-opacity": 0 },
    },
    {
       selector: "node.storage",
-      style: { "background-fit": "cover", "background-image": "/assets/storage.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/storage.png", "background-opacity": 0 },
    },
    {
       selector: "node.upf",
-      style: { "background-fit": "cover", "background-image": "/assets/upf.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/upf.png", "background-opacity": 0 },
    },
    {
       selector: "node.l3vpn",
@@ -183,19 +183,19 @@ export const stylesheet = [
    },
    {
       selector: "node.router",
-      style: { "background-fit": "cover", "background-image": "/assets/router.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/router.png", "background-opacity": 0 },
    },
    {
       selector: "node.apic",
-      style: { "background-fit": "cover", "background-image": "/assets/apic.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/apic.png", "background-opacity": 0 },
    },
    {
       selector: "node.contract",
-      style: { "background-fit": "cover", "background-image": "/assets/contract.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/contract.png", "background-opacity": 0 },
    },
    {
       selector: "node.epg",
-      style: { "background-fit": "cover", "background-image": "/assets/epg.png", "background-opacity": 0 },
+      style: { "background-fit": "contain", "background-image": "/assets/epg.png", "background-opacity": 0 },
    },
    {
       selector: "node.antenna",

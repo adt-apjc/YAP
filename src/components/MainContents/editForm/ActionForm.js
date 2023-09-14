@@ -202,8 +202,8 @@ const ActionForm = (props) => {
       objectPath: "",
       expect: [],
       data: undefined,
-      maxRetry: "",
-      interval: "",
+      maxRetry: "10",
+      interval: "1000",
       match: undefined,
    });
    const [isPayloadValid, setIsPayloadValid] = useState(true);
@@ -230,10 +230,15 @@ const ActionForm = (props) => {
 
       const { initValue } = props;
       const actionIndex = initValue ? initValue.actionIndex : null;
+      let inputCloned = _.cloneDeep(input);
+      if (inputCloned.type === "request") {
+         inputCloned.maxRetry = undefined;
+         inputCloned.interval = undefined;
+      }
       console.log(actionIndex);
       dispatch({
          type: "addAction",
-         payload: { stepKey: context.currentStep.name, tab: props.tab, index: actionIndex, actionObject: input },
+         payload: { stepKey: context.currentStep.name, tab: props.tab, index: actionIndex, actionObject: inputCloned },
       });
       props.onHide();
    };
@@ -338,7 +343,7 @@ const ActionForm = (props) => {
                                     <div className="col-6">
                                        <small className="mb-1">Max Retry</small>
                                        <input
-                                          type="text"
+                                          type="number"
                                           className="form-control form-control-sm"
                                           name="maxRetry"
                                           placeholder="maxRetry default = 10"
@@ -349,7 +354,7 @@ const ActionForm = (props) => {
                                     <div className="col-6">
                                        <small className="mb-1">Interval</small>
                                        <input
-                                          type="text"
+                                          type="number"
                                           className="form-control form-control-sm"
                                           name="interval"
                                           placeholder="Interval default = 5000ms"

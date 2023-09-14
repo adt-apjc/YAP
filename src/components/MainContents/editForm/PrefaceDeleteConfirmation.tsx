@@ -1,13 +1,18 @@
-import React from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { cloneDeep } from "lodash";
+import { PrefaceConfig } from "../../contexts/ContextTypes";
 
-const PrefaceDeleteConfirmation = (props) => {
+type PrefaceDeleteConfirmationProps = {
+   onHide: () => void;
+   initValue: { index: number; config: PrefaceConfig };
+};
+
+const PrefaceDeleteConfirmation = (props: PrefaceDeleteConfirmationProps) => {
    let { context, dispatch } = useGlobalContext();
 
    const onDeleteHandler = () => {
       let currentConfig = cloneDeep(context.config);
-      currentConfig.preface = currentConfig.preface.filter((el, index) => index !== props.initValue.index);
+      currentConfig.preface = currentConfig.preface.filter((_, index) => index !== props.initValue.index);
       dispatch({ type: "replaceConfig", payload: currentConfig });
       props.onHide();
    };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useGlobalContext } from "../contexts/ContextProvider";
 import _ from "lodash";
 
@@ -45,7 +45,10 @@ const Logo = () => {
             <div
                className={`nav-title  ${isSomeStepRunning() ? "disabled" : ""}`}
                onClick={() =>
-                  dispatch({ type: "setCurrentStep", payload: context.config.preface ? {} : { ...context.config.sidebar[0] } })
+                  dispatch({
+                     type: "setCurrentStep",
+                     payload: context.config.preface ? { name: null, label: null } : { ...context.config.sidebar[0] },
+                  })
                }
             >
                {`${
@@ -58,18 +61,17 @@ const Logo = () => {
          {context.mode === "edit" && (
             <div style={{ fontSize: "12px" }} className={`${isSomeStepRunning() ? "disabled" : ""}`}>
                {state.activeEditMainTitle ? (
-                  <div type="button" onClick={editTitleNameHandler}>
-                     <i className="far fa-check ms-2" />
+                  <div onClick={editTitleNameHandler}>
+                     <i className="far fa-check pointer ms-2" />
                   </div>
                ) : (
                   <div
                      title="edit"
-                     type="button"
                      onClick={() =>
                         setState((prev) => ({ ...prev, activeEditMainTitle: true, titleInput: context.config.title }))
                      }
                   >
-                     <i className="far fa-edit ms-2" />
+                     <i className="far fa-edit pointer ms-2" />
                   </div>
                )}
             </div>

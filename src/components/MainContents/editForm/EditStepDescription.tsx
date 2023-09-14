@@ -8,7 +8,15 @@ import "ace-builds/src-noconflict/theme-github";
 
 import { cloneDeep } from "lodash";
 
-const EditStepDescription = (props) => {
+type EditStepDescriptionProps = {
+   onHide: () => void;
+   initValue: {
+      title: string;
+      description: string | null;
+   };
+};
+
+const EditStepDescription = (props: EditStepDescriptionProps) => {
    const { context, dispatch } = useGlobalContext();
    const [state, setState] = useState({
       descriptionInput: props.initValue && props.initValue.description ? props.initValue.description : "",
@@ -18,14 +26,21 @@ const EditStepDescription = (props) => {
    const findCurrentStepIndex = () => {
       let currentStepName = context.currentStep.name;
       for (let i in context.config.sidebar) {
-         if (context.config.sidebar[i].name === currentStepName) return i;
+         if (context.config.sidebar[i].name === currentStepName) return parseInt(i);
       }
+      return -1;
    };
 
    const onEditHandler = () => {
       let currentConfig = cloneDeep(context.config);
-      currentConfig.mainContent[context.currentStep.name].description = state.descriptionInput;
-      currentConfig.sidebar[findCurrentStepIndex()].label = state.titleInput;
+      currentConfig.mainContent[context.currentStep.name!].description = state.descriptionInput;
+      let sidebarIndex = findCurrentStepIndex();
+      if (sidebarIndex < 0) {
+         props.onHide();
+         return;
+      }
+
+      currentConfig.sidebar[sidebarIndex].label = state.titleInput;
       dispatch({ type: "replaceConfig", payload: currentConfig });
       dispatch({ type: "setCurrentStep", payload: { ...context.currentStep, label: state.titleInput } });
       props.onHide();
@@ -45,7 +60,7 @@ const EditStepDescription = (props) => {
                onChange={(e) => setState({ ...state, titleInput: e.target.value })}
             ></input>
             <AceEditor
-               mode="html"
+               mode="markdown"
                theme="github"
                height="500px"
                width="100%"

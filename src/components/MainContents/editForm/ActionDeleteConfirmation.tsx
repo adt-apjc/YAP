@@ -1,10 +1,17 @@
-import React from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
+import { ActionType } from "../../contexts/ContextTypes";
 
-const ActionDeleteConfirmation = (props) => {
+type ActionDeleteConfirmationProps = {
+   onHide: () => void;
+   initValue: { action: ActionType; actionIndex: number; tab: "actions" | "preCheck" | "postCheck" };
+};
+
+const ActionDeleteConfirmation = (props: ActionDeleteConfirmationProps) => {
    const { context, dispatch } = useGlobalContext();
 
    const onDeleteHandler = () => {
+      if (!context.currentStep.name) return;
+
       dispatch({
          type: "deleteAction",
          payload: { stepKey: context.currentStep.name, tab: props.initValue.tab, index: props.initValue.actionIndex },

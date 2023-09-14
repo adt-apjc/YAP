@@ -16,7 +16,7 @@ let initState: TYPE.StateType = {
 
 function addAction(
    state: TYPE.StateType,
-   payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any }
+   payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any }
 ) {
    let clonedState = _.cloneDeep(state);
 

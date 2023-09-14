@@ -2,7 +2,7 @@ import cytoscape from "cytoscape";
 import Outcome from "../MainContents/DemoContent/Outcome";
 
 export type ContextActionType =
-   | { type: "setCurrentStep"; payload: { name: string; label: string } }
+   | { type: "setCurrentStep"; payload: { name: string | null; label: string | null } }
    | { type: "toggleMode" }
    | { type: "setRunningStatus"; payload?: { step: string; status: "success" | "fail" | "running" } }
    | { type: "replaceConfig"; payload: any }
@@ -44,6 +44,8 @@ export type OutcomeCommandType = {
    method: string;
    data?: any;
    displayResponseAs?: string;
+   maxRetry?: string;
+   interval?: string;
    objectPath?: string; // objectPath use incase displayResponseAs:"text" as you need to show specific value
 };
 
@@ -56,6 +58,8 @@ export type ActionType = {
    description: string;
    url: string;
    method: string;
+   maxRetry?: string;
+   interval?: string;
    displayResponseAs?: string;
    objectPath?: string; // objectPath use incase displayResponseAs:"text" as you need to show specific value
    data?: any;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 
 import AceEditor from "react-ace";
@@ -7,8 +7,14 @@ import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/theme-github";
 
 import { cloneDeep } from "lodash";
+import { PrefaceConfig } from "../../contexts/ContextTypes";
 
-const EditPreface = (props) => {
+type EditPrefaceProps = {
+   onHide: () => void;
+   initValue: { index: number; config: PrefaceConfig };
+};
+
+const EditPreface = (props: EditPrefaceProps) => {
    const { context, dispatch } = useGlobalContext();
    const [state, setState] = useState({
       bodyMarkdown: props.initValue ? props.initValue.config.bodyMarkdown : "",
@@ -48,7 +54,7 @@ const EditPreface = (props) => {
                ></input>
             </div>
             <AceEditor
-               mode="html"
+               mode="markdown"
                theme="github"
                height="500px"
                width="100%"

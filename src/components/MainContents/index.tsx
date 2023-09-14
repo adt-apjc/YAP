@@ -1,4 +1,3 @@
-import React from "react";
 import { useGlobalContext } from "../contexts/ContextProvider";
 import Preface from "./Preface/Preface";
 import DemoContent from "./DemoContent/DemoContent";
@@ -8,13 +7,13 @@ const MainContents = () => {
    const currentStepDetails =
       context.currentStep.name === "cleanup"
          ? context.config.mainContent.cleanup
-         : context.config.mainContent[context.currentStep.name];
+         : context.config.mainContent[context.currentStep.name!];
 
    return (
       <div className="container-fluid">
          <div className="container-fluid pb-3">
             {!context.currentStep.name ? (
-               <Preface config={context.config.preface} />
+               <Preface config={context.config.preface} prefaceRef={0} />
             ) : (
                <DemoContent currentStep={context.currentStep} currentStepDetails={currentStepDetails} />
             )}

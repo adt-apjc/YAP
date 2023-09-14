@@ -118,7 +118,7 @@ const Preface = (props: { prefaceRef: number | undefined; config: PrefaceConfig[
          >
             <ModalContentSelector
                onHide={() => setState({ ...state, modalShow: false, modalContentType: null, paramValues: null })}
-               contentType={state.modalContentType}
+               contentType={state.modalContentType || ""}
                initValue={state.paramValues}
             />
          </Modal>
