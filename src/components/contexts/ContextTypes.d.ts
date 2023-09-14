@@ -69,6 +69,7 @@ export type PrefaceConfig = {
 };
 
 export type config = {
+   version: string;
    title: string;
    sidebar: { name: string; label: string }[];
    navbar: {
