@@ -63,10 +63,6 @@ export const checkStaticVarIfUsed = (varDetails, staticVariables) => {
 
 export const NODE_APPEARANCE_OPTIONS = [
    {
-      label: "Default",
-      value: "default",
-   },
-   {
       label: "Router",
       value: "router_new",
    },

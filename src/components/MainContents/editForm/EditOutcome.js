@@ -296,9 +296,11 @@ const AddNodeForm = (props) => {
    const [enableCommand, setEnableCommand] = useState(false);
 
    const renderAppearanceOptions = () => {
+      const sortedArr = NODE_APPEARANCE_OPTIONS.sort((a, b) => a["label"].localeCompare(b["label"]));
+
       return (
          <>
-            {NODE_APPEARANCE_OPTIONS.map((item, i) => {
+            {sortedArr.map((item, i) => {
                return (
                   <option key={i} value={`${item.value}`}>
                      {item.label}
@@ -386,6 +388,7 @@ const AddNodeForm = (props) => {
                <div className="col-sm-3">
                   <label>Appearance</label>
                   <select className="form-select form-select-sm" name="type" value={input.type} onChange={handleInputChange}>
+                     <option value="default">Default</option>
                      {renderAppearanceOptions()}
                   </select>
                </div>
