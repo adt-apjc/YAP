@@ -1,0 +1,82 @@
+{
+   "title": "My New Demo",
+   "sidebar": [
+      {
+         "name": "stage1",
+         "label": "Stage 1"
+      }
+   ],
+   "navbar": {
+      "logoUrl": "",
+      "title": "",
+      "navBgColor": "",
+      "navFontColor": ""
+   },
+   "preface": [
+      {
+         "stepDesc": "Intro",
+         "bodyMarkdown": "# Intro\n\n<br>\n\nThe goal of this demo is .... "
+      },
+      {
+         "stepDesc": "1. My First Stage",
+         "bodyMarkdown": "# Stage Title\n\n<br>\n\n Add some description in Markdown format"
+      }
+   ],
+   "endpoints": {
+      "NSO_CFS": {
+         "baseURL": "http://127.0.0.1:8080/nso",
+         "username": "myUserName",
+         "password": "myPassword",
+         "headers": {
+            "Authorization": "Basic YWRtaW46YWRtaW4=",
+            "Content-Type": "application/yang-data+json",
+            "Accept": "application/yang-data+json"
+         }
+      }
+   },
+   "staticVariables": {
+      "projectName": "My Variable",
+      "node1_ip": "1.1.1.1"
+   },
+   "mainContent": {
+      "stage1": {
+         "description": "A short introduction about your demo.",
+         "continueOnFail": false,
+         "prefaceRef": 1,
+         "preCheck": [],
+         "actions": [],
+         "postCheck": [],
+         "outcome": [
+            {
+               "summaryText": "Describe the ourcome of your demo",
+               "elements": {
+                  "nodes": [],
+                  "edges": []
+               },
+               "commands": {}
+            }
+         ]
+      },
+      "stage": {
+         "description": "Run stage when a demo required a setup that doesn't need to be exposed in the demo flow.",
+         "continueOnFail": false,
+         "preCheck": [],
+         "actions": [],
+         "postCheck": []
+      },
+      "cleanup": {
+         "description": "Configure he the checks and actions to perform between a demo run, without unstage the demo resources.",
+         "continueOnFail": false,
+         "preCheck": [],
+         "actions": [],
+         "postCheck": []
+      },
+      "unstage": {
+         "description": "Run unstage when you need to release some demo resources and you don't need to expose these actions in the demo flow.",
+         "continueOnFail": false,
+         "preCheck": [],
+         "actions": [],
+         "postCheck": []
+      }
+   }
+}

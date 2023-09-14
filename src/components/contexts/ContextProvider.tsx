@@ -1,5 +1,6 @@
 import React, { useEffect, useReducer } from "react";
 import config from "../../config/config.json";
+import newConfig from "../../config/new.json";
 import _ from "lodash";
 import * as TYPE from "./ContextTypes";
 
@@ -177,6 +178,16 @@ function globalContextreducer(state: TYPE.StateType, action: TYPE.ContextActionT
             }
          }
          return { ...state, currentStep: { name: null, label: null }, runningStatus: null, config: { ...config } };
+
+      case "newConfig":
+         window.localStorage.clear();
+         window.sessionStorage.clear();
+         for (let key in state.clearStateFunction) {
+            if (typeof state.clearStateFunction[key] === "function") {
+               state.clearStateFunction[key]();
+            }
+         }
+         return { ...state, currentStep: { name: null, label: null }, runningStatus: null, config: { ...newConfig } };
 
       default:
          throw new Error("Unhandled action");

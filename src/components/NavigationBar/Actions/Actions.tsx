@@ -85,9 +85,15 @@ const ActionTooltipContent = ({ setIsOpen }: { setIsOpen: React.Dispatch<React.S
                   <i className="pointer fal fa-eraser me-2" />
                   Reset
                </div>
-               <div className="custom-dropdown" onClick={() => {}}>
+               <div
+                  className="custom-dropdown"
+                  onClick={() => {
+                     dispatch({ type: "newConfig" });
+                     setIsOpen(false);
+                  }}
+               >
                   <i className="pointer fal fa-file me-2" />
-                  New (TBA)
+                  New
                </div>
                <div
                   className="custom-dropdown"

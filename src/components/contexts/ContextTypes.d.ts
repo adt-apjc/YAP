@@ -22,7 +22,8 @@ export type ContextActionType =
    | { type: "deleteStaticVar"; payload: { name: string } }
    | { type: "loadConfig"; payload: any }
    | { type: "loadRunningStatus"; payload: any }
-   | { type: "clearConfig" };
+   | { type: "clearConfig" }
+   | { type: "newConfig" };
 
 export type OutcomeType = {
    summaryText?: string;
