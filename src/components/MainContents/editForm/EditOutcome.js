@@ -6,6 +6,7 @@ import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-github";
 import _ from "lodash";
+import { NODE_APPEARANCE_OPTIONS } from "../../contexts/Utility";
 
 const AddCommandForm = (props) => {
    const [data, setData] = useState("");
@@ -294,6 +295,20 @@ const AddNodeForm = (props) => {
    const [commands, setCommands] = useState([]);
    const [enableCommand, setEnableCommand] = useState(false);
 
+   const renderAppearanceOptions = () => {
+      return (
+         <>
+            {NODE_APPEARANCE_OPTIONS.map((item, i) => {
+               return (
+                  <option key={i} value={`${item.value}`}>
+                     {item.label}
+                  </option>
+               );
+            })}
+         </>
+      );
+   };
+
    const clearInputbox = () => {
       setInput({ id: "", label: "", type: "default", width: "30", height: "30", highlight: false });
       setEnableCommand(false);
@@ -371,8 +386,7 @@ const AddNodeForm = (props) => {
                <div className="col-sm-3">
                   <label>Appearance</label>
                   <select className="form-select form-select-sm" name="type" value={input.type} onChange={handleInputChange}>
-                     <option value="default">Default</option>
-                     <option value="router">Router</option>
+                     {renderAppearanceOptions()}
                   </select>
                </div>
                <div className="col-sm-6">

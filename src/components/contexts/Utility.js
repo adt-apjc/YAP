@@ -60,3 +60,82 @@ export const checkStaticVarIfUsed = (varDetails, staticVariables) => {
 
    return isUsed;
 };
+
+export const NODE_APPEARANCE_OPTIONS = [
+   {
+      label: "Default",
+      value: "default",
+   },
+   {
+      label: "Router",
+      value: "router_new",
+   },
+   {
+      label: "Virtual Router",
+      value: "virtual_router",
+   },
+   {
+      label: "Switch",
+      value: "switch",
+   },
+   {
+      label: "Layer 3 Switch",
+      value: "layer3_switch",
+   },
+   {
+      label: "UCS Switch",
+      value: "ucs_switch",
+   },
+   {
+      label: "Gateway",
+      value: "generic_gateway",
+   },
+   {
+      label: "Firewall",
+      value: "firewall",
+   },
+   {
+      label: "Wireless LAN Controller",
+      value: "wireless_lan_controller",
+   },
+   {
+      label: "DC Networking Manager",
+      value: "dc_networking_manager",
+   },
+   {
+      label: "Access Point",
+      value: "access_point",
+   },
+   {
+      label: "APIC",
+      value: "apic_new",
+   },
+   {
+      label: "File Server",
+      value: "file_server",
+   },
+   {
+      label: "Optical Transport",
+      value: "optical_transport",
+   },
+   {
+      label: "Terminal",
+      value: "terminal",
+   },
+   {
+      label: "Building",
+      value: "generic_building",
+   },
+   {
+      label: "Cloud",
+      value: "cloud",
+   },
+   {
+      label: "Satellite",
+      value: "satellite",
+   },
+   {
+      label: "Satellite Dish",
+      value: "satellite_dish",
+   },
+];
