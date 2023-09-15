@@ -61,12 +61,36 @@ Step 1 - open a terminal and clone the project with Git
 git clone https://github.com/adt-apjc/YAP.git
 ```
 
-Step 2 (optional) - REACT application runs on TCP porty 3000 and docker-compose expose this port as 80. If YAP must answer to a different TCP port, update the ports statement in docker-compose.yaml.
+Step 2 (optional) - REACT application runs on TCP porty 3000 and docker-compose expose this port as 4000. If YAP must answer to a different TCP port, update the ports statement in docker-compose.yaml.
 
 Step 3 - Build and run YAP container (remove the -d to run interactively).
 
 ```
 docker-compose up  -d
+```
+
+Step 3 (alternative) - Considering the optimised build when deploying YAP as a shared service would be a preferred option to improve performance.
+
+```
+docker compose -f docker-compose-prod.yaml up -d  --build
+```
+
+The current docker-compose-prod.yaml exposes YAP on port 80 and leverages nginx to serve the application.
+You can run this build version on your local YAP deployment but remember that they will take longer to build and you lose the option to map a local folter to serve your local assets.
+
+### Clean up
+
+Use docker compose stop and rm to clean up your local environment.
+
+```
+% docker compose stop
+[+] Running 1/1
+ ✔ Container yap-yap-1  Stopped                                                                                                                                                                  0.2s
+docker compose rm
+? Going to remove yap-yap-1 Yes
+[+] Running 1/0
+ ✔ Container yap-yap-1  Removed
+
 ```
 
 ### YAP orchestrating Cisco NSO

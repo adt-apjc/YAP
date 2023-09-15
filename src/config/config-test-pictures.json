@@ -1,0 +1,167 @@
+{
+   "version": "1.0.0",
+   "title": "YAP - Working with images",
+   "sidebar": [
+      {
+         "name": "step_1",
+         "label": "Images in Demo Steps"
+      }
+   ],
+   "navbar": {
+      "logoUrl": "/my-assets/yapping-dog.png",
+      "title": "YAP demo loadning personal icon",
+      "navBgColor": "#2a642a",
+      "navFontColor": "white"
+   },
+   "preface": [
+      {
+         "stepDesc": "Intro",
+         "bodyMarkdown": "# YAP support for personal image assets <img height='100' width='100' src='/my-assets/yapping-dog.png'/>\n\n<br>\n\nThis demo intro section supports HTML and Markdown. This example uses HTML, that supports height and width to load a local asset image. \n\n In HTML, this is achived with &lt;img height='100' width='100' src='/my-assets/yapping-dog.png'/&gt;. \n\n The top navigaton bar is controlled by the navbar configuration object, that support the loadning of a remote icon."
+      },
+      {
+         "stepDesc": "Images in Demo Steps",
+         "bodyMarkdown": "# Custom Images\n\n<br>\n\nThis step describes how we can embed personal images in the step summary and in the outcome representation."
+      }
+   ],
+   "endpoints": {
+      "MOCKUP": {
+         "baseURL": "http://34.143.199.115:3010",
+         "headers": {
+            "Content-Type": "application/json"
+         }
+      }
+   },
+   "staticVariables": {
+      "projectName": "My Project",
+      "node1_ip": "1.1.1.1"
+   },
+   "mainContent": {
+      "step_1": {
+         "description": "<img height='100' width='100' src='/my-assets/yapping-dog.png'/> This section support Markdown and HTML.",
+         "continueOnFail": false,
+         "prefaceRef": 1,
+         "preCheck": [],
+         "actions": [
+            {
+               "type": "request",
+               "useEndpoint": "MOCKUP",
+               "header": "Create",
+               "headerColor": "Green",
+               "title": "Add new project",
+               "description": "The proposed payload for the POST action describe how to embed a variable in the",
+               "url": "api/project",
+               "method": "post",
+               "data": {
+                  "name": "{{projectName}}",
+                  "description": "Mockup project to demonstrate YAP functionalities",
+                  "routers": []
+               },
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["201"]
+                  },
+                  {
+                     "type": "bodyContain",
+                     "value": "uuid"
+                  }
+               ],
+               "match": {
+                  "objectPath": "uuid",
+                  "regEx": "(.*)",
+                  "matchGroup": "1",
+                  "storeAs": "projectId"
+               }
+            }
+         ],
+         "postCheck": [],
+         "outcome": [
+            {
+               "summaryText": "Outcome representation using an image from a remote Google bucket and from the local assests folder.",
+               "elements": {
+                  "nodes": [
+                     {
+                        "data": { "id": "fromRemote", "label": "Remote URL" },
+                        "position": { "x": 100, "y": -100 },
+                        "classes": "size-xxxlg-rect",
+                        "style": {
+                           "background-fit": "cover",
+                           "background-image": "url('https://storage.googleapis.com/yap-public/test.png')",
+                           "background-opacity": 0
+                        }
+                     },
+                     {
+                        "data": { "id": "fromLocalAssets", "label": "My local Asset" },
+                        "position": { "x": 400, "y": -100 },
+                        "classes": "size-xxxlg-rect",
+                        "style": {
+                           "background-fit": "cover",
+                           "background-image": "url('/my-assets/yapping-dog.png')",
+                           "background-opacity": 0
+                        }
+                     }
+                  ],
+                  "edges": [
+                     {
+                        "data": { "source": "fromRemote", "target": "fromLocalAssets" },
+                        "classes": "dashed"
+                     }
+                  ]
+               },
+               "commands": {
+                  "fromURL": [
+                     {
+                        "type": "request",
+                        "useEndpoint": "MOCKUP",
+                        "displayResponseAs": "json",
+                        "title": "get project detials",
+                        "url": "/api/project/{{projectId}}",
+                        "method": "get",
+                        "data": {}
+                     }
+                  ]
+               }
+            }
+         ]
+      },
+      "stage": {
+         "description": "Run stage when a demo required a setup that doesn't need to be exposed in the demo flow.<br>\nThere is no stage activity in this Hello World demo.",
+         "continueOnFail": false,
+         "preCheck": [],
+         "actions": [],
+         "postCheck": []
+      },
+      "cleanup": {
+         "description": "Run the cleanup function between demos, without releasing the staged resources.<br>\nDelete the project from the mockup server.<br>\nIn this demo, just delete the newly created project.",
+         "continueOnFail": false,
+         "preCheck": [],
+         "actions": [
+            {
+               "type": "request",
+               "useEndpoint": "MOCKUP",
+               "header": "Delete",
+               "headerColor": "",
+               "title": "Remove the project",
+               "description": "",
+               "url": "api/project/{{projectId}}",
+               "method": "delete",
+               "data": {},
+               "expect": [
+                  {
+                     "type": "codeIs",
+                     "value": ["200", "404"]
+                  }
+               ]
+            }
+         ],
+         "postCheck": []
+      },
+      "unstage": {
+         "description": "Run unstage when you need to release some demo resources and you don't need to expose these actions in the demo flow.<br>\nThere is no unstage activity in this Hello World demo.",
+         "continueOnFail": false,
+         "preCheck": [],
+         "actions": [],
+         "postCheck": []
+      }
+   }
+}

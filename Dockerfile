@@ -4,12 +4,6 @@ WORKDIR /app
 COPY ./package.json /app
 RUN npm install
 COPY . /app
-RUN npm run build
-
-# stage 2 - build the final image and copy the react build files
-FROM nginx
-COPY --from=builder /app/build /usr/share/nginx/html
-RUN rm /etc/nginx/conf.d/default.conf
-COPY ./nginx.conf /etc/nginx/conf.d
+#VOLUME ./my-public-assets /app/public/my-assets
 EXPOSE 3000
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "start"]
