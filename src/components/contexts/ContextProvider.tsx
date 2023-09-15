@@ -3,6 +3,7 @@ import config from "../../config/config.json";
 import newConfig from "../../config/new.json";
 import _ from "lodash";
 import * as TYPE from "./ContextTypes";
+import { useDidUpdateEffect } from "./CustomHooks";
 
 const GlobalContext = React.createContext<TYPE.ContextType | null>(null);
 
@@ -31,7 +32,6 @@ function addAction(
          clonedState.config.mainContent[payload.stepKey][payload.tab] = [payload.actionObject];
       }
    }
-   console.log(clonedState.config.mainContent[payload.stepKey][payload.tab]);
    return clonedState;
 }
 
@@ -215,6 +215,10 @@ function ContextProvider({ children }: { children: React.ReactNode }) {
       // load runningStatus from localStorage if exist
       if (runningStatus) dispatch({ type: "loadRunningStatus", payload: JSON.parse(runningStatus) });
    }, []);
+
+   useDidUpdateEffect(() => {
+      window.localStorage.setItem("configData", JSON.stringify(state.config));
+   }, [JSON.stringify(state.config)]);
 
    useEffect(() => {
       if (!_.isEmpty(state.runningStatus)) window.localStorage.setItem("runningStatus", JSON.stringify(state.runningStatus));
