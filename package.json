@@ -10,7 +10,7 @@
       "@types/react": "^18.2.21",
       "@types/react-cytoscapejs": "^1.2.2",
       "@types/react-dom": "^18.2.7",
-      "@uiw/react-json-view": "^1.8.3",
+      "@uiw/react-json-view": "1.8.4",
       "axios": "^1.4.0",
       "bootstrap": "^5.3.1",
       "cytoscape": "^3.17.0",
