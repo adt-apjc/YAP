@@ -3,7 +3,7 @@ import { useGlobalContext } from "../../contexts/ContextProvider";
 
 import AceEditor from "react-ace";
 import "ace-builds/webpack-resolver";
-import "ace-builds/src-noconflict/mode-html";
+import "ace-builds/src-noconflict/mode-markdown";
 import "ace-builds/src-noconflict/theme-github";
 
 import { cloneDeep } from "lodash";
