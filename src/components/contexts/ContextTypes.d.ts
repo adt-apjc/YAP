@@ -54,18 +54,18 @@ export type ActionMatchObject = { objectPath: string; regEx: string; matchGroup:
 
 export type ActionType = {
    type: string;
-   useEndpoint: string;
-   header: string;
-   headerColor: string;
    title: string;
-   description: string;
+   useEndpoint: string;
    url: string;
    method: string;
+   header: string;
+   headerColor: string;
+   description: string;
+   data?: any;
    maxRetry?: string;
    interval?: string;
    displayResponseAs?: string;
    objectPath?: string; // objectPath use incase displayResponseAs:"text" as you need to show specific value
-   data?: any;
    expect: ActionExpectObject;
    match?: ActionMatchObject;
 };

@@ -13,12 +13,10 @@ import OffCanvas from "../../OffCanvas/OffCanvas";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { StepDetailsType } from "../../contexts/ContextTypes";
-import { AxiosResponse } from "axios";
-
-type YapResponse = AxiosResponse & { success: boolean };
+import { APIResponse } from "../../../helper/apiAction";
 
 type StepResult = {
-   [step: string]: { [index: number]: YapResponse } | undefined;
+   [step: string]: { [index: number]: APIResponse } | undefined;
 };
 
 type StepComplete = {
@@ -89,7 +87,7 @@ const DemoContent = (props: DemoContentProps) => {
          try {
             // SET current running state before start.
             setCurrentRunning((prev) => ({ ...prev, preCheck: index }));
-            let response: YapResponse;
+            let response: APIResponse;
             if (preCheck.type === "request") {
                // normal request
                response = await normalRequest(preCheck, context.config);
@@ -154,7 +152,7 @@ const DemoContent = (props: DemoContentProps) => {
          try {
             // SET current running state before start.
             setCurrentRunning((prev) => ({ ...prev, action: index }));
-            let response: YapResponse;
+            let response: APIResponse;
             if (action.type === "request") {
                // normal request
                response = await normalRequest(action, context.config);
@@ -221,7 +219,7 @@ const DemoContent = (props: DemoContentProps) => {
          try {
             // SET current running state before start.
             setCurrentRunning((prev) => ({ ...prev, postCheck: index }));
-            let response: YapResponse;
+            let response: APIResponse;
             if (postCheck.type === "request") {
                // normal request
                response = await normalRequest(postCheck, context.config);

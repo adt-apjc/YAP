@@ -22,11 +22,11 @@ const PopperElement = React.forwardRef((props: PopperElementProps, ref) => {
 });
 
 type WithInfoPopupProps = {
-   className: string;
    placement: Placement;
    PopperComponent: React.ReactNode;
    children: React.ReactNode;
-   style: React.CSSProperties;
+   className?: string;
+   style?: React.CSSProperties;
 };
 
 const WithInfoPopup = (props: WithInfoPopupProps) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import ReactJson from "@uiw/react-json-view";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
@@ -6,8 +6,29 @@ import ModalContentSelector from "../editForm/ModalContentSelector";
 import RunButtonComponent from "../RunButtonComponent";
 import WithInfoPopup from "../../Popper/InfoPopper";
 import { getStringFromObject, getVariableDetails, checkStaticVarIfUsed } from "../../contexts/Utility";
+import { ActionType, StepDetailsType } from "../../contexts/ContextTypes";
+import { APIResponse } from "../../../helper/apiAction";
 
-const ActionDetail = (props) => {
+type PreCheckDetailProps = {
+   show: boolean;
+   request: ActionType;
+   response: APIResponse | null;
+};
+
+type Results = {
+   [index: number]: APIResponse;
+};
+
+type PreCheckProps = {
+   show: boolean;
+   currentRunning: number | null;
+   currentStepDetails: StepDetailsType;
+   results: Results | undefined;
+   workflowHandler: (index?: number) => any;
+};
+
+const PreCheckDetail = (props: PreCheckDetailProps) => {
+   const { context } = useGlobalContext();
    let responseViewer;
    let responseStatus = props.response ? `${props.response.status} ${props.response.statusText}` : "";
    let failureCause = props.response && props.response.failureCause ? props.response.failureCause : "";
@@ -18,7 +39,6 @@ const ActionDetail = (props) => {
             <ReactJson value={props.request.data} collapsed={4} />
          </div>
       ) : null;
-   let colorMapper = { get: "primary", post: "success", put: "info", patch: "warning", delete: "danger" };
 
    if (props.request && props.request.displayResponseAs === "text") {
       responseViewer = props.response ? (
@@ -31,6 +51,12 @@ const ActionDetail = (props) => {
       ) : null;
    }
 
+   const getHeaderColor = (method: string) => {
+      let mapper = { get: "primary", post: "success", put: "info", patch: "warning", delete: "danger" };
+      if (method in mapper) return mapper[method as keyof typeof mapper];
+      else return "primary";
+   };
+
    const renderVariableDetails = () => {
       const variableDetails = getVariableDetails(props.request);
       return (
@@ -39,21 +65,21 @@ const ActionDetail = (props) => {
                <WithInfoPopup
                   PopperComponent={
                      <div className="d-flex flex-column p-2 text-dark" style={{ maxWidth: "800px" }}>
-                        {props.context.config.staticVariables && Object.keys(props.context.config.staticVariables).length > 0 && (
+                        {context.config.staticVariables && Object.keys(context.config.staticVariables).length > 0 && (
                            <>
-                              {checkStaticVarIfUsed(variableDetails, props.context.config.staticVariables) && (
+                              {checkStaticVarIfUsed(variableDetails) && (
                                  <>
                                     <div className="mb-2">
                                        <small className="badge rounded-pill  text-bg-light">Static Variables</small>
                                     </div>
-                                    {Object.keys(props.context.config.staticVariables).map((item, i) => {
+                                    {Object.keys(context.config.staticVariables).map((item, i) => {
                                        if (variableDetails.find((el) => el.key === item))
                                           return (
                                              <div className="d-flex" key={i}>
                                                 <small className="me-3" style={{ minWidth: "90px" }}>
                                                    {item}:
                                                 </small>
-                                                <small>{props.context.config.staticVariables[item]}</small>
+                                                <small>{context.config.staticVariables[item]}</small>
                                              </div>
                                           );
                                        return null;
@@ -65,7 +91,7 @@ const ActionDetail = (props) => {
                         )}
 
                         {variableDetails.map((item, i) => {
-                           if (!Object.keys(props.context.config.staticVariables).includes(item.key))
+                           if (!Object.keys(context.config.staticVariables).includes(item.key))
                               return (
                                  <div className="d-flex" key={i}>
                                     <small className="me-3" style={{ minWidth: "90px" }}>
@@ -99,9 +125,9 @@ const ActionDetail = (props) => {
                      PopperComponent={
                         <div className="d-flex p-2 text-dark" style={{ maxWidth: "800px" }}>
                            <small>{`${
-                              props.context.config.endpoints[props.request.useEndpoint] &&
-                              props.context.config.endpoints[props.request.useEndpoint].baseURL
-                                 ? props.context.config.endpoints[props.request.useEndpoint].baseURL
+                              context.config.endpoints[props.request.useEndpoint] &&
+                              context.config.endpoints[props.request.useEndpoint].baseURL
+                                 ? context.config.endpoints[props.request.useEndpoint].baseURL
                                  : "baseURL not configured"
                            }`}</small>
                         </div>
@@ -147,7 +173,7 @@ const ActionDetail = (props) => {
                <div className="me-2">{renderVariableDetails()}</div>
                {/* Expect */}
                <div>
-                  {props.request.expect && props.request.expect.length > 0 && (
+                  {props.request.expect.length > 0 && (
                      <WithInfoPopup
                         PopperComponent={
                            <div className="d-flex flex-column p-2 text-dark" style={{ maxWidth: "800px" }}>
@@ -176,7 +202,7 @@ const ActionDetail = (props) => {
          </div>
          <div className="bg-white p-2 rounded shadow-sm mb-2">
             <div className="d-flex">
-               <div className={`me-3 font-weight-bolder text-${colorMapper[props.request.method]}`}>
+               <div className={`me-3 font-weight-bolder text-${getHeaderColor(props.request.method)}`}>
                   {props.request.method.toUpperCase()}
                </div>
                <div className="text-dark">{props.request.url}</div>
@@ -196,12 +222,16 @@ const ActionDetail = (props) => {
    );
 };
 
-const Actions = (props) => {
-   const [modal, setModal] = useState({ modalShow: false, modalContentType: null, selectedAction: null });
-   const [curExpandRow, setCurExpandRow] = useState([]);
+const PreCheck = (props: PreCheckProps) => {
+   const [modal, setModal] = useState<{ modalShow: boolean; modalContentType: string | null; selectedAction: any }>({
+      modalShow: false,
+      modalContentType: null,
+      selectedAction: null,
+   });
+   const [curExpandRow, setCurExpandRow] = useState<number[]>([]);
    const { context } = useGlobalContext();
 
-   const expandDetailHandler = (index) => {
+   const expandDetailHandler = (index: number) => {
       if (!curExpandRow.includes(index)) {
          setCurExpandRow((prev) => [...prev, index]);
       } else {
@@ -209,7 +239,7 @@ const Actions = (props) => {
       }
    };
 
-   const isActionRunning = (index) => {
+   const isPreCheckRunning = (index: number) => {
       return props.currentRunning === index;
    };
 
@@ -222,11 +252,11 @@ const Actions = (props) => {
 
    let apiList;
    // apiList component
-   if (props.currentStepDetails.actions && props.currentStepDetails.actions.length !== 0) {
-      apiList = props.currentStepDetails.actions.map((action, index) => {
+   if (props.currentStepDetails.preCheck && props.currentStepDetails.preCheck.length !== 0) {
+      apiList = props.currentStepDetails.preCheck.map((preCheck, index) => {
          //
          let runResultStatus =
-            props.results && props.results[index] && !isActionRunning(index) ? (
+            props.results && props.results[index] && !isPreCheckRunning(index) ? (
                props.results[index].success ? (
                   <i className="fad fa-check-circle m-2 text-success" />
                ) : (
@@ -246,7 +276,7 @@ const Actions = (props) => {
             <div className="mt-2" key={index}>
                <div
                   className={`shadow-sm p-3 mb-3 bg-light text-secondary rounded pointer ${
-                     isActionRunning(index) ? "border" : ""
+                     isPreCheckRunning(index) ? "border" : ""
                   }`}
                   onClick={() => expandDetailHandler(index)}
                >
@@ -255,19 +285,19 @@ const Actions = (props) => {
                         <div>
                            <div
                               className={`api-method-badge text-light me-3 rounded`}
-                              style={{ backgroundColor: action.headerColor ? action.headerColor : "#007cad" }}
+                              style={{ backgroundColor: preCheck.headerColor ? preCheck.headerColor : "#007cad" }}
                            >
-                              {action.header ? action.header : "NO HEADER"}
+                              {preCheck.header ? preCheck.header : "NO HEADER"}
                            </div>
-                           {action.title ? action.title : "NO TITLE"}
+                           {preCheck.title ? preCheck.title : "NO TITLE"}
                         </div>
                         {runResultStatus}
                      </div>
                      <div className="d-flex align-items-center">
                         <RunButtonComponent
-                           currentRunning={isActionRunning(index)}
+                           currentRunning={isPreCheckRunning(index)}
                            workflowHandler={() => props.workflowHandler(index)}
-                           disable={isActionRunning(index)}
+                           disable={isPreCheckRunning(index)}
                         />
                         {context.mode === "edit" && (
                            <div className="d-flex align-items-center">
@@ -277,8 +307,8 @@ const Actions = (props) => {
                                     e.stopPropagation();
                                     setModal({
                                        modalShow: true,
-                                       modalContentType: "action",
-                                       selectedAction: { action: action, actionIndex: index },
+                                       modalContentType: "preCheck",
+                                       selectedAction: { action: preCheck, actionIndex: index },
                                     });
                                  }}
                               >
@@ -291,7 +321,7 @@ const Actions = (props) => {
                                     setModal({
                                        modalShow: true,
                                        modalContentType: "actionDeleteConfirm",
-                                       selectedAction: { action: action, actionIndex: index, tab: "actions" },
+                                       selectedAction: { action: preCheck, actionIndex: index, tab: "preCheck" },
                                     });
                                  }}
                               >
@@ -303,11 +333,10 @@ const Actions = (props) => {
                      </div>
                   </div>
                </div>
-               <ActionDetail
+               <PreCheckDetail
                   show={curExpandRow.includes(index)}
                   response={props.results && props.results[index] ? props.results[index] : null}
-                  request={action}
-                  context={context}
+                  request={preCheck}
                />
             </div>
          );
@@ -315,6 +344,7 @@ const Actions = (props) => {
    } else {
       apiList = <div className="shadow-sm p-3 mb-3 bg-light text-secondary rounded pointer">No API request configured.</div>;
    }
+
    return (
       <div className="container">
          {apiList}
@@ -326,11 +356,11 @@ const Actions = (props) => {
             <ModalContentSelector
                onHide={() => setModal({ modalShow: false, modalContentType: null, selectedAction: null })}
                initValue={modal.selectedAction}
-               contentType={modal.modalContentType}
+               contentType={modal.modalContentType as string}
             />
          </Modal>
       </div>
    );
 };
 
-export default Actions;
+export default PreCheck;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import ReactJson from "@uiw/react-json-view";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
@@ -6,8 +6,29 @@ import ModalContentSelector from "../editForm/ModalContentSelector";
 import RunButtonComponent from "../RunButtonComponent";
 import WithInfoPopup from "../../Popper/InfoPopper";
 import { getStringFromObject, getVariableDetails, checkStaticVarIfUsed } from "../../contexts/Utility";
+import { ActionType, StepDetailsType } from "../../contexts/ContextTypes";
+import { APIResponse } from "../../../helper/apiAction";
 
-export const PostCheckDetail = (props) => {
+type ActionDetailProps = {
+   show: boolean;
+   request: ActionType;
+   response: APIResponse | null;
+};
+
+type Results = {
+   [index: number]: APIResponse;
+};
+
+type ActionsProps = {
+   show: boolean;
+   currentRunning: number | null;
+   currentStepDetails: StepDetailsType;
+   results: Results | undefined;
+   workflowHandler: (index?: number) => any;
+};
+
+const ActionDetail = (props: ActionDetailProps) => {
+   const { context } = useGlobalContext();
    let responseViewer;
    let responseStatus = props.response ? `${props.response.status} ${props.response.statusText}` : "";
    let failureCause = props.response && props.response.failureCause ? props.response.failureCause : "";
@@ -17,50 +38,48 @@ export const PostCheckDetail = (props) => {
             payload
             <ReactJson value={props.request.data} collapsed={4} />
          </div>
-      ) : (
-         ""
-      );
-   let colorMapper = { get: "primary", post: "success", put: "info", patch: "warning", delete: "danger" };
+      ) : null;
 
    if (props.request && props.request.displayResponseAs === "text") {
       responseViewer = props.response ? (
          <pre className="p-2">{getStringFromObject(props.response.data, props.request.objectPath)}</pre>
-      ) : (
-         ""
-      );
+      ) : null;
    } else {
       // default display response as JSON
       responseViewer = props.response ? (
-         <ReactJson value={typeof props.response.data === "object" ? props.response.data : {}} collapsed={4} />
-      ) : (
-         ""
-      );
+         <ReactJson value={typeof props.response.data === "object" ? props.response.data : {}} collapsed={1} />
+      ) : null;
    }
+
+   const getHeaderColor = (method: string) => {
+      let mapper = { get: "primary", post: "success", put: "info", patch: "warning", delete: "danger" };
+      if (method in mapper) return mapper[method as keyof typeof mapper];
+      else return "primary";
+   };
 
    const renderVariableDetails = () => {
       const variableDetails = getVariableDetails(props.request);
-
       return (
          <>
             {variableDetails.length > 0 && (
                <WithInfoPopup
                   PopperComponent={
                      <div className="d-flex flex-column p-2 text-dark" style={{ maxWidth: "800px" }}>
-                        {props.context.config.staticVariables && Object.keys(props.context.config.staticVariables).length > 0 && (
+                        {context.config.staticVariables && Object.keys(context.config.staticVariables).length > 0 && (
                            <>
-                              {checkStaticVarIfUsed(variableDetails, props.context.config.staticVariables) && (
+                              {checkStaticVarIfUsed(variableDetails, context.config.staticVariables) && (
                                  <>
                                     <div className="mb-2">
                                        <small className="badge rounded-pill  text-bg-light">Static Variables</small>
                                     </div>
-                                    {Object.keys(props.context.config.staticVariables).map((item, i) => {
+                                    {Object.keys(context.config.staticVariables).map((item, i) => {
                                        if (variableDetails.find((el) => el.key === item))
                                           return (
                                              <div className="d-flex" key={i}>
                                                 <small className="me-3" style={{ minWidth: "90px" }}>
                                                    {item}:
                                                 </small>
-                                                <small>{props.context.config.staticVariables[item]}</small>
+                                                <small>{context.config.staticVariables[item]}</small>
                                              </div>
                                           );
                                        return null;
@@ -72,7 +91,7 @@ export const PostCheckDetail = (props) => {
                         )}
 
                         {variableDetails.map((item, i) => {
-                           if (!Object.keys(props.context.config.staticVariables).includes(item.key))
+                           if (!Object.keys(context.config.staticVariables).includes(item.key))
                               return (
                                  <div className="d-flex" key={i}>
                                     <small className="me-3" style={{ minWidth: "90px" }}>
@@ -106,9 +125,9 @@ export const PostCheckDetail = (props) => {
                      PopperComponent={
                         <div className="d-flex p-2 text-dark" style={{ maxWidth: "800px" }}>
                            <small>{`${
-                              props.context.config.endpoints[props.request.useEndpoint] &&
-                              props.context.config.endpoints[props.request.useEndpoint].baseURL
-                                 ? props.context.config.endpoints[props.request.useEndpoint].baseURL
+                              context.config.endpoints[props.request.useEndpoint] &&
+                              context.config.endpoints[props.request.useEndpoint].baseURL
+                                 ? context.config.endpoints[props.request.useEndpoint].baseURL
                                  : "baseURL not configured"
                            }`}</small>
                         </div>
@@ -183,7 +202,7 @@ export const PostCheckDetail = (props) => {
          </div>
          <div className="bg-white p-2 rounded shadow-sm mb-2">
             <div className="d-flex">
-               <div className={`me-3 font-weight-bolder text-${colorMapper[props.request.method]}`}>
+               <div className={`me-3 font-weight-bolder text-${getHeaderColor(props.request.method)}`}>
                   {props.request.method.toUpperCase()}
                </div>
                <div className="text-dark">{props.request.url}</div>
@@ -203,12 +222,16 @@ export const PostCheckDetail = (props) => {
    );
 };
 
-const PostCheck = (props) => {
+const Actions = (props: ActionsProps) => {
+   const [modal, setModal] = useState<{ modalShow: boolean; modalContentType: string | null; selectedAction: any }>({
+      modalShow: false,
+      modalContentType: null,
+      selectedAction: null,
+   });
+   const [curExpandRow, setCurExpandRow] = useState<number[]>([]);
    const { context } = useGlobalContext();
-   const [modal, setModal] = useState({ modalShow: false, modalContentType: null, selectedAction: null });
-   const [curExpandRow, setCurExpandRow] = useState([]);
 
-   const expandDetailHandler = (index) => {
+   const expandDetailHandler = (index: number) => {
       if (!curExpandRow.includes(index)) {
          setCurExpandRow((prev) => [...prev, index]);
       } else {
@@ -216,7 +239,7 @@ const PostCheck = (props) => {
       }
    };
 
-   const isPostCheckRunning = (index) => {
+   const isActionRunning = (index: number) => {
       return props.currentRunning === index;
    };
 
@@ -228,10 +251,12 @@ const PostCheck = (props) => {
    if (!props.show) return null;
 
    let apiList;
-   if (props.currentStepDetails.postCheck && props.currentStepDetails.postCheck.length > 0) {
-      apiList = props.currentStepDetails.postCheck.map((postCheck, index) => {
+   // apiList component
+   if (props.currentStepDetails.actions && props.currentStepDetails.actions.length !== 0) {
+      apiList = props.currentStepDetails.actions.map((action, index) => {
+         //
          let runResultStatus =
-            props.results && props.results[index] && !isPostCheckRunning(index) ? (
+            props.results && props.results[index] && !isActionRunning(index) ? (
                props.results[index].success ? (
                   <i className="fad fa-check-circle m-2 text-success" />
                ) : (
@@ -249,76 +274,69 @@ const PostCheck = (props) => {
             ) : null;
          return (
             <div className="mt-2" key={index}>
-               {/* API DETAILS */}
                <div
                   className={`shadow-sm p-3 mb-3 bg-light text-secondary rounded pointer ${
-                     isPostCheckRunning(index) ? "border" : ""
+                     isActionRunning(index) ? "border" : ""
                   }`}
                   onClick={() => expandDetailHandler(index)}
                >
                   <div className="d-flex justify-content-between">
                      <div className="d-flex align-items-center">
-                        {/* API METHOD , TITLE , DESC */}
                         <div>
                            <div
                               className={`api-method-badge text-light me-3 rounded`}
-                              style={{ backgroundColor: postCheck.headerColor ? postCheck.headerColor : "#007cad" }}
+                              style={{ backgroundColor: action.headerColor ? action.headerColor : "#007cad" }}
                            >
-                              {postCheck.header ? postCheck.header : "NO HEADER"}
+                              {action.header ? action.header : "NO HEADER"}
                            </div>
-                           {postCheck.title ? postCheck.title : "NO TITLE"}
+                           {action.title ? action.title : "NO TITLE"}
                         </div>
-                        {/* RESULT ICON */}
                         {runResultStatus}
                      </div>
                      <div className="d-flex align-items-center">
                         <RunButtonComponent
-                           currentRunning={isPostCheckRunning(index)}
+                           currentRunning={isActionRunning(index)}
                            workflowHandler={() => props.workflowHandler(index)}
-                           disable={isPostCheckRunning(index)}
+                           disable={isActionRunning(index)}
                         />
                         {context.mode === "edit" && (
-                           <>
+                           <div className="d-flex align-items-center">
                               <span
                                  className="px-1 font-sm font-weight-light text-info text-hover-highlight"
                                  onClick={(e) => {
                                     e.stopPropagation();
                                     setModal({
                                        modalShow: true,
-                                       modalContentType: "postCheck",
-                                       selectedAction: { action: postCheck, actionIndex: index },
+                                       modalContentType: "action",
+                                       selectedAction: { action: action, actionIndex: index },
                                     });
                                  }}
                               >
                                  Edit
                               </span>
                               <span
-                                 className="px-1 font-sm font-weight-light text-danger text-hover-highlight"
+                                 className="pe-3 ps-1 font-sm font-weight-light text-danger text-hover-highlight"
                                  onClick={(e) => {
                                     e.stopPropagation();
                                     setModal({
                                        modalShow: true,
                                        modalContentType: "actionDeleteConfirm",
-                                       selectedAction: { action: postCheck, actionIndex: index, tab: "postCheck" },
+                                       selectedAction: { action: action, actionIndex: index, tab: "actions" },
                                     });
                                  }}
                               >
                                  Delete
                               </span>
-                           </>
+                           </div>
                         )}
-
                         <i className={`fas fa-caret-${curExpandRow.includes(index) ? "down" : "right"}`}></i>
                      </div>
                   </div>
                </div>
-
-               {/* API RESPONSE DETAILS*/}
-               <PostCheckDetail
+               <ActionDetail
                   show={curExpandRow.includes(index)}
                   response={props.results && props.results[index] ? props.results[index] : null}
-                  request={postCheck}
-                  context={context}
+                  request={action}
                />
             </div>
          );
@@ -326,7 +344,6 @@ const PostCheck = (props) => {
    } else {
       apiList = <div className="shadow-sm p-3 mb-3 bg-light text-secondary rounded pointer">No API request configured.</div>;
    }
-
    return (
       <div className="container">
          {apiList}
@@ -338,11 +355,11 @@ const PostCheck = (props) => {
             <ModalContentSelector
                onHide={() => setModal({ modalShow: false, modalContentType: null, selectedAction: null })}
                initValue={modal.selectedAction}
-               contentType={modal.modalContentType}
+               contentType={modal.modalContentType as string}
             />
          </Modal>
       </div>
    );
 };
 
-export default PostCheck;
+export default Actions;

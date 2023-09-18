@@ -7,8 +7,8 @@ import cytoscape from "cytoscape";
 import { OutcomeType } from "../contexts/ContextTypes";
 
 type TopologyWrapperProps = {
-   cy: (cy: cytoscape.Core) => void;
-   onNodeClick: (n: cytoscape.SingularData) => void;
+   cy?: (cy: cytoscape.Core) => void;
+   onNodeClick: (n: cytoscape.NodeSingular) => void;
    outcomeConfig: OutcomeType;
 };
 
