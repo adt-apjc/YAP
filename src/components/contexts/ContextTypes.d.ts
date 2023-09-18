@@ -34,6 +34,8 @@ export type OutcomeType = {
 export type EndpointType = {
    baseURL: string;
    headers?: { [key: string]: string };
+   username?: string;
+   password?: string;
 };
 
 export type OutcomeCommandType = {
@@ -57,6 +59,7 @@ export type ActionType = {
    title: string;
    useEndpoint: string;
    url: string;
+   baseURL?: string;
    method: string;
    header: string;
    headerColor: string;
@@ -66,8 +69,9 @@ export type ActionType = {
    interval?: string;
    displayResponseAs?: string;
    objectPath?: string; // objectPath use incase displayResponseAs:"text" as you need to show specific value
-   expect: ActionExpectObject;
+   expect?: ActionExpectObject;
    match?: ActionMatchObject;
+   headers?: { [key: string]: string }; // option to override Axois request header from Endpoint
 };
 
 export type PrefaceConfig = {
@@ -85,6 +89,8 @@ export type StepDetailsType = {
    outcome?: OutcomeType[];
 };
 
+export type StaticVariables = { [key: string]: string };
+
 export type config = {
    version: string;
    title: string;
@@ -99,7 +105,7 @@ export type config = {
    endpoints: {
       [name: string]: EndpointType;
    };
-   staticVariables: { [key: string]: string };
+   staticVariables: StaticVariables;
    mainContent: {
       [step: string]: StepDetailsType;
    };

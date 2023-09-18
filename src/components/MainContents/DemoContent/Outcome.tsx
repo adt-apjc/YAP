@@ -32,10 +32,10 @@ const CommandModal = (props: CommandModalProps) => {
          let response: APIResponse | null = null;
          if (action && action.type === "request") {
             // normal request
-            response = await normalRequest(action, context.config);
+            response = await normalRequest(action as ActionType, context.config);
          } else if (action && action.type === "polling") {
             // polling request
-            response = await pollingRequest(action, context.config);
+            response = await pollingRequest(action as ActionType, context.config);
 
             // update state actionResults for specific step
             setIsRunning(false);

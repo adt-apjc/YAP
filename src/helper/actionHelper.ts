@@ -1,9 +1,10 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+import { ActionExpectObject, ActionType, StaticVariables, config } from "../components/contexts/ContextTypes";
+import { APIResponse } from "./apiAction";
 
-const validateExpect = (expect, response) => {
-   if (expect.length === 0) return true;
-   // expect is an array of conditions. As MVP0 all (AND) must be true to return a true value
+const validateExpect = (expect: ActionExpectObject, response: AxiosResponse) => {
    let failureCause = "";
+   if (expect.length === 0) return { expectCriteriaMet: true, failureCause };
 
    for (let condition of expect) {
       switch (condition.type) {
@@ -39,7 +40,7 @@ const validateExpect = (expect, response) => {
    return { expectCriteriaMet: true, failureCause };
 };
 
-const processMatchResponse = (actionObject, response) => {
+const processMatchResponse = (actionObject: ActionType, response: AxiosResponse) => {
    if (actionObject.match) {
       let { objectPath, regEx, storeAs, matchGroup } = actionObject.match;
       let targetValue = getStringFromObject(response.data, objectPath);
@@ -48,13 +49,14 @@ const processMatchResponse = (actionObject, response) => {
       let matchedValue = targetValue.match(re);
       if (matchedValue) {
          // If RegEx match
-         sessionStorage.setItem(storeAs, matchedValue[matchGroup ? matchGroup : 0]);
-         console.log("DEBUG:", matchedValue[matchGroup ? matchGroup : 0], "store as", storeAs);
+         let group = matchGroup ? parseInt(matchGroup) : 0;
+         sessionStorage.setItem(storeAs, matchedValue[group]);
+         console.log("DEBUG:", matchedValue[group], "store as", storeAs);
       }
    }
 };
 
-const getStringFromObject = (obj, path) => {
+const getStringFromObject = (obj: any, path: string): string => {
    let result = obj;
    try {
       for (let attr of path.split(".")) {
@@ -66,7 +68,7 @@ const getStringFromObject = (obj, path) => {
    }
 };
 
-const replaceStrWithParams = (text, staticVariables) => {
+const replaceStrWithParams = (text: any, staticVariables: StaticVariables) => {
    console.log("DEBUG - replacing params", text);
    let regex = /\{\{[A-Za-z_-]+[A-Za-z_0-9-]*\}\}/g;
    // if text is undefined or null return as it is.
@@ -81,7 +83,7 @@ const replaceStrWithParams = (text, staticVariables) => {
             if (staticVariables[stripedVarname]) {
                replacedText = replacedText.replace(varname, staticVariables[stripedVarname]);
             } else {
-               replacedText = replacedText.replace(varname, sessionStorage.getItem(stripedVarname));
+               replacedText = replacedText.replace(varname, sessionStorage.getItem(stripedVarname) || "VAR_UNDEFINED");
             }
             console.log("DEBUG - params replaced", replacedText);
          }
@@ -97,7 +99,7 @@ const replaceStrWithParams = (text, staticVariables) => {
             if (staticVariables[stripedVarname]) {
                replacedText = replacedText.replace(varname, staticVariables[stripedVarname]);
             } else {
-               replacedText = replacedText.replace(varname, sessionStorage.getItem(stripedVarname));
+               replacedText = replacedText.replace(varname, sessionStorage.getItem(stripedVarname) || "VAR_UNDEFINED");
             }
             console.log("DEBUG - params replaced", replacedText);
          }
@@ -108,9 +110,9 @@ const replaceStrWithParams = (text, staticVariables) => {
    return text;
 };
 
-export const normalRequest = (actionObject, { endpoints, staticVariables }) => {
+export const normalRequest = (actionObject: ActionType, { endpoints, staticVariables }: config): Promise<APIResponse> => {
    if (!("expect" in actionObject)) {
-      actionObject = { ...actionObject, expect: [] };
+      actionObject.expect = [];
    }
    let config = {
       baseURL: actionObject.baseURL ? actionObject.baseURL : endpoints[actionObject.useEndpoint].baseURL,
@@ -134,19 +136,19 @@ export const normalRequest = (actionObject, { endpoints, staticVariables }) => {
          // process Match response if configured
          processMatchResponse(actionObject, response);
          // if expect has any condition, we shall validate them before assume a success: true state
-         if (actionObject.expect.length > 0) {
-            let { expectCriteriaMet, failureCause } = validateExpect(actionObject.expect, response);
+         if (actionObject.expect!.length > 0) {
+            let { expectCriteriaMet, failureCause } = validateExpect(actionObject.expect!, response);
             if (!expectCriteriaMet) {
                console.log("DEBUG - conditions haven't been met", actionObject.expect);
                reject({ ...response, failureCause, success: false });
             }
          }
          resolve({ ...response, success: true });
-      } catch (e) {
+      } catch (e: any) {
          console.log("REQUEST ERROR - ", e);
          if (e.response) {
-            let { expectCriteriaMet } = validateExpect(actionObject.expect, e.response);
-            if (actionObject.expect.length > 0 && expectCriteriaMet) {
+            let { expectCriteriaMet } = validateExpect(actionObject.expect!, e.response);
+            if (actionObject.expect!.length > 0 && expectCriteriaMet) {
                // special case to handle 404 exception (which may be acceptable) - TBA any other case?
                e.response.success = true;
                console.log("DEBUG - Criteria hit on 404 which is accepted");
@@ -161,11 +163,11 @@ export const normalRequest = (actionObject, { endpoints, staticVariables }) => {
    });
 };
 
-export const pollingRequest = (actionObject, { endpoints, staticVariables }) => {
+export const pollingRequest = (actionObject: ActionType, { endpoints, staticVariables }: config): Promise<APIResponse> => {
    let interval = actionObject.interval ? parseInt(actionObject.interval) : 5000;
    let maxRetry = actionObject.maxRetry ? parseInt(actionObject.maxRetry) : 10;
    if (!("expect" in actionObject)) {
-      actionObject = { ...actionObject, expect: [] };
+      actionObject.expect = [];
    }
    let config = {
       baseURL: actionObject.baseURL ? actionObject.baseURL : endpoints[actionObject.useEndpoint].baseURL,
@@ -193,15 +195,15 @@ export const pollingRequest = (actionObject, { endpoints, staticVariables }) => 
             if (counterFlag <= maxRetry) {
                console.log("polling", counterFlag, response, actionObject.expect);
                // if expect has any condition, we shall validate them before assume a success: true state
-               let { expectCriteriaMet } = validateExpect(actionObject.expect, response);
-               if (actionObject.expect.length > 0 && expectCriteriaMet) {
+               let { expectCriteriaMet } = validateExpect(actionObject.expect!, response);
+               if (actionObject.expect!.length > 0 && expectCriteriaMet) {
                   console.log("INFO - Resolved and testing condition have been met", actionObject.expect);
                   clearInterval(timer);
                   resolve({ ...response, success: true });
                }
             } else {
                clearInterval(timer);
-               if (actionObject.expect.length > 0) {
+               if (actionObject.expect!.length > 0) {
                   // this case mean runtime exceed maxRetry and expect was set and it still not hit the criteria
                   reject({
                      ...response,
@@ -214,15 +216,15 @@ export const pollingRequest = (actionObject, { endpoints, staticVariables }) => 
                   resolve({ ...response, success: true });
                }
             }
-         } catch (e) {
+         } catch (e: any) {
             console.log("REQUEST ERROR - ", e);
             // By default AXIOS assumes a 404 as an issue but we need validation where 404 is an expected
             // or acceptable value.
             // if 404 is returned as a code, check if it is acceptable as condition, if it is:
             // - set the special case flag e.response.success to true;
             // resolve the promise sucessfully
-            let { expectCriteriaMet } = validateExpect(actionObject.expect, e.response);
-            if (e.response && actionObject.expect.length > 0 && expectCriteriaMet) {
+            let { expectCriteriaMet } = validateExpect(actionObject.expect!, e.response);
+            if (e.response && actionObject.expect!.length > 0 && expectCriteriaMet) {
                console.log("DEBUG - Criteria hit on 404 which is accepted");
                clearInterval(timer);
                resolve({ ...e.response, success: true });

@@ -250,6 +250,7 @@ const ActionForm = (props: ActionFormProps) => {
          inputCloned.maxRetry = undefined;
          inputCloned.interval = undefined;
       }
+      if (inputCloned.displayResponseAs === "json") inputCloned.objectPath = undefined;
 
       dispatch({
          type: "addAction",
@@ -290,7 +291,7 @@ const ActionForm = (props: ActionFormProps) => {
    useEffect(() => {
       if (!props.initValue) return;
 
-      setInput({ ...props.initValue.action });
+      setInput({ ...input, ...props.initValue.action });
    }, [props.initValue]);
 
    return (
@@ -473,6 +474,7 @@ const ActionForm = (props: ActionFormProps) => {
                   {input.displayResponseAs === "text" && (
                      <div className="col-sm-12 col-md-3">
                         <input
+                           required
                            type="text"
                            className="form-control form-control-sm"
                            name="objectPath"
@@ -484,7 +486,7 @@ const ActionForm = (props: ActionFormProps) => {
                   )}
                </div>
 
-               <ExpectForm expect={input.expect} setExpect={setExpect} />
+               <ExpectForm expect={input.expect!} setExpect={setExpect} />
                <VariableForm match={input.match} setMatch={setMatchObject} />
                <div className="row">
                   <div className="col">

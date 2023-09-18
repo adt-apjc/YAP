@@ -173,7 +173,7 @@ const PreCheckDetail = (props: PreCheckDetailProps) => {
                <div className="me-2">{renderVariableDetails()}</div>
                {/* Expect */}
                <div>
-                  {props.request.expect.length > 0 && (
+                  {props.request.expect && props.request.expect.length > 0 && (
                      <WithInfoPopup
                         PopperComponent={
                            <div className="d-flex flex-column p-2 text-dark" style={{ maxWidth: "800px" }}>
