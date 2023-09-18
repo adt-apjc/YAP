@@ -67,7 +67,7 @@ const PreCheckDetail = (props: PreCheckDetailProps) => {
                      <div className="d-flex flex-column p-2 text-dark" style={{ maxWidth: "800px" }}>
                         {context.config.staticVariables && Object.keys(context.config.staticVariables).length > 0 && (
                            <>
-                              {checkStaticVarIfUsed(variableDetails) && (
+                              {checkStaticVarIfUsed(variableDetails, context.config.staticVariables) && (
                                  <>
                                     <div className="mb-2">
                                        <small className="badge rounded-pill  text-bg-light">Static Variables</small>

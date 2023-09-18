@@ -1,4 +1,11 @@
-export const getStringFromObject = (obj, path) => {
+import { ActionType, StaticVariables } from "./ContextTypes";
+
+type VarDetails = {
+   key: string;
+   val: string | null;
+}[];
+
+export const getStringFromObject = (obj: any, path: string | undefined) => {
    let result = obj;
    try {
       if (!path) return JSON.stringify(result, null, 3);
@@ -12,10 +19,10 @@ export const getStringFromObject = (obj, path) => {
    }
 };
 
-export const getVariableDetails = (request) => {
+export const getVariableDetails = (request: ActionType): VarDetails => {
    // A YAP variable may come from a storeAs statement, a URL and potentially a body statement
 
-   const variables = new Set(); // using set to avoid to duplicate the variable string in the returned array of objects
+   const variables = new Set<string>(); // using set to avoid to duplicate the variable string in the returned array of objects
 
    // when user set a variable with regex expression the value of the set variable will be coming from the response
    // and will be stored and used in succeding request
@@ -48,7 +55,7 @@ export const getVariableDetails = (request) => {
    return varDetails;
 };
 
-export const checkStaticVarIfUsed = (varDetails, staticVariables) => {
+export const checkStaticVarIfUsed = (varDetails: VarDetails, staticVariables: StaticVariables) => {
    let isUsed = false;
 
    for (let item of varDetails) {
