@@ -5,30 +5,47 @@ import _ from "lodash";
 import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-github";
+import { ActionExpectObject, ActionMatchObject, ActionType } from "../../contexts/ContextTypes";
 
-const ExpectForm = (props) => {
+type ActionFormProps = {
+   onHide: () => void;
+   initValue: { action: ActionType; actionIndex: number } | null;
+   tab: "preCheck" | "actions" | "postCheck";
+};
+
+type VariableFormProps = {
+   match: ActionMatchObject | undefined;
+   setMatch: (m: ActionMatchObject | undefined) => void;
+};
+
+type ExpectFormProps = {
+   expect: ActionExpectObject;
+   setExpect: (e: ActionExpectObject) => void;
+};
+
+const ExpectForm = (props: ExpectFormProps) => {
    const [isExpectEnable, setIsExpectEnable] = useState(false);
 
-   const handleExpectTypeChange = (e, index) => {
+   const handleExpectTypeChange = (e: React.ChangeEvent<HTMLSelectElement>, index: number) => {
       let currentExpect = _.cloneDeep(props.expect);
       currentExpect[index].type = e.target.value;
       currentExpect[index].value = e.target.value === "codeIs" ? [] : "";
       props.setExpect(currentExpect);
    };
 
-   const handleExpectValueChange = (e, index) => {
+   const handleExpectValueChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
       let currentExpect = _.cloneDeep(props.expect);
       currentExpect[index].value =
          currentExpect[index].type === "codeIs" ? e.target.value.split(",").map((el) => el.trim()) : e.target.value;
       props.setExpect(currentExpect);
    };
 
-   const handleExpectEnableChange = (e) => {
+   const handleExpectEnableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (!e.target.checked) props.setExpect([]);
       setIsExpectEnable(e.target.checked);
    };
 
-   const handleExpectFormDelete = (index) => {
+   const handleExpectFormDelete = (index: number) => {
       const newExpectList = props.expect.filter((el, i) => i !== index);
       props.setExpect(newExpectList);
    };
@@ -63,8 +80,7 @@ const ExpectForm = (props) => {
                   </div>
                   <div className="col-2">
                      <i
-                        type="button"
-                        className="fal fa-times text-danger icon-hover-highlight"
+                        className="fal fa-times text-danger icon-hover-highlight pointer"
                         onClick={() => handleExpectFormDelete(index)}
                      />
                   </div>
@@ -97,8 +113,7 @@ const ExpectForm = (props) => {
                {renderExpectForm()}
                <div className="w-100 text-center">
                   <i
-                     type="button"
-                     className="fad fa-plus text-info icon-hover-highlight"
+                     className="fad fa-plus text-info icon-hover-highlight pointer"
                      onClick={() => props.setExpect([...props.expect, { type: "bodyContain", value: "" }])}
                   />
                </div>
@@ -108,13 +123,13 @@ const ExpectForm = (props) => {
    );
 };
 
-const VariableForm = (props) => {
+const VariableForm = (props: VariableFormProps) => {
    const [isEnable, setIsEnable] = useState(false);
 
-   const handleExpectEnableChange = (e) => {
+   const handleExpectEnableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setIsEnable(e.target.checked);
       if (!e.target.checked) props.setMatch(undefined);
-      else props.setMatch({ regEx: ".*", matchGroup: 0 });
+      else props.setMatch({ regEx: ".*", matchGroup: "0", storeAs: "", objectPath: "" });
    };
 
    useEffect(() => {
@@ -145,7 +160,7 @@ const VariableForm = (props) => {
                      name="objectPath"
                      required
                      value={props.match ? props.match.objectPath : ""}
-                     onChange={(e) => props.setMatch({ ...props.match, [e.target.name]: e.target.value })}
+                     onChange={(e) => props.setMatch({ ...props.match!, [e.target.name]: e.target.value })}
                   />
                </div>
                <div className="col-md-3">
@@ -156,7 +171,7 @@ const VariableForm = (props) => {
                      name="regEx"
                      required
                      value={props.match ? props.match.regEx : ""}
-                     onChange={(e) => props.setMatch({ ...props.match, [e.target.name]: e.target.value })}
+                     onChange={(e) => props.setMatch({ ...props.match!, [e.target.name]: e.target.value })}
                   />
                </div>
                <div className="col-md-3">
@@ -167,7 +182,7 @@ const VariableForm = (props) => {
                      name="storeAs"
                      required
                      value={props.match ? props.match.storeAs : ""}
-                     onChange={(e) => props.setMatch({ ...props.match, [e.target.name]: e.target.value })}
+                     onChange={(e) => props.setMatch({ ...props.match!, [e.target.name]: e.target.value })}
                   />
                </div>
                <div className="col-md-3">
@@ -178,7 +193,7 @@ const VariableForm = (props) => {
                      name="matchGroup"
                      required
                      value={props.match ? props.match.matchGroup : 0}
-                     onChange={(e) => props.setMatch({ ...props.match, [e.target.name]: parseInt(e.target.value) })}
+                     onChange={(e) => props.setMatch({ ...props.match!, [e.target.name]: parseInt(e.target.value) })}
                   />
                </div>
             </div>
@@ -187,9 +202,9 @@ const VariableForm = (props) => {
    );
 };
 
-const ActionForm = (props) => {
+const ActionForm = (props: ActionFormProps) => {
    const { context, dispatch } = useGlobalContext();
-   const [input, setInput] = useState({
+   const [input, setInput] = useState<ActionType>({
       type: "request",
       useEndpoint: "",
       header: "",
@@ -208,11 +223,11 @@ const ActionForm = (props) => {
    });
    const [isPayloadValid, setIsPayloadValid] = useState(true);
 
-   const setExpect = (val) => {
+   const setExpect = (val: ActionExpectObject) => {
       setInput((prev) => ({ ...prev, expect: val }));
    };
 
-   const setMatchObject = (val) => {
+   const setMatchObject = (val: ActionMatchObject | undefined) => {
       if (!val) {
          setInput((prev) => ({ ...prev, match: undefined }));
          return;
@@ -220,11 +235,11 @@ const ActionForm = (props) => {
       setInput((prev) => ({ ...prev, match: val }));
    };
 
-   const onChangeHandler = (e) => {
+   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
       setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
    };
 
-   const onSubmitHandler = (e) => {
+   const handleFormSubmit = (e: React.FormEvent) => {
       e.preventDefault();
       if (!isPayloadValid) return;
 
@@ -235,15 +250,15 @@ const ActionForm = (props) => {
          inputCloned.maxRetry = undefined;
          inputCloned.interval = undefined;
       }
-      console.log(actionIndex);
+
       dispatch({
          type: "addAction",
-         payload: { stepKey: context.currentStep.name, tab: props.tab, index: actionIndex, actionObject: inputCloned },
+         payload: { stepKey: context.currentStep.name!, tab: props.tab, index: actionIndex, actionObject: inputCloned },
       });
       props.onHide();
    };
 
-   const payloadInputHandler = (value) => {
+   const handlePayloadChange = (value: string) => {
       if (value === "") {
          setInput({ ...input, data: undefined });
          setIsPayloadValid(true);
@@ -287,7 +302,7 @@ const ActionForm = (props) => {
             <button type="button" className="btn-close" onClick={props.onHide}></button>
          </div>
          <div className="modal-body">
-            <form id="actionForm" onSubmit={(e) => onSubmitHandler(e)}>
+            <form id="actionForm" onSubmit={handleFormSubmit}>
                <div className="row align-items-center">
                   <div className="col-3">
                      <div className="form-check form-check-inline">
@@ -298,7 +313,7 @@ const ActionForm = (props) => {
                            id="inlineRadio1"
                            value="request"
                            checked={input.type === "request"}
-                           onChange={(e) => onChangeHandler(e)}
+                           onChange={onChangeHandler}
                         />
                         <label className="form-check-label" htmlFor="inlineRadio1">
                            request
@@ -312,7 +327,7 @@ const ActionForm = (props) => {
                            id="inlineRadio2"
                            value="polling"
                            checked={input.type === "polling"}
-                           onChange={(e) => onChangeHandler(e)}
+                           onChange={onChangeHandler}
                         />
                         <label className="form-check-label" htmlFor="inlineRadio2">
                            polling
@@ -327,7 +342,7 @@ const ActionForm = (props) => {
                               <select
                                  className="form-select form-select-sm"
                                  name="useEndpoint"
-                                 onChange={(e) => onChangeHandler(e)}
+                                 onChange={onChangeHandler}
                                  value={input.useEndpoint}
                                  required
                               >
@@ -348,7 +363,7 @@ const ActionForm = (props) => {
                                           name="maxRetry"
                                           placeholder="maxRetry default = 10"
                                           value={input.maxRetry}
-                                          onChange={(e) => onChangeHandler(e)}
+                                          onChange={onChangeHandler}
                                        />
                                     </div>
                                     <div className="col-6">
@@ -359,7 +374,7 @@ const ActionForm = (props) => {
                                           name="interval"
                                           placeholder="Interval default = 5000ms"
                                           value={input.interval}
-                                          onChange={(e) => onChangeHandler(e)}
+                                          onChange={onChangeHandler}
                                        />
                                     </div>
                                  </div>
@@ -375,7 +390,7 @@ const ActionForm = (props) => {
                      className="form-select form-select-sm"
                      name="method"
                      value={input.method}
-                     onChange={(e) => onChangeHandler(e)}
+                     onChange={onChangeHandler}
                   >
                      <option value="get">GET</option>
                      <option value="post">POST</option>
@@ -390,7 +405,7 @@ const ActionForm = (props) => {
                      placeholder="Enter request URL (ex. /your/path)"
                      required
                      value={input.url}
-                     onChange={(e) => onChangeHandler(e)}
+                     onChange={onChangeHandler}
                   />
                </div>
                <div className="row mb-2">
@@ -402,7 +417,7 @@ const ActionForm = (props) => {
                         name="header"
                         placeholder="Header text"
                         value={input.header}
-                        onChange={(e) => onChangeHandler(e)}
+                        onChange={onChangeHandler}
                         required
                      />
                   </div>
@@ -414,7 +429,7 @@ const ActionForm = (props) => {
                         name="headerColor"
                         placeholder="Header color"
                         value={input.headerColor}
-                        onChange={(e) => onChangeHandler(e)}
+                        onChange={onChangeHandler}
                      />
                   </div>
                   <div className="col">
@@ -425,7 +440,7 @@ const ActionForm = (props) => {
                         name="title"
                         placeholder="title text"
                         value={input.title}
-                        onChange={(e) => onChangeHandler(e)}
+                        onChange={onChangeHandler}
                         required
                      />
                   </div>
@@ -438,7 +453,7 @@ const ActionForm = (props) => {
                         name="description"
                         placeholder="Description"
                         value={input.description}
-                        onChange={(e) => onChangeHandler(e)}
+                        onChange={onChangeHandler}
                      />
                   </div>
                </div>
@@ -449,7 +464,7 @@ const ActionForm = (props) => {
                         className="form-select form-select-sm"
                         name="displayResponseAs"
                         value={input.displayResponseAs}
-                        onChange={(e) => onChangeHandler(e)}
+                        onChange={onChangeHandler}
                      >
                         <option value="json">JSON</option>
                         <option value="text">PLAIN TEXT</option>
@@ -463,7 +478,7 @@ const ActionForm = (props) => {
                            name="objectPath"
                            placeholder="objectPath"
                            value={input.objectPath}
-                           onChange={(e) => onChangeHandler(e)}
+                           onChange={onChangeHandler}
                         />
                      </div>
                   )}
@@ -483,7 +498,7 @@ const ActionForm = (props) => {
                         height="300px"
                         width="100%"
                         value={JSON.stringify(input.data, null, 4)}
-                        onChange={payloadInputHandler}
+                        onChange={handlePayloadChange}
                         name="data"
                         className="rounded border"
                         editorProps={{ $blockScrolling: true }}

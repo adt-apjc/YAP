@@ -4,14 +4,14 @@ import Outcome from "../MainContents/DemoContent/Outcome";
 export type ContextActionType =
    | { type: "setCurrentStep"; payload: { name: string | null; label: string | null } }
    | { type: "toggleMode" }
-   | { type: "setRunningStatus"; payload?: { step: string; status: "success" | "fail" | "running" } }
+   | { type: "setRunningStatus"; payload?: { step: string; status: "success" | "fail" | "running" | "" } }
    | { type: "replaceConfig"; payload: any }
    | { type: "clearStateHandler" }
    | { type: "registerClearStateFunction"; payload: { key: string; func: () => any } }
    | { type: "unregisterClearStateFunction"; payload: { key: string } }
    | {
         type: "addAction";
-        payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any };
+        payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any };
      }
    | { type: "deleteAction"; payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" } }
    | { type: "addStep"; payload: { name: string } }
@@ -49,6 +49,9 @@ export type OutcomeCommandType = {
    objectPath?: string; // objectPath use incase displayResponseAs:"text" as you need to show specific value
 };
 
+export type ActionExpectObject = { type: string; value: any }[];
+export type ActionMatchObject = { objectPath: string; regEx: string; matchGroup: string; storeAs: string };
+
 export type ActionType = {
    type: string;
    useEndpoint: string;
@@ -63,13 +66,23 @@ export type ActionType = {
    displayResponseAs?: string;
    objectPath?: string; // objectPath use incase displayResponseAs:"text" as you need to show specific value
    data?: any;
-   expect: { type: string; value: any }[];
-   match?: { objectPath: string; regEx: string; matchGroup: string; storeAs: string };
+   expect: ActionExpectObject;
+   match?: ActionMatchObject;
 };
 
 export type PrefaceConfig = {
    stepDesc: string;
    bodyMarkdown: string;
+};
+
+export type StepDetailsType = {
+   description?: string;
+   prefaceRef?: number;
+   continueOnFail: boolean;
+   preCheck: ActionType[];
+   actions: ActionType[];
+   postCheck: ActionType[];
+   outcome?: OutcomeType[];
 };
 
 export type config = {
@@ -88,24 +101,16 @@ export type config = {
    };
    staticVariables: { [key: string]: string };
    mainContent: {
-      [step: string]: {
-         description?: string;
-         prefaceRef?: number;
-         continueOnFail: boolean;
-         preCheck: ActionType[];
-         actions: ActionType[];
-         postCheck: ActionType[];
-         outcome?: OutcomeType[];
-      };
+      [step: string]: StepDetailsType;
    };
 };
 
-export type StateType = {
+export type ContextStateType = {
    currentStep: { name: string | null; label: string | null };
-   runningStatus: { [k: string]: "success" | "fail" | "running" } | null;
+   runningStatus: { [k: string]: "success" | "fail" | "running" | "" } | null;
    clearStateFunction: { [k: string]: () => void } | null;
    config: config;
    mode: "presentation" | "edit";
 };
 
-export type ContextType = { state: StateType; dispatch: React.Dispatch<ContextActionType> };
+export type ContextType = { state: ContextStateType; dispatch: React.Dispatch<ContextActionType> };

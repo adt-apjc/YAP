@@ -9,7 +9,7 @@ type OffCanvasProps = {
 const OffCanvas = (props: OffCanvasProps) => {
    const { context } = useGlobalContext();
 
-   if (!context.currentStep.name) return;
+   if (!context.currentStep.name) return null;
 
    return (
       <div className="d-flex" style={{ zIndex: "999" }}>

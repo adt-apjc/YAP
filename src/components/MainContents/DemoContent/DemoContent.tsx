@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { useDidUpdateEffect } from "../../contexts/CustomHooks";
 import { normalRequest, pollingRequest } from "../../../helper/actionHelper";
@@ -12,17 +12,42 @@ import RunButtonComponent from "../RunButtonComponent";
 import OffCanvas from "../../OffCanvas/OffCanvas";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import { StepDetailsType } from "../../contexts/ContextTypes";
+import { AxiosResponse } from "axios";
 
-const DemoContent = (props) => {
+type YapResponse = AxiosResponse & { success: boolean };
+
+type StepResult = {
+   [step: string]: { [index: number]: YapResponse } | undefined;
+};
+
+type StepComplete = {
+   [step: string]: boolean;
+};
+
+type DemoContentProps = {
+   currentStep: { name: string; label: string };
+   currentStepDetails: StepDetailsType;
+};
+
+const DemoContent = (props: DemoContentProps) => {
    const { context, dispatch } = useGlobalContext();
-   const [modal, setModal] = useState({ modalShow: false, modalContentType: null, paramValues: null });
-   const [currentRunning, setCurrentRunning] = useState({ preCheck: null, action: null, postCheck: null });
-   const [isPreCheckCompleted, setIsPreCheckCompleted] = useState({ cleanup: false });
-   const [isActionCompleted, setIsActionCompleted] = useState({ cleanup: false });
-   const [isPostCheckCompleted, setIsPostCheckCompleted] = useState({ cleanup: false });
-   const [preCheckResults, setPreCheckResults] = useState({ cleanup: {} });
-   const [actionResults, setActionResults] = useState({ cleanup: {} });
-   const [postCheckResults, setPostCheckResults] = useState({ cleanup: {} });
+   const [modal, setModal] = useState<{
+      modalShow: boolean;
+      modalContentType: string | null;
+      paramValues: any;
+   }>({ modalShow: false, modalContentType: null, paramValues: null });
+   const [currentRunning, setCurrentRunning] = useState<{
+      preCheck: number | null;
+      action: number | null;
+      postCheck: number | null;
+   }>({ preCheck: null, action: null, postCheck: null });
+   const [isPreCheckCompleted, setIsPreCheckCompleted] = useState<StepComplete>({ cleanup: false });
+   const [isActionCompleted, setIsActionCompleted] = useState<StepComplete>({ cleanup: false });
+   const [isPostCheckCompleted, setIsPostCheckCompleted] = useState<StepComplete>({ cleanup: false });
+   const [preCheckResults, setPreCheckResults] = useState<StepResult>({ cleanup: {} });
+   const [actionResults, setActionResults] = useState<StepResult>({ cleanup: {} });
+   const [postCheckResults, setPostCheckResults] = useState<StepResult>({ cleanup: {} });
    const [sectionExpand, setSectionExpand] = useState({ preCheck: false, action: false, postCheck: false, outcome: true });
    const [showOffCanvas, setShowOffCanvas] = useState(false);
 
@@ -34,7 +59,7 @@ const DemoContent = (props) => {
       setPreCheckResults((prev) => ({ cleanup: prev.cleanup }));
       setActionResults((prev) => ({ cleanup: prev.cleanup }));
       setPostCheckResults((prev) => ({ cleanup: prev.cleanup }));
-      setModal({ modalShow: false, modalContentType: null });
+      setModal({ modalShow: false, modalContentType: null, paramValues: null });
       console.log("DEBUG - clear state from sidebar demoContent");
    };
 
@@ -43,6 +68,7 @@ const DemoContent = (props) => {
       let { currentStepDetails } = props;
       // validate if it has preCheck configured or not
       if (!currentStepDetails.preCheck) return null;
+      if (!props.currentStep.name) return null;
       if (currentStepDetails.preCheck.length === 0) return true;
 
       // set running status in global context
@@ -55,7 +81,7 @@ const DemoContent = (props) => {
       for (let [i, preCheck] of preCheckList.entries()) {
          // clear old result
          setPreCheckResults((prev) => {
-            if (prev[props.currentStep.name]) delete prev[props.currentStep.name][index];
+            if (prev[props.currentStep.name]) delete prev[props.currentStep.name]![index];
             return prev;
          });
 
@@ -63,7 +89,7 @@ const DemoContent = (props) => {
          try {
             // SET current running state before start.
             setCurrentRunning((prev) => ({ ...prev, preCheck: index }));
-            let response;
+            let response: YapResponse;
             if (preCheck.type === "request") {
                // normal request
                response = await normalRequest(preCheck, context.config);
@@ -73,7 +99,7 @@ const DemoContent = (props) => {
             }
 
             //
-            if (!response.success) isCompleted = false;
+            if (!response!.success) isCompleted = false;
             // update state preCheckResults for specific step
             setPreCheckResults((prev) => ({
                ...prev,
@@ -83,7 +109,7 @@ const DemoContent = (props) => {
                },
             }));
             setCurrentRunning((prev) => ({ ...prev, preCheck: null }));
-         } catch (e) {
+         } catch (e: any) {
             isCompleted = false;
             console.log(e);
             // update state preCheckResults for specific step
@@ -120,7 +146,7 @@ const DemoContent = (props) => {
       for (let [i, action] of actionList.entries()) {
          // clear old result
          setActionResults((prev) => {
-            if (prev[props.currentStep.name]) delete prev[props.currentStep.name][index];
+            if (prev[props.currentStep.name]) delete prev[props.currentStep.name]![index];
             return prev;
          });
 
@@ -128,13 +154,15 @@ const DemoContent = (props) => {
          try {
             // SET current running state before start.
             setCurrentRunning((prev) => ({ ...prev, action: index }));
-            let response;
+            let response: YapResponse;
             if (action.type === "request") {
                // normal request
                response = await normalRequest(action, context.config);
             } else if (action.type === "polling") {
                // polling request
                response = await pollingRequest(action, context.config);
+            } else {
+               return false;
             }
 
             //
@@ -148,7 +176,7 @@ const DemoContent = (props) => {
                },
             }));
             setCurrentRunning((prev) => ({ ...prev, action: null }));
-         } catch (e) {
+         } catch (e: any) {
             isCompleted = false;
             console.log(e);
             // update state actionResults for specific step
@@ -185,7 +213,7 @@ const DemoContent = (props) => {
       for (let [i, postCheck] of postCheckList.entries()) {
          // clear old result
          setPostCheckResults((prev) => {
-            if (prev[props.currentStep.name]) delete prev[props.currentStep.name][index];
+            if (prev[props.currentStep.name]) delete prev[props.currentStep.name]![index];
             return prev;
          });
 
@@ -193,13 +221,15 @@ const DemoContent = (props) => {
          try {
             // SET current running state before start.
             setCurrentRunning((prev) => ({ ...prev, postCheck: index }));
-            let response;
+            let response: YapResponse;
             if (postCheck.type === "request") {
                // normal request
                response = await normalRequest(postCheck, context.config);
             } else if (postCheck.type === "polling") {
                // polling request
                response = await pollingRequest(postCheck, context.config);
+            } else {
+               return false;
             }
 
             //
@@ -213,7 +243,7 @@ const DemoContent = (props) => {
                },
             }));
             setCurrentRunning((prev) => ({ ...prev, postCheck: null }));
-         } catch (e) {
+         } catch (e: any) {
             isCompleted = false;
             console.log(e);
             // update state postCheckResults for specific step
@@ -271,7 +301,7 @@ const DemoContent = (props) => {
    }, [props.currentStep.name]);
 
    useEffect(() => {
-      const savedState = JSON.parse(window.localStorage.getItem("mainContentState"));
+      const savedState = JSON.parse(window.localStorage.getItem("mainContentState") as string);
       dispatch({ type: "registerClearStateFunction", payload: { key: "demoContent", func: clearStateHandler } });
       // load config from localStorage if exist
       if (savedState) {
@@ -288,6 +318,7 @@ const DemoContent = (props) => {
    }, []);
 
    useDidUpdateEffect(() => {
+      if (!props.currentStep.name) return;
       // saveStateToLocalStorage
       window.localStorage.setItem(
          "mainContentState",
@@ -298,35 +329,35 @@ const DemoContent = (props) => {
             isPreCheckCompleted,
             isActionCompleted,
             isPostCheckCompleted,
-         }),
+         })
       );
-      let isAllPreCheckCompleted = undefined;
-      let isAllActionCompleted = undefined;
-      let isAllPostCheckCompleted = undefined;
+      let isAllPreCheckCompleted: boolean | undefined = undefined;
+      let isAllActionCompleted: boolean | undefined = undefined;
+      let isAllPostCheckCompleted: boolean | undefined = undefined;
       // try to update sidebar status foreach step
       if (preCheckResults[props.currentStep.name]) {
-         let _preCheckResults = Object.values(preCheckResults[props.currentStep.name]);
+         let _preCheckResults = Object.values(preCheckResults[props.currentStep.name] || {});
          if (_preCheckResults.length === props.currentStepDetails.preCheck.length)
             isAllPreCheckCompleted = _preCheckResults.every((el) => el.success);
       }
       if (actionResults[props.currentStep.name]) {
-         let _actionResults = Object.values(actionResults[props.currentStep.name]);
+         let _actionResults = Object.values(actionResults[props.currentStep.name] || {});
          if (_actionResults.length === props.currentStepDetails.actions.length)
             isAllActionCompleted = _actionResults.every((el) => el.success);
       }
       if (postCheckResults[props.currentStep.name]) {
-         let _postCheckResults = Object.values(postCheckResults[props.currentStep.name]);
+         let _postCheckResults = Object.values(postCheckResults[props.currentStep.name] || {});
          if (_postCheckResults.length === props.currentStepDetails.postCheck.length)
             isAllPostCheckCompleted = _postCheckResults.every((el) => el.success);
       }
 
       // set status on section bar
       if (isAllPreCheckCompleted !== undefined)
-         setIsPreCheckCompleted((prev) => ({ ...prev, [props.currentStep.name]: isAllPreCheckCompleted }));
+         setIsPreCheckCompleted((prev) => ({ ...prev, [props.currentStep.name!]: isAllPreCheckCompleted! }));
       if (isAllActionCompleted !== undefined)
-         setIsActionCompleted((prev) => ({ ...prev, [props.currentStep.name]: isAllActionCompleted }));
+         setIsActionCompleted((prev) => ({ ...prev, [props.currentStep.name!]: isAllActionCompleted! }));
       if (isAllPostCheckCompleted !== undefined)
-         setIsPostCheckCompleted((prev) => ({ ...prev, [props.currentStep.name]: isAllPostCheckCompleted }));
+         setIsPostCheckCompleted((prev) => ({ ...prev, [props.currentStep.name!]: isAllPostCheckCompleted! }));
 
       // set globalContext status on sidebar
       if (props.currentStepDetails.preCheck.length === 0) isAllPreCheckCompleted = true;
@@ -356,10 +387,10 @@ const DemoContent = (props) => {
                <div className="d-flex align-items-center demo-content-actions">
                   <div
                      title="run all"
-                     type="button"
-                     className="demo-content-action text-primary"
+                     className={`demo-content-action text-primary pointer ${
+                        Object.values(currentRunning).some((el) => el !== null) ? "disabled" : ""
+                     }`}
                      onClick={startWorkflowHandler}
-                     disabled={Object.values(currentRunning).some((el) => el !== null)}
                   >
                      {Object.values(currentRunning).some((el) => el !== null) ? (
                         <i className="fas fa-spinner fa-spin" />
@@ -369,8 +400,7 @@ const DemoContent = (props) => {
                   </div>
                   <div
                      title="show preface"
-                     type="button"
-                     className="demo-content-action"
+                     className="demo-content-action pointer"
                      onClick={() => setShowOffCanvas(!showOffCanvas)}
                   >
                      <i className="fal fa-bars" />
@@ -378,11 +408,13 @@ const DemoContent = (props) => {
                </div>
             </div>
             <div className="my-2 me-3">
-               <ReactMarkdown
-                  children={description}
-                  // @ts-ignore
-                  rehypePlugins={[rehypeRaw]}
-               />
+               {description && (
+                  <ReactMarkdown
+                     children={description}
+                     // @ts-ignore
+                     rehypePlugins={[rehypeRaw]}
+                  />
+               )}
             </div>
             {context.mode === "edit" && (
                <div className="d-flex">
@@ -419,7 +451,8 @@ const DemoContent = (props) => {
                   ) : (
                      <>
                         {preCheckResults[props.currentStep.name] !== undefined &&
-                        Object.values(preCheckResults[props.currentStep.name]).filter((e) => e.success === false).length > 0 ? (
+                        Object.values(preCheckResults[props.currentStep.name] || {}).filter((e) => e.success === false).length >
+                           0 ? (
                            <i className="fad fa-exclamation-circle m-2 text-danger" />
                         ) : null}
                      </>
@@ -438,7 +471,7 @@ const DemoContent = (props) => {
                            className="text-info font-sm text-hover-highlight pointer"
                            onClick={(e) => {
                               e.stopPropagation();
-                              setModal({ modalShow: true, modalContentType: "preCheck" });
+                              setModal({ modalShow: true, modalContentType: "preCheck", paramValues: null });
                            }}
                         >
                            Add
@@ -470,7 +503,8 @@ const DemoContent = (props) => {
                   ) : (
                      <>
                         {actionResults[props.currentStep.name] !== undefined &&
-                        Object.values(actionResults[props.currentStep.name]).filter((e) => e.success === false).length > 0 ? (
+                        Object.values(actionResults[props.currentStep.name] || {}).filter((e) => e.success === false).length >
+                           0 ? (
                            <i className="fad fa-exclamation-circle m-2 text-danger" />
                         ) : null}
                      </>
@@ -488,7 +522,7 @@ const DemoContent = (props) => {
                         className="text-info font-sm text-hover-highlight pointer"
                         onClick={(e) => {
                            e.stopPropagation();
-                           setModal({ modalShow: true, modalContentType: "action" });
+                           setModal({ modalShow: true, modalContentType: "action", paramValues: null });
                         }}
                      >
                         Add
@@ -537,7 +571,7 @@ const DemoContent = (props) => {
                         className="text-info font-sm text-hover-highlight pointer"
                         onClick={(e) => {
                            e.stopPropagation();
-                           setModal({ modalShow: true, modalContentType: "postCheck" });
+                           setModal({ modalShow: true, modalContentType: "postCheck", paramValues: null });
                         }}
                      >
                         Add
@@ -597,7 +631,7 @@ const DemoContent = (props) => {
             <ModalContentSelector
                onHide={() => setModal({ modalShow: false, modalContentType: null, paramValues: null })}
                initValue={modal.paramValues}
-               contentType={modal.modalContentType}
+               contentType={modal.modalContentType as string}
             />
          </Modal>
          {/* OFFCANVAS */}

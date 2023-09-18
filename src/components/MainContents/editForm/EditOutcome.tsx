@@ -351,7 +351,7 @@ const AddCommandForm = (props: AddCommandFormProps) => {
 };
 
 const AddNodeForm = (props: AddNodeFormProps) => {
-   const [input, setInput] = useState({ id: "", label: "", type: "default", width: "30", height: "30", highlight: false });
+   const [input, setInput] = useState({ id: "", label: "", type: "default", width: "50", height: "50", highlight: false });
    const [commands, setCommands] = useState<OutcomeCommandType[]>([]);
    const [enableCommand, setEnableCommand] = useState(false);
 
@@ -372,7 +372,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
    };
 
    const clearInputbox = () => {
-      setInput({ id: "", label: "", type: "default", width: "30", height: "30", highlight: false });
+      setInput({ id: "", label: "", type: "default", width: "50", height: "50", highlight: false });
       setEnableCommand(false);
    };
 

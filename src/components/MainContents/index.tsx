@@ -2,6 +2,11 @@ import { useGlobalContext } from "../contexts/ContextProvider";
 import Preface from "./Preface/Preface";
 import DemoContent from "./DemoContent/DemoContent";
 
+type currentStep = {
+   name: string;
+   label: string;
+};
+
 const MainContents = () => {
    const { context } = useGlobalContext();
    const currentStepDetails =
@@ -15,7 +20,7 @@ const MainContents = () => {
             {!context.currentStep.name ? (
                <Preface config={context.config.preface} prefaceRef={0} />
             ) : (
-               <DemoContent currentStep={context.currentStep} currentStepDetails={currentStepDetails} />
+               <DemoContent currentStep={context.currentStep as currentStep} currentStepDetails={currentStepDetails} />
             )}
          </div>
       </div>

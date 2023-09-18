@@ -14,11 +14,11 @@ type ModalContentSelectorProps = {
 const ModalContentSelector = (props: ModalContentSelectorProps) => {
    const { contentType } = props;
    if (contentType === "preCheck") {
-      return <ActionForm {...props} tab={"preCheck"} />;
+      return <ActionForm {...props} tab="preCheck" />;
    } else if (contentType === "action") {
-      return <ActionForm {...props} tab={"actions"} />;
+      return <ActionForm {...props} tab="actions" />;
    } else if (contentType === "postCheck") {
-      return <ActionForm {...props} tab={"postCheck"} />;
+      return <ActionForm {...props} tab="postCheck" />;
    } else if (contentType === "actionDeleteConfirm") {
       return <ActionDeleteConfirmation {...props} />;
    } else if (contentType === "editStepDescription") {
