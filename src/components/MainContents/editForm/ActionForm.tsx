@@ -474,7 +474,6 @@ const ActionForm = (props: ActionFormProps) => {
                   {input.displayResponseAs === "text" && (
                      <div className="col-sm-12 col-md-3">
                         <input
-                           required
                            type="text"
                            className="form-control form-control-sm"
                            name="objectPath"
