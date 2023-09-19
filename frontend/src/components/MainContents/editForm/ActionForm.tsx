@@ -4,8 +4,16 @@ import AceEditor from "react-ace";
 import _ from "lodash";
 import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-json";
+import "ace-builds/src-noconflict/mode-text";
 import "ace-builds/src-noconflict/theme-github";
-import { ActionExpectObject, ActionMatchObject, ActionConfig } from "../../contexts/ContextTypes";
+import { ActionExpectObject, ActionMatchObject, ActionConfig, ActionConfigPayloadObject } from "../../contexts/ContextTypes";
+
+type ConfigPayloadProps = {
+   configurePayload: ActionConfigPayloadObject | undefined;
+   setConfigPayload: (c: ActionConfigPayloadObject | undefined) => void;
+   input: ActionConfig;
+   onChangeHandler: (e: any) => void;
+};
 
 type ActionFormProps = {
    onHide: () => void;
@@ -16,11 +24,59 @@ type ActionFormProps = {
 type VariableFormProps = {
    match: ActionMatchObject | undefined;
    setMatch: (m: ActionMatchObject | undefined) => void;
+   input: ActionConfig;
 };
 
 type ExpectFormProps = {
    expect: ActionExpectObject;
    setExpect: (e: ActionExpectObject) => void;
+};
+
+const ConfigPayloadForm = (props: ConfigPayloadProps) => {
+   return (
+      <>
+         <div className="row mb-2">
+            <div className="col-sm-12 col-md-2">DisplayRequestAs</div>
+            <div className="col-sm-12 col-md-3">
+               <select
+                  className="form-select form-select-sm"
+                  name="displayRequestAs"
+                  value={props.configurePayload ? props.configurePayload.displayRequestAs : ""}
+                  onChange={(e) => props.setConfigPayload({ ...props.configurePayload!, [e.target.name]: e.target.value })}
+               >
+                  <option value="json">JSON</option>
+                  <option value="text">PLAIN TEXT</option>
+               </select>
+            </div>
+         </div>
+         <div className="row mb-2">
+            <div className="col-sm-12 col-md-2">DisplayResponseAs</div>
+            <div className="col-sm-12 col-md-3">
+               <select
+                  className="form-select form-select-sm"
+                  name="displayResponseAs"
+                  value={props.configurePayload ? props.configurePayload.displayResponseAs : ""}
+                  onChange={(e) => props.setConfigPayload({ ...props.configurePayload!, [e.target.name]: e.target.value })}
+               >
+                  <option value="json">JSON</option>
+                  <option value="text">PLAIN TEXT</option>
+               </select>
+            </div>
+            {props.input.configurePayload && props.input.configurePayload.displayResponseAs === "text" && (
+               <div className="col-sm-12 col-md-3">
+                  <input
+                     type="text"
+                     className="form-control form-control-sm"
+                     name="objectPath"
+                     placeholder="objectPath"
+                     value={props.input.objectPath}
+                     onChange={(e) => props.onChangeHandler(e)}
+                  />
+               </div>
+            )}
+         </div>
+      </>
+   );
 };
 
 const ExpectForm = (props: ExpectFormProps) => {
@@ -158,7 +214,9 @@ const VariableForm = (props: VariableFormProps) => {
                      className="form-control form-control-sm"
                      type="text"
                      name="objectPath"
-                     required
+                     required={
+                        props.input.configurePayload && props.input.configurePayload.displayRequestAs === "text" ? false : true
+                     }
                      value={props.match ? props.match.objectPath : ""}
                      onChange={(e) => props.setMatch({ ...props.match!, [e.target.name]: e.target.value })}
                   />
@@ -169,7 +227,9 @@ const VariableForm = (props: VariableFormProps) => {
                      className="form-control form-control-sm"
                      type="text"
                      name="regEx"
-                     required
+                     required={
+                        props.input.configurePayload && props.input.configurePayload.displayRequestAs === "text" ? false : true
+                     }
                      value={props.match ? props.match.regEx : ""}
                      onChange={(e) => props.setMatch({ ...props.match!, [e.target.name]: e.target.value })}
                   />
@@ -191,7 +251,9 @@ const VariableForm = (props: VariableFormProps) => {
                      className="form-control form-control-sm"
                      type="number"
                      name="matchGroup"
-                     required
+                     required={
+                        props.input.configurePayload && props.input.configurePayload.displayRequestAs === "text" ? false : true
+                     }
                      value={props.match ? props.match.matchGroup : 0}
                      onChange={(e) => props.setMatch({ ...props.match!, [e.target.name]: parseInt(e.target.value) })}
                   />
@@ -213,7 +275,7 @@ const ActionForm = (props: ActionFormProps) => {
       description: "",
       url: "",
       method: "get",
-      displayResponseAs: "json",
+      configurePayload: undefined,
       objectPath: "",
       expect: [],
       data: undefined,
@@ -222,6 +284,14 @@ const ActionForm = (props: ActionFormProps) => {
       match: undefined,
    });
    const [isPayloadValid, setIsPayloadValid] = useState(true);
+
+   const setConfigPayload = (val: ActionConfigPayloadObject | undefined) => {
+      if (!val) {
+         setInput((prev) => ({ ...prev, configurePayload: undefined }));
+         return;
+      }
+      setInput((prev) => ({ ...prev, configurePayload: val }));
+   };
 
    const setExpect = (val: ActionExpectObject) => {
       setInput((prev) => ({ ...prev, expect: val }));
@@ -267,7 +337,10 @@ const ActionForm = (props: ActionFormProps) => {
       }
 
       try {
-         let data = JSON.parse(value);
+         let data =
+            input.configurePayload?.displayRequestAs === "text"
+               ? `${typeof value === "string" ? value : JSON.stringify(value)}`
+               : JSON.parse(value);
          setInput({ ...input, data });
          setIsPayloadValid(true);
       } catch (e) {
@@ -459,35 +532,15 @@ const ActionForm = (props: ActionFormProps) => {
                      />
                   </div>
                </div>
-               <div className="row mb-2">
-                  <div className="col-sm-12 col-md-2">DisplayResponseAs</div>
-                  <div className="col-sm-12 col-md-3">
-                     <select
-                        className="form-select form-select-sm"
-                        name="displayResponseAs"
-                        value={input.displayResponseAs}
-                        onChange={onChangeHandler}
-                     >
-                        <option value="json">JSON</option>
-                        <option value="text">PLAIN TEXT</option>
-                     </select>
-                  </div>
-                  {input.displayResponseAs === "text" && (
-                     <div className="col-sm-12 col-md-3">
-                        <input
-                           type="text"
-                           className="form-control form-control-sm"
-                           name="objectPath"
-                           placeholder="objectPath"
-                           value={input.objectPath}
-                           onChange={onChangeHandler}
-                        />
-                     </div>
-                  )}
-               </div>
 
+               <ConfigPayloadForm
+                  configurePayload={input.configurePayload}
+                  setConfigPayload={setConfigPayload}
+                  input={input}
+                  onChangeHandler={onChangeHandler}
+               />
                <ExpectForm expect={input.expect!} setExpect={setExpect} />
-               <VariableForm match={input.match} setMatch={setMatchObject} />
+               <VariableForm match={input.match} setMatch={setMatchObject} input={input} />
                <div className="row">
                   <div className="col">
                      <div>
@@ -495,11 +548,15 @@ const ActionForm = (props: ActionFormProps) => {
                         {!isPayloadValid ? "invalid JSON" : ""}
                      </div>
                      <AceEditor
-                        mode="json"
+                        mode={input.configurePayload?.displayRequestAs === "text" ? "text" : "json"}
                         theme="github"
                         height="300px"
                         width="100%"
-                        value={JSON.stringify(input.data, null, 4)}
+                        value={
+                           input.configurePayload?.displayRequestAs === "text" && typeof input.data === "string"
+                              ? `${input.data === undefined ? "" : input.data}`
+                              : JSON.stringify(input.data, null, 4)
+                        }
                         onChange={handlePayloadChange}
                         name="data"
                         className="rounded border"

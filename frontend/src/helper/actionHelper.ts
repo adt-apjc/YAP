@@ -43,7 +43,10 @@ const validateExpect = (expect: ActionExpectObject, response: AxiosResponse) => 
 const processMatchResponse = (actionObject: ActionConfig, response: AxiosResponse) => {
    if (actionObject.match) {
       let { objectPath, regEx, storeAs, matchGroup } = actionObject.match;
-      let targetValue = getStringFromObject(response.data, objectPath);
+      let targetValue =
+         actionObject.configurePayload?.displayResponseAs === "text"
+            ? response.data
+            : getStringFromObject(response.data, objectPath);
       // If RegEx configured
       let re = new RegExp(regEx);
       let matchedValue = targetValue.match(re);
@@ -52,6 +55,9 @@ const processMatchResponse = (actionObject: ActionConfig, response: AxiosRespons
          let group = matchGroup ? parseInt(matchGroup) : 0;
          sessionStorage.setItem(storeAs, matchedValue[group]);
          console.log("DEBUG:", matchedValue[group], "store as", storeAs);
+      } else {
+         sessionStorage.setItem(storeAs, matchedValue);
+         console.log("DEBUG:", matchedValue, "store as", storeAs);
       }
    }
 };

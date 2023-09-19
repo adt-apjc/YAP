@@ -36,13 +36,17 @@ export const PostCheckDetail = (props: PostCheckDetailProps) => {
       props.request && props.request.data ? (
          <div className="p-2">
             payload
-            <ReactJson value={props.request.data} collapsed={4} />
+            {props.request.configurePayload?.displayRequestAs === "text" ? (
+               <div>{typeof props.request.data === "string" ? props.request.data : JSON.stringify(props.request.data)}</div>
+            ) : (
+               <ReactJson value={props.request.data} collapsed={4} />
+            )}
          </div>
       ) : (
          ""
       );
 
-   if (props.request && props.request.displayResponseAs === "text") {
+   if (props.request && props.request.configurePayload?.displayResponseAs === "text") {
       responseViewer = props.response ? (
          <pre className="p-2">{getStringFromObject(props.response.data, props.request.objectPath)}</pre>
       ) : (
