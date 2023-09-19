@@ -3,7 +3,7 @@ version: "3.7"
 services:
    yap:
       build:
-         context: .
+         context: ./frontend
       ports:
          - 4000:3000
       restart: always

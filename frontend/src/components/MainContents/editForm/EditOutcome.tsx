@@ -7,19 +7,19 @@ import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-github";
 import _ from "lodash";
 import { NODE_APPEARANCE_OPTIONS } from "../../contexts/Utility";
-import { OutcomeCommandType, OutcomeType } from "../../contexts/ContextTypes";
+import { OutcomeCommandConfig, OutcomeConfig } from "../../contexts/ContextTypes";
 import cytoscape from "cytoscape";
 
 type EditOutcomeProps = {
    onHide: () => void;
-   initValue: OutcomeType[];
+   initValue: OutcomeConfig[];
 };
 
 type OutcomeSelectedElem = {
    data: any;
    style: cytoscape.CssStyleDeclaration;
    classes: string[];
-   commands: OutcomeCommandType[];
+   commands: OutcomeCommandConfig[];
 };
 
 type AddNodeParams = {
@@ -30,7 +30,7 @@ type AddNodeParams = {
       height: string;
    };
    classes: string;
-   commands?: OutcomeCommandType[];
+   commands?: OutcomeCommandConfig[];
 };
 
 type AddEdgeParams = {
@@ -61,8 +61,8 @@ type AddCommandFormProps = {
    nodeId: string;
    enableCommand: boolean;
    setEnableCommand: React.Dispatch<React.SetStateAction<boolean>>;
-   commands: OutcomeCommandType[];
-   setCommands: React.Dispatch<React.SetStateAction<OutcomeCommandType[]>>;
+   commands: OutcomeCommandConfig[];
+   setCommands: React.Dispatch<React.SetStateAction<OutcomeCommandConfig[]>>;
 };
 
 const AddCommandForm = (props: AddCommandFormProps) => {
@@ -75,7 +75,7 @@ const AddCommandForm = (props: AddCommandFormProps) => {
       if (!selectedCommandIndex) return;
 
       let newCommands = _.cloneDeep(props.commands);
-      newCommands[selectedCommandIndex][e.target.name as keyof OutcomeCommandType] = e.target.value;
+      newCommands[selectedCommandIndex][e.target.name as keyof OutcomeCommandConfig] = e.target.value;
       props.setCommands(newCommands);
    };
 
@@ -352,7 +352,7 @@ const AddCommandForm = (props: AddCommandFormProps) => {
 
 const AddNodeForm = (props: AddNodeFormProps) => {
    const [input, setInput] = useState({ id: "", label: "", type: "default", width: "50", height: "50", highlight: false });
-   const [commands, setCommands] = useState<OutcomeCommandType[]>([]);
+   const [commands, setCommands] = useState<OutcomeCommandConfig[]>([]);
    const [enableCommand, setEnableCommand] = useState(false);
 
    const renderAppearanceOptions = () => {

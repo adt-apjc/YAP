@@ -7,7 +7,7 @@ import { useDidUpdateEffect } from "./CustomHooks";
 
 const GlobalContext = React.createContext<TYPE.ContextType | null>(null);
 
-let initState: TYPE.ContextStateType = {
+let initState: TYPE.ContextState = {
    currentStep: config.preface ? { name: null, label: null } : { ...config.sidebar[0] },
    runningStatus: null,
    clearStateFunction: {},
@@ -16,7 +16,7 @@ let initState: TYPE.ContextStateType = {
 };
 
 function addAction(
-   state: TYPE.ContextStateType,
+   state: TYPE.ContextState,
    payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any }
 ) {
    let clonedState = _.cloneDeep(state);
@@ -36,7 +36,7 @@ function addAction(
 }
 
 function deleteAction(
-   state: TYPE.ContextStateType,
+   state: TYPE.ContextState,
    payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" }
 ) {
    let clonedState = _.cloneDeep(state);
@@ -44,7 +44,7 @@ function deleteAction(
    return clonedState;
 }
 
-function addStep(state: TYPE.ContextStateType, payload: { name: string }) {
+function addStep(state: TYPE.ContextState, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
    let newStepName = `Step_${clonedState.config.sidebar.length + 1}`;
    clonedState.config.sidebar.push({ name: newStepName, label: payload.name });
@@ -57,7 +57,7 @@ function addStep(state: TYPE.ContextStateType, payload: { name: string }) {
    };
    return clonedState;
 }
-function deleteStep(state: TYPE.ContextStateType, payload: { name: string }) {
+function deleteStep(state: TYPE.ContextState, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
    clonedState.config.sidebar = clonedState.config.sidebar.filter((el: any) => el.name !== payload.name);
    delete clonedState.config.mainContent[payload.name];
@@ -68,7 +68,7 @@ function deleteStep(state: TYPE.ContextStateType, payload: { name: string }) {
    }
 }
 function addEndpoint(
-   state: TYPE.ContextStateType,
+   state: TYPE.ContextState,
    payload: { name: string; baseURL: string; headerList: { key: any; value: any }[] }
 ) {
    let clonedState = _.cloneDeep(state);
@@ -81,12 +81,12 @@ function addEndpoint(
    };
    return clonedState;
 }
-function deleteEndpoint(state: TYPE.ContextStateType, payload: { name: string }) {
+function deleteEndpoint(state: TYPE.ContextState, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
    delete clonedState.config.endpoints[payload.name];
    return clonedState;
 }
-function addStaticVar(state: TYPE.ContextStateType, payload: { name: string; val: any }) {
+function addStaticVar(state: TYPE.ContextState, payload: { name: string; val: any }) {
    let clonedState = _.cloneDeep(state);
    clonedState.config.staticVariables = {
       ...clonedState.config.staticVariables,
@@ -94,13 +94,13 @@ function addStaticVar(state: TYPE.ContextStateType, payload: { name: string; val
    };
    return clonedState;
 }
-function deleteStaticVar(state: TYPE.ContextStateType, payload: { name: string }) {
+function deleteStaticVar(state: TYPE.ContextState, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
    delete clonedState.config.staticVariables[payload.name];
    return clonedState;
 }
 
-function globalContextreducer(state: TYPE.ContextStateType, action: TYPE.ContextActionType) {
+function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextAction) {
    switch (action.type) {
       case "setCurrentStep":
          return { ...state, currentStep: { ...action.payload } };

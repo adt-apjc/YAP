@@ -1,4 +1,4 @@
-import { ActionType, StaticVariables } from "./ContextTypes";
+import { ActionConfig, StaticVariables } from "./ContextTypes";
 
 type VarDetails = {
    key: string;
@@ -19,7 +19,7 @@ export const getStringFromObject = (obj: any, path: string | undefined) => {
    }
 };
 
-export const getVariableDetails = (request: ActionType): VarDetails => {
+export const getVariableDetails = (request: ActionConfig): VarDetails => {
    // A YAP variable may come from a storeAs statement, a URL and potentially a body statement
 
    const variables = new Set<string>(); // using set to avoid to duplicate the variable string in the returned array of objects

@@ -6,12 +6,12 @@ import ModalContentSelector from "../editForm/ModalContentSelector";
 import RunButtonComponent from "../RunButtonComponent";
 import WithInfoPopup from "../../Popper/InfoPopper";
 import { getStringFromObject, getVariableDetails, checkStaticVarIfUsed } from "../../contexts/Utility";
-import { ActionType, StepDetailsType } from "../../contexts/ContextTypes";
+import { ActionConfig, StepDetails } from "../../contexts/ContextTypes";
 import { APIResponse } from "../../../helper/apiAction";
 
 type ActionDetailProps = {
    show: boolean;
-   request: ActionType;
+   request: ActionConfig;
    response: APIResponse | null;
 };
 
@@ -22,7 +22,7 @@ type Results = {
 type ActionsProps = {
    show: boolean;
    currentRunning: number | null;
-   currentStepDetails: StepDetailsType;
+   currentStepDetails: StepDetails;
    results: Results | undefined;
    workflowHandler: (index?: number) => any;
 };

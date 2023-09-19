@@ -4,17 +4,17 @@ import { Modal } from "../../../helper/modalHelper";
 import { normalRequest, pollingRequest } from "../../../helper/actionHelper";
 import { PostCheckDetail } from "./PostCheck";
 import TopologyWrapper from "../TopologyWrapper";
-import { ActionType, OutcomeCommandType, OutcomeType, StepDetailsType } from "../../contexts/ContextTypes";
+import { ActionConfig, OutcomeCommandConfig, OutcomeConfig, StepDetails } from "../../contexts/ContextTypes";
 import cytoscape from "cytoscape";
 import { AxiosResponse } from "axios";
 
 type CommandModalProps = {
-   outcomeConfig: OutcomeType;
+   outcomeConfig: OutcomeConfig;
    selectedElementData: any;
 };
 
 type OutcomeProps = {
-   currentStepDetails: StepDetailsType;
+   currentStepDetails: StepDetails;
    sectionExpand: { preCheck: boolean; action: boolean; postCheck: boolean; outcome: boolean };
 };
 
@@ -24,7 +24,7 @@ const CommandModal = (props: CommandModalProps) => {
    const { context } = useGlobalContext();
    const [isRunning, setIsRunning] = useState(false);
    const [cmdResults, setCmdResults] = useState<APIResponse | null>(null);
-   const [action, setAction] = useState<OutcomeCommandType | null>(null);
+   const [action, setAction] = useState<OutcomeCommandConfig | null>(null);
 
    const handleRunCommand = async () => {
       setIsRunning(true);
@@ -32,10 +32,10 @@ const CommandModal = (props: CommandModalProps) => {
          let response: APIResponse | null = null;
          if (action && action.type === "request") {
             // normal request
-            response = await normalRequest(action as ActionType, context.config);
+            response = await normalRequest(action as ActionConfig, context.config);
          } else if (action && action.type === "polling") {
             // polling request
-            response = await pollingRequest(action as ActionType, context.config);
+            response = await pollingRequest(action as ActionConfig, context.config);
          }
          // update state actionResults for specific step
          setIsRunning(false);
@@ -86,7 +86,7 @@ const CommandModal = (props: CommandModalProps) => {
             </button>
          </div>
          {action !== null && (
-            <PostCheckDetail show={cmdResults ? true : false} response={cmdResults} request={action as ActionType} />
+            <PostCheckDetail show={cmdResults ? true : false} response={cmdResults} request={action as ActionConfig} />
          )}
       </div>
    );

@@ -5,11 +5,11 @@ import _ from "lodash";
 import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-github";
-import { ActionExpectObject, ActionMatchObject, ActionType } from "../../contexts/ContextTypes";
+import { ActionExpectObject, ActionMatchObject, ActionConfig } from "../../contexts/ContextTypes";
 
 type ActionFormProps = {
    onHide: () => void;
-   initValue: { action: ActionType; actionIndex: number } | null;
+   initValue: { action: ActionConfig; actionIndex: number } | null;
    tab: "preCheck" | "actions" | "postCheck";
 };
 
@@ -204,7 +204,7 @@ const VariableForm = (props: VariableFormProps) => {
 
 const ActionForm = (props: ActionFormProps) => {
    const { context, dispatch } = useGlobalContext();
-   const [input, setInput] = useState<ActionType>({
+   const [input, setInput] = useState<ActionConfig>({
       type: "request",
       useEndpoint: "",
       header: "",

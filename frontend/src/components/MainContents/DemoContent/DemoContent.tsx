@@ -12,7 +12,7 @@ import RunButtonComponent from "../RunButtonComponent";
 import OffCanvas from "../../OffCanvas/OffCanvas";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
-import { StepDetailsType } from "../../contexts/ContextTypes";
+import { StepDetails } from "../../contexts/ContextTypes";
 import { APIResponse } from "../../../helper/apiAction";
 
 type StepResult = {
@@ -25,7 +25,7 @@ type StepComplete = {
 
 type DemoContentProps = {
    currentStep: { name: string; label: string };
-   currentStepDetails: StepDetailsType;
+   currentStepDetails: StepDetails;
 };
 
 const DemoContent = (props: DemoContentProps) => {

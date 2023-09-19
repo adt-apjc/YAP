@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { ActionExpectObject, ActionType, StaticVariables, config } from "../components/contexts/ContextTypes";
+import { ActionExpectObject, ActionConfig, StaticVariables, config } from "../components/contexts/ContextTypes";
 import { APIResponse } from "./apiAction";
 
 const validateExpect = (expect: ActionExpectObject, response: AxiosResponse) => {
@@ -40,7 +40,7 @@ const validateExpect = (expect: ActionExpectObject, response: AxiosResponse) => 
    return { expectCriteriaMet: true, failureCause };
 };
 
-const processMatchResponse = (actionObject: ActionType, response: AxiosResponse) => {
+const processMatchResponse = (actionObject: ActionConfig, response: AxiosResponse) => {
    if (actionObject.match) {
       let { objectPath, regEx, storeAs, matchGroup } = actionObject.match;
       let targetValue = getStringFromObject(response.data, objectPath);
@@ -110,7 +110,7 @@ const replaceStrWithParams = (text: any, staticVariables: StaticVariables) => {
    return text;
 };
 
-export const normalRequest = (actionObject: ActionType, { endpoints, staticVariables }: config): Promise<APIResponse> => {
+export const normalRequest = (actionObject: ActionConfig, { endpoints, staticVariables }: config): Promise<APIResponse> => {
    if (!("expect" in actionObject)) {
       actionObject.expect = [];
    }
@@ -163,7 +163,7 @@ export const normalRequest = (actionObject: ActionType, { endpoints, staticVaria
    });
 };
 
-export const pollingRequest = (actionObject: ActionType, { endpoints, staticVariables }: config): Promise<APIResponse> => {
+export const pollingRequest = (actionObject: ActionConfig, { endpoints, staticVariables }: config): Promise<APIResponse> => {
    let interval = actionObject.interval ? parseInt(actionObject.interval) : 5000;
    let maxRetry = actionObject.maxRetry ? parseInt(actionObject.maxRetry) : 10;
    if (!("expect" in actionObject)) {

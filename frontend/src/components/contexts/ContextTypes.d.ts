@@ -1,7 +1,7 @@
 import cytoscape from "cytoscape";
 import Outcome from "../MainContents/DemoContent/Outcome";
 
-export type ContextActionType =
+export type ContextAction =
    | { type: "setCurrentStep"; payload: { name: string | null; label: string | null } }
    | { type: "toggleMode" }
    | { type: "setRunningStatus"; payload?: { step: string; status: "success" | "fail" | "running" | "" } }
@@ -25,20 +25,20 @@ export type ContextActionType =
    | { type: "clearConfig" }
    | { type: "newConfig" };
 
-export type OutcomeType = {
+export type OutcomeConfig = {
    summaryText?: string;
    elements?: { nodes: cytoscape.ElementDefinition[]; edges: cytoscape.ElementDefinition[] };
-   commands?: { [key: string]: OutcomeCommandType[] };
+   commands?: { [key: string]: OutcomeCommandConfig[] };
 };
 
-export type EndpointType = {
+export type EndpointConfig = {
    baseURL: string;
    headers?: { [key: string]: string };
    username?: string;
    password?: string;
 };
 
-export type OutcomeCommandType = {
+export type OutcomeCommandConfig = {
    type: string;
    title: string;
    useEndpoint: string;
@@ -54,7 +54,7 @@ export type OutcomeCommandType = {
 export type ActionExpectObject = { type: string; value: any }[];
 export type ActionMatchObject = { objectPath: string; regEx: string; matchGroup: string; storeAs: string };
 
-export type ActionType = {
+export type ActionConfig = {
    type: string;
    title: string;
    useEndpoint: string;
@@ -79,14 +79,14 @@ export type PrefaceConfig = {
    bodyMarkdown: string;
 };
 
-export type StepDetailsType = {
+export type StepDetails = {
    description?: string;
    prefaceRef?: number;
    continueOnFail: boolean;
-   preCheck: ActionType[];
-   actions: ActionType[];
-   postCheck: ActionType[];
-   outcome?: OutcomeType[];
+   preCheck: ActionConfig[];
+   actions: ActionConfig[];
+   postCheck: ActionConfig[];
+   outcome?: OutcomeConfig[];
 };
 
 export type StaticVariables = { [key: string]: string };
@@ -103,15 +103,15 @@ export type config = {
    };
    preface: PrefaceConfig[];
    endpoints: {
-      [name: string]: EndpointType;
+      [name: string]: EndpointConfig;
    };
    staticVariables: StaticVariables;
    mainContent: {
-      [step: string]: StepDetailsType;
+      [step: string]: StepDetails;
    };
 };
 
-export type ContextStateType = {
+export type ContextState = {
    currentStep: { name: string | null; label: string | null };
    runningStatus: { [k: string]: "success" | "fail" | "running" | "" } | null;
    clearStateFunction: { [k: string]: () => void } | null;
@@ -119,4 +119,4 @@ export type ContextStateType = {
    mode: "presentation" | "edit";
 };
 
-export type ContextType = { state: ContextStateType; dispatch: React.Dispatch<ContextActionType> };
+export type ContextType = { state: ContextState; dispatch: React.Dispatch<ContextAction> };

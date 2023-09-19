@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
-import { EndpointType } from "../../contexts/ContextTypes";
+import { EndpointConfig } from "../../contexts/ContextTypes";
 
 type EndpointViewerProps = {
-   onSelect: (endpoint: { name: string } & EndpointType) => void;
+   onSelect: (endpoint: { name: string } & EndpointConfig) => void;
 };
 type EndpointEditorProps = {
-   initValue: ({ name: string } & EndpointType) | null;
+   initValue: ({ name: string } & EndpointConfig) | null;
    onClose: () => void;
 };
 
-type EndpointState = ({ name: string } & EndpointType) | null;
+type EndpointState = ({ name: string } & EndpointConfig) | null;
 
 type EndpointEditorState = { input: { name: string; baseURL: string }; inputHeader: { key: any; value: any }[] };
 
@@ -145,7 +145,7 @@ const EndpointViewer = (props: EndpointViewerProps) => {
    const { context, dispatch } = useGlobalContext();
    const [showDeleteList, setShowDeleteList] = useState<number[]>([]);
 
-   const onSelectHandler = (name: string, endpoint: EndpointType) => {
+   const onSelectHandler = (name: string, endpoint: EndpointConfig) => {
       props.onSelect({ name: name, baseURL: endpoint.baseURL, headers: endpoint.headers });
    };
 

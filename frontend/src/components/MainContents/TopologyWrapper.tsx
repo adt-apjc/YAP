@@ -4,12 +4,12 @@ import CytoscapeComponent from "react-cytoscapejs";
 import { stylesheet } from "./cytoscapeStyle";
 import _ from "lodash";
 import cytoscape from "cytoscape";
-import { OutcomeType } from "../contexts/ContextTypes";
+import { OutcomeConfig } from "../contexts/ContextTypes";
 
 type TopologyWrapperProps = {
    cy?: (cy: cytoscape.Core) => void;
    onNodeClick: (n: cytoscape.NodeSingular) => void;
-   outcomeConfig: OutcomeType;
+   outcomeConfig: OutcomeConfig;
 };
 
 const TopologyWrapper = (props: TopologyWrapperProps) => {

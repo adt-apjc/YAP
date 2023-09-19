@@ -1,9 +1,9 @@
 import { useGlobalContext } from "../../contexts/ContextProvider";
-import { ActionType } from "../../contexts/ContextTypes";
+import { ActionConfig } from "../../contexts/ContextTypes";
 
 type ActionDeleteConfirmationProps = {
    onHide: () => void;
-   initValue: { action: ActionType; actionIndex: number; tab: "actions" | "preCheck" | "postCheck" };
+   initValue: { action: ActionConfig; actionIndex: number; tab: "actions" | "preCheck" | "postCheck" };
 };
 
 const ActionDeleteConfirmation = (props: ActionDeleteConfirmationProps) => {
