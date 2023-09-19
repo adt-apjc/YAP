@@ -131,7 +131,15 @@ export const normalRequest = (actionObject: ActionConfig, { endpoints, staticVar
 
    return new Promise(async (resolve, reject) => {
       try {
-         const response = await axios(config);
+         let response: AxiosResponse;
+         if (
+            endpoints[actionObject.useEndpoint].backendRequest ||
+            endpoints[actionObject.useEndpoint].backendRequest === undefined
+         ) {
+            response = await axios(config);
+         } else {
+            response = await axios(config);
+         }
          console.log("DEBUG - response from normalRequest", response);
          // process Match response if configured
          processMatchResponse(actionObject, response);
@@ -183,7 +191,7 @@ export const pollingRequest = (actionObject: ActionConfig, { endpoints, staticVa
       config.headers.Authorization =
          "Basic " + btoa(`${endpoints[actionObject.useEndpoint].username}:${endpoints[actionObject.useEndpoint].password}`);
    }
-   let response;
+   let response: AxiosResponse;
    let counterFlag = 1;
    console.log("action", actionObject);
    console.log("axiosConfig", config);
@@ -191,7 +199,14 @@ export const pollingRequest = (actionObject: ActionConfig, { endpoints, staticVa
    return new Promise((resolve, reject) => {
       let timer = setInterval(async () => {
          try {
-            response = await axios(config);
+            if (
+               endpoints[actionObject.useEndpoint].backendRequest ||
+               endpoints[actionObject.useEndpoint].backendRequest === undefined
+            ) {
+               response = await axios(config);
+            } else {
+               response = await axios(config);
+            }
             if (counterFlag <= maxRetry) {
                console.log("polling", counterFlag, response, actionObject.expect);
                // if expect has any condition, we shall validate them before assume a success: true state

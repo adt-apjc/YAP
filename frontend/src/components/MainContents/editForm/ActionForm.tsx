@@ -289,9 +289,10 @@ const ActionForm = (props: ActionFormProps) => {
    };
 
    useEffect(() => {
-      if (!props.initValue) return;
-
-      setInput({ ...input, ...props.initValue.action });
+      setInput((prev) => {
+         if (!props.initValue) return prev;
+         return { ...prev, ...props.initValue.action };
+      });
    }, [props.initValue]);
 
    return (
