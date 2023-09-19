@@ -315,7 +315,6 @@ const ActionForm = (props: ActionFormProps) => {
 
       const { initValue } = props;
       const actionIndex = initValue ? initValue.actionIndex : null;
-      console.log(input);
       let inputCloned = _.cloneDeep(input);
       if (inputCloned.type === "request") {
          inputCloned.maxRetry = undefined;
@@ -368,7 +367,6 @@ const ActionForm = (props: ActionFormProps) => {
       setInput({ ...input, ...props.initValue.action });
    }, [props.initValue]);
 
-   console.log(input.data);
    return (
       <>
          <div className="modal-header">
