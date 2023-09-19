@@ -36,11 +36,10 @@ const CommandModal = (props: CommandModalProps) => {
          } else if (action && action.type === "polling") {
             // polling request
             response = await pollingRequest(action as ActionType, context.config);
-
-            // update state actionResults for specific step
-            setIsRunning(false);
-            setCmdResults(response);
          }
+         // update state actionResults for specific step
+         setIsRunning(false);
+         setCmdResults(response);
       } catch (e: any) {
          console.log(e);
          // update state actionResults for specific step
