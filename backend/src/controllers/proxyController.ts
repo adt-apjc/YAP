@@ -13,7 +13,7 @@ export const proxyController = catchErrorAsync(async (req: Request, res: Respons
    };
    try {
       const response = await axios(config);
-      res.status(200).json(response.data);
+      res.status(response.status).json(response.data);
    } catch (e) {
       if (e.response) res.status(e.response.status).json(e.response.data);
       else res.status(500).json(e.message);

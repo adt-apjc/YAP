@@ -108,7 +108,7 @@ export type config = {
    endpoints: {
       [name: string]: EndpointConfig;
    };
-   staticVariables: StaticVariables;
+   staticVariables?: StaticVariables;
    mainContent: {
       [step: string]: StepDetails;
    };

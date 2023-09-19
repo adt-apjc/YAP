@@ -74,7 +74,7 @@ const getStringFromObject = (obj: any, path: string): string => {
    }
 };
 
-const replaceStrWithParams = (text: any, staticVariables: StaticVariables) => {
+const replaceStrWithParams = (text: any, staticVariables: StaticVariables | undefined) => {
    console.log("DEBUG - replacing params", text);
    let regex = /\{\{[A-Za-z_-]+[A-Za-z_0-9-]*\}\}/g;
    // if text is undefined or null return as it is.
@@ -86,7 +86,7 @@ const replaceStrWithParams = (text: any, staticVariables: StaticVariables) => {
          let replacedText = text;
          for (let varname of match) {
             let stripedVarname = varname.replace(/[{}]/g, "");
-            if (staticVariables[stripedVarname]) {
+            if (staticVariables && staticVariables[stripedVarname]) {
                replacedText = replacedText.replace(varname, staticVariables[stripedVarname]);
             } else {
                replacedText = replacedText.replace(varname, sessionStorage.getItem(stripedVarname) || "VAR_UNDEFINED");
@@ -102,7 +102,7 @@ const replaceStrWithParams = (text: any, staticVariables: StaticVariables) => {
          let replacedText = strText;
          for (let varname of match) {
             let stripedVarname = varname.replace(/[{}]/g, "");
-            if (staticVariables[stripedVarname]) {
+            if (staticVariables && staticVariables[stripedVarname]) {
                replacedText = replacedText.replace(varname, staticVariables[stripedVarname]);
             } else {
                replacedText = replacedText.replace(varname, sessionStorage.getItem(stripedVarname) || "VAR_UNDEFINED");
@@ -142,7 +142,7 @@ export const normalRequest = (actionObject: ActionConfig, { endpoints, staticVar
             endpoints[actionObject.useEndpoint].backendRequest ||
             endpoints[actionObject.useEndpoint].backendRequest === undefined
          ) {
-            response = await axios(config);
+            response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
          } else {
             response = await axios(config);
          }
@@ -209,7 +209,7 @@ export const pollingRequest = (actionObject: ActionConfig, { endpoints, staticVa
                endpoints[actionObject.useEndpoint].backendRequest ||
                endpoints[actionObject.useEndpoint].backendRequest === undefined
             ) {
-               response = await axios(config);
+               response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
             } else {
                response = await axios(config);
             }

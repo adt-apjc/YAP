@@ -83,7 +83,7 @@ const ActionDetail = (props: ActionDetailProps) => {
                                                 <small className="me-3" style={{ minWidth: "90px" }}>
                                                    {item}:
                                                 </small>
-                                                <small>{context.config.staticVariables[item]}</small>
+                                                <small>{context.config.staticVariables![item]}</small>
                                              </div>
                                           );
                                        return null;
@@ -95,7 +95,7 @@ const ActionDetail = (props: ActionDetailProps) => {
                         )}
 
                         {variableDetails.map((item, i) => {
-                           if (!Object.keys(context.config.staticVariables).includes(item.key))
+                           if (!Object.keys(context.config.staticVariables || {}).includes(item.key))
                               return (
                                  <div className="d-flex" key={i}>
                                     <small className="me-3" style={{ minWidth: "90px" }}>

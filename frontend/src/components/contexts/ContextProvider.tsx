@@ -96,7 +96,7 @@ function addStaticVar(state: TYPE.ContextState, payload: { name: string; val: an
 }
 function deleteStaticVar(state: TYPE.ContextState, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
-   delete clonedState.config.staticVariables[payload.name];
+   if (clonedState.config.staticVariables) delete clonedState.config.staticVariables[payload.name];
    return clonedState;
 }
 

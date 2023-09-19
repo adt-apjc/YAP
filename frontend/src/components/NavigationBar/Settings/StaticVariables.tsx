@@ -91,10 +91,10 @@ const StaticVarViewer = (props: StaticVarViewerProps) => {
                <div className="mb-2 col-10">
                   <div
                      className="input-group input-group-sm pointer"
-                     onClick={() => onSelectHandler(varName, context.config.staticVariables[varName])}
+                     onClick={() => onSelectHandler(varName, context.config.staticVariables![varName])}
                   >
                      <div className="form-control col-3">{varName}</div>
-                     <div className="form-control col-9">{context.config.staticVariables[varName]}</div>
+                     <div className="form-control col-9">{context.config.staticVariables![varName]}</div>
                   </div>
                </div>
                <div className="col-2">
