@@ -28,6 +28,12 @@ export const getVariableDetails = (request: ActionConfig): VarDetails => {
    // and will be stored and used in succeding request
 
    if ((request.match || request.match !== undefined) && `${request.match.storeAs}`) variables.add(request.match.storeAs);
+   if (
+      (request.match || request.match !== undefined) &&
+      request.configurePayload?.displayRequestAs === "text" &&
+      `${request.match.storeAs}`
+   )
+      variables.add(request.match.storeAs);
 
    // when user used the variable as params in url i.e "{{}}" to be used in the API request
    // value will be coming from the previous response
