@@ -37,7 +37,7 @@ const PreCheckDetail = (props: PreCheckDetailProps) => {
          <div className="p-2">
             payload
             {props.request.payloadType === "text" ? (
-               <div>{typeof props.request.data === "string" ? props.request.data : JSON.stringify(props.request.data)}</div>
+               <pre>{typeof props.request.data === "string" ? props.request.data : JSON.stringify(props.request.data)}</pre>
             ) : (
                <ReactJson value={props.request.data} collapsed={4} />
             )}

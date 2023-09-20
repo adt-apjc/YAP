@@ -282,6 +282,9 @@ span {
 .text-hover-highlight:hover {
    text-decoration: underline;
 }
+.text-hover-highlight.primary:hover {
+   color: #007cad;
+}
 .icon-hover-highlight:hover {
    opacity: 0.6;
 }

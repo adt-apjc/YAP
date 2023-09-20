@@ -272,12 +272,21 @@ const ActionForm = (props: ActionFormProps) => {
       payloadType: "json",
       objectPath: "",
       expect: [],
-      data: undefined,
       maxRetry: "10",
       interval: "1000",
       match: undefined,
    });
-   const [isPayloadValid, setIsPayloadValid] = useState(true);
+
+   const [dataText, setDataText] = useState("");
+
+   const transformPayloadTextToObject = () => {
+      try {
+         let obj = JSON.parse(dataText);
+         return obj;
+      } catch (err) {
+         return false;
+      }
+   };
 
    const setExpect = (val: ActionExpectObject) => {
       setInput((prev) => ({ ...prev, expect: val }));
@@ -295,13 +304,12 @@ const ActionForm = (props: ActionFormProps) => {
       setInput((prev) => ({ ...prev, match: val }));
    };
 
-   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
       setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
    };
 
    const handleFormSubmit = (e: React.FormEvent) => {
       e.preventDefault();
-      if (!isPayloadValid) return;
 
       const { initValue } = props;
       const actionIndex = initValue ? initValue.actionIndex : null;
@@ -312,28 +320,22 @@ const ActionForm = (props: ActionFormProps) => {
       }
       if (inputCloned.displayResponseAs === "json") inputCloned.objectPath = undefined;
 
-      dispatch({
-         type: "addAction",
-         payload: { stepKey: context.currentStep.name!, tab: props.tab, index: actionIndex, actionObject: inputCloned },
-      });
-      props.onHide();
+      let payload: any;
+      if (inputCloned.payloadType === "text") payload = dataText;
+      else payload = transformPayloadTextToObject();
+      if (payload) {
+         inputCloned.data = payload;
+         dispatch({
+            type: "addAction",
+            payload: { stepKey: context.currentStep.name!, tab: props.tab, index: actionIndex, actionObject: inputCloned },
+         });
+         props.onHide();
+      }
    };
 
-   const handlePayloadChange = (value: string) => {
-      if (value === "") {
-         setInput({ ...input, data: undefined });
-         setIsPayloadValid(true);
-         return;
-      }
-
-      try {
-         let data =
-            input.payloadType === "text" ? `${typeof value === "string" ? value : JSON.stringify(value)}` : JSON.parse(value);
-         setInput({ ...input, data });
-         setIsPayloadValid(true);
-      } catch (e) {
-         setIsPayloadValid(false);
-      }
+   const handleBeautify = () => {
+      let payload = transformPayloadTextToObject();
+      if (payload) setDataText(JSON.stringify(payload, null, 3));
    };
 
    const renderEndpointOptions = () => {
@@ -352,6 +354,12 @@ const ActionForm = (props: ActionFormProps) => {
    useEffect(() => {
       setInput((prev) => {
          if (!props.initValue) return prev;
+         if (props.initValue.action.data)
+            setDataText(
+               typeof props.initValue.action.data === "string"
+                  ? props.initValue.action.data
+                  : JSON.stringify(props.initValue.action.data, null, 3)
+            );
          return { ...prev, ...props.initValue.action };
       });
    }, [props.initValue]);
@@ -376,7 +384,7 @@ const ActionForm = (props: ActionFormProps) => {
                            id="inlineRadio1"
                            value="request"
                            checked={input.type === "request"}
-                           onChange={onChangeHandler}
+                           onChange={handleInputChange}
                         />
                         <label className="form-check-label" htmlFor="inlineRadio1">
                            request
@@ -390,7 +398,7 @@ const ActionForm = (props: ActionFormProps) => {
                            id="inlineRadio2"
                            value="polling"
                            checked={input.type === "polling"}
-                           onChange={onChangeHandler}
+                           onChange={handleInputChange}
                         />
                         <label className="form-check-label" htmlFor="inlineRadio2">
                            polling
@@ -405,7 +413,7 @@ const ActionForm = (props: ActionFormProps) => {
                               <select
                                  className="form-select form-select-sm"
                                  name="useEndpoint"
-                                 onChange={onChangeHandler}
+                                 onChange={handleInputChange}
                                  value={input.useEndpoint}
                                  required
                               >
@@ -426,7 +434,7 @@ const ActionForm = (props: ActionFormProps) => {
                                           name="maxRetry"
                                           placeholder="maxRetry default = 10"
                                           value={input.maxRetry}
-                                          onChange={onChangeHandler}
+                                          onChange={handleInputChange}
                                        />
                                     </div>
                                     <div className="col-6">
@@ -437,7 +445,7 @@ const ActionForm = (props: ActionFormProps) => {
                                           name="interval"
                                           placeholder="Interval default = 5000ms"
                                           value={input.interval}
-                                          onChange={onChangeHandler}
+                                          onChange={handleInputChange}
                                        />
                                     </div>
                                  </div>
@@ -453,7 +461,7 @@ const ActionForm = (props: ActionFormProps) => {
                      className="form-select form-select-sm"
                      name="method"
                      value={input.method}
-                     onChange={onChangeHandler}
+                     onChange={handleInputChange}
                   >
                      <option value="get">GET</option>
                      <option value="post">POST</option>
@@ -468,7 +476,7 @@ const ActionForm = (props: ActionFormProps) => {
                      placeholder="Enter request URL (ex. /your/path)"
                      required
                      value={input.url}
-                     onChange={onChangeHandler}
+                     onChange={handleInputChange}
                   />
                </div>
                <div className="row mb-2">
@@ -480,7 +488,7 @@ const ActionForm = (props: ActionFormProps) => {
                         name="header"
                         placeholder="Header text"
                         value={input.apiBadge}
-                        onChange={onChangeHandler}
+                        onChange={handleInputChange}
                         required
                      />
                   </div>
@@ -492,7 +500,7 @@ const ActionForm = (props: ActionFormProps) => {
                         name="headerColor"
                         placeholder="Header color"
                         value={input.apiBadgeColor}
-                        onChange={onChangeHandler}
+                        onChange={handleInputChange}
                      />
                   </div>
                   <div className="col">
@@ -503,7 +511,7 @@ const ActionForm = (props: ActionFormProps) => {
                         name="title"
                         placeholder="title text"
                         value={input.title}
-                        onChange={onChangeHandler}
+                        onChange={handleInputChange}
                         required
                      />
                   </div>
@@ -516,7 +524,7 @@ const ActionForm = (props: ActionFormProps) => {
                         name="description"
                         placeholder="Description"
                         value={input.description}
-                        onChange={onChangeHandler}
+                        onChange={handleInputChange}
                      />
                   </div>
                </div>
@@ -527,7 +535,7 @@ const ActionForm = (props: ActionFormProps) => {
                         className="form-select form-select-sm"
                         name="displayResponseAs"
                         value={input.displayResponseAs}
-                        onChange={onChangeHandler}
+                        onChange={handleInputChange}
                      >
                         <option value="json">JSON</option>
                         <option value="text">PLAIN TEXT</option>
@@ -541,7 +549,7 @@ const ActionForm = (props: ActionFormProps) => {
                            name="objectPath"
                            placeholder="objectPath"
                            value={input.objectPath}
-                           onChange={onChangeHandler}
+                           onChange={handleInputChange}
                         />
                      </div>
                   )}
@@ -555,18 +563,17 @@ const ActionForm = (props: ActionFormProps) => {
                         <span className="me-2 font-sm">Payload (optional)</span>
                         <span className="me-2 font-sm">type: </span>
                         <PayloadTypeSelector payloadType={input.payloadType || "json"} setPayloadType={setPayloadType} />
+                        <span className="text-hover-highlight primary font-sm ms-auto pointer" onClick={handleBeautify}>
+                           Beautify
+                        </span>
                      </div>
                      <AceEditor
                         mode={input.payloadType === "text" ? "text" : "json"}
                         theme="github"
                         height="300px"
                         width="100%"
-                        value={
-                           input.payloadType === "text" && typeof input.data === "string"
-                              ? `${input.data === undefined ? "" : input.data}`
-                              : JSON.stringify(input.data, null, 4)
-                        }
-                        onChange={handlePayloadChange}
+                        value={dataText}
+                        onChange={setDataText}
                         name="data"
                         className="rounded border"
                         editorProps={{ $blockScrolling: true }}

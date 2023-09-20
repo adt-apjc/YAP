@@ -72,7 +72,7 @@ const AddCommandForm = (props: AddCommandFormProps) => {
    const { context } = useGlobalContext();
 
    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      if (!selectedCommandIndex) return;
+      if (selectedCommandIndex === null) return;
 
       let newCommands = _.cloneDeep(props.commands);
       newCommands[selectedCommandIndex][e.target.name as keyof OutcomeCommandConfig] = e.target.value;
