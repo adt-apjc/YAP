@@ -52,7 +52,6 @@ export type OutcomeCommandConfig = {
    objectPath?: string; // objectPath use incase displayResponseAs:"text" as you need to show specific value
 };
 
-export type ActionConfigPayloadObject = { displayRequestAs: string; displayResponseAs: string };
 export type ActionExpectObject = { type: string; value: any }[];
 export type ActionMatchObject = { objectPath: string; regEx: string; matchGroup: string; storeAs: string };
 
@@ -67,6 +66,7 @@ export type ActionConfig = {
    headerColor: string;
    description: string;
    data?: any;
+   payloadType?: string;
    maxRetry?: string;
    interval?: string;
    displayResponseAs?: string;
@@ -74,7 +74,6 @@ export type ActionConfig = {
    expect?: ActionExpectObject;
    match?: ActionMatchObject;
    headers?: { [key: string]: string }; // option to override Axois request header from Endpoint
-   configurePayload?: ActionConfigPayloadObject;
 };
 
 export type PrefaceConfig = {

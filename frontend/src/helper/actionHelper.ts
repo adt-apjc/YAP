@@ -53,18 +53,15 @@ const processMatchResponse = (actionObject: ActionConfig, response: AxiosRespons
          sessionStorage.setItem(storeAs, matchedValue[group]);
          console.log("DEBUG:", matchedValue[group], "store as", storeAs);
       }
-
-      // store the response as is in session storage
-      if (actionObject.configurePayload?.displayResponseAs === "text" && storeAs) {
-         sessionStorage.setItem(storeAs, response.data);
-         console.log("DEBUG:", response.data, "store as", storeAs);
-      }
    }
 };
 
-const getStringFromObject = (obj: any, path: string): string => {
+const getStringFromObject = (obj: any, path: string | undefined): string => {
    let result = obj;
    try {
+      if (!path)
+         if (typeof result === "string") return result;
+         else return JSON.stringify(result, null, 3);
       for (let attr of path.split(".")) {
          result = result[attr];
       }

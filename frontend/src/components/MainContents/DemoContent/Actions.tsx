@@ -36,7 +36,7 @@ const ActionDetail = (props: ActionDetailProps) => {
       props.request && props.request.data ? (
          <div className="p-2">
             payload
-            {props.request.configurePayload?.displayRequestAs === "text" ? (
+            {props.request.payloadType === "text" ? (
                <div>{typeof props.request.data === "string" ? props.request.data : JSON.stringify(props.request.data)}</div>
             ) : (
                <ReactJson value={props.request.data} collapsed={4} />
@@ -44,13 +44,9 @@ const ActionDetail = (props: ActionDetailProps) => {
          </div>
       ) : null;
 
-   if (props.request && props.request.configurePayload?.displayResponseAs === "text") {
+   if (props.request && props.request.displayResponseAs === "text") {
       responseViewer = props.response ? (
-         <pre className="p-2">
-            {props.request.configurePayload?.displayResponseAs === "text"
-               ? props.response.data
-               : getStringFromObject(props.response.data, props.request.objectPath)}
-         </pre>
+         <pre className="p-2">{getStringFromObject(props.response.data, props.request.objectPath)}</pre>
       ) : null;
    } else {
       // default display response as JSON

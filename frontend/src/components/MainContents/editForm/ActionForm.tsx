@@ -6,14 +6,8 @@ import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/mode-text";
 import "ace-builds/src-noconflict/theme-github";
-import { ActionExpectObject, ActionMatchObject, ActionConfig, ActionConfigPayloadObject } from "../../contexts/ContextTypes";
-
-type ConfigPayloadProps = {
-   configurePayload: ActionConfigPayloadObject | undefined;
-   setConfigPayload: (c: ActionConfigPayloadObject | undefined) => void;
-   input: ActionConfig;
-   onChangeHandler: (e: any) => void;
-};
+import { ActionExpectObject, ActionMatchObject, ActionConfig } from "../../contexts/ContextTypes";
+import WithDropdown from "../../Popper/Dropdown";
 
 type ActionFormProps = {
    onHide: () => void;
@@ -32,50 +26,47 @@ type ExpectFormProps = {
    setExpect: (e: ActionExpectObject) => void;
 };
 
-const ConfigPayloadForm = (props: ConfigPayloadProps) => {
+type PayloadTypeSelectorProps = {
+   payloadType: string;
+   setPayloadType: (v: string) => void;
+};
+
+const PayloadTypeSelector = (props: PayloadTypeSelectorProps) => {
+   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+   const handleSelect = (val: string) => {
+      props.setPayloadType(val);
+      setIsMenuOpen(false);
+   };
+
+   const SelectComponent = () => {
+      return (
+         <div className="font-sm">
+            <ul className="list-group border border-0">
+               <li className="list-group-item list-group-item-action pointer" onClick={() => handleSelect("json")}>
+                  JSON
+               </li>
+               <li className="list-group-item list-group-item-action pointer" onClick={() => handleSelect("text")}>
+                  Text
+               </li>
+            </ul>
+         </div>
+      );
+   };
+
    return (
-      <>
-         <div className="row mb-2">
-            <div className="col-sm-12 col-md-2">DisplayRequestAs</div>
-            <div className="col-sm-12 col-md-3">
-               <select
-                  className="form-select form-select-sm"
-                  name="displayRequestAs"
-                  value={props.configurePayload ? props.configurePayload.displayRequestAs : ""}
-                  onChange={(e) => props.setConfigPayload({ ...props.configurePayload!, [e.target.name]: e.target.value })}
-               >
-                  <option value="json">JSON</option>
-                  <option value="text">PLAIN TEXT</option>
-               </select>
-            </div>
+      <WithDropdown
+         interactive
+         open={isMenuOpen}
+         onRequestClose={() => setIsMenuOpen(false)}
+         placement="top"
+         DropdownComponent={<SelectComponent />}
+      >
+         <div className="font-sm" onClick={() => setIsMenuOpen(true)}>
+            <span className="me-2">{props.payloadType.toLocaleUpperCase()}</span>
+            <i className="fas fa-caret-up" />
          </div>
-         <div className="row mb-2">
-            <div className="col-sm-12 col-md-2">DisplayResponseAs</div>
-            <div className="col-sm-12 col-md-3">
-               <select
-                  className="form-select form-select-sm"
-                  name="displayResponseAs"
-                  value={props.configurePayload ? props.configurePayload.displayResponseAs : ""}
-                  onChange={(e) => props.setConfigPayload({ ...props.configurePayload!, [e.target.name]: e.target.value })}
-               >
-                  <option value="json">JSON</option>
-                  <option value="text">PLAIN TEXT</option>
-               </select>
-            </div>
-            {props.input.configurePayload && props.input.configurePayload.displayResponseAs === "text" && (
-               <div className="col-sm-12 col-md-3">
-                  <input
-                     type="text"
-                     className="form-control form-control-sm"
-                     name="objectPath"
-                     placeholder="objectPath"
-                     value={props.input.objectPath}
-                     onChange={(e) => props.onChangeHandler(e)}
-                  />
-               </div>
-            )}
-         </div>
-      </>
+      </WithDropdown>
    );
 };
 
@@ -193,12 +184,10 @@ const VariableForm = (props: VariableFormProps) => {
    }, [props.match]);
 
    useEffect(() => {
-      if (props.input.configurePayload?.displayResponseAs === "text") {
-         props.setMatch({ ...props.match!, regEx: "", matchGroup: "", objectPath: "" });
-      } else {
-         props.setMatch({ regEx: ".*", matchGroup: "0", storeAs: "", objectPath: "" });
+      if (props.input.displayResponseAs === "text") {
+         if (props.match) props.setMatch({ regEx: ".*", matchGroup: "0", storeAs: props.match.storeAs, objectPath: "" });
       }
-   }, [props.input.configurePayload]);
+   }, [props.input.displayResponseAs]);
 
    return (
       <>
@@ -222,12 +211,10 @@ const VariableForm = (props: VariableFormProps) => {
                      className="form-control form-control-sm"
                      type="text"
                      name="objectPath"
-                     required={
-                        props.input.configurePayload && props.input.configurePayload.displayRequestAs === "text" ? false : true
-                     }
+                     required={props.input.payloadType === "text" ? false : true}
                      value={props.match ? props.match.objectPath : ""}
                      onChange={(e) => props.setMatch({ ...props.match!, [e.target.name]: e.target.value })}
-                     disabled={props.input.configurePayload?.displayResponseAs === "text"}
+                     disabled={props.input.displayResponseAs === "text"}
                   />
                </div>
                <div className="col-md-3">
@@ -236,12 +223,9 @@ const VariableForm = (props: VariableFormProps) => {
                      className="form-control form-control-sm"
                      type="text"
                      name="regEx"
-                     required={
-                        props.input.configurePayload && props.input.configurePayload.displayRequestAs === "text" ? false : true
-                     }
+                     required
                      value={props.match ? props.match.regEx : ""}
                      onChange={(e) => props.setMatch({ ...props.match!, [e.target.name]: e.target.value })}
-                     disabled={props.input.configurePayload?.displayResponseAs === "text"}
                   />
                </div>
                <div className="col-md-3">
@@ -261,12 +245,9 @@ const VariableForm = (props: VariableFormProps) => {
                      className="form-control form-control-sm"
                      type="number"
                      name="matchGroup"
-                     required={
-                        props.input.configurePayload && props.input.configurePayload.displayRequestAs === "text" ? false : true
-                     }
+                     required
                      value={props.match ? props.match.matchGroup : 0}
                      onChange={(e) => props.setMatch({ ...props.match!, [e.target.name]: parseInt(e.target.value) })}
-                     disabled={props.input.configurePayload?.displayResponseAs === "text"}
                   />
                </div>
             </div>
@@ -286,7 +267,8 @@ const ActionForm = (props: ActionFormProps) => {
       description: "",
       url: "",
       method: "get",
-      configurePayload: undefined,
+      displayResponseAs: "json",
+      payloadType: "json",
       objectPath: "",
       expect: [],
       data: undefined,
@@ -296,16 +278,12 @@ const ActionForm = (props: ActionFormProps) => {
    });
    const [isPayloadValid, setIsPayloadValid] = useState(true);
 
-   const setConfigPayload = (val: ActionConfigPayloadObject | undefined) => {
-      if (!val) {
-         setInput((prev) => ({ ...prev, configurePayload: undefined }));
-         return;
-      }
-      setInput((prev) => ({ ...prev, configurePayload: val }));
-   };
-
    const setExpect = (val: ActionExpectObject) => {
       setInput((prev) => ({ ...prev, expect: val }));
+   };
+
+   const setPayloadType = (val: string) => {
+      setInput((prev) => ({ ...prev, payloadType: val }));
    };
 
    const setMatchObject = (val: ActionMatchObject | undefined) => {
@@ -349,9 +327,7 @@ const ActionForm = (props: ActionFormProps) => {
 
       try {
          let data =
-            input.configurePayload?.displayRequestAs === "text"
-               ? `${typeof value === "string" ? value : JSON.stringify(value)}`
-               : JSON.parse(value);
+            input.payloadType === "text" ? `${typeof value === "string" ? value : JSON.stringify(value)}` : JSON.parse(value);
          setInput({ ...input, data });
          setIsPayloadValid(true);
       } catch (e) {
@@ -543,28 +519,49 @@ const ActionForm = (props: ActionFormProps) => {
                      />
                   </div>
                </div>
+               <div className="row mb-2">
+                  <div className="col-sm-12 col-md-2">DisplayResponseAs</div>
+                  <div className="col-sm-12 col-md-3">
+                     <select
+                        className="form-select form-select-sm"
+                        name="displayResponseAs"
+                        value={input.displayResponseAs}
+                        onChange={onChangeHandler}
+                     >
+                        <option value="json">JSON</option>
+                        <option value="text">PLAIN TEXT</option>
+                     </select>
+                  </div>
+                  {input.displayResponseAs === "text" && (
+                     <div className="col-sm-12 col-md-3">
+                        <input
+                           type="text"
+                           className="form-control form-control-sm"
+                           name="objectPath"
+                           placeholder="objectPath"
+                           value={input.objectPath}
+                           onChange={onChangeHandler}
+                        />
+                     </div>
+                  )}
+               </div>
 
-               <ConfigPayloadForm
-                  configurePayload={input.configurePayload}
-                  setConfigPayload={setConfigPayload}
-                  input={input}
-                  onChangeHandler={onChangeHandler}
-               />
                <ExpectForm expect={input.expect!} setExpect={setExpect} />
                <VariableForm match={input.match} setMatch={setMatchObject} input={input} />
-               <div className="row">
+               <div className="row mt-3">
                   <div className="col">
-                     <div>
+                     <div className="d-flex align-items-center mb-1">
                         <span className="me-2 font-sm">Payload (optional)</span>
-                        {!isPayloadValid ? "invalid JSON" : ""}
+                        <span className="me-2 font-sm">type: </span>
+                        <PayloadTypeSelector payloadType={input.payloadType || "json"} setPayloadType={setPayloadType} />
                      </div>
                      <AceEditor
-                        mode={input.configurePayload?.displayRequestAs === "text" ? "text" : "json"}
+                        mode={input.payloadType === "text" ? "text" : "json"}
                         theme="github"
                         height="300px"
                         width="100%"
                         value={
-                           input.configurePayload?.displayRequestAs === "text" && typeof input.data === "string"
+                           input.payloadType === "text" && typeof input.data === "string"
                               ? `${input.data === undefined ? "" : input.data}`
                               : JSON.stringify(input.data, null, 4)
                         }

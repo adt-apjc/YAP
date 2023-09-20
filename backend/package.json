@@ -6,7 +6,7 @@
    "scripts": {
       "build": "tsc",
       "start": "NODE_TLS_REJECT_UNAUTHORIZED='0' node dist/index.js",
-      "dev": "concurrently \"tsc --watch\" \"nodemon -q dist/index.js\""
+      "dev": "concurrently \"tsc --watch\" \"NODE_TLS_REJECT_UNAUTHORIZED=0 nodemon -q dist/index.js\""
    },
    "author": "",
    "license": "ISC",

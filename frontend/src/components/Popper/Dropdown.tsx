@@ -62,7 +62,7 @@ const DropdownElement = React.forwardRef((props: DropdownElementProps, ref) => {
 type WithDropdownProps = {
    DropdownComponent: React.ReactNode;
    children: React.ReactNode;
-   open: boolean;
+   open?: boolean;
    className?: string;
    style?: React.CSSProperties;
    placement?: Placement;
@@ -70,7 +70,7 @@ type WithDropdownProps = {
    showArrow?: boolean;
    interactive?: boolean;
    bindToRoot?: boolean;
-   onRequestClose: () => any;
+   onRequestClose?: () => any;
 };
 
 const WithDropdown = (props: WithDropdownProps) => {
@@ -91,7 +91,7 @@ const WithDropdown = (props: WithDropdownProps) => {
    });
 
    useEffect(() => {
-      setShowDropdown(() => props.open);
+      if (props.open !== undefined) setShowDropdown(props.open);
    }, [props.open]);
 
    return (

@@ -8,7 +8,9 @@ type VarDetails = {
 export const getStringFromObject = (obj: any, path: string | undefined) => {
    let result = obj;
    try {
-      if (!path) return JSON.stringify(result, null, 3);
+      if (!path)
+         if (typeof result === "string") return result;
+         else return JSON.stringify(result, null, 3);
       for (let attr of path.split(".")) {
          result = result[attr];
       }
@@ -28,11 +30,7 @@ export const getVariableDetails = (request: ActionConfig): VarDetails => {
    // and will be stored and used in succeding request
 
    if ((request.match || request.match !== undefined) && `${request.match.storeAs}`) variables.add(request.match.storeAs);
-   if (
-      (request.match || request.match !== undefined) &&
-      request.configurePayload?.displayRequestAs === "text" &&
-      `${request.match.storeAs}`
-   )
+   if ((request.match || request.match !== undefined) && request.payloadType === "text" && `${request.match.storeAs}`)
       variables.add(request.match.storeAs);
 
    // when user used the variable as params in url i.e "{{}}" to be used in the API request
