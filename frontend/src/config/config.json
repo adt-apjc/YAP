@@ -1,5 +1,5 @@
 {
-   "version": "1.0.0",
+   "version": "1.0.1",
    "title": "YAP - Hello World",
    "sidebar": [
       {
@@ -97,9 +97,9 @@
                "elements": {
                   "nodes": [
                      {
-                        "data": { "id": "Project", "label": "My Project" },
+                        "data": { "id": "Project", "label": "L3VPN" },
                         "position": { "x": 400, "y": -100 },
-                        "classes": "size-xxxlg-rect highlight l3vpn"
+                        "classes": "size-xxxlg-rect highlight cloud"
                      }
                   ],
                   "edges": []
@@ -254,9 +254,9 @@
                "elements": {
                   "nodes": [
                      {
-                        "data": { "id": "Project", "label": "My New Project" },
+                        "data": { "id": "Project", "label": "L3VPN" },
                         "position": { "x": 50, "y": 0 },
-                        "classes": "size-xxxlg-rect l3vpn"
+                        "classes": "size-xxxlg-rect cloud"
                      },
                      {
                         "data": { "id": "Node_1", "label": "Node_1" },
@@ -408,9 +408,9 @@
                "elements": {
                   "nodes": [
                      {
-                        "data": { "id": "Project", "label": "My New Project" },
+                        "data": { "id": "Project", "label": "L3VPN" },
                         "position": { "x": 50, "y": 0 },
-                        "classes": "size-xxxlg-rect l3vpn"
+                        "classes": "size-xxxlg-rect cloud"
                      },
                      {
                         "data": { "id": "Node_1", "label": "Node_1" },
