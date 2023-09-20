@@ -681,9 +681,11 @@ const ActionForm = (props: ActionFormProps) => {
                         <span className="me-2 font-sm">Payload (optional)</span>
                         <span className="me-2 font-sm">type: </span>
                         <PayloadTypeSelector payloadType={input.payloadType || "json"} setPayloadType={setPayloadType} />
-                        <span className="text-hover-highlight primary font-sm ms-auto pointer" onClick={handleBeautify}>
-                           Beautify
-                        </span>
+                        {input.payloadType === "json" && (
+                           <span className="text-hover-highlight primary font-sm ms-auto pointer" onClick={handleBeautify}>
+                              Beautify
+                           </span>
+                        )}
                      </div>
                      <AceEditor
                         mode={input.payloadType === "text" ? "text" : "json"}

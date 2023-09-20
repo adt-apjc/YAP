@@ -90,10 +90,6 @@ export const stylesheet = [
       },
    },
    {
-      selector: "node.router_new",
-      style: { "background-fit": "contain", "background-image": "/assets/router_new.png", "background-opacity": 0 },
-   },
-   {
       selector: "node.virtual_router",
       style: { "background-fit": "contain", "background-image": "/assets/virtual_router.png", "background-opacity": 0 },
    },
@@ -104,10 +100,6 @@ export const stylesheet = [
    {
       selector: "node.layer3_switch",
       style: { "background-fit": "contain", "background-image": "/assets/layer3_switch.png", "background-opacity": 0 },
-   },
-   {
-      selector: "node.ucs_switch",
-      style: { "background-fit": "contain", "background-image": "/assets/ucs_switch.png", "background-opacity": 0 },
    },
    {
       selector: "node.generic_gateway",
@@ -134,12 +126,12 @@ export const stylesheet = [
       style: { "background-fit": "contain", "background-image": "/assets/access_point.png", "background-opacity": 0 },
    },
    {
-      selector: "node.apic_new",
-      style: { "background-fit": "contain", "background-image": "/assets/apic_new.png", "background-opacity": 0 },
+      selector: "node.server",
+      style: { "background-fit": "contain", "background-image": "/assets/server.png", "background-opacity": 0 },
    },
    {
-      selector: "node.file_server",
-      style: { "background-fit": "contain", "background-image": "/assets/file_server.png", "background-opacity": 0 },
+      selector: "node.storage_server",
+      style: { "background-fit": "contain", "background-image": "/assets/storage_server.png", "background-opacity": 0 },
    },
    {
       selector: "node.optical_transport",
@@ -155,7 +147,13 @@ export const stylesheet = [
    },
    {
       selector: "node.cloud",
-      style: { "background-fit": "contain", "background-image": "/assets/cloud.png", "background-opacity": 0 },
+      style: {
+         "background-fit": "cover",
+         "background-image": "/assets/cloud.png",
+         "background-opacity": 0,
+         "text-valign": "center",
+         "text-halign": "center",
+      },
    },
    {
       selector: "node.satellite",
@@ -198,10 +196,10 @@ export const stylesheet = [
       style: { "background-fit": "contain", "background-image": "/assets/epg.png", "background-opacity": 0 },
    },
    {
-      selector: "node.antenna",
+      selector: "node.radio_tower",
       style: {
          "background-fit": "cover",
-         "background-image": "/assets/antenna.png",
+         "background-image": "/assets/radio_tower.png",
          "background-opacity": 0,
       },
    },

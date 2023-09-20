@@ -75,7 +75,7 @@ export const checkStaticVarIfUsed = (varDetails: VarDetails, staticVariables: St
 export const NODE_APPEARANCE_OPTIONS = [
    {
       label: "Router",
-      value: "router_new",
+      value: "router",
    },
    {
       label: "Virtual Router",
@@ -88,10 +88,6 @@ export const NODE_APPEARANCE_OPTIONS = [
    {
       label: "Layer 3 Switch",
       value: "layer3_switch",
-   },
-   {
-      label: "UCS Switch",
-      value: "ucs_switch",
    },
    {
       label: "Gateway",
@@ -115,11 +111,11 @@ export const NODE_APPEARANCE_OPTIONS = [
    },
    {
       label: "APIC",
-      value: "apic_new",
+      value: "apic",
    },
    {
-      label: "File Server",
-      value: "file_server",
+      label: "Server",
+      value: "server",
    },
    {
       label: "Optical Transport",
@@ -144,5 +140,13 @@ export const NODE_APPEARANCE_OPTIONS = [
    {
       label: "Satellite Dish",
       value: "satellite_dish",
+   },
+   {
+      label: "Storage server",
+      value: "storage_server",
+   },
+   {
+      label: "Radio tower",
+      value: "radio_tower",
    },
 ];
