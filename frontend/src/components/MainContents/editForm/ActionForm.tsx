@@ -31,6 +31,109 @@ type PayloadTypeSelectorProps = {
    setPayloadType: (v: string) => void;
 };
 
+type HeadersFormProps = {
+   input: ActionConfig;
+   inputHeaders: { key: any; value: any }[];
+   setInputHeaders: (s: any) => void;
+};
+
+const HeadersForm = (props: HeadersFormProps) => {
+   const [isHeadersEnabled, setIsHeadersEnabled] = useState(false);
+
+   const onHeaderChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+      let currentHeaders = props.inputHeaders;
+      currentHeaders[index] = { ...currentHeaders[index], [e.target.name]: e.target.value };
+      props.setInputHeaders([...currentHeaders]);
+   };
+
+   const onHeaderDeleteHandler = (index: number) => {
+      let currentHeader = props.inputHeaders.filter((el, i) => i !== index);
+      props.setInputHeaders(currentHeader);
+   };
+
+   const onHeaderAddHandler = () => {
+      props.setInputHeaders((prev: any) => [...prev, { key: "", value: "" }]);
+   };
+
+   const renderHeaderField = () => {
+      return props.inputHeaders.map((el, index) => {
+         return (
+            <React.Fragment key={index}>
+               <div className="col-11">
+                  <div className="input-group" style={{ marginTop: "-1px" }}>
+                     <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        name="key"
+                        placeholder="key"
+                        required
+                        value={el.key}
+                        onChange={(e) => onHeaderChangeHandler(e, index)}
+                     />
+                     <input
+                        type="text"
+                        className="form-control form-control-sm"
+                        name="value"
+                        placeholder="value"
+                        required
+                        value={el.value}
+                        onChange={(e) => onHeaderChangeHandler(e, index)}
+                     />
+                  </div>
+               </div>
+               <div className="col-1">
+                  <span className="pointer" onClick={() => onHeaderDeleteHandler(index)}>
+                     {"\u00D7"}
+                  </span>
+               </div>
+            </React.Fragment>
+         );
+      });
+   };
+
+   const handleHeadersEnableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!e.target.checked) props.setInputHeaders([]);
+      setIsHeadersEnabled(e.target.checked);
+   };
+
+   useEffect(() => {
+      if (!props.input) return;
+
+      if (props.input.headers && Object.keys(props.input.headers).length > 0) setIsHeadersEnabled(true);
+
+      let inputHeaders = [];
+      for (let item in props.input.headers) {
+         inputHeaders.push({ key: item, value: props.input.headers[item] });
+      }
+      props.setInputHeaders(inputHeaders);
+   }, [props.input.headers]);
+
+   return (
+      <div>
+         <div className="form-check mb-2">
+            <input
+               type="checkbox"
+               className="form-check-input"
+               id="enableHeaders"
+               checked={isHeadersEnabled}
+               onChange={handleHeadersEnableChange}
+            />
+            <label className="form-check-label" htmlFor="enableHeaders">
+               Headers
+            </label>
+         </div>
+         {isHeadersEnabled && (
+            <>
+               <div className="row">{renderHeaderField()}</div>
+               <div className="text-center text-info font-lg">
+                  <i className="fad fa-plus-circle icon-hover-highlight pointer" onClick={onHeaderAddHandler} />
+               </div>
+            </>
+         )}
+      </div>
+   );
+};
+
 const PayloadTypeSelector = (props: PayloadTypeSelectorProps) => {
    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -278,6 +381,7 @@ const ActionForm = (props: ActionFormProps) => {
    });
 
    const [dataText, setDataText] = useState("");
+   const [inputHeaders, setInputHeaders] = useState<any[]>([]);
 
    const transformPayloadTextToObject = () => {
       try {
@@ -308,6 +412,19 @@ const ActionForm = (props: ActionFormProps) => {
       setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
    };
 
+   const generateHeaders = () => {
+      let headers = {};
+
+      for (let item of inputHeaders) {
+         headers = {
+            ...headers,
+            [item.key]: item.value,
+         };
+      }
+
+      return headers;
+   };
+
    const handleFormSubmit = (e: React.FormEvent) => {
       e.preventDefault();
 
@@ -317,6 +434,7 @@ const ActionForm = (props: ActionFormProps) => {
       if (inputCloned.type === "request") {
          inputCloned.maxRetry = undefined;
          inputCloned.interval = undefined;
+         inputCloned.headers = generateHeaders();
       }
       if (inputCloned.displayResponseAs === "json") inputCloned.objectPath = undefined;
 
@@ -332,7 +450,6 @@ const ActionForm = (props: ActionFormProps) => {
          props.onHide();
       }
    };
-
    const handleBeautify = () => {
       let payload = transformPayloadTextToObject();
       if (payload) setDataText(JSON.stringify(payload, null, 3));
@@ -358,7 +475,7 @@ const ActionForm = (props: ActionFormProps) => {
             setDataText(
                typeof props.initValue.action.data === "string"
                   ? props.initValue.action.data
-                  : JSON.stringify(props.initValue.action.data, null, 3)
+                  : JSON.stringify(props.initValue.action.data, null, 3),
             );
          return { ...prev, ...props.initValue.action };
       });
@@ -455,6 +572,7 @@ const ActionForm = (props: ActionFormProps) => {
                      </div>
                   </div>
                </div>
+               <HeadersForm input={input} inputHeaders={inputHeaders} setInputHeaders={setInputHeaders} />
                <div className="input-group my-2">
                   <select
                      style={{ maxWidth: 150 }}
@@ -485,8 +603,8 @@ const ActionForm = (props: ActionFormProps) => {
                      <input
                         type="text"
                         className="form-control form-control-sm"
-                        name="header"
-                        placeholder="Header text"
+                        name="apiBadge"
+                        placeholder="API Badge Text"
                         value={input.apiBadge}
                         onChange={handleInputChange}
                         required
@@ -497,8 +615,8 @@ const ActionForm = (props: ActionFormProps) => {
                      <input
                         type="text"
                         className="form-control form-control-sm"
-                        name="headerColor"
-                        placeholder="Header color"
+                        name="apiBadgeColor"
+                        placeholder="API Badge Color"
                         value={input.apiBadgeColor}
                         onChange={handleInputChange}
                      />

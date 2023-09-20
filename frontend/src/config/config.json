@@ -61,9 +61,6 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "headers": {
-                  "Content-Type": "application/json"
-               },
                "apiBadge": "Create",
                "apiBadgeColor": "Green",
                "title": "Add new project",
@@ -131,9 +128,6 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "headers": {
-                  "Content-Type": "application/json"
-               },
                "apiBadge": "Get",
                "apiBadgeColor": "",
                "title": "Confirm reachability to the newly created project",
@@ -153,9 +147,6 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "headers": {
-                  "Content-Type": "application/json"
-               },
                "apiBadge": "Create",
                "apiBadgeColor": "Green",
                "title": "Add Node_1",
@@ -194,9 +185,6 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "headers": {
-                  "Content-Type": "application/json"
-               },
                "apiBadge": "Create",
                "apiBadgeColor": "Green",
                "title": "Add Node_2",
@@ -237,9 +225,6 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "headers": {
-                  "Content-Type": "application/json"
-               },
                "apiBadge": "RPC",
                "apiBadgeColor": "",
                "title": "Ping Node_2 interface from Node_1 (Expected Failure)",
@@ -340,9 +325,6 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "headers": {
-                  "Content-Type": "application/json"
-               },
                "apiBadge": "Patch",
                "apiBadgeColor": "Green",
                "title": "Update Node_1 GE interface status (from down to up)",
@@ -368,9 +350,6 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "headers": {
-                  "Content-Type": "application/json"
-               },
                "apiBadge": "Patch",
                "apiBadgeColor": "Green",
                "title": "Update Node_2 GE interface status (from down to up)",
@@ -398,9 +377,6 @@
             {
                "type": "polling",
                "useEndpoint": "MOCKUP",
-               "headers": {
-                  "Content-Type": "application/json"
-               },
                "apiBadge": "RPC",
                "apiBadgeColor": "",
                "title": "Ping Node_2 interface from Node_1 (Expected Failure)",
@@ -508,9 +484,6 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "headers": {
-                  "Content-Type": "application/json"
-               },
                "apiBadge": "Delete",
                "apiBadgeColor": "",
                "title": "Remove the project",
