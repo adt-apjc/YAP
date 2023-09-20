@@ -105,14 +105,16 @@ const SideBar = () => {
          return (
             <div
                key={index}
-               className={`d-flex mb-3 justify-content-between pointer ${isSomeStepRunning() ? "disabled" : ""}`}
+               className={`d-flex mb-3 justify-content-center justify-content-lg-between pointer ${
+                  isSomeStepRunning() ? "disabled" : ""
+               }`}
                style={{ fontSize: "20px" }}
                onClick={() => dispatch({ type: "setCurrentStep", payload: element })}
             >
                <div className="d-flex">
                   <div>{statusIcon}</div>
                   <span
-                     className={`step-label-text  ${isSomeStepRunning() ? "disabled" : ""} ${
+                     className={`step-label-text d-none d-md-block ${isSomeStepRunning() ? "disabled" : ""} ${
                         context.currentStep.name === element.name ? "curr-selected " : ""
                      } ${
                         context.runningStatus &&
@@ -128,7 +130,7 @@ const SideBar = () => {
                {context.mode === "edit" && (
                   <i
                      title="delete"
-                     className={`step-label-text fal fa-trash-alt fa-sm ms-2 icon-hover-highlight ${
+                     className={`step-label-text fal fa-trash-alt fa-sm ms-2 icon-hover-highlight d-none d-lg-block ${
                         context.currentStep.name === element.name ? "curr-selected" : ""
                      } ${isSomeStepRunning() ? "disabled" : ""}
                      `}
@@ -172,7 +174,7 @@ const SideBar = () => {
             )}
 
             {context.mode === "edit" && (
-               <div className="text-center ">
+               <div className="text-center">
                   <i
                      className={`text-primary fad fa-${
                         state.activeAddStep ? "minus" : "plus"

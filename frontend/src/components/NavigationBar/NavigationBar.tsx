@@ -21,7 +21,7 @@ const NavigationBar = () => {
       >
          {/* Right */}
          <Logo />
-
+         <div className="d-md-none">{context.currentStep.label}</div>
          {/* Left */}
          <div className="d-flex">
             {/* dropdown */}

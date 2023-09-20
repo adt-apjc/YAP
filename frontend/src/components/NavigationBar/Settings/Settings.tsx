@@ -43,6 +43,7 @@ const Settings = () => {
    return (
       <>
          <WithDropdown
+            className="d-none d-sm-block"
             placement="left-start"
             interactive
             offset={[35, -35]}
