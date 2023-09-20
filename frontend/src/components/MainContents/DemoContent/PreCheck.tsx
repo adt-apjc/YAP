@@ -293,9 +293,9 @@ const PreCheck = (props: PreCheckProps) => {
                         <div>
                            <div
                               className={`api-method-badge text-light me-3 rounded`}
-                              style={{ backgroundColor: preCheck.headerColor ? preCheck.headerColor : "#007cad" }}
+                              style={{ backgroundColor: preCheck.apiBadgeColor ? preCheck.apiBadgeColor : "#007cad" }}
                            >
-                              {preCheck.header ? preCheck.header : "NO HEADER"}
+                              {preCheck.apiBadge ? preCheck.apiBadge : "NO HEADER"}
                            </div>
                            {preCheck.title ? preCheck.title : "NO TITLE"}
                         </div>

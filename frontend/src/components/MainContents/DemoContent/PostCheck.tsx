@@ -300,9 +300,9 @@ const PostCheck = (props: PostCheckProps) => {
                         <div>
                            <div
                               className={`api-method-badge text-light me-3 rounded`}
-                              style={{ backgroundColor: postCheck.headerColor ? postCheck.headerColor : "#007cad" }}
+                              style={{ backgroundColor: postCheck.apiBadgeColor ? postCheck.apiBadgeColor : "#007cad" }}
                            >
-                              {postCheck.header ? postCheck.header : "NO HEADER"}
+                              {postCheck.apiBadge ? postCheck.apiBadge : "NO HEADER"}
                            </div>
                            {postCheck.title ? postCheck.title : "NO TITLE"}
                         </div>

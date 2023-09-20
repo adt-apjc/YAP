@@ -280,8 +280,9 @@ const ActionForm = (props: ActionFormProps) => {
    const [input, setInput] = useState<ActionConfig>({
       type: "request",
       useEndpoint: "",
-      header: "",
-      headerColor: "",
+      headers: undefined,
+      apiBadge: "",
+      apiBadgeColor: "",
       title: "",
       description: "",
       url: "",
@@ -496,25 +497,25 @@ const ActionForm = (props: ActionFormProps) => {
                </div>
                <div className="row mb-2">
                   <div className="col-sm-3">
-                     <small className="mb-1">Header Text</small>
+                     <small className="mb-1">API Badge</small>
                      <input
                         type="text"
                         className="form-control form-control-sm"
                         name="header"
                         placeholder="Header text"
-                        value={input.header}
+                        value={input.apiBadge}
                         onChange={onChangeHandler}
                         required
                      />
                   </div>
                   <div className="col-sm-2">
-                     <small className="mb-1">Header Color</small>
+                     <small className="mb-1">API Badge Color</small>
                      <input
                         type="text"
                         className="form-control form-control-sm"
                         name="headerColor"
                         placeholder="Header color"
-                        value={input.headerColor}
+                        value={input.apiBadgeColor}
                         onChange={onChangeHandler}
                      />
                   </div>
