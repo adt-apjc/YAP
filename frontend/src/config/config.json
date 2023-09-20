@@ -61,8 +61,11 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "header": "Create",
-               "headerColor": "Green",
+               "headers": {
+                  "Content-Type": "application/json"
+               },
+               "apiBadge": "Create",
+               "apiBadgeColor": "Green",
                "title": "Add new project",
                "description": "The proposed payload for the POST action describe how to embed a variable in the",
                "url": "api/project",
@@ -128,8 +131,11 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "header": "Get",
-               "headerColor": "",
+               "headers": {
+                  "Content-Type": "application/json"
+               },
+               "apiBadge": "Get",
+               "apiBadgeColor": "",
                "title": "Confirm reachability to the newly created project",
                "description": "",
                "url": "/api/project/{{projectId}}",
@@ -147,8 +153,11 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "header": "Create",
-               "headerColor": "Green",
+               "headers": {
+                  "Content-Type": "application/json"
+               },
+               "apiBadge": "Create",
+               "apiBadgeColor": "Green",
                "title": "Add Node_1",
                "description": "",
                "url": "api/project/{{projectId}}/router",
@@ -185,8 +194,11 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "header": "Create",
-               "headerColor": "Green",
+               "headers": {
+                  "Content-Type": "application/json"
+               },
+               "apiBadge": "Create",
+               "apiBadgeColor": "Green",
                "title": "Add Node_2",
                "description": "",
                "url": "api/project/{{projectId}}/router",
@@ -225,8 +237,11 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "header": "RPC",
-               "headerColor": "",
+               "headers": {
+                  "Content-Type": "application/json"
+               },
+               "apiBadge": "RPC",
+               "apiBadgeColor": "",
                "title": "Ping Node_2 interface from Node_1 (Expected Failure)",
                "description": "A ping to Node_2 interface from Node_1 should be unsuccess because the interfaces are in down state.",
                "url": "api/project/{{projectId}}/router/{{routerId1}}/live-status/exec/any",
@@ -325,8 +340,11 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "header": "Patch",
-               "headerColor": "green",
+               "headers": {
+                  "Content-Type": "application/json"
+               },
+               "apiBadge": "Patch",
+               "apiBadgeColor": "Green",
                "title": "Update Node_1 GE interface status (from down to up)",
                "description": "",
                "url": "api/project/{{projectId}}/router/{{routerId1}}",
@@ -350,8 +368,11 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "header": "Patch",
-               "headerColor": "green",
+               "headers": {
+                  "Content-Type": "application/json"
+               },
+               "apiBadge": "Patch",
+               "apiBadgeColor": "Green",
                "title": "Update Node_2 GE interface status (from down to up)",
                "description": "",
                "url": "api/project/{{projectId}}/router/{{routerId2}}",
@@ -377,8 +398,11 @@
             {
                "type": "polling",
                "useEndpoint": "MOCKUP",
-               "header": "RPC",
-               "headerColor": "",
+               "headers": {
+                  "Content-Type": "application/json"
+               },
+               "apiBadge": "RPC",
+               "apiBadgeColor": "",
                "title": "Ping Node_2 interface from Node_1 (Expected Failure)",
                "description": "A ping to Node_2 interface from Node_1 should be now sucessfull.",
                "interval": "1000",
@@ -484,8 +508,11 @@
             {
                "type": "request",
                "useEndpoint": "MOCKUP",
-               "header": "Delete",
-               "headerColor": "",
+               "headers": {
+                  "Content-Type": "application/json"
+               },
+               "apiBadge": "Delete",
+               "apiBadgeColor": "",
                "title": "Remove the project",
                "description": "",
                "url": "api/project/{{projectId}}",

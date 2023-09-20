@@ -62,8 +62,9 @@ export type ActionConfig = {
    url: string;
    baseURL?: string;
    method: string;
-   header: string;
-   headerColor: string;
+   headers?: { [key: string]: string };
+   apiBadge: string;
+   apiBadgeColor: string;
    description: string;
    data?: any;
    payloadType?: string;

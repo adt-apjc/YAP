@@ -289,9 +289,9 @@ const Actions = (props: ActionsProps) => {
                         <div>
                            <div
                               className={`api-method-badge text-light me-3 rounded`}
-                              style={{ backgroundColor: action.headerColor ? action.headerColor : "#007cad" }}
+                              style={{ backgroundColor: action.apiBadgeColor ? action.apiBadgeColor : "#007cad" }}
                            >
-                              {action.header ? action.header : "NO HEADER"}
+                              {action.apiBadge ? action.apiBadge : "NO HEADER"}
                            </div>
                            {action.title ? action.title : "NO TITLE"}
                         </div>
