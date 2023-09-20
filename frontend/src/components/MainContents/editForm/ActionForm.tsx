@@ -192,6 +192,14 @@ const VariableForm = (props: VariableFormProps) => {
       if (props.match) setIsEnable(true);
    }, [props.match]);
 
+   useEffect(() => {
+      if (props.input.configurePayload?.displayResponseAs === "text") {
+         props.setMatch({ ...props.match!, regEx: "", matchGroup: "", objectPath: "" });
+      } else {
+         props.setMatch({ regEx: ".*", matchGroup: "0", storeAs: "", objectPath: "" });
+      }
+   }, [props.input.configurePayload]);
+
    return (
       <>
          <div className="form-check">
@@ -219,6 +227,7 @@ const VariableForm = (props: VariableFormProps) => {
                      }
                      value={props.match ? props.match.objectPath : ""}
                      onChange={(e) => props.setMatch({ ...props.match!, [e.target.name]: e.target.value })}
+                     disabled={props.input.configurePayload?.displayResponseAs === "text"}
                   />
                </div>
                <div className="col-md-3">
@@ -232,6 +241,7 @@ const VariableForm = (props: VariableFormProps) => {
                      }
                      value={props.match ? props.match.regEx : ""}
                      onChange={(e) => props.setMatch({ ...props.match!, [e.target.name]: e.target.value })}
+                     disabled={props.input.configurePayload?.displayResponseAs === "text"}
                   />
                </div>
                <div className="col-md-3">
@@ -256,6 +266,7 @@ const VariableForm = (props: VariableFormProps) => {
                      }
                      value={props.match ? props.match.matchGroup : 0}
                      onChange={(e) => props.setMatch({ ...props.match!, [e.target.name]: parseInt(e.target.value) })}
+                     disabled={props.input.configurePayload?.displayResponseAs === "text"}
                   />
                </div>
             </div>

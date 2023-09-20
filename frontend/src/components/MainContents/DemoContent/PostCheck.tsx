@@ -48,7 +48,11 @@ export const PostCheckDetail = (props: PostCheckDetailProps) => {
 
    if (props.request && props.request.configurePayload?.displayResponseAs === "text") {
       responseViewer = props.response ? (
-         <pre className="p-2">{getStringFromObject(props.response.data, props.request.objectPath)}</pre>
+         <pre className="p-2">
+            {props.request.configurePayload?.displayResponseAs === "text"
+               ? props.response.data
+               : getStringFromObject(props.response.data, props.request.objectPath)}
+         </pre>
       ) : (
          ""
       );
@@ -108,7 +112,7 @@ export const PostCheckDetail = (props: PostCheckDetailProps) => {
                                     <small className="me-3" style={{ minWidth: "90px" }}>
                                        {item.key}:
                                     </small>
-                                    <small>{item.val}</small>
+                                    <small className="text-break">{item.val}</small>
                                  </div>
                               );
                            return null;
