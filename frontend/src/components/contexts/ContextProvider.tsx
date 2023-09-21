@@ -17,7 +17,7 @@ let initState: TYPE.ContextState = {
 
 function addAction(
    state: TYPE.ContextState,
-   payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any }
+   payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any },
 ) {
    let clonedState = _.cloneDeep(state);
 
@@ -37,7 +37,7 @@ function addAction(
 
 function deleteAction(
    state: TYPE.ContextState,
-   payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" }
+   payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" },
 ) {
    let clonedState = _.cloneDeep(state);
    state.config.mainContent[payload.stepKey][payload.tab].splice(payload.index, 1);
@@ -49,7 +49,9 @@ function addStep(state: TYPE.ContextState, payload: { name: string }) {
    let newStepName = `Step_${clonedState.config.sidebar.length + 1}`;
    clonedState.config.sidebar.push({ name: newStepName, label: payload.name });
    clonedState.config.mainContent[newStepName] = {
+      description: "",
       continueOnFail: false,
+      prefaceRef: 0,
       preCheck: [],
       actions: [],
       postCheck: [],
@@ -69,7 +71,7 @@ function deleteStep(state: TYPE.ContextState, payload: { name: string }) {
 }
 function addEndpoint(
    state: TYPE.ContextState,
-   payload: { name: string; baseURL: string; headerList: { key: string; value: string }[] }
+   payload: { name: string; baseURL: string; headerList: { key: string; value: string }[] },
 ) {
    let clonedState = _.cloneDeep(state);
    clonedState.config.endpoints[payload.name] = {
