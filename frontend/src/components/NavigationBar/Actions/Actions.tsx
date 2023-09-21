@@ -49,6 +49,7 @@ const ActionTooltipContent = ({ setIsOpen }: { setIsOpen: React.Dispatch<React.S
             className="custom-dropdown"
             onClick={() => {
                dispatch({ type: "setCurrentStep", payload: { name: "stage", label: "Stage Demo" } });
+               setIsOpen(false);
             }}
          >
             <i className="pointer fal fa-wrench me-1" />
@@ -58,6 +59,7 @@ const ActionTooltipContent = ({ setIsOpen }: { setIsOpen: React.Dispatch<React.S
             className="custom-dropdown"
             onClick={() => {
                dispatch({ type: "setCurrentStep", payload: { name: "cleanup", label: "Reset Demo" } });
+               setIsOpen(false);
             }}
          >
             <i className="pointer fal fa-redo me-1" />
@@ -67,6 +69,7 @@ const ActionTooltipContent = ({ setIsOpen }: { setIsOpen: React.Dispatch<React.S
             className="custom-dropdown"
             onClick={() => {
                dispatch({ type: "setCurrentStep", payload: { name: "unstage", label: "Unstage Demo" } });
+               setIsOpen(false);
             }}
          >
             <i className="pointer fal fa-recycle me-1" />
