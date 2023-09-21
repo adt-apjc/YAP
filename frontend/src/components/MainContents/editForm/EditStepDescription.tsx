@@ -34,13 +34,14 @@ const EditStepDescription = (props: EditStepDescriptionProps) => {
    const onEditHandler = () => {
       let currentConfig = cloneDeep(context.config);
       currentConfig.mainContent[context.currentStep.name!].description = state.descriptionInput;
-      let sidebarIndex = findCurrentStepIndex();
-      if (sidebarIndex < 0) {
-         props.onHide();
-         return;
+      if (!["cleanup", "unstage", "stage"].includes(context.currentStep.name!)) {
+         let sidebarIndex = findCurrentStepIndex();
+         if (sidebarIndex < 0) {
+            props.onHide();
+            return;
+         }
+         currentConfig.sidebar[sidebarIndex].label = state.titleInput;
       }
-
-      currentConfig.sidebar[sidebarIndex].label = state.titleInput;
       dispatch({ type: "replaceConfig", payload: currentConfig });
       dispatch({ type: "setCurrentStep", payload: { ...context.currentStep, label: state.titleInput } });
       props.onHide();
