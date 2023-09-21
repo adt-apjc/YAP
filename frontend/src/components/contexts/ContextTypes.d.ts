@@ -7,8 +7,6 @@ export type ContextAction =
    | { type: "setRunningStatus"; payload?: { step: string; status: "success" | "fail" | "running" | "" } }
    | { type: "replaceConfig"; payload: any }
    | { type: "clearStateHandler" }
-   | { type: "registerClearStateFunction"; payload: { key: string; func: () => any } }
-   | { type: "unregisterClearStateFunction"; payload: { key: string } }
    | {
         type: "addAction";
         payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any };

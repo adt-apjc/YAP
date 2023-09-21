@@ -43,6 +43,9 @@ const validateExpect = (expect: ActionExpectObject, response: AxiosResponse) => 
 const processMatchResponse = (actionObject: ActionConfig, response: AxiosResponse) => {
    if (actionObject.match) {
       let { objectPath, regEx, storeAs, matchGroup } = actionObject.match;
+      let reservedNames = ["configData", "mainContentState", "runningStatus"];
+      if (reservedNames.includes(storeAs)) return; // var name cannot be the same as reserved list
+
       let targetValue = getStringFromObject(response.data, objectPath);
       // If RegEx configured
       let re = new RegExp(regEx);
@@ -50,7 +53,7 @@ const processMatchResponse = (actionObject: ActionConfig, response: AxiosRespons
       if (matchedValue) {
          // If RegEx match
          let group = matchGroup ? parseInt(matchGroup) : 0;
-         sessionStorage.setItem(storeAs, matchedValue[group]);
+         localStorage.setItem(storeAs, matchedValue[group]);
          console.log("DEBUG:", matchedValue[group], "store as", storeAs);
       }
    }
@@ -86,7 +89,7 @@ const replaceStrWithParams = (text: any, staticVariables: StaticVariables | unde
             if (staticVariables && staticVariables[stripedVarname]) {
                replacedText = replacedText.replace(varname, staticVariables[stripedVarname]);
             } else {
-               replacedText = replacedText.replace(varname, sessionStorage.getItem(stripedVarname) || "VAR_UNDEFINED");
+               replacedText = replacedText.replace(varname, localStorage.getItem(stripedVarname) || "VAR_UNDEFINED");
             }
             console.log("DEBUG - params replaced", replacedText);
          }
@@ -102,7 +105,7 @@ const replaceStrWithParams = (text: any, staticVariables: StaticVariables | unde
             if (staticVariables && staticVariables[stripedVarname]) {
                replacedText = replacedText.replace(varname, staticVariables[stripedVarname]);
             } else {
-               replacedText = replacedText.replace(varname, sessionStorage.getItem(stripedVarname) || "VAR_UNDEFINED");
+               replacedText = replacedText.replace(varname, localStorage.getItem(stripedVarname) || "VAR_UNDEFINED");
             }
             console.log("DEBUG - params replaced", replacedText);
          }
@@ -127,10 +130,10 @@ export const normalRequest = (actionObject: ActionConfig, { endpoints, staticVar
       data: replaceStrWithParams(actionObject.data, staticVariables),
    };
    // if username/password was set, overwrite Auth
-   if (endpoints[actionObject.useEndpoint].username && endpoints[actionObject.useEndpoint].password) {
-      config.headers.Authorization =
-         "Basic " + btoa(`${endpoints[actionObject.useEndpoint].username}:${endpoints[actionObject.useEndpoint].password}`);
-   }
+   // if (endpoints[actionObject.useEndpoint].username && endpoints[actionObject.useEndpoint].password) {
+   //    config.headers.Authorization =
+   //       "Basic " + btoa(`${endpoints[actionObject.useEndpoint].username}:${endpoints[actionObject.useEndpoint].password}`);
+   // }
 
    return new Promise(async (resolve, reject) => {
       try {
@@ -190,10 +193,10 @@ export const pollingRequest = (actionObject: ActionConfig, { endpoints, staticVa
       data: replaceStrWithParams(actionObject.data, staticVariables),
    };
    // if username/password was set, overwrite Auth
-   if (endpoints[actionObject.useEndpoint].username && endpoints[actionObject.useEndpoint].password) {
-      config.headers.Authorization =
-         "Basic " + btoa(`${endpoints[actionObject.useEndpoint].username}:${endpoints[actionObject.useEndpoint].password}`);
-   }
+   // if (endpoints[actionObject.useEndpoint].username && endpoints[actionObject.useEndpoint].password) {
+   //    config.headers.Authorization =
+   //       "Basic " + btoa(`${endpoints[actionObject.useEndpoint].username}:${endpoints[actionObject.useEndpoint].password}`);
+   // }
    let response: AxiosResponse;
    let counterFlag = 1;
    console.log("action", actionObject);

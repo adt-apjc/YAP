@@ -50,6 +50,14 @@ const DemoContent = (props: DemoContentProps) => {
    const [showOffCanvas, setShowOffCanvas] = useState(false);
 
    const clearStateHandler = () => {
+      // clear vars
+      let keys = [];
+      for (let i = 0; i < localStorage.length; i++) {
+         if (localStorage.key(i) === "configData") continue;
+         keys.push(localStorage.key(i));
+      }
+      keys.forEach((k) => localStorage.removeItem(k!));
+      // clear result state
       setIsPreCheckCompleted({ cleanup: false });
       setIsActionCompleted({ cleanup: false });
       setIsPostCheckCompleted({ cleanup: false });
@@ -57,7 +65,9 @@ const DemoContent = (props: DemoContentProps) => {
       setPreCheckResults((prev) => ({ cleanup: prev.cleanup }));
       setActionResults((prev) => ({ cleanup: prev.cleanup }));
       setPostCheckResults((prev) => ({ cleanup: prev.cleanup }));
+      // clear modal params
       setModal({ modalShow: false, modalContentType: null, paramValues: null });
+
       console.log("DEBUG - clear state from sidebar demoContent");
    };
 
@@ -284,8 +294,8 @@ const DemoContent = (props: DemoContentProps) => {
 
       // if it is cleanup module also run clearStateHandler() after runAction complete successfully
       if (props.currentStep.name === "cleanup" && isPreCheckCompleted && isActionCompleted) {
-         dispatch({ type: "clearStateHandler" });
-         sessionStorage.clear();
+         dispatch({ type: "setRunningStatus" }); // clear sidebar complete status
+         clearStateHandler();
       }
 
       // after action complete delay 500 ms and start post check
@@ -300,7 +310,7 @@ const DemoContent = (props: DemoContentProps) => {
 
    useEffect(() => {
       const savedState = JSON.parse(window.localStorage.getItem("mainContentState") as string);
-      dispatch({ type: "registerClearStateFunction", payload: { key: "demoContent", func: clearStateHandler } });
+
       // load config from localStorage if exist
       if (savedState) {
          setIsPreCheckCompleted(savedState.isPreCheckCompleted);
@@ -311,7 +321,6 @@ const DemoContent = (props: DemoContentProps) => {
          setPostCheckResults(savedState.postCheckResults);
          console.log("DEBUG - load value from localStorage");
       }
-      return () => dispatch({ type: "unregisterClearStateFunction", payload: { key: "demoContent" } });
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 

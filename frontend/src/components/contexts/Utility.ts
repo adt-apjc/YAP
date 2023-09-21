@@ -53,7 +53,7 @@ export const getVariableDetails = (request: ActionConfig): VarDetails => {
    // Finally converting the set of variables in an array of object, adding the variable value
    let varDetails = [];
    for (const variable of variables) {
-      varDetails.push({ key: variable, val: window.sessionStorage.getItem(variable) });
+      varDetails.push({ key: variable, val: window.localStorage.getItem(variable) });
    }
 
    return varDetails;

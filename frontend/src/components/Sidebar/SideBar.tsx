@@ -57,11 +57,6 @@ const SideBar = () => {
       selectedStep: null,
    });
 
-   const clearStateHandler = () => {
-      dispatch({ type: "setRunningStatus" });
-      console.log("DEBUG - clear state from sidebar run");
-   };
-
    const isSomeStepRunning = () => {
       for (let i in context.runningStatus) {
          if (context.runningStatus[i] === "running") return true;
@@ -144,14 +139,6 @@ const SideBar = () => {
          );
       });
    };
-
-   useEffect(() => {
-      dispatch({ type: "registerClearStateFunction", payload: { key: "sidebar", func: clearStateHandler } });
-      return () => {
-         dispatch({ type: "unregisterClearStateFunction", payload: { key: "sidebar" } });
-      };
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
 
    return (
       <>

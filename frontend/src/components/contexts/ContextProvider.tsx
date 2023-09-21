@@ -69,7 +69,7 @@ function deleteStep(state: TYPE.ContextState, payload: { name: string }) {
 }
 function addEndpoint(
    state: TYPE.ContextState,
-   payload: { name: string; baseURL: string; headerList: { key: any; value: any }[] }
+   payload: { name: string; baseURL: string; headerList: { key: string; value: string }[] }
 ) {
    let clonedState = _.cloneDeep(state);
    clonedState.config.endpoints[payload.name] = {
@@ -126,14 +126,6 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
          }
          return { ...state };
 
-      case "registerClearStateFunction":
-         console.log("DEBUG - register cleanup function from", action.payload.key);
-         return { ...state, clearStateFunction: { ...state.clearStateFunction, [action.payload.key]: action.payload.func } };
-
-      case "unregisterClearStateFunction":
-         if (state.clearStateFunction) delete state.clearStateFunction[action.payload.key];
-         return { ...state };
-
       case "addAction":
          return { ...addAction(state, action.payload) };
 
@@ -160,7 +152,6 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
 
       case "loadConfig":
          window.localStorage.clear();
-         window.sessionStorage.clear();
          for (let key in state.clearStateFunction) {
             if (typeof state.clearStateFunction[key] === "function") {
                state.clearStateFunction[key]();
@@ -174,7 +165,6 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
 
       case "clearConfig":
          window.localStorage.clear();
-         window.sessionStorage.clear();
          for (let key in state.clearStateFunction) {
             if (typeof state.clearStateFunction[key] === "function") {
                state.clearStateFunction[key]();
@@ -184,7 +174,6 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
 
       case "newConfig":
          window.localStorage.clear();
-         window.sessionStorage.clear();
          for (let key in state.clearStateFunction) {
             if (typeof state.clearStateFunction[key] === "function") {
                state.clearStateFunction[key]();
