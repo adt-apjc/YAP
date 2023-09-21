@@ -21,6 +21,7 @@ const EditStepDescription = (props: EditStepDescriptionProps) => {
    const [state, setState] = useState({
       descriptionInput: props.initValue && props.initValue.description ? props.initValue.description : "",
       titleInput: props.initValue ? props.initValue.title : "",
+      prefaceRef: context.config.mainContent[context.currentStep.name!].prefaceRef || 0,
    });
 
    const findCurrentStepIndex = () => {
@@ -34,6 +35,7 @@ const EditStepDescription = (props: EditStepDescriptionProps) => {
    const onEditHandler = () => {
       let currentConfig = cloneDeep(context.config);
       currentConfig.mainContent[context.currentStep.name!].description = state.descriptionInput;
+      currentConfig.mainContent[context.currentStep.name!].prefaceRef = state.prefaceRef;
       if (!["cleanup", "unstage", "stage"].includes(context.currentStep.name!)) {
          let sidebarIndex = findCurrentStepIndex();
          if (sidebarIndex < 0) {
@@ -47,6 +49,20 @@ const EditStepDescription = (props: EditStepDescriptionProps) => {
       props.onHide();
    };
 
+   const generatePrefaceRefOptions = () => {
+      return (
+         <>
+            {context.config.preface.map((el, i) => {
+               return (
+                  <option key={i} value={i}>
+                     {el.stepDesc}
+                  </option>
+               );
+            })}
+         </>
+      );
+   };
+
    return (
       <>
          <div className="modal-header">
@@ -54,12 +70,29 @@ const EditStepDescription = (props: EditStepDescriptionProps) => {
             <button type="button" className="btn-close" onClick={props.onHide}></button>
          </div>
          <div className="modal-body">
-            <input
-               className="form-control form-control-sm mb-2"
-               placeholder="title"
-               value={state.titleInput}
-               onChange={(e) => setState({ ...state, titleInput: e.target.value })}
-            ></input>
+            <div className="d-flex justify-content-between">
+               <div className="d-flex flex-column flex-grow-1 me-3 mb-2">
+                  <small>Title</small>
+                  <input
+                     className="form-control form-control-sm"
+                     placeholder="title"
+                     value={state.titleInput}
+                     onChange={(e) => setState({ ...state, titleInput: e.target.value })}
+                  ></input>
+               </div>
+               <div className="d-flex flex-column flex-grow-1">
+                  <small className="text-nowrap">Preface Reference </small>
+                  <select
+                     className="form-select form-select-sm"
+                     name="type"
+                     value={state.prefaceRef}
+                     onChange={(e) => setState({ ...state, prefaceRef: parseInt(e.target.value) })}
+                  >
+                     {generatePrefaceRefOptions()}
+                  </select>
+               </div>
+            </div>
+            <small>Description</small>
             <AceEditor
                mode="markdown"
                theme="github"
