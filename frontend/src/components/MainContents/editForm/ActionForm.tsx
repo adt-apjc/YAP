@@ -33,13 +33,11 @@ type PayloadTypeSelectorProps = {
 
 type HeadersFormProps = {
    input: ActionConfig;
-   inputHeaders: { key: any; value: any }[];
-   setInputHeaders: (s: any) => void;
+   inputHeaders: { key: string; value: string }[];
+   setInputHeaders: (s: { key: string; value: string }[]) => void;
 };
 
 const HeadersForm = (props: HeadersFormProps) => {
-   const [isHeadersEnabled, setIsHeadersEnabled] = useState(false);
-
    const onHeaderChangeHandler = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
       let currentHeaders = props.inputHeaders;
       currentHeaders[index] = { ...currentHeaders[index], [e.target.name]: e.target.value };
@@ -52,7 +50,9 @@ const HeadersForm = (props: HeadersFormProps) => {
    };
 
    const onHeaderAddHandler = () => {
-      props.setInputHeaders((prev: any) => [...prev, { key: "", value: "" }]);
+      let currentInputHeaders = _.cloneDeep(props.inputHeaders);
+      currentInputHeaders.push({ key: "", value: "" });
+      props.setInputHeaders(currentInputHeaders);
    };
 
    const renderHeaderField = () => {
@@ -91,15 +91,8 @@ const HeadersForm = (props: HeadersFormProps) => {
       });
    };
 
-   const handleHeadersEnableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (!e.target.checked) props.setInputHeaders([]);
-      setIsHeadersEnabled(e.target.checked);
-   };
-
    useEffect(() => {
       if (!props.input) return;
-
-      if (props.input.headers && Object.keys(props.input.headers).length > 0) setIsHeadersEnabled(true);
 
       let inputHeaders = [];
       for (let item in props.input.headers) {
@@ -110,26 +103,10 @@ const HeadersForm = (props: HeadersFormProps) => {
 
    return (
       <div>
-         <div className="form-check mb-2">
-            <input
-               type="checkbox"
-               className="form-check-input"
-               id="enableHeaders"
-               checked={isHeadersEnabled}
-               onChange={handleHeadersEnableChange}
-            />
-            <label className="form-check-label" htmlFor="enableHeaders">
-               Headers
-            </label>
+         <div className="row">{renderHeaderField()}</div>
+         <div className="text-center text-info font-lg">
+            <i className="fad fa-plus-circle icon-hover-highlight pointer" onClick={onHeaderAddHandler} />
          </div>
-         {isHeadersEnabled && (
-            <>
-               <div className="row">{renderHeaderField()}</div>
-               <div className="text-center text-info font-lg">
-                  <i className="fad fa-plus-circle icon-hover-highlight pointer" onClick={onHeaderAddHandler} />
-               </div>
-            </>
-         )}
       </div>
    );
 };
@@ -364,7 +341,7 @@ const ActionForm = (props: ActionFormProps) => {
    const [input, setInput] = useState<ActionConfig>({
       type: "request",
       useEndpoint: "",
-      headers: undefined,
+      headers: props.initValue!.action.headers || {},
       apiBadge: "",
       apiBadgeColor: "",
       title: "",
@@ -382,6 +359,12 @@ const ActionForm = (props: ActionFormProps) => {
 
    const [dataText, setDataText] = useState("");
    const [inputHeaders, setInputHeaders] = useState<any[]>([]);
+   const [isHeadersEnabled, setIsHeadersEnabled] = useState(false);
+
+   const handleHeadersEnableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!e.target.checked) setInputHeaders([]);
+      setIsHeadersEnabled(e.target.checked);
+   };
 
    const transformPayloadTextToObject = () => {
       try {
@@ -481,6 +464,10 @@ const ActionForm = (props: ActionFormProps) => {
       });
    }, [props.initValue]);
 
+   useEffect(() => {
+      if (input.headers && Object.keys(input.headers).length > 0) setIsHeadersEnabled(true);
+   }, [input.headers]);
+
    return (
       <>
          <div className="modal-header">
@@ -491,7 +478,7 @@ const ActionForm = (props: ActionFormProps) => {
          </div>
          <div className="modal-body">
             <form id="actionForm" onSubmit={handleFormSubmit}>
-               <div className="row align-items-center">
+               <div className="row align-items-center mb-3">
                   <div className="col-3">
                      <div className="form-check form-check-inline">
                         <input
@@ -522,7 +509,7 @@ const ActionForm = (props: ActionFormProps) => {
                         </label>
                      </div>
                   </div>
-                  <div className="col-9">
+                  <div className="col-7">
                      <div className="row">
                         <div className={`${input.type === "polling" ? "col-3" : "form-check form-check-inline"}`}>
                            <div className="col">
@@ -571,8 +558,24 @@ const ActionForm = (props: ActionFormProps) => {
                         </div>
                      </div>
                   </div>
+                  <div className="col-2 align-items-center mt-4">
+                     <div className="form-check ">
+                        <input
+                           type="checkbox"
+                           className="form-check-input"
+                           id="enableHeaders"
+                           checked={isHeadersEnabled}
+                           onChange={handleHeadersEnableChange}
+                        />
+                        <label className="form-check-label" htmlFor="enableHeaders">
+                           Override Headers
+                        </label>
+                     </div>
+                  </div>
                </div>
-               <HeadersForm input={input} inputHeaders={inputHeaders} setInputHeaders={setInputHeaders} />
+
+               {isHeadersEnabled && <HeadersForm input={input} inputHeaders={inputHeaders} setInputHeaders={setInputHeaders} />}
+
                <div className="input-group my-2">
                   <select
                      style={{ maxWidth: 150 }}
