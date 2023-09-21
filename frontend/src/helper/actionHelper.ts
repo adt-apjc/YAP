@@ -119,9 +119,10 @@ export const normalRequest = (actionObject: ActionConfig, { endpoints, staticVar
    }
    let config = {
       baseURL: actionObject.baseURL ? actionObject.baseURL : endpoints[actionObject.useEndpoint].baseURL,
-      headers: actionObject.headers
-         ? replaceStrWithParams(actionObject.headers, staticVariables)
-         : replaceStrWithParams(endpoints[actionObject.useEndpoint].headers, staticVariables),
+      headers:
+         actionObject.headers && Object.keys(actionObject.headers).length > 0
+            ? replaceStrWithParams(actionObject.headers, staticVariables)
+            : replaceStrWithParams(endpoints[actionObject.useEndpoint].headers, staticVariables),
       url: replaceStrWithParams(actionObject.url, staticVariables),
       method: actionObject.method,
       data: replaceStrWithParams(actionObject.data, staticVariables),
