@@ -130,11 +130,6 @@ export const normalRequest = (actionObject: ActionConfig, { endpoints, staticVar
       method: actionObject.method,
       data: replaceStrWithParams(actionObject.data, staticVariables),
    };
-   // if username/password was set, overwrite Auth
-   // if (endpoints[actionObject.useEndpoint].username && endpoints[actionObject.useEndpoint].password) {
-   //    config.headers.Authorization =
-   //       "Basic " + btoa(`${endpoints[actionObject.useEndpoint].username}:${endpoints[actionObject.useEndpoint].password}`);
-   // }
 
    return new Promise(async (resolve, reject) => {
       try {
@@ -193,11 +188,7 @@ export const pollingRequest = (actionObject: ActionConfig, { endpoints, staticVa
       method: actionObject.method,
       data: replaceStrWithParams(actionObject.data, staticVariables),
    };
-   // if username/password was set, overwrite Auth
-   // if (endpoints[actionObject.useEndpoint].username && endpoints[actionObject.useEndpoint].password) {
-   //    config.headers.Authorization =
-   //       "Basic " + btoa(`${endpoints[actionObject.useEndpoint].username}:${endpoints[actionObject.useEndpoint].password}`);
-   // }
+
    let response: AxiosResponse;
    let counterFlag = 1;
    console.log("action", actionObject);

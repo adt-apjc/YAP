@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { EndpointConfig } from "../../contexts/ContextTypes";
+import _ from "lodash";
 
 type EndpointViewerProps = {
    onSelect: (endpoint: { name: string } & EndpointConfig) => void;
@@ -12,7 +13,117 @@ type EndpointEditorProps = {
 
 type EndpointState = ({ name: string } & EndpointConfig) | null;
 
-type EndpointEditorState = { input: { name: string; baseURL: string }; inputHeader: { key: any; value: any }[] };
+type EndpointEditorState = { input: { name: string; baseURL: string }; inputHeader: { key: string; value: string }[] };
+
+type AuthHeaderGeneratorProps = {
+   setEditorState: React.Dispatch<React.SetStateAction<EndpointEditorState>>;
+};
+
+const AuthHeaderGenerator = (props: AuthHeaderGeneratorProps) => {
+   const [formType, setFormType] = useState("basic");
+   const [showForm, setShowForm] = useState(false);
+   const [basicFormInput, setBasicFormInput] = useState({ username: "", password: "" });
+   const [bearerFormInput, setBearerFormInput] = useState("");
+
+   const handleConfirm = () => {
+      let authString: string;
+      if (formType === "basic") authString = "Basic " + btoa(`${basicFormInput.username}:${basicFormInput.password}`);
+      else authString = `Bearer ${bearerFormInput}`;
+
+      props.setEditorState((prev) => {
+         let cloned = _.cloneDeep(prev);
+         let authIndex = cloned.inputHeader.findIndex((h) => h.key === "Authorization");
+         console.log(authIndex);
+         if (authIndex >= 0) cloned.inputHeader[authIndex].value = authString;
+         else cloned.inputHeader.push({ key: "Authorization", value: authString });
+         return cloned;
+      });
+   };
+
+   const BasicForm = (
+      <>
+         <div className="font-sm">
+            <label>Username</label>
+            <input
+               className="form-control form-control-sm"
+               type="text"
+               value={basicFormInput.username}
+               onChange={(e) => setBasicFormInput((prev) => ({ ...prev, username: e.target.value }))}
+            />
+         </div>
+         <div className="font-sm mt-2">
+            <label>Password</label>
+            <input
+               className="form-control form-control-sm"
+               type="text"
+               value={basicFormInput.password}
+               onChange={(e) => setBasicFormInput((prev) => ({ ...prev, password: e.target.value }))}
+            />
+         </div>
+      </>
+   );
+
+   const BearerForm = (
+      <div className="input-group input-group-sm">
+         <span className="input-group-text">Bearer</span>
+         <input
+            type="text"
+            className="form-control"
+            placeholder="token"
+            value={bearerFormInput}
+            onChange={(e) => setBearerFormInput(e.target.value)}
+         />
+      </div>
+   );
+
+   return (
+      <>
+         <div className="form-check">
+            <input
+               className="form-check-input"
+               type="checkbox"
+               checked={showForm}
+               id="showFormCheck"
+               onChange={(e) => setShowForm(e.target.checked)}
+            />
+            <label className="form-check-label" htmlFor="showFormCheck">
+               Generate authorization header
+            </label>
+         </div>
+         {showForm && (
+            <div className="p-2 border rounded position-relative">
+               <small className="fst-italic">
+                  This helper is for creating the Authorization header, you're still able to edit the header in the section above.
+               </small>
+               <div className="row align-items-center mt-2">
+                  <div className="col-3">Type</div>
+                  <div className="col-6">
+                     <select
+                        className="form-select form-select-sm"
+                        value={formType}
+                        onChange={(e) => setFormType(e.target.value)}
+                     >
+                        <option value="basic">Basic</option>
+                        <option value="bearer">Bearer Token</option>
+                     </select>
+                  </div>
+               </div>
+               <div className="row mt-3">
+                  <div className="col-6 offset-3">
+                     {formType === "basic" && BasicForm}
+                     {formType === "bearer" && BearerForm}
+                  </div>
+                  <div className="col-3 d-flex align-items-end justify-content-end">
+                     <button onClick={handleConfirm} className="btn btn-sm btn-primary">
+                        Confirm
+                     </button>
+                  </div>
+               </div>
+            </div>
+         )}
+      </>
+   );
+};
 
 const EndpointEditor = (props: EndpointEditorProps) => {
    const [state, setState] = useState<EndpointEditorState>({
@@ -31,7 +142,7 @@ const EndpointEditor = (props: EndpointEditorProps) => {
       setState((prev) => ({ ...prev, inputHeader: currentHeader }));
    };
 
-   const onHeaderSaveHandler = () => {
+   const handleSaveEndpoint = () => {
       dispatch({
          type: "addEndpoint",
          payload: { name: state.input.name, baseURL: state.input.baseURL, headerList: state.inputHeader },
@@ -101,7 +212,7 @@ const EndpointEditor = (props: EndpointEditorProps) => {
          <div className="d-flex align-items-center justify-content-between">
             <div>Endpoint</div>
             <div className="d-flex">
-               <div className="btn btn-sm text-info ms-auto" onClick={onHeaderSaveHandler}>
+               <div className="btn btn-sm text-info ms-auto" onClick={handleSaveEndpoint}>
                   Save
                </div>
                <div className="btn btn-sm ms-auto" onClick={props.onClose}>
@@ -132,11 +243,12 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                />
             </div>
          </div>
-         <div className="mb-3">Header</div>
+         <div className="mb-2">Header</div>
          <div className="row">{renderHeaderField()}</div>
          <div className="text-center text-info font-lg">
             <i className="fad fa-plus-circle icon-hover-highlight pointer" onClick={onHeaderAddHandler} />
          </div>
+         <AuthHeaderGenerator setEditorState={setState} />
       </div>
    );
 };

@@ -33,8 +33,6 @@ export type EndpointConfig = {
    baseURL: string;
    backendRequest?: boolean; // default [true]
    headers?: { [key: string]: string };
-   username?: string;
-   password?: string;
 };
 
 export type OutcomeCommandConfig = {

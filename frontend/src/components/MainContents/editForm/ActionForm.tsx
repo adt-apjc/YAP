@@ -119,20 +119,18 @@ const PayloadTypeSelector = (props: PayloadTypeSelectorProps) => {
       setIsMenuOpen(false);
    };
 
-   const SelectComponent = () => {
-      return (
-         <div className="font-sm">
-            <ul className="list-group border border-0">
-               <li className="list-group-item list-group-item-action pointer" onClick={() => handleSelect("json")}>
-                  JSON
-               </li>
-               <li className="list-group-item list-group-item-action pointer" onClick={() => handleSelect("text")}>
-                  Text
-               </li>
-            </ul>
-         </div>
-      );
-   };
+   const SelectComponent = (
+      <div className="font-sm">
+         <ul className="list-group border border-0">
+            <li className="list-group-item list-group-item-action pointer" onClick={() => handleSelect("json")}>
+               JSON
+            </li>
+            <li className="list-group-item list-group-item-action pointer" onClick={() => handleSelect("text")}>
+               Text
+            </li>
+         </ul>
+      </div>
+   );
 
    return (
       <WithDropdown
@@ -140,7 +138,7 @@ const PayloadTypeSelector = (props: PayloadTypeSelectorProps) => {
          open={isMenuOpen}
          onRequestClose={() => setIsMenuOpen(false)}
          placement="top"
-         DropdownComponent={<SelectComponent />}
+         DropdownComponent={SelectComponent}
       >
          <div className="font-sm" onClick={() => setIsMenuOpen(true)}>
             <span className="me-2">{props.payloadType.toLocaleUpperCase()}</span>
@@ -458,7 +456,7 @@ const ActionForm = (props: ActionFormProps) => {
             setDataText(
                typeof props.initValue.action.data === "string"
                   ? props.initValue.action.data
-                  : JSON.stringify(props.initValue.action.data, null, 3),
+                  : JSON.stringify(props.initValue.action.data, null, 3)
             );
          return { ...prev, ...props.initValue.action };
       });
