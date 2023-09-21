@@ -179,7 +179,7 @@ const SideBar = () => {
                      className={`text-primary fad fa-${
                         state.activeAddStep ? "minus" : "plus"
                      }-circle pointer font-lg icon-hover-highlight`}
-                     onClick={() => setState((prev) => ({ ...prev, activeAddStep: !state.activeAddStep }))}
+                     onClick={() => setState((prev) => ({ ...prev, activeAddStep: !state.activeAddStep, input: "" }))}
                   />
                </div>
             )}
