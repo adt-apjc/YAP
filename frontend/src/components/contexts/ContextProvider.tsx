@@ -17,7 +17,7 @@ let initState: TYPE.ContextState = {
 
 function addAction(
    state: TYPE.ContextState,
-   payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any },
+   payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any }
 ) {
    let clonedState = _.cloneDeep(state);
 
@@ -37,7 +37,7 @@ function addAction(
 
 function deleteAction(
    state: TYPE.ContextState,
-   payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" },
+   payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" }
 ) {
    let clonedState = _.cloneDeep(state);
    state.config.mainContent[payload.stepKey][payload.tab].splice(payload.index, 1);
@@ -71,7 +71,7 @@ function deleteStep(state: TYPE.ContextState, payload: { name: string }) {
 }
 function addEndpoint(
    state: TYPE.ContextState,
-   payload: { name: string; baseURL: string; headerList: { key: string; value: string }[] },
+   payload: { name: string; baseURL: string; headerList: { key: string; value: string }[] }
 ) {
    let clonedState = _.cloneDeep(state);
    clonedState.config.endpoints[payload.name] = {
@@ -175,7 +175,7 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
                state.clearStateFunction[key]();
             }
          }
-         window.localStorage.setItem("configData", JSON.stringify(action.payload));
+         window.localStorage.setItem("__internal__configData", JSON.stringify(action.payload));
          return { ...state, currentStep: { name: null, label: null }, runningStatus: null, config: { ...action.payload } };
 
       case "loadRunningStatus":
@@ -217,8 +217,8 @@ function ContextProvider({ children }: { children: React.ReactNode }) {
    const [state, dispatch] = useReducer(globalContextreducer, initState);
 
    useEffect(() => {
-      const configData = window.localStorage.getItem("configData");
-      const runningStatus = window.localStorage.getItem("runningStatus");
+      const configData = window.localStorage.getItem("__internal__configData");
+      const runningStatus = window.localStorage.getItem("__internal__runningStatus");
       // load config from localStorage if exist
       if (configData) dispatch({ type: "replaceConfig", payload: JSON.parse(configData) });
 
@@ -227,11 +227,12 @@ function ContextProvider({ children }: { children: React.ReactNode }) {
    }, []);
 
    useDidUpdateEffect(() => {
-      window.localStorage.setItem("configData", JSON.stringify(state.config));
+      window.localStorage.setItem("__internal__configData", JSON.stringify(state.config));
    }, [JSON.stringify(state.config)]);
 
    useEffect(() => {
-      if (!_.isEmpty(state.runningStatus)) window.localStorage.setItem("runningStatus", JSON.stringify(state.runningStatus));
+      if (!_.isEmpty(state.runningStatus))
+         window.localStorage.setItem("__internal__runningStatus", JSON.stringify(state.runningStatus));
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [JSON.stringify(state.runningStatus)]);
 

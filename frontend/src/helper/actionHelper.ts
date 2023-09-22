@@ -43,7 +43,7 @@ const validateExpect = (expect: ActionExpectObject, response: AxiosResponse) => 
 const processMatchResponse = (actionObject: ActionConfig, response: AxiosResponse) => {
    if (actionObject.match) {
       let { objectPath, regEx, storeAs, matchGroup } = actionObject.match;
-      let reservedNames = ["configData", "mainContentState", "runningStatus"];
+      let reservedNames = ["__internal__configData", "__internal__mainContentState", "__internal__runningStatus"];
       if (reservedNames.includes(storeAs)) return; // var name cannot be the same as reserved list
 
       let targetValue = getStringFromObject(response.data, objectPath);

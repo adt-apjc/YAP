@@ -53,7 +53,7 @@ const DemoContent = (props: DemoContentProps) => {
       // clear vars
       let keys = [];
       for (let i = 0; i < localStorage.length; i++) {
-         if (localStorage.key(i) === "configData") continue;
+         if (localStorage.key(i) === "__internal__configData") continue;
          keys.push(localStorage.key(i));
       }
       keys.forEach((k) => localStorage.removeItem(k!));
@@ -309,7 +309,7 @@ const DemoContent = (props: DemoContentProps) => {
    }, [props.currentStep.name]);
 
    useEffect(() => {
-      const savedState = JSON.parse(window.localStorage.getItem("mainContentState") as string);
+      const savedState = JSON.parse(window.localStorage.getItem("__internal__mainContentState") as string);
 
       // load config from localStorage if exist
       if (savedState) {
@@ -328,7 +328,7 @@ const DemoContent = (props: DemoContentProps) => {
       if (!props.currentStep.name) return;
       // saveStateToLocalStorage
       window.localStorage.setItem(
-         "mainContentState",
+         "__internal__mainContentState",
          JSON.stringify({
             preCheckResults,
             actionResults,
