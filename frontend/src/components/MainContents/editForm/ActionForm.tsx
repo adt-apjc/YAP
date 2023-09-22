@@ -31,10 +31,12 @@ type PayloadTypeSelectorProps = {
    setPayloadType: (v: string) => void;
 };
 
+type HeaderFormInput = { key: string; value: string };
+
 type HeadersFormProps = {
    input: ActionConfig;
-   inputHeaders: { key: string; value: string }[];
-   setInputHeaders: (s: { key: string; value: string }[]) => void;
+   inputHeaders: HeaderFormInput[];
+   setInputHeaders: React.Dispatch<React.SetStateAction<HeaderFormInput[]>>;
 };
 
 const HeadersForm = (props: HeadersFormProps) => {
@@ -356,7 +358,7 @@ const ActionForm = (props: ActionFormProps) => {
    });
 
    const [dataText, setDataText] = useState("");
-   const [inputHeaders, setInputHeaders] = useState<{ key: string; value: string }[]>([]);
+   const [inputHeaders, setInputHeaders] = useState<HeaderFormInput[]>([]);
    const [isHeadersEnabled, setIsHeadersEnabled] = useState(false);
 
    const handleHeadersEnableChange = (e: React.ChangeEvent<HTMLInputElement>) => {

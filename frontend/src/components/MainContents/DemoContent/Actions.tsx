@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ReactJson from "@uiw/react-json-view";
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
 import ModalContentSelector from "../editForm/ModalContentSelector";
@@ -233,7 +234,7 @@ const Actions = (props: ActionsProps) => {
       selectedAction: null,
    });
    const [curExpandRow, setCurExpandRow] = useState<number[]>([]);
-   const { context } = useGlobalContext();
+   const { context, dispatch } = useGlobalContext();
 
    const expandDetailHandler = (index: number) => {
       if (!curExpandRow.includes(index)) {
@@ -247,6 +248,26 @@ const Actions = (props: ActionsProps) => {
       return props.currentRunning === index;
    };
 
+   const onDragEnd = (result: DropResult) => {
+      if (!result.destination) {
+         return;
+      }
+
+      if (result.destination.index === result.source.index) {
+         return;
+      }
+
+      dispatch({
+         type: "reorderAction",
+         payload: {
+            source: result.source.index,
+            destination: result.destination.index,
+            stepKey: context.currentStep.name!,
+            tab: "actions",
+         },
+      });
+   };
+
    useEffect(() => {
       setCurExpandRow([]);
    }, [context.currentStep]);
@@ -254,7 +275,7 @@ const Actions = (props: ActionsProps) => {
    // check if it collasped
    if (!props.show) return null;
 
-   let apiList;
+   let apiList: React.ReactNode;
    // apiList component
    if (props.currentStepDetails.actions && props.currentStepDetails.actions.length !== 0) {
       apiList = props.currentStepDetails.actions.map((action, index) => {
@@ -277,80 +298,98 @@ const Actions = (props: ActionsProps) => {
                )
             ) : null;
          return (
-            <div className="mt-2" key={index}>
-               <div
-                  className={`shadow-sm p-3 mb-3 bg-light text-secondary rounded pointer ${
-                     isActionRunning(index) ? "border" : ""
-                  }`}
-                  onClick={() => expandDetailHandler(index)}
-               >
-                  <div className="d-flex justify-content-between">
-                     <div className="d-flex align-items-center">
-                        <div>
-                           <div
-                              className={`api-method-badge text-light me-3 rounded`}
-                              style={{ backgroundColor: action.apiBadgeColor ? action.apiBadgeColor : "#007cad" }}
-                           >
-                              {action.apiBadge ? action.apiBadge : "NO HEADER"}
-                           </div>
-                           {action.title ? action.title : "NO TITLE"}
-                        </div>
-                        {runResultStatus}
-                     </div>
-                     <div className="d-flex align-items-center">
-                        <RunButtonComponent
-                           currentRunning={isActionRunning(index)}
-                           workflowHandler={() => props.workflowHandler(index)}
-                           disable={isActionRunning(index)}
-                        />
-                        {context.mode === "edit" && (
+            <Draggable
+               draggableId={`action-${index}-aaa`}
+               index={index}
+               key={index}
+               isDragDisabled={context.mode === "presentation"}
+            >
+               {(provided) => (
+                  <div className="mt-2" ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                     <div
+                        className={`shadow-sm p-3 mb-3 bg-light text-secondary rounded pointer ${
+                           isActionRunning(index) ? "border" : ""
+                        }`}
+                        onClick={() => expandDetailHandler(index)}
+                     >
+                        <div className="d-flex justify-content-between">
                            <div className="d-flex align-items-center">
-                              <span
-                                 className="px-1 font-sm font-weight-light text-info text-hover-highlight"
-                                 onClick={(e) => {
-                                    e.stopPropagation();
-                                    setModal({
-                                       modalShow: true,
-                                       modalContentType: "action",
-                                       selectedAction: { action: action, actionIndex: index },
-                                    });
-                                 }}
-                              >
-                                 Edit
-                              </span>
-                              <span
-                                 className="pe-3 ps-1 font-sm font-weight-light text-danger text-hover-highlight"
-                                 onClick={(e) => {
-                                    e.stopPropagation();
-                                    setModal({
-                                       modalShow: true,
-                                       modalContentType: "actionDeleteConfirm",
-                                       selectedAction: { action: action, actionIndex: index, tab: "actions" },
-                                    });
-                                 }}
-                              >
-                                 Delete
-                              </span>
+                              <div>
+                                 <div
+                                    className={`api-method-badge text-light me-3 rounded`}
+                                    style={{ backgroundColor: action.apiBadgeColor ? action.apiBadgeColor : "#007cad" }}
+                                 >
+                                    {action.apiBadge ? action.apiBadge : "NO HEADER"}
+                                 </div>
+                                 {action.title ? action.title : "NO TITLE"}
+                              </div>
+                              {runResultStatus}
                            </div>
-                        )}
-                        <i className={`fas fa-caret-${curExpandRow.includes(index) ? "down" : "right"}`}></i>
+                           <div className="d-flex align-items-center">
+                              <RunButtonComponent
+                                 currentRunning={isActionRunning(index)}
+                                 workflowHandler={() => props.workflowHandler(index)}
+                                 disable={isActionRunning(index)}
+                              />
+                              {context.mode === "edit" && (
+                                 <div className="d-flex align-items-center">
+                                    <span
+                                       className="px-1 font-sm font-weight-light text-info text-hover-highlight"
+                                       onClick={(e) => {
+                                          e.stopPropagation();
+                                          setModal({
+                                             modalShow: true,
+                                             modalContentType: "action",
+                                             selectedAction: { action: action, actionIndex: index },
+                                          });
+                                       }}
+                                    >
+                                       Edit
+                                    </span>
+                                    <span
+                                       className="pe-3 ps-1 font-sm font-weight-light text-danger text-hover-highlight"
+                                       onClick={(e) => {
+                                          e.stopPropagation();
+                                          setModal({
+                                             modalShow: true,
+                                             modalContentType: "actionDeleteConfirm",
+                                             selectedAction: { action: action, actionIndex: index, tab: "actions" },
+                                          });
+                                       }}
+                                    >
+                                       Delete
+                                    </span>
+                                 </div>
+                              )}
+                              <i className={`fas fa-caret-${curExpandRow.includes(index) ? "down" : "right"}`}></i>
+                           </div>
+                        </div>
                      </div>
+                     <ActionDetail
+                        show={curExpandRow.includes(index)}
+                        response={props.results && props.results[index] ? props.results[index] : null}
+                        request={action}
+                     />
                   </div>
-               </div>
-               <ActionDetail
-                  show={curExpandRow.includes(index)}
-                  response={props.results && props.results[index] ? props.results[index] : null}
-                  request={action}
-               />
-            </div>
+               )}
+            </Draggable>
          );
       });
    } else {
       apiList = <div className="shadow-sm p-3 mb-3 bg-light text-secondary rounded pointer">No API request configured.</div>;
    }
    return (
-      <div className="container">
-         {apiList}
+      <>
+         <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable-1" type="PERSON" isDropDisabled={context.mode === "presentation"}>
+               {(provided) => (
+                  <div ref={provided.innerRef} {...provided.droppableProps}>
+                     <div className="container">{apiList}</div>
+                     {provided.placeholder}
+                  </div>
+               )}
+            </Droppable>
+         </DragDropContext>
          <Modal
             show={modal.modalShow}
             onHide={() => setModal({ modalShow: false, modalContentType: null, selectedAction: null })}
@@ -362,7 +401,7 @@ const Actions = (props: ActionsProps) => {
                contentType={modal.modalContentType as string}
             />
          </Modal>
-      </div>
+      </>
    );
 };
 

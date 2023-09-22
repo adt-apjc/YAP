@@ -11,6 +11,10 @@ export type ContextAction =
         type: "addAction";
         payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any };
      }
+   | {
+        type: "reorderAction";
+        payload: { source: number; destination: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" };
+     }
    | { type: "deleteAction"; payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" } }
    | { type: "addStep"; payload: { name: string } }
    | { type: "deleteStep"; payload: { name: string } }
@@ -56,9 +60,7 @@ export type ActionConfig = {
    title: string;
    useEndpoint: string;
    url: string;
-   baseURL?: string;
    method: string;
-   headers?: { [key: string]: string };
    apiBadge: string;
    apiBadgeColor: string;
    description: string;

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import ReactJson from "@uiw/react-json-view";
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
 import ModalContentSelector from "../editForm/ModalContentSelector";
@@ -232,13 +233,13 @@ export const PostCheckDetail = (props: PostCheckDetailProps) => {
 };
 
 const PostCheck = (props: PostCheckProps) => {
-   const { context } = useGlobalContext();
    const [modal, setModal] = useState<{ modalShow: boolean; modalContentType: string | null; selectedAction: any }>({
       modalShow: false,
       modalContentType: null,
       selectedAction: null,
    });
    const [curExpandRow, setCurExpandRow] = useState<number[]>([]);
+   const { context, dispatch } = useGlobalContext();
 
    const expandDetailHandler = (index: number) => {
       if (!curExpandRow.includes(index)) {
@@ -252,6 +253,26 @@ const PostCheck = (props: PostCheckProps) => {
       return props.currentRunning === index;
    };
 
+   const onDragEnd = (result: DropResult) => {
+      if (!result.destination) {
+         return;
+      }
+
+      if (result.destination.index === result.source.index) {
+         return;
+      }
+
+      dispatch({
+         type: "reorderAction",
+         payload: {
+            source: result.source.index,
+            destination: result.destination.index,
+            stepKey: context.currentStep.name!,
+            tab: "postCheck",
+         },
+      });
+   };
+
    useEffect(() => {
       setCurExpandRow([]);
    }, [context.currentStep]);
@@ -259,7 +280,7 @@ const PostCheck = (props: PostCheckProps) => {
    // check if it collasped
    if (!props.show) return null;
 
-   let apiList;
+   let apiList: React.ReactNode;
    if (props.currentStepDetails.postCheck && props.currentStepDetails.postCheck.length > 0) {
       apiList = props.currentStepDetails.postCheck.map((postCheck, index) => {
          let runResultStatus =
@@ -280,78 +301,87 @@ const PostCheck = (props: PostCheckProps) => {
                )
             ) : null;
          return (
-            <div className="mt-2" key={index}>
-               {/* API DETAILS */}
-               <div
-                  className={`shadow-sm p-3 mb-3 bg-light text-secondary rounded pointer ${
-                     isPostCheckRunning(index) ? "border" : ""
-                  }`}
-                  onClick={() => expandDetailHandler(index)}
-               >
-                  <div className="d-flex justify-content-between">
-                     <div className="d-flex align-items-center">
-                        {/* API METHOD , TITLE , DESC */}
-                        <div>
-                           <div
-                              className={`api-method-badge text-light me-3 rounded`}
-                              style={{ backgroundColor: postCheck.apiBadgeColor ? postCheck.apiBadgeColor : "#007cad" }}
-                           >
-                              {postCheck.apiBadge ? postCheck.apiBadge : "NO HEADER"}
+            <Draggable
+               draggableId={`action-${index}-aaa`}
+               index={index}
+               key={index}
+               isDragDisabled={context.mode === "presentation"}
+            >
+               {(provided) => (
+                  <div className="mt-2" ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                     {/* API DETAILS */}
+                     <div
+                        className={`shadow-sm p-3 mb-3 bg-light text-secondary rounded pointer ${
+                           isPostCheckRunning(index) ? "border" : ""
+                        }`}
+                        onClick={() => expandDetailHandler(index)}
+                     >
+                        <div className="d-flex justify-content-between">
+                           <div className="d-flex align-items-center">
+                              {/* API METHOD , TITLE , DESC */}
+                              <div>
+                                 <div
+                                    className={`api-method-badge text-light me-3 rounded`}
+                                    style={{ backgroundColor: postCheck.apiBadgeColor ? postCheck.apiBadgeColor : "#007cad" }}
+                                 >
+                                    {postCheck.apiBadge ? postCheck.apiBadge : "NO HEADER"}
+                                 </div>
+                                 {postCheck.title ? postCheck.title : "NO TITLE"}
+                              </div>
+                              {/* RESULT ICON */}
+                              {runResultStatus}
                            </div>
-                           {postCheck.title ? postCheck.title : "NO TITLE"}
+                           <div className="d-flex align-items-center">
+                              <RunButtonComponent
+                                 currentRunning={isPostCheckRunning(index)}
+                                 workflowHandler={() => props.workflowHandler(index)}
+                                 disable={isPostCheckRunning(index)}
+                              />
+                              {context.mode === "edit" && (
+                                 <>
+                                    <span
+                                       className="px-1 font-sm font-weight-light text-info text-hover-highlight"
+                                       onClick={(e) => {
+                                          e.stopPropagation();
+                                          setModal({
+                                             modalShow: true,
+                                             modalContentType: "postCheck",
+                                             selectedAction: { action: postCheck, actionIndex: index },
+                                          });
+                                       }}
+                                    >
+                                       Edit
+                                    </span>
+                                    <span
+                                       className="px-1 font-sm font-weight-light text-danger text-hover-highlight"
+                                       onClick={(e) => {
+                                          e.stopPropagation();
+                                          setModal({
+                                             modalShow: true,
+                                             modalContentType: "actionDeleteConfirm",
+                                             selectedAction: { action: postCheck, actionIndex: index, tab: "postCheck" },
+                                          });
+                                       }}
+                                    >
+                                       Delete
+                                    </span>
+                                 </>
+                              )}
+
+                              <i className={`fas fa-caret-${curExpandRow.includes(index) ? "down" : "right"}`}></i>
+                           </div>
                         </div>
-                        {/* RESULT ICON */}
-                        {runResultStatus}
                      </div>
-                     <div className="d-flex align-items-center">
-                        <RunButtonComponent
-                           currentRunning={isPostCheckRunning(index)}
-                           workflowHandler={() => props.workflowHandler(index)}
-                           disable={isPostCheckRunning(index)}
-                        />
-                        {context.mode === "edit" && (
-                           <>
-                              <span
-                                 className="px-1 font-sm font-weight-light text-info text-hover-highlight"
-                                 onClick={(e) => {
-                                    e.stopPropagation();
-                                    setModal({
-                                       modalShow: true,
-                                       modalContentType: "postCheck",
-                                       selectedAction: { action: postCheck, actionIndex: index },
-                                    });
-                                 }}
-                              >
-                                 Edit
-                              </span>
-                              <span
-                                 className="px-1 font-sm font-weight-light text-danger text-hover-highlight"
-                                 onClick={(e) => {
-                                    e.stopPropagation();
-                                    setModal({
-                                       modalShow: true,
-                                       modalContentType: "actionDeleteConfirm",
-                                       selectedAction: { action: postCheck, actionIndex: index, tab: "postCheck" },
-                                    });
-                                 }}
-                              >
-                                 Delete
-                              </span>
-                           </>
-                        )}
 
-                        <i className={`fas fa-caret-${curExpandRow.includes(index) ? "down" : "right"}`}></i>
-                     </div>
+                     {/* API RESPONSE DETAILS*/}
+                     <PostCheckDetail
+                        show={curExpandRow.includes(index)}
+                        response={props.results && props.results[index] ? props.results[index] : null}
+                        request={postCheck}
+                     />
                   </div>
-               </div>
-
-               {/* API RESPONSE DETAILS*/}
-               <PostCheckDetail
-                  show={curExpandRow.includes(index)}
-                  response={props.results && props.results[index] ? props.results[index] : null}
-                  request={postCheck}
-               />
-            </div>
+               )}
+            </Draggable>
          );
       });
    } else {
@@ -359,8 +389,17 @@ const PostCheck = (props: PostCheckProps) => {
    }
 
    return (
-      <div className="container">
-         {apiList}
+      <>
+         <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable-1" type="PERSON" isDropDisabled={context.mode === "presentation"}>
+               {(provided) => (
+                  <div ref={provided.innerRef} {...provided.droppableProps}>
+                     <div className="container">{apiList}</div>
+                     {provided.placeholder}
+                  </div>
+               )}
+            </Droppable>
+         </DragDropContext>
          <Modal
             show={modal.modalShow}
             onHide={() => setModal({ modalShow: false, modalContentType: null, selectedAction: null })}
@@ -372,7 +411,7 @@ const PostCheck = (props: PostCheckProps) => {
                contentType={modal.modalContentType as string}
             />
          </Modal>
-      </div>
+      </>
    );
 };
 

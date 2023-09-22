@@ -102,6 +102,19 @@ function deleteStaticVar(state: TYPE.ContextState, payload: { name: string }) {
    return clonedState;
 }
 
+function reorderAction(
+   state: TYPE.ContextState,
+   payload: { source: number; destination: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" }
+) {
+   const { stepKey, tab, source, destination } = payload;
+   let clonedState = _.cloneDeep(state);
+   const result = Array.from(clonedState.config.mainContent[stepKey][tab]);
+   const [removed] = result.splice(source, 1);
+   result.splice(destination, 0, removed);
+   clonedState.config.mainContent[stepKey][tab] = result;
+   return clonedState;
+}
+
 function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextAction) {
    switch (action.type) {
       case "setCurrentStep":
@@ -133,6 +146,9 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
 
       case "deleteAction":
          return { ...deleteAction(state, action.payload) };
+
+      case "reorderAction":
+         return { ...reorderAction(state, action.payload) };
 
       case "addStep":
          return { ...addStep(state, action.payload) };

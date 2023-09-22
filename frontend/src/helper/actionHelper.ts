@@ -121,7 +121,7 @@ export const normalRequest = (actionObject: ActionConfig, { endpoints, staticVar
       actionObject.expect = [];
    }
    let config = {
-      baseURL: actionObject.baseURL ? actionObject.baseURL : endpoints[actionObject.useEndpoint].baseURL,
+      baseURL: endpoints[actionObject.useEndpoint].baseURL,
       headers:
          actionObject.headers && Object.keys(actionObject.headers).length > 0
             ? replaceStrWithParams(actionObject.headers, staticVariables)
@@ -180,7 +180,7 @@ export const pollingRequest = (actionObject: ActionConfig, { endpoints, staticVa
       actionObject.expect = [];
    }
    let config = {
-      baseURL: actionObject.baseURL ? actionObject.baseURL : endpoints[actionObject.useEndpoint].baseURL,
+      baseURL: endpoints[actionObject.useEndpoint].baseURL,
       headers: actionObject.headers
          ? replaceStrWithParams(actionObject.headers, staticVariables)
          : replaceStrWithParams(endpoints[actionObject.useEndpoint].headers, staticVariables),
