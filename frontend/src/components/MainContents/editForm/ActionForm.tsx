@@ -356,7 +356,7 @@ const ActionForm = (props: ActionFormProps) => {
    });
 
    const [dataText, setDataText] = useState("");
-   const [inputHeaders, setInputHeaders] = useState<any[]>([]);
+   const [inputHeaders, setInputHeaders] = useState<{ key: string; value: string }[]>([]);
    const [isHeadersEnabled, setIsHeadersEnabled] = useState(false);
 
    const handleHeadersEnableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -366,7 +366,7 @@ const ActionForm = (props: ActionFormProps) => {
 
    const transformPayloadTextToObject = () => {
       try {
-         if (dataText === "") return "";
+         if (dataText === "") return undefined;
          let obj = JSON.parse(dataText);
          return obj;
       } catch (err) {
@@ -395,13 +395,11 @@ const ActionForm = (props: ActionFormProps) => {
    };
 
    const generateHeaders = () => {
-      let headers = {};
+      if (inputHeaders.length === 0) return undefined;
 
+      let headers: { [key: string]: string } = {};
       for (let item of inputHeaders) {
-         headers = {
-            ...headers,
-            [item.key]: item.value,
-         };
+         headers[item.key] = item.value;
       }
 
       return headers;
