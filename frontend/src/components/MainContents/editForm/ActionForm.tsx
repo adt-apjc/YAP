@@ -339,7 +339,7 @@ const ActionForm = (props: ActionFormProps) => {
    const [input, setInput] = useState<ActionConfig>({
       type: "request",
       useEndpoint: "",
-      headers: props.initValue!.action.headers || {},
+      headers: undefined,
       apiBadge: "",
       apiBadgeColor: "",
       title: "",
@@ -452,19 +452,18 @@ const ActionForm = (props: ActionFormProps) => {
    useEffect(() => {
       setInput((prev) => {
          if (!props.initValue) return prev;
+
+         if (props.initValue.action.headers && Object.keys(props.initValue.action.headers).length > 0) setIsHeadersEnabled(true);
+
          if (props.initValue.action.data)
             setDataText(
                typeof props.initValue.action.data === "string"
                   ? props.initValue.action.data
-                  : JSON.stringify(props.initValue.action.data, null, 3)
+                  : JSON.stringify(props.initValue.action.data, null, 3),
             );
          return { ...prev, ...props.initValue.action };
       });
    }, [props.initValue]);
-
-   useEffect(() => {
-      if (input.headers && Object.keys(input.headers).length > 0) setIsHeadersEnabled(true);
-   }, [input.headers]);
 
    return (
       <>
