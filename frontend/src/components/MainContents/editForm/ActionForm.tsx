@@ -366,6 +366,7 @@ const ActionForm = (props: ActionFormProps) => {
 
    const transformPayloadTextToObject = () => {
       try {
+         if (dataText === "") return "";
          let obj = JSON.parse(dataText);
          return obj;
       } catch (err) {
@@ -422,7 +423,7 @@ const ActionForm = (props: ActionFormProps) => {
       let payload: any;
       if (inputCloned.payloadType === "text") payload = dataText;
       else payload = transformPayloadTextToObject();
-      if (payload) {
+      if (payload !== false) {
          inputCloned.data = payload;
          dispatch({
             type: "addAction",
@@ -459,7 +460,7 @@ const ActionForm = (props: ActionFormProps) => {
             setDataText(
                typeof props.initValue.action.data === "string"
                   ? props.initValue.action.data
-                  : JSON.stringify(props.initValue.action.data, null, 3),
+                  : JSON.stringify(props.initValue.action.data, null, 3)
             );
          return { ...prev, ...props.initValue.action };
       });
