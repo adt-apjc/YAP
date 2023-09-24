@@ -48,15 +48,20 @@ const DemoContent = (props: DemoContentProps) => {
    const [postCheckResults, setPostCheckResults] = useState<StepResult>({ cleanup: {} });
    const [sectionExpand, setSectionExpand] = useState({ preCheck: false, action: false, postCheck: false, outcome: true });
    const [showOffCanvas, setShowOffCanvas] = useState(false);
+   const hideOutcomeNameList = ["stage", "cleanup", "unstage"];
+   const [isClearVarChecked, setIsClearVarChecked] = useState(true);
 
-   const clearStateHandler = () => {
-      // clear vars
+   // clear vars in storage
+   const clearVarsHandler = () => {
       let keys = [];
       for (let i = 0; i < localStorage.length; i++) {
          if (localStorage.key(i) === "__internal__configData") continue;
          keys.push(localStorage.key(i));
       }
       keys.forEach((k) => localStorage.removeItem(k!));
+   };
+
+   const clearStateHandler = () => {
       // clear result state
       setIsPreCheckCompleted({ cleanup: false });
       setIsActionCompleted({ cleanup: false });
@@ -295,6 +300,7 @@ const DemoContent = (props: DemoContentProps) => {
       // if it is cleanup module also run clearStateHandler() after runAction complete successfully
       if (props.currentStep.name === "cleanup" && isPreCheckCompleted && isActionCompleted) {
          dispatch({ type: "setRunningStatus" }); // clear sidebar complete status
+         if (isClearVarChecked) clearVarsHandler(); // clear variables in storage
          clearStateHandler();
       }
 
@@ -306,6 +312,7 @@ const DemoContent = (props: DemoContentProps) => {
 
    useEffect(() => {
       setSectionExpand({ preCheck: false, action: false, postCheck: false, outcome: true });
+      setIsClearVarChecked(true); // default clear vars
    }, [props.currentStep.name]);
 
    useEffect(() => {
@@ -336,7 +343,7 @@ const DemoContent = (props: DemoContentProps) => {
             isPreCheckCompleted,
             isActionCompleted,
             isPostCheckCompleted,
-         })
+         }),
       );
       let isAllPreCheckCompleted: boolean | undefined = undefined;
       let isAllActionCompleted: boolean | undefined = undefined;
@@ -383,6 +390,11 @@ const DemoContent = (props: DemoContentProps) => {
 
    let description = props.currentStepDetails.description;
 
+   // clear var checkbox handler
+   const handleClearVarChange = () => {
+      setIsClearVarChecked(!isClearVarChecked);
+   };
+
    return (
       <>
          {/* HEADER SECTION */}
@@ -391,26 +403,43 @@ const DemoContent = (props: DemoContentProps) => {
                {/* Step label */}
                <div style={{ fontSize: "25px" }}>{props.currentStep.label}</div>
                {/* Actions*/}
-               <div className="d-flex align-items-center demo-content-actions">
-                  <div
-                     title="run all"
-                     className={`demo-content-action text-primary pointer ${
-                        Object.values(currentRunning).some((el) => el !== null) ? "disabled" : ""
-                     }`}
-                     onClick={startWorkflowHandler}
-                  >
-                     {Object.values(currentRunning).some((el) => el !== null) ? (
-                        <i className="fas fa-spinner fa-spin" />
+               <div className={`${hideOutcomeNameList.includes(props.currentStep.name) ? "d-flex align-items-center" : ""}`}>
+                  <div className="d-flex align-items-center demo-content-actions">
+                     <div
+                        title="run all"
+                        className={`demo-content-action text-primary pointer ${
+                           Object.values(currentRunning).some((el) => el !== null) ? "disabled" : ""
+                        }`}
+                        onClick={startWorkflowHandler}
+                     >
+                        {Object.values(currentRunning).some((el) => el !== null) ? (
+                           <i className="fas fa-spinner fa-spin" />
+                        ) : (
+                           <i className="fad fa-play-circle" />
+                        )}
+                     </div>
+                     {!hideOutcomeNameList.includes(props.currentStep.name) ? (
+                        <div
+                           title="show preface"
+                           className="demo-content-action pointer"
+                           onClick={() => setShowOffCanvas(!showOffCanvas)}
+                        >
+                           <i className="fal fa-bars" />
+                        </div>
                      ) : (
-                        <i className="fad fa-play-circle" />
+                        <>
+                           {props.currentStep.name === "cleanup" && (
+                              <div className="demo-content-action pointer" onClick={handleClearVarChange}>
+                                 <input
+                                    type="checkbox"
+                                    className="form-check-input form-check-input-sm "
+                                    checked={isClearVarChecked}
+                                 />
+                                 <small className="">Clear Variables</small>
+                              </div>
+                           )}
+                        </>
                      )}
-                  </div>
-                  <div
-                     title="show preface"
-                     className="demo-content-action pointer"
-                     onClick={() => setShowOffCanvas(!showOffCanvas)}
-                  >
-                     <i className="fal fa-bars" />
                   </div>
                </div>
             </div>
@@ -597,38 +626,40 @@ const DemoContent = (props: DemoContentProps) => {
             />
          </div>
          {/* OUTCOME */}
-         <div className="section-container my-1">
-            <div
-               className="section-header d-flex justify-content-between pointer"
-               onClick={() => setSectionExpand((prev) => ({ ...prev, outcome: !prev.outcome }))}
-            >
-               <div>
-                  <span className="font-weight-bold">Outcome</span>
-                  <span className="font-weight-light mx-5">
-                     {props.currentStepDetails.outcome && props.currentStepDetails.outcome[0].summaryText}
-                  </span>
-               </div>
-               <div>
-                  {context.mode === "edit" && (
-                     <span
-                        className="text-info font-sm text-hover-highlight pointer"
-                        onClick={(e) => {
-                           e.stopPropagation();
-                           setModal({
-                              modalShow: true,
-                              modalContentType: "editOutcome",
-                              paramValues: props.currentStepDetails.outcome,
-                           });
-                        }}
-                     >
-                        Edit
+         {!hideOutcomeNameList.includes(props.currentStep.name) && (
+            <div className="section-container my-1">
+               <div
+                  className="section-header d-flex justify-content-between pointer"
+                  onClick={() => setSectionExpand((prev) => ({ ...prev, outcome: !prev.outcome }))}
+               >
+                  <div>
+                     <span className="font-weight-bold">Outcome</span>
+                     <span className="font-weight-light mx-5">
+                        {props.currentStepDetails.outcome && props.currentStepDetails.outcome[0].summaryText}
                      </span>
-                  )}
-                  <i className={`p-2 fas fa-caret-${sectionExpand.outcome ? "down" : "right"}`}></i>
+                  </div>
+                  <div>
+                     {context.mode === "edit" && (
+                        <span
+                           className="text-info font-sm text-hover-highlight pointer"
+                           onClick={(e) => {
+                              e.stopPropagation();
+                              setModal({
+                                 modalShow: true,
+                                 modalContentType: "editOutcome",
+                                 paramValues: props.currentStepDetails.outcome,
+                              });
+                           }}
+                        >
+                           Edit
+                        </span>
+                     )}
+                     <i className={`p-2 fas fa-caret-${sectionExpand.outcome ? "down" : "right"}`}></i>
+                  </div>
                </div>
+               <Outcome sectionExpand={sectionExpand} currentStepDetails={props.currentStepDetails} />
             </div>
-            <Outcome sectionExpand={sectionExpand} currentStepDetails={props.currentStepDetails} />
-         </div>
+         )}
          {/* MODAL */}
          <Modal
             show={modal.modalShow}
