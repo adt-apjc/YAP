@@ -6,9 +6,17 @@ import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-github";
 import _ from "lodash";
-import { NODE_APPEARANCE_OPTIONS } from "../../contexts/Utility";
+import { NODE_APPEARANCE_OPTIONS, NODE_LABEL_CLASS_OPTIONS } from "../../contexts/Utility";
 import { OutcomeCommandConfig, OutcomeConfig } from "../../contexts/ContextTypes";
 import cytoscape from "cytoscape";
+
+type StyleElemDefinition = {
+   "background-image": string;
+   "background-fit": string;
+   "background-opacity": string;
+   "text-valign": string;
+   "text-halign": string;
+};
 
 type EditOutcomeProps = {
    onHide: () => void;
@@ -31,6 +39,7 @@ type AddNodeParams = {
    };
    classes: string;
    commands?: OutcomeCommandConfig[];
+   style?: StyleElemDefinition;
 };
 
 type AddEdgeParams = {
@@ -351,9 +360,35 @@ const AddCommandForm = (props: AddCommandFormProps) => {
 };
 
 const AddNodeForm = (props: AddNodeFormProps) => {
-   const [input, setInput] = useState({ id: "", label: "", type: "default", width: "50", height: "50", highlight: false });
+   const [input, setInput] = useState({
+      id: "",
+      label: "",
+      type: "default",
+      width: "50",
+      height: "50",
+      highlight: false,
+      labelClass: "",
+      iconLink: "",
+   });
    const [commands, setCommands] = useState<OutcomeCommandConfig[]>([]);
    const [enableCommand, setEnableCommand] = useState(false);
+   const [isIconLinkChecked, setIsIconLinkChecked] = useState(false);
+
+   const renderLabelClassOptions = () => {
+      const sortedArr = NODE_LABEL_CLASS_OPTIONS.sort((a, b) => a["label"].localeCompare(b["label"]));
+
+      return (
+         <>
+            {sortedArr.map((item, i) => {
+               return (
+                  <option key={i} value={`${item.value}`}>
+                     {item.label}
+                  </option>
+               );
+            })}
+         </>
+      );
+   };
 
    const renderAppearanceOptions = () => {
       const sortedArr = NODE_APPEARANCE_OPTIONS.sort((a, b) => a["label"].localeCompare(b["label"]));
@@ -372,7 +407,17 @@ const AddNodeForm = (props: AddNodeFormProps) => {
    };
 
    const clearInputbox = () => {
-      setInput({ id: "", label: "", type: "default", width: "50", height: "50", highlight: false });
+      setInput({
+         id: "",
+         label: "",
+         type: "default",
+         width: "50",
+         height: "50",
+         highlight: false,
+         labelClass: "",
+         iconLink: "",
+      });
+      setIsIconLinkChecked(false);
       setEnableCommand(false);
    };
 
@@ -387,8 +432,17 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             width: input.width,
             height: input.height,
          },
-         classes: `${input.type} ${input.highlight ? "highlight" : ""}`,
+         classes: `${input.type} ${input.highlight ? "highlight" : ""} ${input.labelClass ? input.labelClass : ""}`,
       };
+
+      nodeObject.style = {
+         "background-image": input.iconLink,
+         "background-fit": "contain",
+         "background-opacity": "0",
+         "text-valign": "",
+         "text-halign": "",
+      };
+
       if (enableCommand) {
          // enable command
          nodeObject.commands = commands;
@@ -403,6 +457,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
 
    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
       setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
    const handleInputCheck = (e: React.ChangeEvent<HTMLInputElement>) =>
       setInput((prev) => ({ ...prev, [e.target.name]: e.target.checked }));
 
@@ -416,13 +471,21 @@ const AddNodeForm = (props: AddNodeFormProps) => {
          if (index > -1) {
             classesArray.splice(index, 1);
          }
+
+         let type = NODE_APPEARANCE_OPTIONS.find((el) => classesArray.includes(el.value));
+         let labelClass = NODE_LABEL_CLASS_OPTIONS.find((el) => classesArray.includes(el.value));
+         if (!type) setIsIconLinkChecked(true);
+         else setIsIconLinkChecked(false);
+
          setInput({
             id: initValue.data.id,
             label: initValue.data.label,
-            type: classesArray[0],
+            type: type ? type.value : "",
             width: initValue.style.width,
             height: initValue.style.height,
             highlight: initValue.classes.includes("highlight"),
+            labelClass: labelClass ? labelClass.value : "",
+            iconLink: type ? "" : initValue.style.backgroundImage,
          });
          if (initValue.commands) {
             setCommands(initValue.commands);
@@ -431,6 +494,11 @@ const AddNodeForm = (props: AddNodeFormProps) => {
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [JSON.stringify(props.initValue)]);
+
+   useEffect(() => {
+      if (isIconLinkChecked) setInput({ ...input, type: "" });
+      else setInput({ ...input, iconLink: "" });
+   }, [isIconLinkChecked]);
 
    return (
       <form onSubmit={handleAddNode}>
@@ -448,13 +516,18 @@ const AddNodeForm = (props: AddNodeFormProps) => {
                   />
                </div>
                <div className="col-sm-3">
-                  <label>Appearance</label>
-                  <select className="form-select form-select-sm" name="type" value={input.type} onChange={handleInputChange}>
+                  <label>Label Class</label>
+                  <select
+                     className="form-select form-select-sm"
+                     name="labelClass"
+                     value={input.labelClass}
+                     onChange={handleInputChange}
+                  >
                      <option value="default">Default</option>
-                     {renderAppearanceOptions()}
+                     {renderLabelClassOptions()}
                   </select>
                </div>
-               <div className="col-sm-6">
+               <div className="col-sm-4">
                   <label>
                      Size <span className="font-sm">(Width x Height)</span>
                   </label>
@@ -479,19 +552,56 @@ const AddNodeForm = (props: AddNodeFormProps) => {
                      />
                   </div>
                </div>
+               <div className="col-sm-2">
+                  <div className="d-flex align-items-center mt-4">
+                     <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="hilight"
+                        name="highlight"
+                        checked={input.highlight}
+                        onChange={handleInputCheck}
+                     />
+                     <label className="form-check-label ms-2" htmlFor="hilight">
+                        Highlight
+                     </label>
+                  </div>
+               </div>
             </div>
-            <div className="form-check">
+         </div>
+         <div className="row mb-3">
+            <div className="col-6">
+               <div className="flex-grow-1">
+                  <label>Appearance</label>
+                  <select
+                     disabled={isIconLinkChecked}
+                     className="form-select form-select-sm"
+                     name="type"
+                     value={input.type}
+                     onChange={handleInputChange}
+                  >
+                     <option value="default">Default</option>
+                     {renderAppearanceOptions()}
+                  </select>
+               </div>
+            </div>
+            <div className="col-6">
+               <div className="d-flex">
+                  <input
+                     type="checkbox"
+                     className="form-check-input"
+                     checked={isIconLinkChecked}
+                     onChange={(e) => setIsIconLinkChecked(e.target.checked)}
+                  />
+                  <label className="ms-2">Icon Link</label>
+               </div>
                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="hilight"
-                  name="highlight"
-                  checked={input.highlight}
-                  onChange={handleInputCheck}
+                  name="iconLink"
+                  disabled={!isIconLinkChecked}
+                  className="form-control form-control-sm"
+                  value={input.iconLink}
+                  onChange={handleInputChange}
                />
-               <label className="form-check-label" htmlFor="hilight">
-                  Highlight
-               </label>
             </div>
          </div>
          <AddCommandForm
@@ -687,6 +797,13 @@ const EditOutcome = (props: EditOutcomeProps) => {
          data: el.data(),
          position: el.position(),
          classes: el.classes(),
+         style: {
+            "background-image": el.style()["background-image"],
+            "background-fit": el.style()["background-fit"],
+            "background-opacity": el.style()["background-opacity"],
+            "text-valign": el.style()["text-valign"],
+            "text-halign": el.style()["text-halign"],
+         },
       }));
       topologyObj["edges"] = cyRef.current.edges().map((el) => ({ data: el.data(), classes: el.classes() }));
       return topologyObj;
@@ -736,7 +853,11 @@ const EditOutcome = (props: EditOutcomeProps) => {
       let id = element.data.id;
       let newOutcome = _.cloneDeep(outcome);
       let isElementExisted = newOutcome.elements.nodes.some((el) => el.data.id === id);
-      let newElement = { data: element.data, classes: element.classes };
+      let newElement = {
+         data: element.data,
+         classes: element.classes,
+         style: element.style,
+      };
       if (isElementExisted) {
          newOutcome.elements.nodes = newOutcome.elements.nodes.map((el) => {
             return el.data.id === id ? newElement : el;
@@ -771,7 +892,6 @@ const EditOutcome = (props: EditOutcomeProps) => {
    };
 
    const elementClickHandler = (element: cytoscape.SingularData) => {
-      // console.log(element.position());
       if (element.isNode()) {
          setSelectedEdge(null);
          setSelectedNode({

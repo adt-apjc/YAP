@@ -164,10 +164,6 @@ export const stylesheet = [
       style: { "background-fit": "contain", "background-image": "/assets/satellite_dish.png", "background-opacity": 0 },
    },
    {
-      selector: "node.sr_pce",
-      style: { "background-fit": "contain", "background-image": "/assets/sr_pce.png", "background-opacity": 0 },
-   },
-   {
       selector: "node.storage",
       style: { "background-fit": "contain", "background-image": "/assets/storage.png", "background-opacity": 0 },
    },

@@ -42,6 +42,9 @@ const TopologyWrapper = (props: TopologyWrapperProps) => {
             if (ele.data.height) {
                cyRef.current!.$("#" + ele.data.id).style("height", ele.data.height);
             }
+            if (ele.style) {
+               cyRef.current!.$("#" + ele.data.id).style(ele.style);
+            }
          });
       }
       // re-center topology
@@ -67,6 +70,9 @@ const TopologyWrapper = (props: TopologyWrapperProps) => {
                }
                if (ele.data.height) {
                   cyRef.current!.$("#" + ele.data.id).style("height", ele.data.height);
+               }
+               if (ele.style) {
+                  cyRef.current!.$("#" + ele.data.id).style(ele.style);
                }
             });
          }

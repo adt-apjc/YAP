@@ -150,3 +150,18 @@ export const NODE_APPEARANCE_OPTIONS = [
       value: "radio_tower",
    },
 ];
+
+export const NODE_LABEL_CLASS_OPTIONS = [
+   {
+      label: "labelBottom",
+      value: "labelBottom",
+   },
+   {
+      label: "labelRight",
+      value: "labelRight",
+   },
+   {
+      label: "labelLeft",
+      value: "labelLeft",
+   },
+];
