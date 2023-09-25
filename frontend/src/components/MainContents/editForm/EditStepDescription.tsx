@@ -23,6 +23,7 @@ const EditStepDescription = (props: EditStepDescriptionProps) => {
       titleInput: props.initValue ? props.initValue.title : "",
       prefaceRef: context.config.mainContent[context.currentStep.name!].prefaceRef || 0,
    });
+   const hidePrefaceRefNameList = ["stage", "cleanup", "unstage"];
 
    const findCurrentStepIndex = () => {
       let currentStepName = context.currentStep.name;
@@ -80,17 +81,19 @@ const EditStepDescription = (props: EditStepDescriptionProps) => {
                      onChange={(e) => setState({ ...state, titleInput: e.target.value })}
                   ></input>
                </div>
-               <div className="d-flex flex-column flex-grow-1">
-                  <small className="text-nowrap">Preface Reference </small>
-                  <select
-                     className="form-select form-select-sm"
-                     name="type"
-                     value={state.prefaceRef}
-                     onChange={(e) => setState({ ...state, prefaceRef: parseInt(e.target.value) })}
-                  >
-                     {generatePrefaceRefOptions()}
-                  </select>
-               </div>
+               {!hidePrefaceRefNameList.includes(context.currentStep.name ? context.currentStep.name : "") && (
+                  <div className="d-flex flex-column flex-grow-1">
+                     <small className="text-nowrap">Preface Reference </small>
+                     <select
+                        className="form-select form-select-sm"
+                        name="type"
+                        value={state.prefaceRef}
+                        onChange={(e) => setState({ ...state, prefaceRef: parseInt(e.target.value) })}
+                     >
+                        {generatePrefaceRefOptions()}
+                     </select>
+                  </div>
+               )}
             </div>
             <small>Description</small>
             <AceEditor

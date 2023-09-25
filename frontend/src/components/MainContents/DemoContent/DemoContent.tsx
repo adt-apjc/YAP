@@ -343,7 +343,7 @@ const DemoContent = (props: DemoContentProps) => {
             isPreCheckCompleted,
             isActionCompleted,
             isPostCheckCompleted,
-         })
+         }),
       );
       let isAllPreCheckCompleted: boolean | undefined = undefined;
       let isAllActionCompleted: boolean | undefined = undefined;
@@ -434,8 +434,9 @@ const DemoContent = (props: DemoContentProps) => {
                                     type="checkbox"
                                     className="form-check-input form-check-input-sm "
                                     checked={isClearVarChecked}
+                                    onChange={handleClearVarChange}
                                  />
-                                 <small className="">Clear Variables</small>
+                                 <small>Clear Variables</small>
                               </div>
                            )}
                         </>
