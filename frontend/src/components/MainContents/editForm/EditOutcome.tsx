@@ -878,7 +878,7 @@ const EditOutcome = (props: EditOutcomeProps) => {
             <div>
                <div className="p-2">
                   Preview
-                  <span className="font-sm font-italic font-weight-light text-muted ms-3">
+                  <span className="font-sm font-italic fw-light text-muted ms-3">
                      Click on the element below to edit parameters
                   </span>
                </div>

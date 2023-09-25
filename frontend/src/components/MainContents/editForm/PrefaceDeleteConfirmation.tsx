@@ -24,7 +24,7 @@ const PrefaceDeleteConfirmation = (props: PrefaceDeleteConfirmationProps) => {
             <button type="button" className="btn-close" onClick={props.onHide}></button>
          </div>
          <div className="modal-body">
-            Title: <span className="text-danger font-weight-light font-italic">{props.initValue.config.stepDesc}</span>
+            Title: <span className="text-danger fw-light font-italic">{props.initValue.config.stepDesc}</span>
          </div>
          <div className="modal-footer p-1">
             <button type="button" className="btn btn-sm" onClick={props.onHide}>

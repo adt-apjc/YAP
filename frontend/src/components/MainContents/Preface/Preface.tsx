@@ -82,7 +82,7 @@ const Preface = (props: { prefaceRef: number | undefined; config: PrefaceConfig[
                {context.mode === "edit" && (
                   <div className="float-right p-3">
                      <span
-                        className="px-1 font-sm font-weight-light text-info text-hover-highlight pointer"
+                        className="px-1 font-sm fw-light text-info text-hover-highlight pointer"
                         onClick={() =>
                            setState({
                               ...state,
@@ -95,7 +95,7 @@ const Preface = (props: { prefaceRef: number | undefined; config: PrefaceConfig[
                         Edit
                      </span>
                      <span
-                        className="px-1 font-sm font-weight-light text-danger text-hover-highlight pointer"
+                        className="px-1 font-sm fw-light text-danger text-hover-highlight pointer"
                         onClick={() =>
                            setState({
                               ...state,

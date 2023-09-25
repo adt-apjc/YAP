@@ -343,7 +343,7 @@ const DemoContent = (props: DemoContentProps) => {
             isPreCheckCompleted,
             isActionCompleted,
             isPostCheckCompleted,
-         }),
+         })
       );
       let isAllPreCheckCompleted: boolean | undefined = undefined;
       let isAllActionCompleted: boolean | undefined = undefined;
@@ -480,7 +480,7 @@ const DemoContent = (props: DemoContentProps) => {
                onClick={() => setSectionExpand((prev) => ({ ...prev, preCheck: !prev.preCheck }))}
             >
                <div className="d-flex align-items-center">
-                  <span className="font-weight-bold">Pre-Check</span>
+                  <span>Pre-Check</span>
 
                   {isPreCheckCompleted[props.currentStep.name] && props.currentStepDetails.preCheck.length > 0 ? (
                      <i className="fad fa-check-circle m-2 text-success" />
@@ -532,7 +532,7 @@ const DemoContent = (props: DemoContentProps) => {
                onClick={() => setSectionExpand((prev) => ({ ...prev, action: !prev.action }))}
             >
                <div className="d-flex align-items-center">
-                  <span className="font-weight-bold">Actions</span>
+                  <span>Actions</span>
 
                   {isActionCompleted[props.currentStep.name] && props.currentStepDetails.actions.length > 0 ? (
                      <i className="fad fa-check-circle m-2 text-success" />
@@ -583,7 +583,7 @@ const DemoContent = (props: DemoContentProps) => {
                onClick={() => setSectionExpand((prev) => ({ ...prev, postCheck: !prev.postCheck }))}
             >
                <div className="d-flex align-items-center">
-                  <span className="font-weight-bold">Post-Check</span>
+                  <span>Post-Check</span>
                   {isPostCheckCompleted[props.currentStep.name] && props.currentStepDetails.postCheck.length > 0 ? (
                      <i className="fad fa-check-circle m-2 text-success" />
                   ) : (
@@ -633,8 +633,8 @@ const DemoContent = (props: DemoContentProps) => {
                   onClick={() => setSectionExpand((prev) => ({ ...prev, outcome: !prev.outcome }))}
                >
                   <div>
-                     <span className="font-weight-bold">Outcome</span>
-                     <span className="font-weight-light mx-5">
+                     <span>Outcome</span>
+                     <span className="fw-light mx-5">
                         {props.currentStepDetails.outcome && props.currentStepDetails.outcome[0].summaryText}
                      </span>
                   </div>

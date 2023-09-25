@@ -139,12 +139,10 @@ const ActionDetail = (props: ActionDetailProps) => {
                      }
                      placement="right"
                   >
-                     <span className="font-weight-light bg-secondary text-light p-1 ms-4 rounded">
-                        {props.request.useEndpoint}
-                     </span>
+                     <span className="fw-light bg-secondary text-light p-1 ms-4 rounded">{props.request.useEndpoint}</span>
                   </WithInfoPopup>
                ) : (
-                  <span className="font-weight-light bg-secondary text-light p-1 ms-4 rounded">Not Configured</span>
+                  <span className="fw-light bg-secondary text-light p-1 ms-4 rounded">Not Configured</span>
                )}
             </div>
             <div className="d-flex justify-content-between">
@@ -207,7 +205,7 @@ const ActionDetail = (props: ActionDetailProps) => {
          </div>
          <div className="bg-white p-2 rounded shadow-sm mb-2">
             <div className="d-flex">
-               <div className={`me-3 font-weight-bolder text-${getHeaderColor(props.request.method)}`}>
+               <div className={`me-3 fw-bolder text-${getHeaderColor(props.request.method)}`}>
                   {props.request.method.toUpperCase()}
                </div>
                <div className="text-dark">{props.request.url}</div>
@@ -217,7 +215,7 @@ const ActionDetail = (props: ActionDetailProps) => {
          <div className="bg-white p-2 rounded shadow-sm">
             <div className="d-flex justify-content-between">
                Response
-               <div className="font-weight-light" style={{ fontSize: "12px" }}>
+               <div className="fw-light" style={{ fontSize: "12px" }}>
                   {responseStatus} {failureCause && `- ${failureCause}`}
                </div>
             </div>
@@ -334,7 +332,7 @@ const Actions = (props: ActionsProps) => {
                               {context.mode === "edit" && (
                                  <div className="d-flex align-items-center">
                                     <span
-                                       className="px-1 font-sm font-weight-light text-info text-hover-highlight"
+                                       className="font-sm text-dark text-hover-highlight"
                                        onClick={(e) => {
                                           e.stopPropagation();
                                           setModal({
@@ -347,7 +345,24 @@ const Actions = (props: ActionsProps) => {
                                        Edit
                                     </span>
                                     <span
-                                       className="pe-3 ps-1 font-sm font-weight-light text-danger text-hover-highlight"
+                                       className="px-2 font-sm text-dark text-hover-highlight"
+                                       onClick={(e) => {
+                                          e.stopPropagation();
+                                          dispatch({
+                                             type: "addAction",
+                                             payload: {
+                                                tab: "actions",
+                                                actionObject: action,
+                                                stepKey: context.currentStep.name!,
+                                                index: null,
+                                             },
+                                          });
+                                       }}
+                                    >
+                                       Duplicate
+                                    </span>
+                                    <span
+                                       className="font-sm text-danger text-hover-highlight"
                                        onClick={(e) => {
                                           e.stopPropagation();
                                           setModal({
@@ -361,7 +376,7 @@ const Actions = (props: ActionsProps) => {
                                     </span>
                                  </div>
                               )}
-                              <i className={`fas fa-caret-${curExpandRow.includes(index) ? "down" : "right"}`}></i>
+                              <i className={`ps-3 fas fa-caret-${curExpandRow.includes(index) ? "down" : "right"}`}></i>
                            </div>
                         </div>
                      </div>
