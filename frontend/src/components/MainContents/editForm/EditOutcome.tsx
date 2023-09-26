@@ -496,6 +496,10 @@ const AddNodeForm = (props: AddNodeFormProps) => {
       else setInput({ ...input, iconLink: "" });
    }, [isIconLinkChecked]);
 
+   useEffect(() => {
+      if (input.type === "text") setInput((prev) => ({ ...prev, labelClass: "labelCenter" }));
+   }, [input.type]);
+
    const renderBuiltInIconPreview = () => {
       let hideFromList = ["default", "text"];
 
