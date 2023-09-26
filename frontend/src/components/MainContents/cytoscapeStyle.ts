@@ -84,6 +84,13 @@ export const stylesheet = [
       },
    },
    {
+      selector: "node.labelCenter",
+      style: {
+         "text-halign": "center",
+         "text-valign": "center",
+      },
+   },
+   {
       selector: "node.default",
       style: {
          shape: "ellipse",
@@ -147,13 +154,7 @@ export const stylesheet = [
    },
    {
       selector: "node.cloud",
-      style: {
-         "background-fit": "cover",
-         "background-image": "/assets/cloud.png",
-         "background-opacity": 0,
-         "text-valign": "center",
-         "text-halign": "center",
-      },
+      style: { "background-fit": "cover", "background-image": "/assets/cloud.png", "background-opacity": 0 },
    },
    {
       selector: "node.satellite",

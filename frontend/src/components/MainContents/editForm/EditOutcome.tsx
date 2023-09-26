@@ -439,6 +439,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             "background-fit": "contain",
             "background-opacity": "0",
          };
+         nodeObject.classes += "iconLink";
       } else {
          nodeObject.style = undefined;
       }
@@ -801,6 +802,13 @@ const EditOutcome = (props: EditOutcomeProps) => {
          data: el.data(),
          position: el.position(),
          classes: el.classes(),
+         style: el.classes().includes("iconLink")
+            ? {
+                 "background-image": el.style()["background-image"],
+                 "background-fit": el.style()["background-fit"],
+                 "background-opacity": el.style()["background-opacity"],
+              }
+            : undefined,
       }));
       topologyObj["edges"] = cyRef.current.edges().map((el) => ({ data: el.data(), classes: el.classes() }));
       return topologyObj;
