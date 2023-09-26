@@ -1,14 +1,21 @@
+import React, { useRef } from "react";
+import { HashRouter, Route, Routes, useLocation, useParams } from "react-router-dom";
+import { io } from "socket.io-client";
+import { Terminal } from "xterm";
+import { FitAddon } from "xterm-addon-fit";
 import SideBar from "./Sidebar/SideBar";
 import MainContents from "./MainContents";
-import "./App.css";
-//
-import { ContextProvider } from "./contexts/ContextProvider";
+import { ContextProvider, useGlobalContext } from "./contexts/ContextProvider";
 import NavigationBar from "./NavigationBar/NavigationBar";
+//
+import "./App.css";
+import { useEffect } from "react";
 
-const App = () => {
-   document.title = "Workflow Demo";
+const fitAddon = new FitAddon();
+
+const Home = () => {
    return (
-      <ContextProvider>
+      <React.StrictMode>
          <NavigationBar />
          <SideBar />
          <div className="d-flex"></div>
@@ -23,6 +30,76 @@ const App = () => {
                <MainContents />
             </div>
          </div>
+      </React.StrictMode>
+   );
+};
+
+const SSHContainer = () => {
+   const location = useLocation();
+
+   const { context } = useGlobalContext();
+
+   useEffect(() => {
+      console.log(location);
+      let queryParams = new URLSearchParams(location.search);
+      let hostname = queryParams.get("hostname");
+      let username = queryParams.get("username");
+      let password = queryParams.get("password");
+
+      if (!hostname || !username || !password) return;
+
+      // document.title = `SSH connection ${hostname}`;
+      document.title = `SSH connection`;
+      window.addEventListener("resize", () => {
+         fitAddon.fit();
+      });
+
+      const socket = io(process.env.REACT_APP_API_URL!, {
+         query: { hostname, username, password },
+      });
+      const terminal = new Terminal({
+         convertEol: true,
+         fontFamily: `'Fira Mono', monospace`,
+         fontSize: 15,
+         cursorBlink: true,
+      });
+      terminal.loadAddon(fitAddon);
+
+      terminal.open(document.getElementById("xterm")!);
+      terminal.writeln(`Connecting...`);
+      fitAddon.fit();
+
+      terminal.onData((e) => {
+         socket.emit("data", e);
+      });
+
+      socket.on("data", function (data) {
+         console.log(data);
+         terminal.write(data);
+      });
+
+      socket.on("sshdisconnect", () => {
+         window.close();
+      });
+   }, []);
+
+   return (
+      <div className="xterm-container">
+         <div id="xterm" className="h-100 w-100"></div>
+      </div>
+   );
+};
+
+const App = () => {
+   document.title = "Workflow Demo";
+   return (
+      <ContextProvider>
+         <HashRouter>
+            <Routes>
+               <Route path="/ssh" element={<SSHContainer />} />
+               <Route path="/" element={<Home />} />
+            </Routes>
+         </HashRouter>
       </ContextProvider>
    );
 };

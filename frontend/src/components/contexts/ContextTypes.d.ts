@@ -27,10 +27,13 @@ export type ContextAction =
    | { type: "clearConfig" }
    | { type: "newConfig" };
 
+export type SSHConfig = { hostname: string; username: string; password: string };
+
 export type OutcomeConfig = {
    summaryText?: string;
    elements?: { nodes: cytoscape.ElementDefinition[]; edges: cytoscape.ElementDefinition[] };
    commands?: { [key: string]: OutcomeCommandConfig[] };
+   ssh?: { [key: string]: SSHConfig };
 };
 
 export type EndpointConfig = {

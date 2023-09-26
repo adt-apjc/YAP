@@ -383,3 +383,11 @@ span {
    padding: 4px;
    border-radius: 6px;
 }
+.xterm-container {
+   display: flex;
+   flex-direction: column;
+   background-color: white;
+   box-sizing: border-box;
+   width: 100%;
+   height: 100%;
+}

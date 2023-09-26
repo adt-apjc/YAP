@@ -84,6 +84,23 @@ const CommandModal = (props: CommandModalProps) => {
                   "Run"
                )}
             </button>
+            {props.outcomeConfig.ssh && props.outcomeConfig.ssh![props.selectedElementData.id] && (
+               <button
+                  className="btn btn-outline-secondary"
+                  onClick={() => {
+                     let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
+                        width=700,height=500`;
+                     let { hostname, username, password } = props.outcomeConfig.ssh![props.selectedElementData.id];
+                     window.open(
+                        `/#/ssh?hostname=${hostname}&&username=${username}&&password=${password}`,
+                        props.selectedElementData.id,
+                        params
+                     );
+                  }}
+               >
+                  SSH
+               </button>
+            )}
          </div>
          {action !== null && (
             <PostCheckDetail show={cmdResults ? true : false} response={cmdResults} request={action as ActionConfig} />
@@ -106,7 +123,10 @@ const Outcome = (props: OutcomeProps) => {
          let nodeData = nodeElement.data();
          let outcomeConfig = props.currentStepDetails.outcome[0];
          // check if selected node has configured commands ?
-         if (outcomeConfig.commands && outcomeConfig.commands[nodeData.id]) {
+         if (
+            (outcomeConfig.commands && outcomeConfig.commands[nodeData.id]) ||
+            (outcomeConfig.ssh && outcomeConfig.ssh[nodeData.id])
+         ) {
             setModal({ selectedElementData: nodeData, modalShow: true });
          }
       }, // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -134,7 +154,7 @@ const Outcome = (props: OutcomeProps) => {
          <TopologyWrapper outcomeConfig={outcomeConfig} onNodeClick={handleNodeClick} />
          <Modal show={modal.modalShow} onHide={onModalHide}>
             <div className="modal-header">
-               <span className="modal-title">{modal.selectedElementData ? modal.selectedElementData.id : ""}</span>
+               <span className="modal-title">{modal.selectedElementData ? modal.selectedElementData.label : ""}</span>
                <button type="button" className="btn-close" onClick={onModalHide}></button>
             </div>
             <div className="modal-body">

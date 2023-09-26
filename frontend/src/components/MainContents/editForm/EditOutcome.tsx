@@ -7,14 +7,8 @@ import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-github";
 import _ from "lodash";
 import { NODE_APPEARANCE_OPTIONS, NODE_LABEL_CLASS_OPTIONS } from "../../contexts/Utility";
-import { OutcomeCommandConfig, OutcomeConfig } from "../../contexts/ContextTypes";
+import { OutcomeCommandConfig, OutcomeConfig, SSHConfig } from "../../contexts/ContextTypes";
 import cytoscape from "cytoscape";
-
-type StyleElemDefinition = {
-   "background-image": string;
-   "background-fit": string;
-   "background-opacity": string;
-};
 
 type EditOutcomeProps = {
    onHide: () => void;
@@ -25,7 +19,8 @@ type OutcomeSelectedElem = {
    data: any;
    style: cytoscape.CssStyleDeclaration;
    classes: string[];
-   commands: OutcomeCommandConfig[];
+   commands?: OutcomeCommandConfig[];
+   ssh?: SSHConfig;
 };
 
 type AddNodeParams = {
@@ -38,7 +33,7 @@ type AddNodeParams = {
    };
    classes: string;
    commands?: OutcomeCommandConfig[];
-   style?: StyleElemDefinition;
+   ssh?: SSHConfig;
 };
 
 type AddEdgeParams = {
@@ -71,6 +66,77 @@ type AddCommandFormProps = {
    setEnableCommand: React.Dispatch<React.SetStateAction<boolean>>;
    commands: OutcomeCommandConfig[];
    setCommands: React.Dispatch<React.SetStateAction<OutcomeCommandConfig[]>>;
+};
+
+type AddSSHInfoFormProps = {
+   nodeId: string;
+   enableSSH: boolean;
+   setEnableSSH: React.Dispatch<React.SetStateAction<boolean>>;
+   sshInfo: SSHConfig;
+   setSSHinfo: React.Dispatch<React.SetStateAction<SSHConfig>>;
+};
+
+const AddSSHInfoForm = (props: AddSSHInfoFormProps) => {
+   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      props.setSSHinfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+   };
+
+   return (
+      <div className="bg-light rounded-lg mb-1">
+         <div className="d-flex justify-content-between">
+            <div className="px-2 py-1">SSH</div>
+            <div className="px-2 py-1">
+               <input
+                  className="form-check-input"
+                  type="checkbox"
+                  title="enable command"
+                  name="enableCommand"
+                  checked={props.enableSSH}
+                  onChange={() => props.setEnableSSH((prev) => !prev)}
+               />
+            </div>
+         </div>
+         {props.enableSSH && (
+            <div className="px-4 py-2 border-top">
+               <div className="row">
+                  <div className="col-sm-12 col-md-4">
+                     <label>Hostname</label>
+                     <input
+                        required
+                        className="form-control form-control-sm"
+                        type="text"
+                        name="hostname"
+                        value={props.sshInfo.hostname}
+                        onChange={handleInputChange}
+                     />
+                  </div>
+                  <div className="col-sm-12 col-md-4">
+                     <label>Username</label>
+                     <input
+                        required
+                        className="form-control form-control-sm"
+                        type="text"
+                        name="username"
+                        value={props.sshInfo.username}
+                        onChange={handleInputChange}
+                     />
+                  </div>
+                  <div className="col-sm-12 col-md-4">
+                     <label>Password</label>
+                     <input
+                        required
+                        className="form-control form-control-sm"
+                        type="text"
+                        name="password"
+                        value={props.sshInfo.password}
+                        onChange={handleInputChange}
+                     />
+                  </div>
+               </div>
+            </div>
+         )}
+      </div>
+   );
 };
 
 const AddCommandForm = (props: AddCommandFormProps) => {
@@ -173,7 +239,7 @@ const AddCommandForm = (props: AddCommandFormProps) => {
    }, [props.nodeId]);
 
    return (
-      <div className="bg-light rounded-lg">
+      <div className="bg-light rounded-lg mb-1">
          <div className="d-flex justify-content-between">
             <div className="px-2 py-1">Command</div>
             <div className="px-2 py-1">
@@ -371,7 +437,9 @@ const AddNodeForm = (props: AddNodeFormProps) => {
    });
    const [commands, setCommands] = useState<OutcomeCommandConfig[]>([]);
    const [enableCommand, setEnableCommand] = useState(false);
+   const [enableSSH, setEnableSSH] = useState(false);
    const [isIconLinkChecked, setIsIconLinkChecked] = useState(false);
+   const [sshInfo, setSSHInfo] = useState<SSHConfig>({ hostname: "", username: "", password: "" });
 
    const renderLabelClassOptions = () => {
       const sortedArr = NODE_LABEL_CLASS_OPTIONS.sort((a, b) => a["label"].localeCompare(b["label"]));
@@ -418,9 +486,10 @@ const AddNodeForm = (props: AddNodeFormProps) => {
       });
       setIsIconLinkChecked(false);
       setEnableCommand(false);
+      setEnableSSH(false);
    };
 
-   const handleAddNode = (e: React.FormEvent) => {
+   const handleFormAddNodeSubmit = (e: React.FormEvent) => {
       e.preventDefault();
       // add node to topology
       let uuid = Math.abs((Math.random() * 0xffffffff) | 0).toString(16);
@@ -431,12 +500,14 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             width: input.width,
             height: input.height,
          },
-         classes: `${input.type} ${input.highlight ? "highlight" : ""} ${input.labelClass ? input.labelClass : ""}`,
+         classes: `${isIconLinkChecked ? "" : input.type} ${input.highlight ? "highlight" : ""} ${
+            input.labelClass ? input.labelClass : ""
+         }`,
       };
 
       if (isIconLinkChecked && input.iconLink) {
          nodeObject.data.imglink = input.iconLink;
-         nodeObject.classes += "iconLink";
+         nodeObject.classes += " iconLink";
       }
 
       if (enableCommand) {
@@ -446,6 +517,13 @@ const AddNodeForm = (props: AddNodeFormProps) => {
          // disable command
          nodeObject.commands = undefined;
       }
+
+      if (enableSSH) {
+         nodeObject.ssh = sshInfo;
+      } else {
+         nodeObject.ssh = undefined;
+      }
+
       console.log(nodeObject);
       props.onAddElement(nodeObject);
       clearInputbox();
@@ -468,11 +546,14 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             classesArray.splice(index, 1);
          }
 
-         let type = [...NODE_APPEARANCE_OPTIONS, { value: "default" }].find((el) => classesArray.includes(el.value));
+         let type = [...NODE_APPEARANCE_OPTIONS, { value: "default", label: "default" }].find((el) =>
+            classesArray.includes(el.value)
+         );
          let labelClass = NODE_LABEL_CLASS_OPTIONS.find((el) => classesArray.includes(el.value));
-         if (type && type.value !== "default") setIsIconLinkChecked(false);
+         // init icon link check
+         if (type) setIsIconLinkChecked(false);
          else setIsIconLinkChecked(true);
-
+         // init node default value
          setInput({
             id: initValue.data.id,
             label: initValue.data.label,
@@ -481,11 +562,23 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             height: initValue.style.height,
             highlight: initValue.classes.includes("highlight"),
             labelClass: labelClass ? labelClass.value : "",
-            iconLink: type && type.value !== "default" ? "" : initValue.style.backgroundImage,
+            iconLink: type ? "" : initValue.style.backgroundImage,
          });
+         // init command form
          if (initValue.commands) {
             setCommands(initValue.commands);
             setEnableCommand(true);
+         } else {
+            setCommands([]);
+            setEnableCommand(false);
+         }
+         // init ssh form
+         if (initValue.ssh) {
+            setSSHInfo({ ...initValue.ssh });
+            setEnableSSH(true);
+         } else {
+            setSSHInfo({ hostname: "", username: "", password: "" });
+            setEnableSSH(false);
          }
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -513,7 +606,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
    };
 
    return (
-      <form onSubmit={handleAddNode} id="addNodeForm">
+      <form onSubmit={handleFormAddNodeSubmit} id="addNodeForm">
          <div className="form-group">
             <div className="row">
                <div className="col-sm-3">
@@ -623,6 +716,13 @@ const AddNodeForm = (props: AddNodeFormProps) => {
                />
             </div>
          </div>
+         <AddSSHInfoForm
+            nodeId={input.id}
+            enableSSH={enableSSH}
+            setEnableSSH={setEnableSSH}
+            sshInfo={sshInfo}
+            setSSHinfo={setSSHInfo}
+         />
          <AddCommandForm
             nodeId={input.id}
             enableCommand={enableCommand}
@@ -799,7 +899,7 @@ const AddEdgeForm = (props: AddEdgeFormProps) => {
 const EditOutcome = (props: EditOutcomeProps) => {
    const cyRef = useRef<cytoscape.Core | null>(null);
    const { context, dispatch } = useGlobalContext();
-   const [outcome, setOutcome] = useState({ elements: { nodes: [], edges: [] }, commands: {}, ...props.initValue[0] });
+   const [outcome, setOutcome] = useState({ elements: { nodes: [], edges: [] }, commands: {}, ssh: {}, ...props.initValue[0] });
    const [selectedNode, setSelectedNode] = useState<OutcomeSelectedElem | null>(null);
    const [selectedEdge, setSelectedEdge] = useState<OutcomeSelectedElem | null>(null);
    const [renderForm, setRenderForm] = useState("node");
@@ -852,11 +952,14 @@ const EditOutcome = (props: EditOutcomeProps) => {
       let currentObjectData = getTopologyObject();
       let currentConfig = _.cloneDeep(context.config);
       console.log(currentObjectData);
+      console.log(outcome);
 
       currentConfig.mainContent[context.currentStep.name].outcome![0].elements = { ...currentObjectData };
       currentConfig.mainContent[context.currentStep.name].outcome![0].commands = { ...outcome.commands };
       // TODO future planning is to support multiple outcomes
 
+      currentConfig.mainContent[context.currentStep.name].outcome![0].ssh = { ...outcome.ssh };
+      console.log(currentConfig);
       dispatch({ type: "replaceConfig", payload: currentConfig });
       props.onHide();
    };
@@ -882,6 +985,13 @@ const EditOutcome = (props: EditOutcomeProps) => {
       } else {
          // Remove command from node
          delete newOutcome.commands[id];
+      }
+      if (element.ssh) {
+         // Add command to node
+         newOutcome.ssh[id] = element.ssh;
+      } else {
+         // Remove command from node
+         delete newOutcome.ssh[id];
       }
       setOutcome(newOutcome);
       setSelectedNode(null);
@@ -910,6 +1020,7 @@ const EditOutcome = (props: EditOutcomeProps) => {
             style: element.style(),
             classes: element.classes(),
             commands: outcome.commands[element.data().id],
+            ssh: outcome.ssh && outcome.ssh[element.data().id] ? outcome.ssh[element.data().id] : undefined,
          });
          setRenderForm("node");
       } else if (element.isEdge()) {
