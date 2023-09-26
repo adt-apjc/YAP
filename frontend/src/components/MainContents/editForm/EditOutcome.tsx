@@ -14,8 +14,6 @@ type StyleElemDefinition = {
    "background-image": string;
    "background-fit": string;
    "background-opacity": string;
-   "text-valign": string;
-   "text-halign": string;
 };
 
 type EditOutcomeProps = {
@@ -435,13 +433,15 @@ const AddNodeForm = (props: AddNodeFormProps) => {
          classes: `${input.type} ${input.highlight ? "highlight" : ""} ${input.labelClass ? input.labelClass : ""}`,
       };
 
-      nodeObject.style = {
-         "background-image": input.iconLink,
-         "background-fit": "contain",
-         "background-opacity": "0",
-         "text-valign": "",
-         "text-halign": "",
-      };
+      if (isIconLinkChecked && input.iconLink) {
+         nodeObject.style = {
+            "background-image": input.iconLink,
+            "background-fit": "contain",
+            "background-opacity": "0",
+         };
+      } else {
+         nodeObject.style = undefined;
+      }
 
       if (enableCommand) {
          // enable command
@@ -472,7 +472,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             classesArray.splice(index, 1);
          }
 
-         let type = NODE_APPEARANCE_OPTIONS.find((el) => classesArray.includes(el.value));
+         let type = [...NODE_APPEARANCE_OPTIONS, { value: "default" }].find((el) => classesArray.includes(el.value));
          let labelClass = NODE_LABEL_CLASS_OPTIONS.find((el) => classesArray.includes(el.value));
          if (!type) setIsIconLinkChecked(true);
          else setIsIconLinkChecked(false);
@@ -516,14 +516,14 @@ const AddNodeForm = (props: AddNodeFormProps) => {
                   />
                </div>
                <div className="col-sm-3">
-                  <label>Label Class</label>
+                  <label>Label position</label>
                   <select
                      className="form-select form-select-sm"
                      name="labelClass"
                      value={input.labelClass}
                      onChange={handleInputChange}
                   >
-                     <option value="default">Default</option>
+                     <option value="">Default</option>
                      {renderLabelClassOptions()}
                   </select>
                </div>
@@ -572,7 +572,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
          <div className="row mb-3">
             <div className="col-6">
                <div className="flex-grow-1">
-                  <label>Appearance</label>
+                  <label>Build-in icon</label>
                   <select
                      disabled={isIconLinkChecked}
                      className="form-select form-select-sm"
@@ -588,14 +588,18 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             <div className="col-6">
                <div className="d-flex">
                   <input
+                     id="iconLinkCheckbox"
                      type="checkbox"
                      className="form-check-input"
                      checked={isIconLinkChecked}
                      onChange={(e) => setIsIconLinkChecked(e.target.checked)}
                   />
-                  <label className="ms-2">Icon Link</label>
+                  <label className="ms-2" htmlFor="iconLinkCheckbox">
+                     Icon Link
+                  </label>
                </div>
                <input
+                  required={isIconLinkChecked}
                   name="iconLink"
                   disabled={!isIconLinkChecked}
                   className="form-control form-control-sm"
@@ -797,13 +801,6 @@ const EditOutcome = (props: EditOutcomeProps) => {
          data: el.data(),
          position: el.position(),
          classes: el.classes(),
-         style: {
-            "background-image": el.style()["background-image"],
-            "background-fit": el.style()["background-fit"],
-            "background-opacity": el.style()["background-opacity"],
-            "text-valign": el.style()["text-valign"],
-            "text-halign": el.style()["text-halign"],
-         },
       }));
       topologyObj["edges"] = cyRef.current.edges().map((el) => ({ data: el.data(), classes: el.classes() }));
       return topologyObj;
