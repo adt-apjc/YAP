@@ -84,6 +84,7 @@ export const stylesheet = [
       },
    },
    {
+<<<<<<< HEAD
       selector: "node.labelTop",
       style: {
          "text-valign": "top",
@@ -97,6 +98,14 @@ export const stylesheet = [
       },
    },
 
+=======
+      selector: "node.labelCenter",
+      style: {
+         "text-halign": "center",
+         "text-valign": "center",
+      },
+   },
+>>>>>>> 7d8b08349b795647598d406aa7dc4d5709b6c1ec
    {
       selector: "node.default",
       style: {
@@ -167,11 +176,15 @@ export const stylesheet = [
    },
    {
       selector: "node.cloud",
+<<<<<<< HEAD
       style: {
          "background-fit": "cover",
          "background-image": "/assets/cloud.png",
          "background-opacity": 0,
       },
+=======
+      style: { "background-fit": "cover", "background-image": "/assets/cloud.png", "background-opacity": 0 },
+>>>>>>> 7d8b08349b795647598d406aa7dc4d5709b6c1ec
    },
    {
       selector: "node.satellite",
