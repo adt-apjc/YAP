@@ -88,6 +88,7 @@ export type StepDetails = {
    actions: ActionConfig[];
    postCheck: ActionConfig[];
    outcome?: OutcomeConfig[];
+   clearVariables?: boolean;
 };
 
 export type StaticVariables = { [key: string]: string };

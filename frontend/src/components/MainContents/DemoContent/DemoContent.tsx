@@ -312,7 +312,12 @@ const DemoContent = (props: DemoContentProps) => {
 
    useEffect(() => {
       setSectionExpand({ preCheck: false, action: false, postCheck: false, outcome: true });
-      setIsClearVarChecked(true); // default clear vars
+      // set clear var state based on config file
+      if (props.currentStep.name === "cleanup") {
+         let clearVars = context.config.mainContent[props.currentStep.name].clearVariables;
+         if (clearVars === undefined) clearVars = true; // default
+         setIsClearVarChecked(clearVars);
+      }
    }, [props.currentStep.name]);
 
    useEffect(() => {
