@@ -88,16 +88,28 @@ export const stylesheet = [
       },
    },
    {
+      selector: "node.labelTop",
+      style: {
+         "text-valign": "top",
+      },
+   },
+   {
       selector: "node.labelCenter",
       style: {
-         "text-halign": "center",
          "text-valign": "center",
+         "text-halign": "center",
       },
    },
    {
       selector: "node.default",
       style: {
          shape: "ellipse",
+      },
+   },
+   {
+      selector: "node.text",
+      style: {
+         "background-opacity": 0,
       },
    },
    {

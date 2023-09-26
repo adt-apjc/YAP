@@ -149,19 +149,27 @@ export const NODE_APPEARANCE_OPTIONS = [
       label: "Radio tower",
       value: "radio_tower",
    },
+   {
+      label: "Text",
+      value: "text",
+   },
 ];
 
 export const NODE_LABEL_CLASS_OPTIONS = [
    {
-      label: "labelBottom",
+      label: "Center",
+      value: "labelCenter",
+   },
+   {
+      label: "Bottom",
       value: "labelBottom",
    },
    {
-      label: "labelRight",
+      label: "Right",
       value: "labelRight",
    },
    {
-      label: "labelLeft",
+      label: "Left",
       value: "labelLeft",
    },
 ];
