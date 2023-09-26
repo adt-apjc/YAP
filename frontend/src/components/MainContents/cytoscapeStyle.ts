@@ -64,6 +64,10 @@ export const stylesheet = [
       },
    },
    {
+      selector: "node.iconLink",
+      style: { "background-fit": "contain", "background-image": "data(imglink)", "background-opacity": 0 },
+   },
+   {
       selector: "node.labelBottom",
       style: {
          "text-valign": "bottom",

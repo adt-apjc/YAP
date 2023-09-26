@@ -34,6 +34,7 @@ type AddNodeParams = {
       label: string;
       width: string;
       height: string;
+      imglink?: string;
    };
    classes: string;
    commands?: OutcomeCommandConfig[];
@@ -434,14 +435,8 @@ const AddNodeForm = (props: AddNodeFormProps) => {
       };
 
       if (isIconLinkChecked && input.iconLink) {
-         nodeObject.style = {
-            "background-image": input.iconLink,
-            "background-fit": "contain",
-            "background-opacity": "0",
-         };
+         nodeObject.data.imglink = input.iconLink;
          nodeObject.classes += "iconLink";
-      } else {
-         nodeObject.style = undefined;
       }
 
       if (enableCommand) {
@@ -802,13 +797,6 @@ const EditOutcome = (props: EditOutcomeProps) => {
          data: el.data(),
          position: el.position(),
          classes: el.classes(),
-         style: el.classes().includes("iconLink")
-            ? {
-                 "background-image": el.style()["background-image"],
-                 "background-fit": el.style()["background-fit"],
-                 "background-opacity": el.style()["background-opacity"],
-              }
-            : undefined,
       }));
       topologyObj["edges"] = cyRef.current.edges().map((el) => ({ data: el.data(), classes: el.classes() }));
       return topologyObj;
@@ -861,7 +849,6 @@ const EditOutcome = (props: EditOutcomeProps) => {
       let newElement = {
          data: element.data,
          classes: element.classes,
-         style: element.style,
       };
       if (isElementExisted) {
          newOutcome.elements.nodes = newOutcome.elements.nodes.map((el) => {
