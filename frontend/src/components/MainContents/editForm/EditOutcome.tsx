@@ -474,18 +474,18 @@ const AddNodeForm = (props: AddNodeFormProps) => {
 
          let type = [...NODE_APPEARANCE_OPTIONS, { value: "default" }].find((el) => classesArray.includes(el.value));
          let labelClass = NODE_LABEL_CLASS_OPTIONS.find((el) => classesArray.includes(el.value));
-         if (!type) setIsIconLinkChecked(true);
-         else setIsIconLinkChecked(false);
+         if (type && type.value !== "default") setIsIconLinkChecked(false);
+         else setIsIconLinkChecked(true);
 
          setInput({
             id: initValue.data.id,
             label: initValue.data.label,
-            type: type ? type.value : "",
+            type: type ? type.value : "default",
             width: initValue.style.width,
             height: initValue.style.height,
             highlight: initValue.classes.includes("highlight"),
             labelClass: labelClass ? labelClass.value : "",
-            iconLink: type ? "" : initValue.style.backgroundImage,
+            iconLink: type && type.value !== "default" ? "" : initValue.style.backgroundImage,
          });
          if (initValue.commands) {
             setCommands(initValue.commands);
@@ -496,12 +496,24 @@ const AddNodeForm = (props: AddNodeFormProps) => {
    }, [JSON.stringify(props.initValue)]);
 
    useEffect(() => {
-      if (isIconLinkChecked) setInput({ ...input, type: "" });
+      if (isIconLinkChecked) setInput({ ...input, type: "default" });
       else setInput({ ...input, iconLink: "" });
    }, [isIconLinkChecked]);
 
+   const renderBuiltInIconPreview = () => {
+      let hideFromList = ["default", "text"];
+
+      if (hideFromList.includes(input.type)) return null;
+
+      return (
+         <div className="flex-grow-1 text-center mt-2">
+            <img src={` assets/${input.type}.png`} alt={input.type} width="50px" height="50px"></img>
+         </div>
+      );
+   };
+
    return (
-      <form onSubmit={handleAddNode}>
+      <form onSubmit={handleAddNode} id="addNodeForm">
          <div className="form-group">
             <div className="row">
                <div className="col-sm-3">
@@ -523,7 +535,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
                      value={input.labelClass}
                      onChange={handleInputChange}
                   >
-                     <option value="">Default</option>
+                     <option value="labelTop">Top</option>
                      {renderLabelClassOptions()}
                   </select>
                </div>
@@ -571,18 +583,21 @@ const AddNodeForm = (props: AddNodeFormProps) => {
          </div>
          <div className="row mb-3">
             <div className="col-6">
-               <div className="flex-grow-1">
-                  <label>Build-in icon</label>
-                  <select
-                     disabled={isIconLinkChecked}
-                     className="form-select form-select-sm"
-                     name="type"
-                     value={input.type}
-                     onChange={handleInputChange}
-                  >
-                     <option value="default">Default</option>
-                     {renderAppearanceOptions()}
-                  </select>
+               <div className="d-flex justify-content-between aling-items-center">
+                  <div className="flex-grow-1">
+                     <label>Built-In Icon</label>
+                     <select
+                        disabled={isIconLinkChecked}
+                        className="form-select form-select-sm"
+                        name="type"
+                        value={input.type}
+                        onChange={handleInputChange}
+                     >
+                        <option value="default">Default</option>
+                        {renderAppearanceOptions()}
+                     </select>
+                  </div>
+                  {renderBuiltInIconPreview()}
                </div>
             </div>
             <div className="col-6">
@@ -615,7 +630,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             commands={commands}
             setCommands={setCommands}
          />
-         <button type="submit" className="btn btn-sm btn-primary my-1">
+         <button type="submit" className="btn btn-sm btn-primary my-1" form="addNodeForm">
             {props.initValue ? "Update" : "Add"}
          </button>
       </form>

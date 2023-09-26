@@ -84,9 +84,29 @@ export const stylesheet = [
       },
    },
    {
+      selector: "node.labelTop",
+      style: {
+         "text-valign": "top",
+      },
+   },
+   {
+      selector: "node.labelCenter",
+      style: {
+         "text-valign": "center",
+         "text-halign": "center",
+      },
+   },
+
+   {
       selector: "node.default",
       style: {
          shape: "ellipse",
+      },
+   },
+   {
+      selector: "node.text",
+      style: {
+         "background-opacity": 0,
       },
    },
    {
@@ -151,8 +171,6 @@ export const stylesheet = [
          "background-fit": "cover",
          "background-image": "/assets/cloud.png",
          "background-opacity": 0,
-         "text-valign": "center",
-         "text-halign": "center",
       },
    },
    {
