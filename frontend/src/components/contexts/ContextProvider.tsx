@@ -40,7 +40,7 @@ function deleteAction(
    payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" }
 ) {
    let clonedState = _.cloneDeep(state);
-   state.config.mainContent[payload.stepKey][payload.tab].splice(payload.index, 1);
+   clonedState.config.mainContent[payload.stepKey][payload.tab].splice(payload.index, 1);
    return clonedState;
 }
 
