@@ -8,7 +8,7 @@ The document summarises the release notes for the YAP JSON configuration file
 
 **Rel. 1.0.1**
 
--  Must update with chnages
+-  Added "payloadType" field to support "text" or "json" request payloads. Exposed "headers" field for overriding endpoint headers.
 
 **Rel. 1.0.2**
 
