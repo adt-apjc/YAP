@@ -318,6 +318,7 @@ const DemoContent = (props: DemoContentProps) => {
          if (clearVars === undefined) clearVars = true; // default
          setIsClearVarChecked(clearVars);
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [props.currentStep.name]);
 
    useEffect(() => {

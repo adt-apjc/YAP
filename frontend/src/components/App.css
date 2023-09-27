@@ -238,6 +238,10 @@ span {
    user-select: none;
 }
 
+.dropdown-container {
+   z-index: 1200;
+}
+
 .demo-content-actions * {
    margin-inline-end: -1px;
    padding: 2px 4px;

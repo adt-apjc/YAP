@@ -1,11 +1,11 @@
-import React, { useRef } from "react";
-import { HashRouter, Route, Routes, useLocation, useParams } from "react-router-dom";
+import React from "react";
+import { HashRouter, Route, Routes, useLocation } from "react-router-dom";
 import { io } from "socket.io-client";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import SideBar from "./Sidebar/SideBar";
 import MainContents from "./MainContents";
-import { ContextProvider, useGlobalContext } from "./contexts/ContextProvider";
+import { ContextProvider } from "./contexts/ContextProvider";
 import NavigationBar from "./NavigationBar/NavigationBar";
 //
 import "./App.css";
@@ -37,10 +37,7 @@ const Home = () => {
 const SSHContainer = () => {
    const location = useLocation();
 
-   const { context } = useGlobalContext();
-
    useEffect(() => {
-      console.log(location);
       let queryParams = new URLSearchParams(location.search);
       let hostname = queryParams.get("hostname");
       let username = queryParams.get("username");
@@ -81,7 +78,7 @@ const SSHContainer = () => {
       socket.on("sshdisconnect", () => {
          window.close();
       });
-   }, []);
+   }, [location]);
 
    return (
       <div className="xterm-container">

@@ -76,6 +76,11 @@ type AddSSHInfoFormProps = {
    setSSHinfo: React.Dispatch<React.SetStateAction<SSHConfig>>;
 };
 
+type CommitFormButtonProps = {
+   shouldComfirm: boolean;
+   saveHandler: () => void;
+};
+
 const AddSSHInfoForm = (props: AddSSHInfoFormProps) => {
    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       props.setSSHinfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -337,6 +342,7 @@ const AddCommandForm = (props: AddCommandFormProps) => {
                      <div className="row mb-2">
                         <div className="col">
                            <input
+                              required
                               type="text"
                               className="form-control form-control-sm"
                               name="title"
@@ -585,8 +591,8 @@ const AddNodeForm = (props: AddNodeFormProps) => {
    }, [JSON.stringify(props.initValue)]);
 
    useEffect(() => {
-      if (isIconLinkChecked) setInput({ ...input, type: "default" });
-      else setInput({ ...input, iconLink: "" });
+      if (isIconLinkChecked) setInput((prev) => ({ ...prev, type: "default" }));
+      else setInput((prev) => ({ ...prev, iconLink: "" }));
    }, [isIconLinkChecked]);
 
    useEffect(() => {
@@ -896,6 +902,44 @@ const AddEdgeForm = (props: AddEdgeFormProps) => {
    );
 };
 
+const CommitFormButton = (props: CommitFormButtonProps) => {
+   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+   const handleCommit = () => {
+      if (props.shouldComfirm) {
+         setIsConfirmOpen(true);
+      } else {
+         props.saveHandler();
+      }
+   };
+
+   useEffect(() => {
+      if (!props.shouldComfirm) setIsConfirmOpen(false);
+   }, [props.shouldComfirm]);
+
+   if (isConfirmOpen) {
+      return (
+         <div className="font-sm d-flex align-items-center">
+            <span className="mx-2">
+               There can be updates that have not yet been saved as you select an element. Are you certain that you want to go?
+            </span>
+            <button className="btn btn-primary btn-sm me-2" onClick={props.saveHandler}>
+               Yes
+            </button>
+            <button className="btn btn-secondary btn-sm" onClick={() => setIsConfirmOpen(false)}>
+               No
+            </button>
+         </div>
+      );
+   } else {
+      return (
+         <button type="button" className="btn btn-primary btn-sm" onClick={handleCommit}>
+            Commit Change
+         </button>
+      );
+   }
+};
+
 const EditOutcome = (props: EditOutcomeProps) => {
    const cyRef = useRef<cytoscape.Core | null>(null);
    const { context, dispatch } = useGlobalContext();
@@ -951,15 +995,12 @@ const EditOutcome = (props: EditOutcomeProps) => {
 
       let currentObjectData = getTopologyObject();
       let currentConfig = _.cloneDeep(context.config);
-      console.log(currentObjectData);
-      console.log(outcome);
 
       currentConfig.mainContent[context.currentStep.name].outcome![0].elements = { ...currentObjectData };
       currentConfig.mainContent[context.currentStep.name].outcome![0].commands = { ...outcome.commands };
       // TODO future planning is to support multiple outcomes
 
       currentConfig.mainContent[context.currentStep.name].outcome![0].ssh = { ...outcome.ssh };
-      console.log(currentConfig);
       dispatch({ type: "replaceConfig", payload: currentConfig });
       props.onHide();
    };
@@ -968,10 +1009,19 @@ const EditOutcome = (props: EditOutcomeProps) => {
       let id = element.data.id;
       let newOutcome = _.cloneDeep(outcome);
       let isElementExisted = newOutcome.elements.nodes.some((el) => el.data.id === id);
+      let lowestX = cyRef.current?.nodes().reduce((prev, node) => {
+         return node.position().x < prev ? node.position().x : prev;
+      }, 10000000);
+      let lowestY = cyRef.current?.nodes().reduce((prev, node) => {
+         return node.position().y < prev ? node.position().y : prev;
+      }, 10000000);
+
       let newElement = {
          data: element.data,
          classes: element.classes,
+         position: { x: lowestX ? lowestX - 100 : 0, y: lowestY || 0 },
       };
+
       if (isElementExisted) {
          newOutcome.elements.nodes = newOutcome.elements.nodes.map((el) => {
             return el.data.id === id ? newElement : el;
@@ -1133,9 +1183,7 @@ const EditOutcome = (props: EditOutcomeProps) => {
             <button type="button" className="btn btn-sm" onClick={props.onHide}>
                Close
             </button>
-            <button type="button" className="btn btn-primary btn-sm" onClick={saveHandler}>
-               Commit Change
-            </button>
+            <CommitFormButton shouldComfirm={selectedEdge !== null || selectedNode !== null} saveHandler={saveHandler} />
          </div>
       </>
    );
