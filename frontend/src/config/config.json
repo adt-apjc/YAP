@@ -97,9 +97,17 @@
                "elements": {
                   "nodes": [
                      {
-                        "data": { "id": "Project", "label": "L3VPN" },
-                        "position": { "x": 400, "y": -100 },
-                        "classes": "size-xxxlg-rect highlight cloud"
+                        "data": {
+                           "id": "Project",
+                           "label": "My Project",
+                           "width": "140px",
+                           "height": "80px"
+                        },
+                        "position": {
+                           "x": 400,
+                           "y": -100
+                        },
+                        "classes": ["cloud", "labelCenter"]
                      }
                   ],
                   "edges": []
@@ -116,7 +124,8 @@
                         "data": {}
                      }
                   ]
-               }
+               },
+               "ssh": {}
             }
          ]
       },
@@ -254,25 +263,49 @@
                "elements": {
                   "nodes": [
                      {
-                        "data": { "id": "Project", "label": "L3VPN" },
-                        "position": { "x": 50, "y": 0 },
-                        "classes": "size-xxxlg-rect cloud"
+                        "data": {
+                           "id": "Project",
+                           "label": "My Project",
+                           "width": "140px",
+                           "height": "80px"
+                        },
+                        "position": {
+                           "x": 50,
+                           "y": 0
+                        },
+                        "classes": ["cloud", "labelCenter"]
                      },
                      {
-                        "data": { "id": "Node_1", "label": "Node_1" },
-                        "position": { "x": -100, "y": 40 },
-                        "classes": "size-lg highlight router"
+                        "data": {
+                           "id": "Node_1",
+                           "label": "Node_1"
+                        },
+                        "position": {
+                           "x": -100,
+                           "y": 40
+                        },
+                        "classes": ["size-lg", "highlight", "router"]
                      },
                      {
-                        "data": { "id": "Node_2", "label": "Node_2" },
-                        "position": { "x": 200, "y": 40 },
-                        "classes": "size-lg router"
+                        "data": {
+                           "id": "Node_2",
+                           "label": "Node_2"
+                        },
+                        "position": {
+                           "x": 200,
+                           "y": 40
+                        },
+                        "classes": ["size-lg", "router"]
                      }
                   ],
                   "edges": [
                      {
-                        "data": { "source": "Node_1", "target": "Node_2" },
-                        "classes": "dashed"
+                        "data": {
+                           "source": "Node_1",
+                           "target": "Node_2",
+                           "id": "1dacd49f-6dc7-4f60-98ae-3735f1433981"
+                        },
+                        "classes": ["dashed"]
                      }
                   ]
                },
@@ -312,7 +345,8 @@
                         }
                      }
                   ]
-               }
+               },
+               "ssh": {}
             }
          ]
       },
@@ -408,24 +442,49 @@
                "elements": {
                   "nodes": [
                      {
-                        "data": { "id": "Project", "label": "L3VPN" },
-                        "position": { "x": 50, "y": 0 },
-                        "classes": "size-xxxlg-rect cloud"
+                        "data": {
+                           "id": "Project",
+                           "label": "My Project",
+                           "width": "140px",
+                           "height": "80px"
+                        },
+                        "position": {
+                           "x": 50,
+                           "y": 0
+                        },
+                        "classes": ["cloud", "labelCenter"]
                      },
                      {
-                        "data": { "id": "Node_1", "label": "Node_1" },
-                        "position": { "x": -100, "y": 40 },
-                        "classes": "size-lg highlight router"
+                        "data": {
+                           "id": "Node_1",
+                           "label": "Node_1"
+                        },
+                        "position": {
+                           "x": -100,
+                           "y": 40
+                        },
+                        "classes": ["size-lg", "highlight", "router"]
                      },
                      {
-                        "data": { "id": "Node_2", "label": "Node_2" },
-                        "position": { "x": 200, "y": 40 },
-                        "classes": "size-lg router"
+                        "data": {
+                           "id": "Node_2",
+                           "label": "Node_2"
+                        },
+                        "position": {
+                           "x": 200,
+                           "y": 40
+                        },
+                        "classes": ["size-lg", "router"]
                      }
                   ],
                   "edges": [
                      {
-                        "data": { "source": "Node_1", "target": "Node_2" }
+                        "data": {
+                           "source": "Node_1",
+                           "target": "Node_2",
+                           "id": "001f458d-9595-49a6-a61a-390243e8d3a0"
+                        },
+                        "classes": []
                      }
                   ]
                },
@@ -465,7 +524,8 @@
                         }
                      }
                   ]
-               }
+               },
+               "ssh": {}
             }
          ]
       },
