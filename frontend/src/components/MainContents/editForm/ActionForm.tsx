@@ -460,11 +460,28 @@ const ActionForm = (props: ActionFormProps) => {
             setDataText(
                typeof props.initValue.action.data === "string"
                   ? props.initValue.action.data
-                  : JSON.stringify(props.initValue.action.data, null, 3)
+                  : JSON.stringify(props.initValue.action.data, null, 3),
             );
          return { ...prev, ...props.initValue.action };
       });
    }, [props.initValue]);
+
+   useEffect(() => {
+      if (isHeadersEnabled) {
+         // get selected endpoint headers by default or if no action headers configured
+         let headers = context.config.endpoints[input.useEndpoint]
+            ? context.config.endpoints[input.useEndpoint].headers
+            : undefined;
+
+         // get action headers if configured
+         if (props.initValue?.action.headers && Object.keys(props.initValue.action.headers).length > 0)
+            headers = props.initValue.action.headers;
+
+         if (headers !== undefined) {
+            setInput((prev) => ({ ...prev, headers: headers }));
+         }
+      }
+   }, [isHeadersEnabled, input.useEndpoint]);
 
    return (
       <>
