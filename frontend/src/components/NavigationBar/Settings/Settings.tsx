@@ -5,11 +5,11 @@ import ModalContentSelector from "../ModalContentSelector";
 import { Modal } from "../../../helper/modalHelper";
 
 type SettingsTooltipContentProps = {
-   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+   close: () => void;
    setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const SettingsTooltipContent = ({ setIsOpen, setModalShow }: SettingsTooltipContentProps) => {
+const SettingsTooltipContent = ({ close, setModalShow }: SettingsTooltipContentProps) => {
    const { context, dispatch } = useGlobalContext();
 
    return (
@@ -18,7 +18,7 @@ const SettingsTooltipContent = ({ setIsOpen, setModalShow }: SettingsTooltipCont
             className="custom-dropdown"
             onClick={() => {
                dispatch({ type: "toggleMode" });
-               setIsOpen(false);
+               close();
             }}
          >
             Switch to <span className="text-primary">{context.mode === "presentation" ? "Edit" : "Presentation"} mode</span>
@@ -27,7 +27,7 @@ const SettingsTooltipContent = ({ setIsOpen, setModalShow }: SettingsTooltipCont
             className="custom-dropdown"
             onClick={() => {
                setModalShow(true);
-               setIsOpen(false);
+               close();
             }}
          >
             Settings
@@ -37,7 +37,6 @@ const SettingsTooltipContent = ({ setIsOpen, setModalShow }: SettingsTooltipCont
 };
 
 const Settings = () => {
-   const [isOpen, setIsOpen] = useState(false);
    const [modalShow, setModalShow] = useState(false);
 
    return (
@@ -47,11 +46,9 @@ const Settings = () => {
             placement="left-start"
             interactive
             offset={[35, -35]}
-            open={isOpen}
-            onRequestClose={() => setIsOpen(false)}
-            DropdownComponent={<SettingsTooltipContent setIsOpen={setIsOpen} setModalShow={setModalShow} />}
+            DropdownComponent={(close) => <SettingsTooltipContent close={close} setModalShow={setModalShow} />}
          >
-            <div title="settings" className="nav-action" onClick={() => setIsOpen(true)}>
+            <div title="settings" className="nav-action">
                <i className="fal fa-cog " />
             </div>
          </WithDropdown>

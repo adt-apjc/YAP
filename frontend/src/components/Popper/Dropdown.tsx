@@ -31,7 +31,7 @@ const DropdownElement = React.forwardRef((props: DropdownElementProps, ref) => {
 
    if (props.bindToRoot) {
       return createPortal(
-         <div ref={selfRef}>
+         <div ref={selfRef} onClick={(e) => e.stopPropagation()}>
             <div
                ref={ref}
                className="dropdown-container border rounded bg-white shadow"
@@ -45,7 +45,7 @@ const DropdownElement = React.forwardRef((props: DropdownElementProps, ref) => {
       );
    } else {
       return (
-         <div ref={selfRef}>
+         <div ref={selfRef} onClick={(e) => e.stopPropagation()}>
             <div
                ref={ref}
                className="dropdown-container border rounded bg-white shadow"
@@ -60,7 +60,7 @@ const DropdownElement = React.forwardRef((props: DropdownElementProps, ref) => {
 });
 
 type WithDropdownProps = {
-   DropdownComponent: React.ReactNode;
+   DropdownComponent: (close: () => void) => React.ReactNode;
    children: React.ReactNode;
    open?: boolean;
    className?: string;
@@ -90,6 +90,11 @@ const WithDropdown = (props: WithDropdownProps) => {
       ],
    });
 
+   const handleClose = () => {
+      if (typeof props.onRequestClose === "function") props.onRequestClose();
+      else setShowDropdown(false);
+   };
+
    useEffect(() => {
       if (props.open !== undefined) setShowDropdown(props.open);
    }, [props.open]);
@@ -101,7 +106,8 @@ const WithDropdown = (props: WithDropdownProps) => {
             role="button"
             className={props.className}
             style={props.style}
-            onClick={() => {
+            onClick={(e) => {
+               e.stopPropagation();
                if (props.open === undefined) setShowDropdown(true);
             }}
          >
@@ -114,12 +120,9 @@ const WithDropdown = (props: WithDropdownProps) => {
                attributes={attributes}
                interactive={props.interactive}
                bindToRoot={props.bindToRoot}
-               onRequestClose={() => {
-                  if (typeof props.onRequestClose === "function") props.onRequestClose();
-                  else setShowDropdown(false);
-               }}
+               onRequestClose={handleClose}
             >
-               {props.DropdownComponent}
+               {props.DropdownComponent(handleClose)}
                {props.showArrow && <div className="popper-arrow" ref={setArrowElement} style={styles.arrow} />}
             </DropdownElement>
          )}

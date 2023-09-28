@@ -12,6 +12,13 @@ export type ContextAction =
         payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any };
      }
    | {
+        type: "copyAction";
+        payload: {
+           from: { index: number; step: string; tab: "actions" | "preCheck" | "postCheck" };
+           to: { step: string; tab: "actions" | "preCheck" | "postCheck" };
+        };
+     }
+   | {
         type: "reorderAction";
         payload: { source: number; destination: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" };
      }

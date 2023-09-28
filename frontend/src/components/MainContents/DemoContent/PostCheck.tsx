@@ -6,9 +6,11 @@ import { Modal } from "../../../helper/modalHelper";
 import ModalContentSelector from "../editForm/ModalContentSelector";
 import RunButtonComponent from "../RunButtonComponent";
 import WithInfoPopup from "../../Popper/InfoPopper";
+import WithDropdown from "../../Popper/Dropdown";
 import { getStringFromObject, getVariableDetails, checkStaticVarIfUsed } from "../../contexts/Utility";
 import { ActionConfig, StepDetails } from "../../contexts/ContextTypes";
 import { APIResponse } from "../../../helper/apiAction";
+import { CopyDestSelector } from "./CopyDestSelector";
 
 type PostCheckDetailProps = {
    show: boolean;
@@ -338,7 +340,7 @@ const PostCheck = (props: PostCheckProps) => {
                               {context.mode === "edit" && (
                                  <>
                                     <span
-                                       className="font-sm text-dark text-hover-highlight"
+                                       className="pe-2 font-sm text-dark text-hover-highlight"
                                        onClick={(e) => {
                                           e.stopPropagation();
                                           setModal({
@@ -351,7 +353,7 @@ const PostCheck = (props: PostCheckProps) => {
                                        Edit
                                     </span>
                                     <span
-                                       className="px-2 font-sm text-dark text-hover-highlight"
+                                       className="pe-2 font-sm text-dark text-hover-highlight"
                                        onClick={(e) => {
                                           e.stopPropagation();
                                           dispatch({
@@ -367,6 +369,34 @@ const PostCheck = (props: PostCheckProps) => {
                                     >
                                        Duplicate
                                     </span>
+                                    <WithDropdown
+                                       className="pe-2 font-sm text-dark text-hover-highlight"
+                                       bindToRoot
+                                       interactive
+                                       DropdownComponent={(close) => (
+                                          <CopyDestSelector
+                                             close={close}
+                                             onItemClick={(item) => {
+                                                dispatch({
+                                                   type: "copyAction",
+                                                   payload: {
+                                                      from: {
+                                                         index: index,
+                                                         step: context.currentStep.name!,
+                                                         tab: "postCheck",
+                                                      },
+                                                      to: {
+                                                         step: item.name,
+                                                         tab: "postCheck",
+                                                      },
+                                                   },
+                                                });
+                                             }}
+                                          />
+                                       )}
+                                    >
+                                       Copy
+                                    </WithDropdown>
                                     <span
                                        className="font-sm text-danger text-hover-highlight"
                                        onClick={(e) => {

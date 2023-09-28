@@ -15,6 +15,19 @@ let initState: TYPE.ContextState = {
    mode: "presentation",
 };
 
+function copyAction(
+   state: TYPE.ContextState,
+   payload: {
+      from: { index: number; step: string; tab: "actions" | "preCheck" | "postCheck" };
+      to: { step: string; tab: "actions" | "preCheck" | "postCheck" };
+   }
+) {
+   let clonedState = _.cloneDeep(state);
+   let action = clonedState.config.mainContent[payload.from.step][payload.from.tab][payload.from.index];
+   clonedState.config.mainContent[payload.to.step][payload.to.tab].push({ ...action });
+   return clonedState;
+}
+
 function addAction(
    state: TYPE.ContextState,
    payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any }
@@ -143,6 +156,9 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
 
       case "addAction":
          return { ...addAction(state, action.payload) };
+
+      case "copyAction":
+         return { ...copyAction(state, action.payload) };
 
       case "deleteAction":
          return { ...deleteAction(state, action.payload) };

@@ -140,7 +140,7 @@ const PayloadTypeSelector = (props: PayloadTypeSelectorProps) => {
          open={isMenuOpen}
          onRequestClose={() => setIsMenuOpen(false)}
          placement="top"
-         DropdownComponent={SelectComponent}
+         DropdownComponent={() => SelectComponent}
       >
          <div className="font-sm" onClick={() => setIsMenuOpen(true)}>
             <span className="me-2">{props.payloadType.toLocaleUpperCase()}</span>
@@ -460,7 +460,7 @@ const ActionForm = (props: ActionFormProps) => {
             setDataText(
                typeof props.initValue.action.data === "string"
                   ? props.initValue.action.data
-                  : JSON.stringify(props.initValue.action.data, null, 3),
+                  : JSON.stringify(props.initValue.action.data, null, 3)
             );
          return { ...prev, ...props.initValue.action };
       });

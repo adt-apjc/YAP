@@ -1,9 +1,9 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import WithDropdown from "../../Popper/Dropdown";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { saveAs } from "file-saver";
 
-const ActionTooltipContent = ({ setIsOpen }: { setIsOpen: React.Dispatch<React.SetStateAction<boolean>> }) => {
+const ActionTooltipContent = ({ close }: { close: () => void }) => {
    const { context, dispatch } = useGlobalContext();
    const importRef = useRef<HTMLInputElement | null>(null);
 
@@ -11,7 +11,7 @@ const ActionTooltipContent = ({ setIsOpen }: { setIsOpen: React.Dispatch<React.S
       console.log("export:", context.config);
       let blob = new Blob([JSON.stringify(context.config, null, 2)], { type: "text/plain;charset=utf-8" });
       saveAs(blob, `${context.config.title || "project"}.json`);
-      setIsOpen(false);
+      close();
    };
 
    const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +32,7 @@ const ActionTooltipContent = ({ setIsOpen }: { setIsOpen: React.Dispatch<React.S
                // load config context
                dispatch({ type: "loadConfig", payload: config });
                importRef.current!.value = "";
-               setIsOpen(false);
+               close();
             } catch (e) {
                console.log(e);
                importRef.current!.value = "";
@@ -49,7 +49,7 @@ const ActionTooltipContent = ({ setIsOpen }: { setIsOpen: React.Dispatch<React.S
             className="custom-dropdown"
             onClick={() => {
                dispatch({ type: "setCurrentStep", payload: { name: "stage", label: "Stage Demo" } });
-               setIsOpen(false);
+               close();
             }}
          >
             <i className="pointer fal fa-wrench me-1" />
@@ -59,7 +59,7 @@ const ActionTooltipContent = ({ setIsOpen }: { setIsOpen: React.Dispatch<React.S
             className="custom-dropdown"
             onClick={() => {
                dispatch({ type: "setCurrentStep", payload: { name: "cleanup", label: "Reset Demo" } });
-               setIsOpen(false);
+               close();
             }}
          >
             <i className="pointer fal fa-redo me-1" />
@@ -69,7 +69,7 @@ const ActionTooltipContent = ({ setIsOpen }: { setIsOpen: React.Dispatch<React.S
             className="custom-dropdown"
             onClick={() => {
                dispatch({ type: "setCurrentStep", payload: { name: "unstage", label: "Unstage Demo" } });
-               setIsOpen(false);
+               close();
             }}
          >
             <i className="pointer fal fa-recycle me-1" />
@@ -82,7 +82,7 @@ const ActionTooltipContent = ({ setIsOpen }: { setIsOpen: React.Dispatch<React.S
                   className="custom-dropdown"
                   onClick={() => {
                      dispatch({ type: "clearConfig" });
-                     setIsOpen(false);
+                     close();
                   }}
                >
                   <i className="pointer fal fa-eraser me-2" />
@@ -92,7 +92,7 @@ const ActionTooltipContent = ({ setIsOpen }: { setIsOpen: React.Dispatch<React.S
                   className="custom-dropdown"
                   onClick={() => {
                      dispatch({ type: "newConfig" });
-                     setIsOpen(false);
+                     close();
                   }}
                >
                   <i className="pointer fal fa-file me-2" />
@@ -126,19 +126,15 @@ const ActionTooltipContent = ({ setIsOpen }: { setIsOpen: React.Dispatch<React.S
 };
 
 const Actions = () => {
-   const [isOpen, setIsOpen] = useState(false);
-
    return (
       <WithDropdown
          className="d-none d-sm-block"
          placement="left-start"
          interactive
          offset={[35, -35]}
-         open={isOpen}
-         onRequestClose={() => setIsOpen(false)}
-         DropdownComponent={<ActionTooltipContent setIsOpen={setIsOpen} />}
+         DropdownComponent={(close) => <ActionTooltipContent close={close} />}
       >
-         <div title="actions" className="nav-action me-2" onClick={() => setIsOpen(true)}>
+         <div title="actions" className="nav-action me-2">
             <i className="fal fa-ellipsis-h-alt" />
          </div>
       </WithDropdown>

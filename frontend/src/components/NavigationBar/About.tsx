@@ -17,19 +17,15 @@ const AboutTooltipContent = () => {
 };
 
 const About = () => {
-   const [isOpen, setIsOpen] = useState(false);
-
    return (
       <WithDropdown
          className="d-none d-sm-block"
          placement="left-start"
          interactive
          offset={[35, -35]}
-         open={isOpen}
-         onRequestClose={() => setIsOpen(false)}
-         DropdownComponent={<AboutTooltipContent />}
+         DropdownComponent={() => <AboutTooltipContent />}
       >
-         <div title="about" className="nav-action me-2" onClick={() => setIsOpen(true)}>
+         <div title="about" className="nav-action me-2">
             <i className="fal fa-question-circle" />
          </div>
       </WithDropdown>
