@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Modal } from "../../helper/modalHelper";
 import { useGlobalContext } from "../contexts/ContextProvider";
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 
 type StepConfig = { name: string; label: string };
 
@@ -66,9 +67,28 @@ const SideBar = () => {
       setState((prev) => ({ ...prev, activeAddStep: false }));
    };
 
-   const renderSiteMenuList = () => {
-      return context.config.sidebar.map((element, index) => {
-         let statusIcon;
+   const onDragEnd = (result: DropResult) => {
+      if (!result.destination) {
+         return;
+      }
+
+      if (result.destination.index === result.source.index) {
+         return;
+      }
+
+      dispatch({
+         type: "reorderSideBarStep",
+         payload: {
+            source: result.source.index,
+            destination: result.destination.index,
+         },
+      });
+   };
+
+   let siteMenuList: React.ReactNode;
+   if (context.config.sidebar.length > 0) {
+      siteMenuList = context.config.sidebar.map((element, index) => {
+         let statusIcon: React.ReactNode;
          if (!context.runningStatus || !context.runningStatus[element.name]) {
             statusIcon = (
                <div className={`status-icon ${context.currentStep.name === element.name ? "curr-selected" : ""} `}>
@@ -94,54 +114,76 @@ const SideBar = () => {
                </div>
             );
          }
-         return (
-            <div
-               key={index}
-               className={`d-flex mb-3 justify-content-center justify-content-lg-between pointer ${
-                  isSomeStepRunning() ? "disabled" : ""
-               }`}
-               style={{ fontSize: "20px" }}
-               onClick={() => dispatch({ type: "setCurrentStep", payload: element })}
-            >
-               <div className="d-flex">
-                  <div>{statusIcon}</div>
-                  <span
-                     className={`step-label-text d-none d-md-block ${isSomeStepRunning() ? "disabled" : ""} ${
-                        context.currentStep.name === element.name ? "curr-selected " : ""
-                     } ${
-                        context.runningStatus &&
-                        (context.runningStatus[element.name] === "success" || context.runningStatus[element.name] === "fail")
-                           ? "bold"
-                           : ""
-                     }`}
-                  >
-                     {element.label}
-                  </span>
-               </div>
 
-               {context.mode === "edit" && (
-                  <i
-                     title="delete"
-                     className={`step-label-text fal fa-trash-alt fa-sm ms-2 icon-hover-highlight d-none d-lg-block ${
-                        context.currentStep.name === element.name ? "curr-selected" : ""
-                     } ${isSomeStepRunning() ? "disabled" : ""}
-                     `}
-                     onClick={(e) => {
-                        e.stopPropagation();
-                        setState((prev) => ({ ...prev, modalShow: true, selectedStep: element }));
-                     }}
-                  />
+         return (
+            <Draggable
+               draggableId={`${element.label}-${index}`}
+               index={index}
+               key={index}
+               isDragDisabled={context.mode === "presentation"}
+            >
+               {(provided) => (
+                  <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                     <div
+                        className={`d-flex mb-3 justify-content-center justify-content-lg-between pointer ${
+                           isSomeStepRunning() ? "disabled" : ""
+                        }`}
+                        style={{ fontSize: "20px" }}
+                        onClick={() => dispatch({ type: "setCurrentStep", payload: element })}
+                     >
+                        <div className="d-flex">
+                           <div>{statusIcon}</div>
+                           <span
+                              className={`step-label-text d-none d-md-block ${isSomeStepRunning() ? "disabled" : ""} ${
+                                 context.currentStep.name === element.name ? "curr-selected " : ""
+                              } ${
+                                 context.runningStatus &&
+                                 (context.runningStatus[element.name] === "success" ||
+                                    context.runningStatus[element.name] === "fail")
+                                    ? "bold"
+                                    : ""
+                              }`}
+                           >
+                              {element.label}
+                           </span>
+                        </div>
+
+                        {context.mode === "edit" && (
+                           <i
+                              title="delete"
+                              className={`step-label-text fal fa-trash-alt fa-sm ms-2 icon-hover-highlight d-none d-lg-block ${
+                                 context.currentStep.name === element.name ? "curr-selected" : ""
+                              } ${isSomeStepRunning() ? "disabled" : ""}
+                   `}
+                              onClick={(e) => {
+                                 e.stopPropagation();
+                                 setState((prev) => ({ ...prev, modalShow: true, selectedStep: element }));
+                              }}
+                           />
+                        )}
+                     </div>
+                  </div>
                )}
-            </div>
+            </Draggable>
          );
       });
-   };
+   }
 
    return (
       <>
          <div className="sidenav">
-            {/* Content list */}
-            {renderSiteMenuList()}
+            <DragDropContext onDragEnd={onDragEnd}>
+               <Droppable droppableId="sidebarSteps" type="sidebarSteps" isDropDisabled={context.mode === "presentation"}>
+                  {(provided) => (
+                     <div ref={provided.innerRef} {...provided.droppableProps}>
+                        {/* Content list */}
+                        <div className="container"> {siteMenuList}</div>
+
+                        {provided.placeholder}
+                     </div>
+                  )}
+               </Droppable>
+            </DragDropContext>
             {state.activeAddStep && (
                <div className="d-flex my-3 align-items-center">
                   <input

@@ -22,6 +22,14 @@ export type ContextAction =
         type: "reorderAction";
         payload: { source: number; destination: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" };
      }
+   | {
+        type: "reorderSideBarStep";
+        payload: { source: number; destination: number };
+     }
+   | {
+        type: "reorderPrefaceItem";
+        payload: { source: number; destination: number };
+     }
    | { type: "deleteAction"; payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" } }
    | { type: "addStep"; payload: { name: string } }
    | { type: "deleteStep"; payload: { name: string } }

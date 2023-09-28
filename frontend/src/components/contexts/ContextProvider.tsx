@@ -30,7 +30,7 @@ function copyAction(
 
 function addAction(
    state: TYPE.ContextState,
-   payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any }
+   payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any },
 ) {
    let clonedState = _.cloneDeep(state);
 
@@ -50,7 +50,7 @@ function addAction(
 
 function deleteAction(
    state: TYPE.ContextState,
-   payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" }
+   payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" },
 ) {
    let clonedState = _.cloneDeep(state);
    clonedState.config.mainContent[payload.stepKey][payload.tab].splice(payload.index, 1);
@@ -84,7 +84,7 @@ function deleteStep(state: TYPE.ContextState, payload: { name: string }) {
 }
 function addEndpoint(
    state: TYPE.ContextState,
-   payload: { name: string; baseURL: string; headerList: { key: string; value: string }[] }
+   payload: { name: string; baseURL: string; headerList: { key: string; value: string }[] },
 ) {
    let clonedState = _.cloneDeep(state);
    clonedState.config.endpoints[payload.name] = {
@@ -117,7 +117,7 @@ function deleteStaticVar(state: TYPE.ContextState, payload: { name: string }) {
 
 function reorderAction(
    state: TYPE.ContextState,
-   payload: { source: number; destination: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" }
+   payload: { source: number; destination: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" },
 ) {
    const { stepKey, tab, source, destination } = payload;
    let clonedState = _.cloneDeep(state);
@@ -125,6 +125,45 @@ function reorderAction(
    const [removed] = result.splice(source, 1);
    result.splice(destination, 0, removed);
    clonedState.config.mainContent[stepKey][tab] = result;
+   return clonedState;
+}
+
+function reorderSideBarStep(state: TYPE.ContextState, payload: { source: number; destination: number }) {
+   const { source, destination } = payload;
+   let clonedState = _.cloneDeep(state);
+   const result = Array.from(clonedState.config.sidebar);
+   const [removed] = result.splice(source, 1);
+   result.splice(destination, 0, removed);
+   clonedState.config.sidebar = result;
+   return clonedState;
+}
+
+function reorderPrefaceItem(state: TYPE.ContextState, payload: { source: number; destination: number }) {
+   const { source, destination } = payload;
+   let clonedState = _.cloneDeep(state);
+   const result = Array.from(clonedState.config.preface);
+   const [removed] = result.splice(source, 1);
+   result.splice(destination, 0, removed);
+   clonedState.config.preface = result;
+
+   // create dictionary of new indexes for each preface step
+   let newPrefaceOrder = result.map((e, i) => {
+      return {
+         stepName: clonedState.config.sidebar.find((el) => el.label.trim() === e.stepDesc)?.name,
+         index: i,
+      };
+   });
+
+   // update prefaceRef of each step in maincontent
+   for (let step in clonedState.config.mainContent) {
+      // get the new index from newPrefaceOrder dictionary
+      let stepItem = newPrefaceOrder.find((e) => e.stepName === step);
+      if (stepItem?.stepName) {
+         // update prefaceRef
+         clonedState.config.mainContent[stepItem.stepName].prefaceRef = stepItem.index;
+      }
+   }
+
    return clonedState;
 }
 
@@ -165,6 +204,12 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
 
       case "reorderAction":
          return { ...reorderAction(state, action.payload) };
+
+      case "reorderSideBarStep":
+         return { ...reorderSideBarStep(state, action.payload) };
+
+      case "reorderPrefaceItem":
+         return { ...reorderPrefaceItem(state, action.payload) };
 
       case "addStep":
          return { ...addStep(state, action.payload) };

@@ -5,6 +5,7 @@ import ModalContentSelector from "../editForm/ModalContentSelector";
 import { PrefaceConfig } from "../../contexts/ContextTypes";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 
 type PrefaceState = {
    index: number;
@@ -28,13 +29,32 @@ const PrefaceContent = ({ config }: { config: PrefaceConfig }) => {
 };
 
 const Preface = (props: { prefaceRef: number | undefined; config: PrefaceConfig[] }) => {
-   const { context } = useGlobalContext();
+   const { context, dispatch } = useGlobalContext();
    const [state, setState] = useState<PrefaceState>({
       index: props.prefaceRef ? props.prefaceRef : 0,
       modalShow: false,
       modalContentType: null,
       paramValues: null,
    });
+
+   const onDragEnd = (result: DropResult) => {
+      if (!result.destination) {
+         return;
+      }
+
+      if (result.destination.index === result.source.index) {
+         return;
+      }
+
+      console.log(context.currentStep.name!);
+      dispatch({
+         type: "reorderPrefaceItem",
+         payload: {
+            source: result.source.index,
+            destination: result.destination.index,
+         },
+      });
+   };
 
    useEffect(() => {
       if (!props.prefaceRef) return;
@@ -43,30 +63,59 @@ const Preface = (props: { prefaceRef: number | undefined; config: PrefaceConfig[
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [props.prefaceRef]);
 
+   let prefaceItemList: React.ReactNode;
+   if (props.config.length > 0) {
+      prefaceItemList = props.config.map((element, stepIndex) => {
+         return (
+            <Draggable
+               draggableId={`${element.stepDesc}-${stepIndex}`}
+               index={stepIndex}
+               key={stepIndex}
+               isDragDisabled={context.mode === "presentation"}
+            >
+               {(provided) => (
+                  <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                     <div
+                        className="nav-item pointer"
+                        onClick={() =>
+                           setState({
+                              ...state,
+                              index: stepIndex,
+                           })
+                        }
+                     >
+                        <p className={stepIndex === state.index ? "nav-link active" : "nav-link text-black-50"}>
+                           {element.stepDesc}
+                        </p>
+                     </div>
+                  </div>
+               )}
+            </Draggable>
+         );
+      });
+   }
+
    return (
       <div className="p-1">
          <div className="btn-toolbar justify-content-end position-relative">
-            <div className="d-flex align-items-center mt-1">
-               <ul className="nav nav-tabs preface-nav">
-                  {props.config.map((element, stepIndex) => {
-                     return (
-                        <li
-                           key={stepIndex}
-                           className="nav-item pointer"
-                           onClick={() =>
-                              setState({
-                                 ...state,
-                                 index: stepIndex,
-                              })
-                           }
-                        >
-                           <p className={stepIndex === state.index ? "nav-link active" : "nav-link text-black-50"}>
-                              {element.stepDesc}
-                           </p>
-                        </li>
-                     );
-                  })}
-               </ul>
+            <div className="d-flex align-items-center ">
+               <DragDropContext onDragEnd={onDragEnd}>
+                  <Droppable
+                     droppableId="prefaceItem"
+                     type="prefaceItem"
+                     isDropDisabled={context.mode === "presentation"}
+                     direction="horizontal"
+                  >
+                     {(provided) => (
+                        <div className="d-flex align-items-center " ref={provided.innerRef} {...provided.droppableProps}>
+                           {/* Content list */}
+                           <ul className="nav nav-tabs preface-nav">{prefaceItemList}</ul>
+                           {provided.placeholder}
+                        </div>
+                     )}
+                  </Droppable>
+               </DragDropContext>
+
                {context.mode === "edit" && (
                   <div
                      className="ms-3 pointer"
