@@ -42,6 +42,7 @@ const SSHContainer = () => {
       let hostname = queryParams.get("hostname");
       let username = queryParams.get("username");
       let password = queryParams.get("password");
+      let port = queryParams.get("port") || undefined;
 
       if (!hostname || !username || !password) return;
 
@@ -52,7 +53,7 @@ const SSHContainer = () => {
       });
 
       const socket = io(process.env.REACT_APP_API_URL!, {
-         query: { hostname, username, password },
+         query: { hostname, username, password, port },
       });
       const terminal = new Terminal({
          convertEol: true,

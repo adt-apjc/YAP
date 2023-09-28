@@ -31,7 +31,7 @@ export type ContextAction =
    | { type: "clearConfig" }
    | { type: "newConfig" };
 
-export type SSHConfig = { hostname: string; username: string; password: string };
+export type SSHConfig = { hostname: string; username: string; password: string; port: string };
 
 export type OutcomeConfig = {
    summaryText?: string;
