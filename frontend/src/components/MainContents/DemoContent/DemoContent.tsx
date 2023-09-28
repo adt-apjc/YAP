@@ -77,6 +77,7 @@ const DemoContent = (props: DemoContentProps) => {
    };
 
    const runPreCheckWorkflowHandler = async (targetIndex = -1) => {
+      setIsPreCheckCompleted((prev) => ({ ...prev, [props.currentStep.name]: false }));
       let isCompleted = true;
       let { currentStepDetails } = props;
       // validate if it has preCheck configured or not
@@ -143,6 +144,7 @@ const DemoContent = (props: DemoContentProps) => {
    };
 
    const runActionWorkflowHandler = async (targetIndex = -1) => {
+      setIsActionCompleted((prev) => ({ ...prev, [props.currentStep.name]: false }));
       let isCompleted = true;
       let { currentStepDetails } = props;
       // validate if it has action configured or not
@@ -210,6 +212,7 @@ const DemoContent = (props: DemoContentProps) => {
    };
 
    const runPostCheckWorkflowHandler = async (targetIndex = -1) => {
+      setIsPostCheckCompleted((prev) => ({ ...prev, [props.currentStep.name]: false }));
       let isCompleted = true;
       let { currentStepDetails } = props;
       // validate if it has postCheck configured or not
