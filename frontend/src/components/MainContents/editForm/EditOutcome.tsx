@@ -54,7 +54,7 @@ type AddEdgeFormProps = {
 };
 
 type AddNodeFormProps = {
-   onAddElement: (elem: AddNodeParams) => void;
+   onAddElement: (elem: AddNodeParams, isNew?: boolean) => void;
    nodeList: cytoscape.ElementDefinition[];
    edgeList: cytoscape.ElementDefinition[];
    initValue: OutcomeSelectedElem | null;
@@ -531,7 +531,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
       }
 
       console.log(nodeObject);
-      props.onAddElement(nodeObject);
+      props.onAddElement(nodeObject, props.initValue === null);
       clearInputbox();
    };
 
@@ -1005,7 +1005,7 @@ const EditOutcome = (props: EditOutcomeProps) => {
       props.onHide();
    };
 
-   const handleAddNode = (element: AddNodeParams) => {
+   const handleAddNode = (element: AddNodeParams, isNew = false) => {
       let id = element.data.id;
       let newOutcome = _.cloneDeep(outcome);
       let isElementExisted = newOutcome.elements.nodes.some((el) => el.data.id === id);
@@ -1019,7 +1019,7 @@ const EditOutcome = (props: EditOutcomeProps) => {
       let newElement = {
          data: element.data,
          classes: element.classes,
-         position: { x: lowestX ? lowestX - 100 : 0, y: lowestY || 0 },
+         ...(isNew && { position: { x: lowestX ? lowestX - 100 : 0, y: lowestY || 0 } }),
       };
 
       if (isElementExisted) {
