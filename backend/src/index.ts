@@ -121,6 +121,7 @@ io.on("connection", (socket) => {
          host: socket.handshake.query["hostname"] as string,
          username: socket.handshake.query["username"] as string,
          password: socket.handshake.query["password"] as string,
+         port: socket.handshake.query["port"] ? parseInt(socket.handshake.query["port"] as string) : 22,
       });
 
    socket.on("disconnect", () => {

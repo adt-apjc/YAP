@@ -106,15 +106,30 @@ const AddSSHInfoForm = (props: AddSSHInfoFormProps) => {
                <div className="row">
                   <div className="col-sm-12 col-md-4">
                      <label>Hostname</label>
-                     <input
-                        required
-                        className="form-control form-control-sm"
-                        type="text"
-                        name="hostname"
-                        value={props.sshInfo.hostname}
-                        onChange={handleInputChange}
-                     />
+                     <div className="row">
+                        <div className="col-9">
+                           <input
+                              required
+                              className="form-control form-control-sm"
+                              type="text"
+                              name="hostname"
+                              value={props.sshInfo.hostname}
+                              onChange={handleInputChange}
+                           />
+                        </div>
+                        <div className="col-3 position-relative form-port-number">
+                           <input
+                              required
+                              className="form-control form-control-sm"
+                              type="number"
+                              name="port"
+                              value={props.sshInfo.port}
+                              onChange={handleInputChange}
+                           />
+                        </div>
+                     </div>
                   </div>
+
                   <div className="col-sm-12 col-md-4">
                      <label>Username</label>
                      <input
@@ -445,7 +460,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
    const [enableCommand, setEnableCommand] = useState(false);
    const [enableSSH, setEnableSSH] = useState(false);
    const [isIconLinkChecked, setIsIconLinkChecked] = useState(false);
-   const [sshInfo, setSSHInfo] = useState<SSHConfig>({ hostname: "", username: "", password: "" });
+   const [sshInfo, setSSHInfo] = useState<SSHConfig>({ hostname: "", username: "", password: "", port: "22" });
 
    const renderLabelClassOptions = () => {
       const sortedArr = NODE_LABEL_CLASS_OPTIONS.sort((a, b) => a["label"].localeCompare(b["label"]));
@@ -583,7 +598,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             setSSHInfo({ ...initValue.ssh });
             setEnableSSH(true);
          } else {
-            setSSHInfo({ hostname: "", username: "", password: "" });
+            setSSHInfo({ hostname: "", username: "", password: "", port: "22" });
             setEnableSSH(false);
          }
       }

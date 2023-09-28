@@ -90,9 +90,9 @@ const CommandModal = (props: CommandModalProps) => {
                   onClick={() => {
                      let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
                         width=700,height=500`;
-                     let { hostname, username, password } = props.outcomeConfig.ssh![props.selectedElementData.id];
+                     let { hostname, username, password, port } = props.outcomeConfig.ssh![props.selectedElementData.id];
                      window.open(
-                        `/#/ssh?hostname=${hostname}&&username=${username}&&password=${password}`,
+                        `/#/ssh?hostname=${hostname}&&username=${username}&&password=${password}&&port=${port}`,
                         props.selectedElementData.id,
                         params
                      );
