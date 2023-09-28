@@ -19,6 +19,10 @@ export type ContextAction =
         };
      }
    | {
+        type: "copyOutcome";
+        payload: { fromStep: string; toStep: string };
+     }
+   | {
         type: "reorderAction";
         payload: { source: number; destination: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" };
      }

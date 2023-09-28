@@ -14,6 +14,8 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { StepDetails } from "../../contexts/ContextTypes";
 import { APIResponse } from "../../../helper/apiAction";
+import { CopyDestSelector } from "./CopyDestSelector";
+import WithDropdown from "../../Popper/Dropdown";
 
 type StepResult = {
    [step: string]: { [index: number]: APIResponse } | undefined;
@@ -650,19 +652,40 @@ const DemoContent = (props: DemoContentProps) => {
                   </div>
                   <div>
                      {context.mode === "edit" && (
-                        <span
-                           className="text-info font-sm text-hover-highlight pointer"
-                           onClick={(e) => {
-                              e.stopPropagation();
-                              setModal({
-                                 modalShow: true,
-                                 modalContentType: "editOutcome",
-                                 paramValues: props.currentStepDetails.outcome,
-                              });
-                           }}
-                        >
-                           Edit
-                        </span>
+                        <>
+                           <WithDropdown
+                              className="pe-2 font-sm text-dark text-hover-highlight"
+                              bindToRoot
+                              interactive
+                              placement="left"
+                              DropdownComponent={(close) => (
+                                 <CopyDestSelector
+                                    close={close}
+                                    onItemClick={(item) => {
+                                       dispatch({
+                                          type: "copyOutcome",
+                                          payload: { fromStep: props.currentStep.name, toStep: item.name },
+                                       });
+                                    }}
+                                 />
+                              )}
+                           >
+                              Copy
+                           </WithDropdown>
+                           <span
+                              className="text-info font-sm text-hover-highlight pointer"
+                              onClick={(e) => {
+                                 e.stopPropagation();
+                                 setModal({
+                                    modalShow: true,
+                                    modalContentType: "editOutcome",
+                                    paramValues: props.currentStepDetails.outcome,
+                                 });
+                              }}
+                           >
+                              Edit
+                           </span>
+                        </>
                      )}
                      <i className={`p-2 fas fa-caret-${sectionExpand.outcome ? "down" : "right"}`}></i>
                   </div>

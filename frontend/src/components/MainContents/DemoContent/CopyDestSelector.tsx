@@ -7,12 +7,12 @@ export const CopyDestSelector = (props: CopyDestSelectorProps) => {
 
    return (
       <div className="p-2">
-         <div>Copy to</div>
+         <div className="fw-light mb-1">Copy to</div>
          <ul className="list-group">
             {context.config.sidebar.map((el) => (
                <button
                   key={el.name}
-                  className="list-group-item list-group-item-action"
+                  className="list-group-item list-group-item-sm list-group-item-action"
                   onClick={() => {
                      props.onItemClick(el);
                      props.close();
