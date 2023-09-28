@@ -14,7 +14,8 @@ export const getStringFromObject = (obj: any, path: string | undefined) => {
       for (let attr of path.split(".")) {
          result = result[attr];
       }
-      return JSON.stringify(result, null, 3);
+      if (typeof result === "string") return result;
+      else return JSON.stringify(result, null, 3);
    } catch (e) {
       console.log(e);
       return `Cannot find value in path ${path}`;
