@@ -125,6 +125,35 @@ function reorderSideBarStep(state: TYPE.ContextState, payload: { source: number;
    return clonedState;
 }
 
+function reorderPrefaceItem(state: TYPE.ContextState, payload: { source: number; destination: number }) {
+   const { source, destination } = payload;
+   let clonedState = _.cloneDeep(state);
+   const result = Array.from(clonedState.config.preface);
+   const [removed] = result.splice(source, 1);
+   result.splice(destination, 0, removed);
+   clonedState.config.preface = result;
+
+   // create dictionary of new indexes for each preface step
+   let newPrefaceOrder = result.map((e, i) => {
+      return {
+         stepName: clonedState.config.sidebar.find((el) => el.label.trim() === e.stepDesc)?.name,
+         index: i,
+      };
+   });
+
+   // update prefaceRef of each step in maincontent
+   for (let step in clonedState.config.mainContent) {
+      // get the new index from newPrefaceOrder dictionary
+      let stepItem = newPrefaceOrder.find((e) => e.stepName === step);
+      if (stepItem?.stepName) {
+         // update prefaceRef
+         clonedState.config.mainContent[stepItem.stepName].prefaceRef = stepItem.index;
+      }
+   }
+
+   return clonedState;
+}
+
 function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextAction) {
    switch (action.type) {
       case "setCurrentStep":
@@ -162,6 +191,9 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
 
       case "reorderSideBarStep":
          return { ...reorderSideBarStep(state, action.payload) };
+
+      case "reorderPrefaceItem":
+         return { ...reorderPrefaceItem(state, action.payload) };
 
       case "addStep":
          return { ...addStep(state, action.payload) };
