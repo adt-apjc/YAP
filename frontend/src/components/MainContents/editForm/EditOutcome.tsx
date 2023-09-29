@@ -161,7 +161,6 @@ const AddSSHInfoForm = (props: AddSSHInfoFormProps) => {
 
 const AddCommandForm = (props: AddCommandFormProps) => {
    const [data, setData] = useState("");
-   const [isPayloadValid, setIsPayloadValid] = useState(true);
    const [selectedCommandIndex, setSelectedCommandIndex] = useState<number | null>(null);
    const { context } = useGlobalContext();
 
@@ -211,7 +210,7 @@ const AddCommandForm = (props: AddCommandFormProps) => {
                key={index}
                className={`d-flex btn btn-sm btn${selectedCommandIndex === index ? "" : "-outline"}-info me-2`}
                onClick={() => {
-                  setData(JSON.stringify(el.data, null, 4));
+                  setData(JSON.stringify(el.data, null, 3));
                   setSelectedCommandIndex(index);
                }}
             >
@@ -240,17 +239,28 @@ const AddCommandForm = (props: AddCommandFormProps) => {
       });
    };
 
-   useEffect(() => {
+   const transformPayloadTextToObject = () => {
       try {
-         if (!selectedCommandIndex) return;
-
-         let newCommands = _.cloneDeep(props.commands);
-         newCommands[selectedCommandIndex].data = !data ? undefined : JSON.parse(data);
-         props.setCommands(newCommands);
-         setIsPayloadValid(true);
-      } catch (e) {
-         setIsPayloadValid(false);
+         if (data === "") return undefined;
+         let obj = JSON.parse(data);
+         return obj;
+      } catch (err) {
+         return false;
       }
+   };
+
+   const handleBeautify = () => {
+      let payload = transformPayloadTextToObject();
+      if (payload) setData(JSON.stringify(payload, null, 3));
+   };
+
+   useEffect(() => {
+      if (selectedCommandIndex === null) return;
+
+      let newCommands = _.cloneDeep(props.commands);
+      newCommands[selectedCommandIndex].data = !data ? undefined : data;
+      props.setCommands(newCommands);
+
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [data]);
 
@@ -419,10 +429,13 @@ const AddCommandForm = (props: AddCommandFormProps) => {
                      )}
                      <div className="row">
                         <div className="col">
-                           <div>
+                           <div className="d-flex align-items-center mb-1">
                               <span className="me-2 font-sm">Payload (optional)</span>
-                              {!isPayloadValid ? "invalid JSON" : ""}
+                              <span className="text-hover-highlight primary font-sm ms-auto pointer" onClick={handleBeautify}>
+                                 Beautify
+                              </span>
                            </div>
+
                            <AceEditor
                               mode="json"
                               theme="github"
@@ -461,6 +474,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
    const [enableSSH, setEnableSSH] = useState(false);
    const [isIconLinkChecked, setIsIconLinkChecked] = useState(false);
    const [sshInfo, setSSHInfo] = useState<SSHConfig>({ hostname: "", username: "", password: "", port: "22" });
+   const [isCommandDataValid, setIsCommandDataValid] = useState(true);
 
    const renderLabelClassOptions = () => {
       const sortedArr = NODE_LABEL_CLASS_OPTIONS.sort((a, b) => a["label"].localeCompare(b["label"]));
@@ -491,6 +505,18 @@ const AddNodeForm = (props: AddNodeFormProps) => {
                );
             })}
          </>
+      );
+   };
+
+   const renderBuiltInIconPreview = () => {
+      let hideFromList = ["default", "text"];
+
+      if (hideFromList.includes(input.type)) return null;
+
+      return (
+         <div className="flex-grow-1 text-center mt-2">
+            <img src={` assets/${input.type}.png`} alt={input.type} width="50px" height="50px"></img>
+         </div>
       );
    };
 
@@ -533,7 +559,15 @@ const AddNodeForm = (props: AddNodeFormProps) => {
 
       if (enableCommand) {
          // enable command
-         nodeObject.commands = commands;
+         nodeObject.commands = commands.map((command) => {
+            try {
+               // transform command data from string to object
+               if (command.data) command.data = JSON.parse(command.data);
+            } catch (err) {
+               command.data = undefined;
+            }
+            return command;
+         });
       } else {
          // disable command
          nodeObject.commands = undefined;
@@ -568,7 +602,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
          }
 
          let type = [...NODE_APPEARANCE_OPTIONS, { value: "default", label: "default" }].find((el) =>
-            classesArray.includes(el.value)
+            classesArray.includes(el.value),
          );
          let labelClass = NODE_LABEL_CLASS_OPTIONS.find((el) => classesArray.includes(el.value));
          // init icon link check
@@ -614,17 +648,16 @@ const AddNodeForm = (props: AddNodeFormProps) => {
       if (input.type === "text") setInput((prev) => ({ ...prev, labelClass: "labelCenter" }));
    }, [input.type]);
 
-   const renderBuiltInIconPreview = () => {
-      let hideFromList = ["default", "text"];
-
-      if (hideFromList.includes(input.type)) return null;
-
-      return (
-         <div className="flex-grow-1 text-center mt-2">
-            <img src={` assets/${input.type}.png`} alt={input.type} width="50px" height="50px"></img>
-         </div>
-      );
-   };
+   useEffect(() => {
+      for (let command of commands) {
+         try {
+            if (command.data) JSON.parse(command.data);
+            setIsCommandDataValid(true);
+         } catch (e) {
+            setIsCommandDataValid(false);
+         }
+      }
+   }, [commands]);
 
    return (
       <form onSubmit={handleFormAddNodeSubmit} id="addNodeForm">
@@ -751,7 +784,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             commands={commands}
             setCommands={setCommands}
          />
-         <button type="submit" className="btn btn-sm btn-primary my-1" form="addNodeForm">
+         <button type="submit" className="btn btn-sm btn-primary my-1" form="addNodeForm" disabled={!isCommandDataValid}>
             {props.initValue ? "Update" : "Add"}
          </button>
       </form>
