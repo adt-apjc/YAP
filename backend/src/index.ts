@@ -51,7 +51,7 @@ app.use(
          tokens["response-time"](req, res),
          "ms",
       ].join(" ");
-   })
+   }),
 );
 
 app.route("/proxy/request").post(proxyController);
@@ -122,6 +122,7 @@ io.on("connection", (socket) => {
          username: socket.handshake.query["username"] as string,
          password: socket.handshake.query["password"] as string,
          port: socket.handshake.query["port"] ? parseInt(socket.handshake.query["port"] as string) : 22,
+         algorithms: { kex: { append: ["diffie-hellman-group14-sha1"], prepend: [], remove: [] } },
       });
 
    socket.on("disconnect", () => {

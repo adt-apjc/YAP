@@ -651,7 +651,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
    useEffect(() => {
       for (let command of commands) {
          try {
-            if (command.data) JSON.parse(command.data);
+            if (command.data && typeof command.data === "string") JSON.parse(command.data);
             setIsCommandDataValid(true);
          } catch (e) {
             setIsCommandDataValid(false);
