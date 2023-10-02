@@ -35,7 +35,7 @@ export type ContextAction =
         payload: { source: number; destination: number };
      }
    | { type: "deleteAction"; payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" } }
-   | { type: "addStep"; payload: { name: string } }
+   | { type: "addStep"; payload: { name: string; type: string; stepDetails?: StepDetails } }
    | { type: "deleteStep"; payload: { name: string } }
    | { type: "addEndpoint"; payload: { name: string; baseURL: string; headerList: { key: any; value: any }[] } }
    | { type: "deleteEndpoint"; payload: { name: string } }

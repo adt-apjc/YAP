@@ -70,11 +70,13 @@ function deleteAction(
    return clonedState;
 }
 
-function addStep(state: TYPE.ContextState, payload: { name: string }) {
+function addStep(state: TYPE.ContextState, payload: { name: string; type: string; stepDetails?: any }) {
    let clonedState = _.cloneDeep(state);
    let newStepName = `Step_${clonedState.config.sidebar.length + 1}`;
    clonedState.config.sidebar.push({ name: newStepName, label: payload.name });
-   clonedState.config.mainContent[newStepName] = {
+
+   // if action is to add a new step use default stepDetails
+   let stepDetails = {
       description: "",
       continueOnFail: false,
       prefaceRef: 0,
@@ -83,6 +85,13 @@ function addStep(state: TYPE.ContextState, payload: { name: string }) {
       postCheck: [],
       outcome: [{}],
    };
+
+   // else if action is to duplicate a step
+   // use payload.stepDetails
+   // which contains the copy of the selected step details
+   if (payload.type === "duplicateStep") stepDetails = payload.stepDetails;
+
+   clonedState.config.mainContent[newStepName] = stepDetails;
    return clonedState;
 }
 function deleteStep(state: TYPE.ContextState, payload: { name: string }) {

@@ -10,6 +10,57 @@ type DeleteConfirmationProps = {
    selectedStep: StepConfig | null;
 };
 
+type CloneStepProps = {
+   onHide: () => void;
+   selectedStep: StepConfig | null;
+};
+
+const CloneStep = (props: CloneStepProps) => {
+   const { context, dispatch } = useGlobalContext();
+   const [newStepTitle, setNewStepTitle] = useState(props.selectedStep ? `${props.selectedStep.label}_copy` : "");
+
+   const cloneStepHandler = () => {
+      dispatch({
+         type: "addStep",
+         payload: {
+            name: newStepTitle,
+            type: "duplicateStep",
+            stepDetails: context.config.mainContent[props.selectedStep!.name],
+         },
+      });
+      props.onHide();
+   };
+
+   return (
+      <>
+         <div className="modal-header">
+            <span className="modal-title">Clone Step</span>
+            <button type="button" className="btn-close" onClick={props.onHide}></button>
+         </div>
+         <div className="modal-body">
+            <div className="d-flex align-items-center">
+               <label className="me-4">Title</label>
+               <input
+                  placeholder="step title"
+                  className="form-control form-control-sm"
+                  name="name"
+                  value={newStepTitle}
+                  onChange={(e) => setNewStepTitle(e.target.value)}
+               />
+            </div>
+         </div>
+         <div className="modal-footer">
+            <button type="button" className="btn btn-sm" onClick={props.onHide}>
+               Close
+            </button>
+            <button type="button" className="btn btn-primary btn-sm" onClick={cloneStepHandler}>
+               Duplicate
+            </button>
+         </div>
+      </>
+   );
+};
+
 const DeleteConfirmation = (props: DeleteConfirmationProps) => {
    const { dispatch } = useGlobalContext();
 
@@ -44,6 +95,7 @@ type SideBarState = {
    input: string;
    modalShow: boolean;
    selectedStep: StepConfig | null;
+   modalContentType: string;
 };
 
 const SideBar = () => {
@@ -53,6 +105,7 @@ const SideBar = () => {
       input: "",
       modalShow: false,
       selectedStep: null,
+      modalContentType: "",
    });
 
    const isSomeStepRunning = () => {
@@ -63,7 +116,13 @@ const SideBar = () => {
    };
 
    const addNewStageHandler = () => {
-      dispatch({ type: "addStep", payload: { name: state.input } });
+      dispatch({
+         type: "addStep",
+         payload: {
+            name: state.input,
+            type: "addNewStep",
+         },
+      });
       setState((prev) => ({ ...prev, activeAddStep: false }));
    };
 
@@ -129,7 +188,10 @@ const SideBar = () => {
                            isSomeStepRunning() ? "disabled" : ""
                         }`}
                         style={{ fontSize: "20px" }}
-                        onClick={() => dispatch({ type: "setCurrentStep", payload: element })}
+                        onClick={(e) => {
+                           e.stopPropagation();
+                           dispatch({ type: "setCurrentStep", payload: element });
+                        }}
                      >
                         <div className="d-flex">
                            <div>{statusIcon}</div>
@@ -149,17 +211,39 @@ const SideBar = () => {
                         </div>
 
                         {context.mode === "edit" && (
-                           <i
-                              title="delete"
-                              className={`step-label-text fal fa-trash-alt fa-sm ms-2 icon-hover-highlight d-none d-lg-block ${
-                                 context.currentStep.name === element.name ? "curr-selected" : ""
-                              } ${isSomeStepRunning() ? "disabled" : ""}
+                           <div className="d-flex ">
+                              <i
+                                 title="duplicate"
+                                 className={`step-label-text fal fa-copy fa-sm icon-hover-highlight d-none d-lg-block ${
+                                    context.currentStep.name === element.name ? "curr-selected" : ""
+                                 } ${isSomeStepRunning() ? "disabled" : ""} `}
+                                 onClick={(e) => {
+                                    e.stopPropagation();
+                                    setState((prev) => ({
+                                       ...prev,
+                                       selectedStep: element,
+                                       modalShow: true,
+                                       modalContentType: "cloneStep",
+                                    }));
+                                 }}
+                              />
+                              <i
+                                 title="delete"
+                                 className={`step-label-text fal fa-trash-alt fa-sm ms-2 icon-hover-highlight d-none d-lg-block ${
+                                    context.currentStep.name === element.name ? "curr-selected" : ""
+                                 } ${isSomeStepRunning() ? "disabled" : ""}
                    `}
-                              onClick={(e) => {
-                                 e.stopPropagation();
-                                 setState((prev) => ({ ...prev, modalShow: true, selectedStep: element }));
-                              }}
-                           />
+                                 onClick={(e) => {
+                                    e.stopPropagation();
+                                    setState((prev) => ({
+                                       ...prev,
+                                       modalShow: true,
+                                       modalContentType: "deleteStep",
+                                       selectedStep: element,
+                                    }));
+                                 }}
+                              />
+                           </div>
                         )}
                      </div>
                   </div>
@@ -168,6 +252,19 @@ const SideBar = () => {
          );
       });
    }
+
+   let modalContent: React.ReactNode;
+   if (state.modalContentType === "deleteStep")
+      modalContent = (
+         <DeleteConfirmation
+            onHide={() => setState((prev) => ({ ...prev, modalShow: false }))}
+            selectedStep={state.selectedStep}
+         />
+      );
+   else
+      modalContent = (
+         <CloneStep onHide={() => setState((prev) => ({ ...prev, modalShow: false }))} selectedStep={state.selectedStep} />
+      );
 
    return (
       <>
@@ -193,7 +290,13 @@ const SideBar = () => {
                      value={state.input}
                      onChange={(e) => setState((prev) => ({ ...prev, input: e.target.value }))}
                   />
-                  <span className=" icon-hover-higlight pointer" onClick={addNewStageHandler}>
+                  <span
+                     className=" icon-hover-higlight pointer"
+                     onClick={(e) => {
+                        e.stopPropagation();
+                        addNewStageHandler();
+                     }}
+                  >
                      <i className="far fa-check text-success ms-2" />
                   </span>
                </div>
@@ -211,10 +314,7 @@ const SideBar = () => {
             )}
          </div>
          <Modal show={state.modalShow} onHide={() => setState((prev) => ({ ...prev, modalShow: false }))}>
-            <DeleteConfirmation
-               onHide={() => setState((prev) => ({ ...prev, modalShow: false }))}
-               selectedStep={state.selectedStep}
-            />
+            {modalContent}
          </Modal>
       </>
    );
