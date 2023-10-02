@@ -486,57 +486,59 @@ const DemoContent = (props: DemoContentProps) => {
          </div>
          <div className="mt-3 mb-4" style={{ borderBottom: "1px solid #eaeaea" }}></div>
          {/* PRE-CHECK */}
-         <div className="section-container my-1">
-            <div
-               className="section-header d-flex justify-content-between pointer"
-               onClick={() => setSectionExpand((prev) => ({ ...prev, preCheck: !prev.preCheck }))}
-            >
-               <div className="d-flex align-items-center">
-                  <span>Pre-Check</span>
+         {context.mode === "presentation" && context.config.mainContent[props.currentStep.name].preCheck.length === 0 ? null : (
+            <div className="section-container my-1">
+               <div
+                  className="section-header d-flex justify-content-between pointer"
+                  onClick={() => setSectionExpand((prev) => ({ ...prev, preCheck: !prev.preCheck }))}
+               >
+                  <div className="d-flex align-items-center">
+                     <span>Pre-Check</span>
 
-                  {isPreCheckCompleted[props.currentStep.name] && props.currentStepDetails.preCheck.length > 0 ? (
-                     <i className="fad fa-check-circle m-2 text-success" />
-                  ) : (
-                     <>
-                        {preCheckResults[props.currentStep.name] !== undefined &&
-                        Object.values(preCheckResults[props.currentStep.name] || {}).filter((e) => e.success === false).length >
-                           0 ? (
-                           <i className="fad fa-exclamation-circle m-2 text-danger" />
-                        ) : null}
-                     </>
-                  )}
-               </div>
-
-               <div className="d-flex align-items-center">
-                  <RunButtonComponent
-                     currentRunning={currentRunning.preCheck !== null}
-                     workflowHandler={runPreCheckWorkflowHandler}
-                     disable={props.currentStepDetails.preCheck && props.currentStepDetails.preCheck.length === 0}
-                  />
-                  <div>
-                     {context.mode === "edit" && (
-                        <span
-                           className="text-info font-sm text-hover-highlight pointer"
-                           onClick={(e) => {
-                              e.stopPropagation();
-                              setModal({ modalShow: true, modalContentType: "preCheck", paramValues: null });
-                           }}
-                        >
-                           Add
-                        </span>
+                     {isPreCheckCompleted[props.currentStep.name] && props.currentStepDetails.preCheck.length > 0 ? (
+                        <i className="fad fa-check-circle m-2 text-success" />
+                     ) : (
+                        <>
+                           {preCheckResults[props.currentStep.name] !== undefined &&
+                           Object.values(preCheckResults[props.currentStep.name] || {}).filter((e) => e.success === false)
+                              .length > 0 ? (
+                              <i className="fad fa-exclamation-circle m-2 text-danger" />
+                           ) : null}
+                        </>
                      )}
-                     <i className={`p-2 fas fa-caret-${sectionExpand.preCheck ? "down" : "right"}`}></i>
+                  </div>
+
+                  <div className="d-flex align-items-center">
+                     <RunButtonComponent
+                        currentRunning={currentRunning.preCheck !== null}
+                        workflowHandler={runPreCheckWorkflowHandler}
+                        disable={props.currentStepDetails.preCheck && props.currentStepDetails.preCheck.length === 0}
+                     />
+                     <div>
+                        {context.mode === "edit" && (
+                           <span
+                              className="text-info font-sm text-hover-highlight pointer"
+                              onClick={(e) => {
+                                 e.stopPropagation();
+                                 setModal({ modalShow: true, modalContentType: "preCheck", paramValues: null });
+                              }}
+                           >
+                              Add
+                           </span>
+                        )}
+                        <i className={`p-2 fas fa-caret-${sectionExpand.preCheck ? "down" : "right"}`}></i>
+                     </div>
                   </div>
                </div>
+               <PreCheck
+                  show={sectionExpand.preCheck}
+                  currentStepDetails={props.currentStepDetails}
+                  currentRunning={currentRunning.preCheck}
+                  results={preCheckResults[props.currentStep.name]}
+                  workflowHandler={runPreCheckWorkflowHandler}
+               />
             </div>
-            <PreCheck
-               show={sectionExpand.preCheck}
-               currentStepDetails={props.currentStepDetails}
-               currentRunning={currentRunning.preCheck}
-               results={preCheckResults[props.currentStep.name]}
-               workflowHandler={runPreCheckWorkflowHandler}
-            />
-         </div>
+         )}
          {/* ACTION */}
          <div className="section-container my-1">
             <div
@@ -589,54 +591,56 @@ const DemoContent = (props: DemoContentProps) => {
             />
          </div>
          {/* POST-CHECK */}
-         <div className="section-container my-1">
-            <div
-               className="section-header d-flex justify-content-between pointer"
-               onClick={() => setSectionExpand((prev) => ({ ...prev, postCheck: !prev.postCheck }))}
-            >
-               <div className="d-flex align-items-center">
-                  <span>Post-Check</span>
-                  {isPostCheckCompleted[props.currentStep.name] && props.currentStepDetails.postCheck.length > 0 ? (
-                     <i className="fad fa-check-circle m-2 text-success" />
-                  ) : (
-                     <>
-                        {isPostCheckCompleted[props.currentStep.name] !== undefined &&
-                        Object.values(isPostCheckCompleted[props.currentStep.name]).filter((e) => e.success === false).length >
-                           0 ? (
-                           <i className="fad fa-exclamation-circle m-2 text-danger" />
-                        ) : null}
-                     </>
-                  )}
-               </div>
-               <div className="d-flex align-items-center">
-                  <RunButtonComponent
-                     currentRunning={currentRunning.postCheck !== null}
-                     workflowHandler={runPostCheckWorkflowHandler}
-                     disable={props.currentStepDetails.postCheck && props.currentStepDetails.postCheck.length === 0}
-                  />
-                  {context.mode === "edit" && (
-                     <span
-                        className="text-info font-sm text-hover-highlight pointer"
-                        onClick={(e) => {
-                           e.stopPropagation();
-                           setModal({ modalShow: true, modalContentType: "postCheck", paramValues: null });
-                        }}
-                     >
-                        Add
-                     </span>
-                  )}
+         {context.mode === "presentation" && context.config.mainContent[props.currentStep.name].postCheck.length === 0 ? null : (
+            <div className="section-container my-1">
+               <div
+                  className="section-header d-flex justify-content-between pointer"
+                  onClick={() => setSectionExpand((prev) => ({ ...prev, postCheck: !prev.postCheck }))}
+               >
+                  <div className="d-flex align-items-center">
+                     <span>Post-Check</span>
+                     {isPostCheckCompleted[props.currentStep.name] && props.currentStepDetails.postCheck.length > 0 ? (
+                        <i className="fad fa-check-circle m-2 text-success" />
+                     ) : (
+                        <>
+                           {isPostCheckCompleted[props.currentStep.name] !== undefined &&
+                           Object.values(isPostCheckCompleted[props.currentStep.name]).filter((e) => e.success === false).length >
+                              0 ? (
+                              <i className="fad fa-exclamation-circle m-2 text-danger" />
+                           ) : null}
+                        </>
+                     )}
+                  </div>
+                  <div className="d-flex align-items-center">
+                     <RunButtonComponent
+                        currentRunning={currentRunning.postCheck !== null}
+                        workflowHandler={runPostCheckWorkflowHandler}
+                        disable={props.currentStepDetails.postCheck && props.currentStepDetails.postCheck.length === 0}
+                     />
+                     {context.mode === "edit" && (
+                        <span
+                           className="text-info font-sm text-hover-highlight pointer"
+                           onClick={(e) => {
+                              e.stopPropagation();
+                              setModal({ modalShow: true, modalContentType: "postCheck", paramValues: null });
+                           }}
+                        >
+                           Add
+                        </span>
+                     )}
 
-                  <i className={`p-2 fas fa-caret-${sectionExpand.postCheck ? "down" : "right"}`}></i>
+                     <i className={`p-2 fas fa-caret-${sectionExpand.postCheck ? "down" : "right"}`}></i>
+                  </div>
                </div>
+               <PostCheck
+                  show={sectionExpand.postCheck}
+                  currentStepDetails={props.currentStepDetails}
+                  currentRunning={currentRunning.postCheck}
+                  results={postCheckResults[props.currentStep.name]}
+                  workflowHandler={runPostCheckWorkflowHandler}
+               />
             </div>
-            <PostCheck
-               show={sectionExpand.postCheck}
-               currentStepDetails={props.currentStepDetails}
-               currentRunning={currentRunning.postCheck}
-               results={postCheckResults[props.currentStep.name]}
-               workflowHandler={runPostCheckWorkflowHandler}
-            />
-         </div>
+         )}
          {/* OUTCOME */}
          {!hideOutcomeNameList.includes(props.currentStep.name) && (
             <div className="section-container my-1">
