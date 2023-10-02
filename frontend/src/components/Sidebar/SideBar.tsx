@@ -19,7 +19,9 @@ const CloneStep = (props: CloneStepProps) => {
    const { context, dispatch } = useGlobalContext();
    const [newStepTitle, setNewStepTitle] = useState(props.selectedStep ? `${props.selectedStep.label}_copy` : "");
 
-   const cloneStepHandler = () => {
+   const cloneStepHandler = (e: React.FormEvent) => {
+      e.preventDefault();
+
       dispatch({
          type: "addStep",
          payload: {
@@ -38,22 +40,26 @@ const CloneStep = (props: CloneStepProps) => {
             <button type="button" className="btn-close" onClick={props.onHide}></button>
          </div>
          <div className="modal-body">
-            <div className="d-flex align-items-center">
-               <label className="me-4">Title</label>
-               <input
-                  placeholder="step title"
-                  className="form-control form-control-sm"
-                  name="name"
-                  value={newStepTitle}
-                  onChange={(e) => setNewStepTitle(e.target.value)}
-               />
-            </div>
+            <form id="cloneStepFrom" onSubmit={cloneStepHandler}>
+               <div className="d-flex align-items-center">
+                  <label className="me-4">Title</label>
+                  <input
+                     required
+                     type="text"
+                     placeholder="step title"
+                     className="form-control form-control-sm"
+                     name="name"
+                     value={newStepTitle}
+                     onChange={(e) => setNewStepTitle(e.target.value)}
+                  />
+               </div>
+            </form>
          </div>
          <div className="modal-footer">
             <button type="button" className="btn btn-sm" onClick={props.onHide}>
                Close
             </button>
-            <button type="button" className="btn btn-primary btn-sm" onClick={cloneStepHandler}>
+            <button type="submit" className="btn btn-primary btn-sm" form="cloneStepFrom">
                Duplicate
             </button>
          </div>
