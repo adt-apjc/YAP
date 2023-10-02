@@ -386,8 +386,12 @@ const PostCheck = (props: PostCheckProps) => {
                                                          tab: "postCheck",
                                                       },
                                                       to: {
-                                                         step: item.name,
-                                                         tab: "postCheck",
+                                                         step: ["preCheck", "actions", "postCheck"].includes(item.name)
+                                                            ? context.currentStep.name!
+                                                            : item.name,
+                                                         tab: ["preCheck", "actions", "postCheck"].includes(item.name)
+                                                            ? (item.name as "preCheck" | "actions" | "postCheck")
+                                                            : "postCheck",
                                                       },
                                                    },
                                                 });

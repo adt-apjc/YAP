@@ -380,8 +380,12 @@ const Actions = (props: ActionsProps) => {
                                                          tab: "actions",
                                                       },
                                                       to: {
-                                                         step: item.name,
-                                                         tab: "actions",
+                                                         step: ["preCheck", "actions", "postCheck"].includes(item.name)
+                                                            ? context.currentStep.name!
+                                                            : item.name,
+                                                         tab: ["preCheck", "actions", "postCheck"].includes(item.name)
+                                                            ? (item.name as "preCheck" | "actions" | "postCheck")
+                                                            : "actions",
                                                       },
                                                    },
                                                 });
