@@ -664,11 +664,12 @@ const DemoContent = (props: DemoContentProps) => {
                               placement="left"
                               DropdownComponent={(close) => (
                                  <CopyDestSelector
+                                    source="outcome"
                                     close={close}
                                     onItemClick={(item) => {
                                        dispatch({
                                           type: "copyOutcome",
-                                          payload: { fromStep: props.currentStep.name, toStep: item.name },
+                                          payload: { fromStep: props.currentStep.name, toStep: item },
                                        });
                                     }}
                                  />

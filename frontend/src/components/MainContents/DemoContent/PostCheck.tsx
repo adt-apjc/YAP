@@ -375,6 +375,7 @@ const PostCheck = (props: PostCheckProps) => {
                                        interactive
                                        DropdownComponent={(close) => (
                                           <CopyDestSelector
+                                             source="action"
                                              close={close}
                                              onItemClick={(item) => {
                                                 dispatch({
@@ -386,11 +387,11 @@ const PostCheck = (props: PostCheckProps) => {
                                                          tab: "postCheck",
                                                       },
                                                       to: {
-                                                         step: ["preCheck", "actions", "postCheck"].includes(item.name)
+                                                         step: ["preCheck", "actions", "postCheck"].includes(item)
                                                             ? context.currentStep.name!
-                                                            : item.name,
-                                                         tab: ["preCheck", "actions", "postCheck"].includes(item.name)
-                                                            ? (item.name as "preCheck" | "actions" | "postCheck")
+                                                            : item,
+                                                         tab: ["preCheck", "actions", "postCheck"].includes(item)
+                                                            ? (item as "preCheck" | "actions" | "postCheck")
                                                             : "postCheck",
                                                       },
                                                    },
