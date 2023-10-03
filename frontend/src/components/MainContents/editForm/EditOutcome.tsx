@@ -210,7 +210,8 @@ const AddCommandForm = (props: AddCommandFormProps) => {
                key={index}
                className={`d-flex btn btn-sm btn${selectedCommandIndex === index ? "" : "-outline"}-info me-2`}
                onClick={() => {
-                  setData(JSON.stringify(el.data, null, 3));
+                  if (typeof el.data === "object") setData(JSON.stringify(el.data, null, 3));
+                  else setData(el.data);
                   setSelectedCommandIndex(index);
                }}
             >
@@ -621,7 +622,9 @@ const AddNodeForm = (props: AddNodeFormProps) => {
          });
          // init command form
          if (initValue.commands) {
-            setCommands(initValue.commands);
+            let clonedCmds = _.cloneDeep(initValue.commands);
+            clonedCmds = clonedCmds.map((c) => ({ ...c, data: JSON.stringify(c.data, null, 3) }));
+            setCommands(clonedCmds);
             setEnableCommand(true);
          } else {
             setCommands([]);
@@ -655,6 +658,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             setIsCommandDataValid(true);
          } catch (e) {
             setIsCommandDataValid(false);
+            return;
          }
       }
    }, [commands]);
@@ -784,6 +788,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             commands={commands}
             setCommands={setCommands}
          />
+         {!isCommandDataValid && <div className="mt-2 font-sm">Payload invalid</div>}
          <button type="submit" className="btn btn-sm btn-primary my-1" form="addNodeForm" disabled={!isCommandDataValid}>
             {props.initValue ? "Update" : "Add"}
          </button>
