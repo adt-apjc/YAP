@@ -3,7 +3,7 @@ import ActionDeleteConfirmation from "./ActionDeleteConfirmation";
 import EditStepDescription from "./EditStepDescription";
 import EditPreface from "./EditPreface";
 import PrefaceDeleteConfirmation from "./PrefaceDeleteConfirmation";
-import EditOutcome from "./EditOutcome";
+import EditOutcome from "./EditOutcome/EditOutcome";
 
 type ModalContentSelectorProps = {
    onHide: () => void;

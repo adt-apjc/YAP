@@ -200,7 +200,7 @@ const SideBar = () => {
                         }}
                      >
                         <div className="d-flex">
-                           <div>{statusIcon}</div>
+                           <div className="me-2">{statusIcon}</div>
                            <span
                               className={`step-label-text d-none d-md-block ${isSomeStepRunning() ? "disabled" : ""} ${
                                  context.currentStep.name === element.name ? "curr-selected " : ""
@@ -280,7 +280,7 @@ const SideBar = () => {
                   {(provided) => (
                      <div ref={provided.innerRef} {...provided.droppableProps}>
                         {/* Content list */}
-                        <div className="container"> {siteMenuList}</div>
+                        <div className="container">{siteMenuList}</div>
 
                         {provided.placeholder}
                      </div>
