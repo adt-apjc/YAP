@@ -4,6 +4,6 @@ WORKDIR /app
 COPY ./package.json /app
 RUN npm install
 COPY . /app
-#VOLUME ./my-public-assets /app/public/my-assets
+VOLUME ./my-public-assets /app/public/assets
 EXPOSE 3000
 CMD ["npm", "start"]
