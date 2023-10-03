@@ -82,7 +82,7 @@ const DeleteConfirmation = (props: DeleteConfirmationProps) => {
             <button type="button" className="btn-close" onClick={props.onHide}></button>
          </div>
          <div className="modal-body">
-            Title: <span className="text-danger fw-light font-italic">{props.selectedStep ? props.selectedStep.label : ""}</span>
+            Title: <span className="text-danger fw-light fst-italic">{props.selectedStep ? props.selectedStep.label : ""}</span>
          </div>
          <div className="modal-footer">
             <button type="button" className="btn btn-sm" onClick={props.onHide}>

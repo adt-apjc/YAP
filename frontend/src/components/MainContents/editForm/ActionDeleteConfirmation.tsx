@@ -27,7 +27,7 @@ const ActionDeleteConfirmation = (props: ActionDeleteConfirmationProps) => {
             <button type="button" className="btn-close" onClick={props.onHide}></button>
          </div>
          <div className="modal-body">
-            Title: <span className="text-danger fw-light font-italic">{props.initValue.action.title}</span>
+            Title: <span className="text-danger fw-light fst-italic">{props.initValue.action.title}</span>
          </div>
          <div className="modal-footer p-1">
             <button type="button" className="btn btn-sm" onClick={props.onHide}>

@@ -50,10 +50,17 @@ const CommitFormButton = (props: CommitFormButtonProps) => {
 const EditOutcome = (props: EditOutcomeProps) => {
    const cyRef = useRef<cytoscape.Core | null>(null);
    const { context, dispatch } = useGlobalContext();
-   const [outcome, setOutcome] = useState({ elements: { nodes: [], edges: [] }, commands: {}, ssh: {}, ...props.initValue[0] });
+   const formContainerRef = useRef<HTMLDivElement>(null);
+   const [outcome, setOutcome] = useState({
+      elements: { nodes: [], edges: [] },
+      commands: {},
+      ssh: {},
+      ...(props.initValue && { ...props.initValue[0] }),
+   });
    const [selectedNode, setSelectedNode] = useState<OutcomeSelectedElem | null>(null);
    const [selectedEdge, setSelectedEdge] = useState<OutcomeSelectedElem | null>(null);
    const [renderForm, setRenderForm] = useState("node");
+   const [heightAdj, setHeightAdj] = useState(0);
 
    const getTopologyObject = () => {
       // use for return current cy object elements
@@ -102,9 +109,12 @@ const EditOutcome = (props: EditOutcomeProps) => {
 
       let currentObjectData = getTopologyObject();
       let currentConfig = _.cloneDeep(context.config);
-
-      currentConfig.mainContent[context.currentStep.name].outcome![0].elements = { ...currentObjectData };
-      currentConfig.mainContent[context.currentStep.name].outcome![0].commands = { ...outcome.commands };
+      if (!currentConfig.mainContent[context.currentStep.name].outcome) {
+         currentConfig.mainContent[context.currentStep.name].outcome = [outcome];
+      } else {
+         currentConfig.mainContent[context.currentStep.name].outcome![0].elements = { ...currentObjectData };
+         currentConfig.mainContent[context.currentStep.name].outcome![0].commands = { ...outcome.commands };
+      }
       // TODO future planning is to support multiple outcomes
 
       currentConfig.mainContent[context.currentStep.name].outcome![0].ssh = { ...outcome.ssh };
@@ -192,6 +202,15 @@ const EditOutcome = (props: EditOutcomeProps) => {
       }
    };
 
+   useEffect(() => {
+      if (!formContainerRef.current) return;
+      const resizeObserver = new ResizeObserver(() => {
+         setHeightAdj((prev) => prev + 1);
+      });
+      resizeObserver.observe(formContainerRef.current);
+      return () => resizeObserver.disconnect();
+   }, []);
+
    let selectedElementId = "";
    if (selectedNode) {
       selectedElementId = selectedNode.data.id;
@@ -256,7 +275,7 @@ const EditOutcome = (props: EditOutcomeProps) => {
                      </button>
                   </div>
                </div>
-               <div className="mt-2">
+               <div ref={formContainerRef} className="mt-2">
                   {renderForm === "node" ? (
                      <AddNodeForm
                         onAddElement={handleAddNode}
@@ -277,11 +296,11 @@ const EditOutcome = (props: EditOutcomeProps) => {
             <div>
                <div className="p-2">
                   Preview
-                  <span className="font-sm font-italic fw-light text-muted ms-3">
+                  <span className="font-sm fst-italic fw-light text-muted ms-3">
                      Click on the element below to edit parameters
                   </span>
                </div>
-               <div className="border rounded" style={{ height: 500 }}>
+               <div className="border rounded" style={{ height: 500 + (heightAdj % 2) }}>
                   <TopologyWrapper cy={(cy) => (cyRef.current = cy)} outcomeConfig={outcome} onNodeClick={elementClickHandler} />
                </div>
             </div>

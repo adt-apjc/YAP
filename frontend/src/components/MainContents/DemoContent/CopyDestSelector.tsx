@@ -47,7 +47,7 @@ export const CopyDestSelector = (props: CopyDestSelectorProps) => {
                .map((el) => (
                   <button
                      key={el.name}
-                     className="list-group-item list-group-item-sm list-group-item-action"
+                     className="list-group-item list-group-item-action"
                      onClick={() => handleSelectDest(el.name)}
                   >
                      {el.label}

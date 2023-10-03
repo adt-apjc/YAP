@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import _ from "lodash";
-import AddCommandForm from "./CommandForm";
+import AddCommandForm from "./AddCommandForm";
 import AddSSHInfoForm from "./SSHForm";
 
 import { OutcomeCommandConfig, SSHConfig } from "../../../contexts/ContextTypes";

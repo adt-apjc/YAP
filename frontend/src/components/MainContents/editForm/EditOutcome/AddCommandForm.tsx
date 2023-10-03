@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../contexts/ContextProvider";
 
+import WithDropdown from "../../../Popper/Dropdown";
 import AceEditor from "react-ace";
 import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-json";
@@ -8,7 +9,79 @@ import "ace-builds/src-noconflict/theme-github";
 import _ from "lodash";
 
 import { OutcomeCommandConfig } from "../../../contexts/ContextTypes";
-import { AddCommandFormProps } from "./EditOutcomeTypes";
+import { AddCommandFormProps, CloneCommandSelectorProps } from "./EditOutcomeTypes";
+
+const CloneCommandSelector = (props: CloneCommandSelectorProps) => {
+   const { context } = useGlobalContext();
+   const [selectedStep, setSelectStep] = useState<string | null>(context.currentStep.name);
+
+   const handleSelectElement = (el: { id: string; label: string }) => {
+      if (!selectedStep) return;
+      if (!context.config.mainContent[selectedStep].outcome) return;
+
+      let targetCommand = _.cloneDeep(context.config.mainContent[selectedStep].outcome![0].commands![el.id]).map((c) => ({
+         ...c,
+         data: JSON.stringify(c.data, null, 3),
+      }));
+
+      props.setCommands(targetCommand);
+      props.close();
+   };
+
+   let nodeItems: { id: string; label: string }[] | undefined;
+   if (selectedStep) {
+      nodeItems = context.config.mainContent[selectedStep].outcome
+         ? context.config.mainContent[selectedStep].outcome![0].elements?.nodes.map((n) => ({
+              id: n.data.id || "",
+              label: n.data.label,
+           }))
+         : undefined;
+   }
+
+   return (
+      <div className="p-2">
+         <div className="d-flex">
+            <div>
+               <div className="fw-light font-sm mb-2">Select step</div>
+               {props.elements && (
+                  <ul className="list-group position-relative">
+                     {props.elements.map((el) => (
+                        <li
+                           key={el.name}
+                           className={`pointer list-group-item list-group-item-action ${
+                              el.name === selectedStep ? "active" : ""
+                           }`}
+                           onClick={() => setSelectStep(el.name)}
+                        >
+                           {el.label ? el.label : "NO-LABEL"}
+                        </li>
+                     ))}
+                  </ul>
+               )}
+            </div>
+            {selectedStep && (
+               <>
+                  <i className="m-auto mx-2 fas fa-caret-right" />
+                  <div className="">
+                     <div className="fw-light font-sm mb-2">Select node</div>
+                     <ul className="list-group position-relative">
+                        {nodeItems?.map((el) => (
+                           <li
+                              key={el.id}
+                              className="pointer list-group-item list-group-item-action"
+                              onClick={() => handleSelectElement(el)}
+                           >
+                              {el.label ? el.label : "NO-LABEL"}
+                           </li>
+                        ))}
+                     </ul>
+                  </div>
+               </>
+            )}
+         </div>
+      </div>
+   );
+};
 
 const AddCommandForm = (props: AddCommandFormProps) => {
    const [data, setData] = useState("");
@@ -57,7 +130,8 @@ const AddCommandForm = (props: AddCommandFormProps) => {
    const renderCommand = () => {
       return props.commands.map((el, index) => {
          return (
-            <div
+            <button
+               type="button"
                key={index}
                className={`d-flex btn btn-sm btn${selectedCommandIndex === index ? "" : "-outline"}-info me-2`}
                onClick={() => {
@@ -74,7 +148,7 @@ const AddCommandForm = (props: AddCommandFormProps) => {
                      onClick={(e) => handleDeleteCommand(e, index)}
                   />
                </span>
-            </div>
+            </button>
          );
       });
    };
@@ -137,17 +211,43 @@ const AddCommandForm = (props: AddCommandFormProps) => {
          </div>
          {props.enableCommand && (
             <div className="px-4 pb-2 border-top">
-               <div className="row">
-                  <div className="col-sm-12 col-md-1">
-                     <div className="btn btn-sm btn-secondary px-4 me-1 my-3" onClick={handleAddNewCommand}>
-                        +
-                     </div>
-                  </div>
-                  <div className="col-sm-12 col-md-11">
-                     <div className="d-flex overflow-auto my-3">{renderCommand()}</div>
+               <div className="row my-1">
+                  <div className="col-sm-12">
+                     <span className="font-sm">
+                        You can add the command using <span className="fw-bold">+</span> <span className="fst-italic">or</span>{" "}
+                        <span className="fw-bold">clone</span> from the other element
+                     </span>
                   </div>
                </div>
-               {selectedCommandIndex !== null && (
+               <div className="row my-2">
+                  <div className="col-sm-12 col-md-2">
+                     <div className="btn-group">
+                        <button type="button" className="btn btn-sm btn-outline-secondary" onClick={handleAddNewCommand}>
+                           <span className="px-1">+</span>
+                        </button>
+                        <WithDropdown
+                           className="btn btn-sm btn-outline-secondary"
+                           interactive
+                           bindToRoot
+                           placement="right"
+                           DropdownComponent={(close) => (
+                              <CloneCommandSelector
+                                 elements={context.config.sidebar}
+                                 close={close}
+                                 setCommands={props.setCommands}
+                              />
+                           )}
+                        >
+                           Clone
+                        </WithDropdown>
+                     </div>
+                  </div>
+                  <div className="col-sm-12 col-md-10">
+                     <div className="d-flex overflow-auto">{renderCommand()}</div>
+                  </div>
+               </div>
+
+               {selectedCommandIndex !== null && props.commands[selectedCommandIndex] && (
                   <>
                      <div className="row">
                         <div className="col">

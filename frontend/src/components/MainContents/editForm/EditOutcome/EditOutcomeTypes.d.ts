@@ -1,5 +1,5 @@
 import cytoscape from "cytoscape";
-import { OutcomeCommandConfig, OutcomeConfig, SSHConfig } from "../../../contexts/ContextTypes";
+import { OutcomeCommandConfig, OutcomeConfig, SSHConfig, config } from "../../../contexts/ContextTypes";
 
 export type OutcomeSelectedElem = {
    data: any;
@@ -9,17 +9,9 @@ export type OutcomeSelectedElem = {
    ssh?: SSHConfig;
 };
 
-export type AddNodeParams = {
-   data: {
-      id: string;
-      label: string;
-      width: string;
-      height: string;
-      imglink?: string;
-   };
-   classes: string;
-   commands?: OutcomeCommandConfig[];
-   ssh?: SSHConfig;
+export type EditOutcomeProps = {
+   onHide: () => void;
+   initValue: OutcomeConfig[];
 };
 
 export type AddNodeFormProps = {
@@ -27,21 +19,6 @@ export type AddNodeFormProps = {
    nodeList: cytoscape.ElementDefinition[];
    edgeList: cytoscape.ElementDefinition[];
    initValue: OutcomeSelectedElem | null;
-};
-
-export type EditOutcomeProps = {
-   onHide: () => void;
-   initValue: OutcomeConfig[];
-};
-
-export type AddEdgeParams = {
-   data: {
-      id: string;
-      source: string;
-      target: string;
-      label: string;
-   };
-   classes: string;
 };
 
 export type AddEdgeFormProps = {
@@ -70,4 +47,33 @@ export type AddCommandFormProps = {
 export type CommitFormButtonProps = {
    shouldComfirm: boolean;
    saveHandler: () => void;
+};
+
+export type CloneCommandSelectorProps = {
+   close: () => void;
+   elements?: { name: string; label: string }[];
+   setCommands: React.Dispatch<React.SetStateAction<OutcomeCommandConfig[]>>;
+};
+
+export type AddNodeParams = {
+   data: {
+      id: string;
+      label: string;
+      width: string;
+      height: string;
+      imglink?: string;
+   };
+   classes: string;
+   commands?: OutcomeCommandConfig[];
+   ssh?: SSHConfig;
+};
+
+export type AddEdgeParams = {
+   data: {
+      id: string;
+      source: string;
+      target: string;
+      label: string;
+   };
+   classes: string;
 };
