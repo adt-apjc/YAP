@@ -64,7 +64,13 @@ const CommandModal = (props: CommandModalProps) => {
    const selectChangeHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
       let { outcomeConfig, selectedElementData } = props;
       let index = parseInt(e.target.value);
-      if (outcomeConfig.commands) setAction({ ...outcomeConfig.commands[selectedElementData.id][index] });
+
+      if (outcomeConfig.commands && index >= 0) {
+         setAction({ ...outcomeConfig.commands[selectedElementData.id][index] });
+         setCmdResults(null);
+      } else {
+         setAction(null);
+      }
    };
 
    return (
@@ -94,7 +100,7 @@ const CommandModal = (props: CommandModalProps) => {
                      window.open(
                         `/#/ssh?hostname=${hostname}&&username=${username}&&password=${password}&&port=${port}`,
                         props.selectedElementData.id,
-                        params
+                        params,
                      );
                   }}
                >
@@ -102,9 +108,7 @@ const CommandModal = (props: CommandModalProps) => {
                </button>
             )}
          </div>
-         {action !== null && (
-            <PostCheckDetail show={cmdResults ? true : false} response={cmdResults} request={action as ActionConfig} />
-         )}
+         {action !== null && <PostCheckDetail show={true} response={cmdResults} request={action as ActionConfig} />}
       </div>
    );
 };
@@ -130,7 +134,7 @@ const Outcome = (props: OutcomeProps) => {
             setModal({ selectedElementData: nodeData, modalShow: true });
          }
       }, // eslint-disable-next-line react-hooks/exhaustive-deps
-      [JSON.stringify(props.currentStepDetails)]
+      [JSON.stringify(props.currentStepDetails)],
    );
 
    const onModalHide = () => setModal({ modalShow: false, selectedElementData: null });
