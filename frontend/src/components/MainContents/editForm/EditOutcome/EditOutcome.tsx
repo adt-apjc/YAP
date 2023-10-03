@@ -109,15 +109,15 @@ const EditOutcome = (props: EditOutcomeProps) => {
 
       let currentObjectData = getTopologyObject();
       let currentConfig = _.cloneDeep(context.config);
-      if (!currentConfig.mainContent[context.currentStep.name].outcome) {
+      let { outcome: OUTCOME } = currentConfig.mainContent[context.currentStep.name];
+      if (!OUTCOME) {
          currentConfig.mainContent[context.currentStep.name].outcome = [outcome];
       } else {
-         currentConfig.mainContent[context.currentStep.name].outcome![0].elements = { ...currentObjectData };
-         currentConfig.mainContent[context.currentStep.name].outcome![0].commands = { ...outcome.commands };
+         OUTCOME[0].elements = { ...currentObjectData };
+         OUTCOME[0].commands = { ...outcome.commands };
+         OUTCOME[0].ssh = { ...outcome.ssh };
       }
-      // TODO future planning is to support multiple outcomes
 
-      currentConfig.mainContent[context.currentStep.name].outcome![0].ssh = { ...outcome.ssh };
       dispatch({ type: "replaceConfig", payload: currentConfig });
       props.onHide();
    };

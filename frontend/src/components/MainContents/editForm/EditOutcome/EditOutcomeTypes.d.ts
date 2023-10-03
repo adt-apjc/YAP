@@ -51,7 +51,7 @@ export type CommitFormButtonProps = {
 
 export type CloneCommandSelectorProps = {
    close: () => void;
-   elements?: { name: string; label: string }[];
+   selectElementId?: string;
    setCommands: React.Dispatch<React.SetStateAction<OutcomeCommandConfig[]>>;
 };
 

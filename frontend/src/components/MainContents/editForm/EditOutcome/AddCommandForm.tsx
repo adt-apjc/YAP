@@ -13,39 +13,37 @@ import { AddCommandFormProps, CloneCommandSelectorProps } from "./EditOutcomeTyp
 
 const CloneCommandSelector = (props: CloneCommandSelectorProps) => {
    const { context } = useGlobalContext();
-   const [selectedStep, setSelectStep] = useState<string | null>(context.currentStep.name);
+   const [selectedStep, setSelectStep] = useState<string>(context.currentStep.name as string);
+   let { outcome } = context.config.mainContent[selectedStep];
 
    const handleSelectElement = (el: { id: string; label: string }) => {
-      if (!selectedStep) return;
-      if (!context.config.mainContent[selectedStep].outcome) return;
+      if (!outcome || !outcome[0].commands || !outcome[0].commands[el.id]) return;
 
-      let targetCommand = _.cloneDeep(context.config.mainContent[selectedStep].outcome![0].commands![el.id]).map((c) => ({
+      let targetCommand = _.cloneDeep(outcome[0].commands[el.id]).map((c) => ({
          ...c,
-         data: JSON.stringify(c.data, null, 3),
+         data: JSON.stringify(c.data, null, 3), //data must be string because AceEditor require string.
       }));
 
       props.setCommands(targetCommand);
       props.close();
    };
 
-   let nodeItems: { id: string; label: string }[] | undefined;
-   if (selectedStep) {
-      nodeItems = context.config.mainContent[selectedStep].outcome
-         ? context.config.mainContent[selectedStep].outcome![0].elements?.nodes.map((n) => ({
-              id: n.data.id || "",
-              label: n.data.label,
-           }))
-         : undefined;
-   }
+   let nodeItems = outcome
+      ? outcome[0].elements?.nodes.map((n) => ({
+           id: n.data.id || "",
+           label: n.data.label,
+        }))
+      : undefined;
+   nodeItems = nodeItems?.filter((n) => outcome![0].commands![n.id] !== undefined && n.id !== props.selectElementId);
 
    return (
       <div className="p-2">
          <div className="d-flex">
             <div>
                <div className="fw-light font-sm mb-2">Select step</div>
-               {props.elements && (
-                  <ul className="list-group position-relative">
-                     {props.elements.map((el) => (
+               {context.config.sidebar && (
+                  <ul className="list-group font-sm">
+                     {context.config.sidebar.map((el) => (
                         <li
                            key={el.name}
                            className={`pointer list-group-item list-group-item-action ${
@@ -59,25 +57,21 @@ const CloneCommandSelector = (props: CloneCommandSelectorProps) => {
                   </ul>
                )}
             </div>
-            {selectedStep && (
-               <>
-                  <i className="m-auto mx-2 fas fa-caret-right" />
-                  <div className="">
-                     <div className="fw-light font-sm mb-2">Select node</div>
-                     <ul className="list-group position-relative">
-                        {nodeItems?.map((el) => (
-                           <li
-                              key={el.id}
-                              className="pointer list-group-item list-group-item-action"
-                              onClick={() => handleSelectElement(el)}
-                           >
-                              {el.label ? el.label : "NO-LABEL"}
-                           </li>
-                        ))}
-                     </ul>
-                  </div>
-               </>
-            )}
+            <i className="m-auto mx-2 fas fa-caret-right" />
+            <div>
+               <div className="fw-light font-sm mb-2">Select node</div>
+               <ul className="list-group font-sm">
+                  {nodeItems?.map((el) => (
+                     <li
+                        key={el.id}
+                        className="pointer list-group-item list-group-item-action"
+                        onClick={() => handleSelectElement(el)}
+                     >
+                        {el.label ? el.label : "NO-LABEL"}
+                     </li>
+                  ))}
+               </ul>
+            </div>
          </div>
       </div>
    );
@@ -232,7 +226,7 @@ const AddCommandForm = (props: AddCommandFormProps) => {
                            placement="right"
                            DropdownComponent={(close) => (
                               <CloneCommandSelector
-                                 elements={context.config.sidebar}
+                                 selectElementId={props.nodeId}
                                  close={close}
                                  setCommands={props.setCommands}
                               />
