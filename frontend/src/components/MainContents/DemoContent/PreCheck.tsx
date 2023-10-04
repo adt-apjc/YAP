@@ -334,7 +334,7 @@ const PreCheck = (props: PreCheckProps) => {
                               {context.mode === "edit" && (
                                  <div className="d-flex align-items-center">
                                     <span
-                                       className="pe-2 font-sm text-dark text-hover-highlight"
+                                       className="action-menu"
                                        onClick={(e) => {
                                           e.stopPropagation();
                                           setModal({
@@ -347,7 +347,7 @@ const PreCheck = (props: PreCheckProps) => {
                                        Edit
                                     </span>
                                     <span
-                                       className="pe-2 font-sm text-dark text-hover-highlight"
+                                       className="action-menu"
                                        onClick={(e) => {
                                           e.stopPropagation();
                                           dispatch({
@@ -364,7 +364,7 @@ const PreCheck = (props: PreCheckProps) => {
                                        Duplicate
                                     </span>
                                     <WithDropdown
-                                       className="pe-2 font-sm text-dark text-hover-highlight"
+                                       className="action-menu"
                                        bindToRoot
                                        interactive
                                        DropdownComponent={(close) => (
@@ -397,7 +397,7 @@ const PreCheck = (props: PreCheckProps) => {
                                        Copy
                                     </WithDropdown>
                                     <span
-                                       className="font-sm text-danger text-hover-highlight"
+                                       className="action-menu danger"
                                        onClick={(e) => {
                                           e.stopPropagation();
                                           setModal({

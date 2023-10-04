@@ -517,13 +517,13 @@ const DemoContent = (props: DemoContentProps) => {
                      <div>
                         {context.mode === "edit" && (
                            <span
-                              className="text-info font-sm text-hover-highlight pointer"
+                              className="btn btn-xs btn-outline-secondary"
                               onClick={(e) => {
                                  e.stopPropagation();
                                  setModal({ modalShow: true, modalContentType: "preCheck", paramValues: null });
                               }}
                            >
-                              Add
+                              <i className="fas fa-plus" />
                            </span>
                         )}
                         <i className={`p-2 fas fa-caret-${sectionExpand.preCheck ? "down" : "right"}`}></i>
@@ -569,13 +569,13 @@ const DemoContent = (props: DemoContentProps) => {
                   />
                   {context.mode === "edit" && (
                      <span
-                        className="text-info font-sm text-hover-highlight pointer"
+                        className="btn btn-xs btn-outline-secondary"
                         onClick={(e) => {
                            e.stopPropagation();
                            setModal({ modalShow: true, modalContentType: "action", paramValues: null });
                         }}
                      >
-                        Add
+                        <i className="fas fa-plus" />
                      </span>
                   )}
 
@@ -619,13 +619,13 @@ const DemoContent = (props: DemoContentProps) => {
                      />
                      {context.mode === "edit" && (
                         <span
-                           className="text-info font-sm text-hover-highlight pointer"
+                           className="btn btn-xs btn-outline-secondary"
                            onClick={(e) => {
                               e.stopPropagation();
                               setModal({ modalShow: true, modalContentType: "postCheck", paramValues: null });
                            }}
                         >
-                           Add
+                           <i className="fas fa-plus" />
                         </span>
                      )}
 
@@ -657,39 +657,42 @@ const DemoContent = (props: DemoContentProps) => {
                   <div>
                      {context.mode === "edit" && (
                         <>
-                           <WithDropdown
-                              className="pe-2 font-sm text-dark text-hover-highlight"
-                              bindToRoot
-                              interactive
-                              placement="left"
-                              DropdownComponent={(close) => (
-                                 <CopyDestSelector
-                                    source="outcome"
-                                    close={close}
-                                    onItemClick={(item) => {
-                                       dispatch({
-                                          type: "copyOutcome",
-                                          payload: { fromStep: props.currentStep.name, toStep: item },
-                                       });
-                                    }}
-                                 />
-                              )}
-                           >
-                              Copy
-                           </WithDropdown>
-                           <span
-                              className="text-info font-sm text-hover-highlight pointer"
-                              onClick={(e) => {
-                                 e.stopPropagation();
-                                 setModal({
-                                    modalShow: true,
-                                    modalContentType: "editOutcome",
-                                    paramValues: props.currentStepDetails.outcome,
-                                 });
-                              }}
-                           >
-                              Edit
-                           </span>
+                           <div className="btn-group btn-group-sm" role="group" aria-label="Small button group">
+                              <WithDropdown
+                                 className="btn btn-outline-secondary font-sm"
+                                 bindToRoot
+                                 interactive
+                                 placement="left"
+                                 DropdownComponent={(close) => (
+                                    <CopyDestSelector
+                                       source="outcome"
+                                       close={close}
+                                       onItemClick={(item) => {
+                                          dispatch({
+                                             type: "copyOutcome",
+                                             payload: { fromStep: props.currentStep.name, toStep: item },
+                                          });
+                                       }}
+                                    />
+                                 )}
+                              >
+                                 Copy
+                              </WithDropdown>
+                              <button
+                                 type="button"
+                                 className="btn btn-outline-secondary font-sm"
+                                 onClick={(e) => {
+                                    e.stopPropagation();
+                                    setModal({
+                                       modalShow: true,
+                                       modalContentType: "editOutcome",
+                                       paramValues: props.currentStepDetails.outcome,
+                                    });
+                                 }}
+                              >
+                                 Edit
+                              </button>
+                           </div>
                         </>
                      )}
                      <i className={`p-2 fas fa-caret-${sectionExpand.outcome ? "down" : "right"}`}></i>

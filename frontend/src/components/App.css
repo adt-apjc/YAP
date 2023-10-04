@@ -60,6 +60,13 @@ span {
    border-color: #0080b3;
 }
 
+.btn-xs {
+   --bs-btn-padding-y: 0.2rem;
+   --bs-btn-padding-x: 0.4rem;
+   --bs-btn-font-size: 0.575rem;
+   --bs-btn-border-radius: var(--bs-border-radius-sm);
+}
+
 .font-sm {
    font-size: 12px;
 }
@@ -399,4 +406,36 @@ span {
    position: absolute;
    content: ":";
    left: -1px;
+}
+
+.action-grip-handle {
+   position: relative;
+   left: -8px;
+   padding: 5px;
+}
+
+div > .action-menu {
+   margin: 0 3px;
+}
+
+.action-menu {
+   font-size: 11px;
+   padding: 3px;
+   border: 1px solid var(--bs-gray-500);
+   border-radius: 0.25rem;
+}
+.action-menu:hover {
+   border-color: var(--bs-gray-600);
+   background-color: var(--bs-gray-600);
+   color: var(--text-light);
+}
+.action-menu.danger {
+   border-color: var(--text-danger);
+   color: var(--text-danger);
+}
+
+.action-menu.danger:hover {
+   border-color: var(--text-danger);
+   background-color: var(--text-danger);
+   color: var(--text-light);
 }

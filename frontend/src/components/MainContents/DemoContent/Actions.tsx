@@ -300,7 +300,7 @@ const Actions = (props: ActionsProps) => {
          return (
             <Draggable draggableId={`action-${index}`} index={index} key={index} isDragDisabled={context.mode === "presentation"}>
                {(provided) => (
-                  <div className="mt-2" ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                  <div className="mt-2" ref={provided.innerRef} {...provided.draggableProps}>
                      <div
                         className={`shadow-sm p-3 mb-3 bg-light text-secondary rounded pointer ${
                            isActionRunning(index) ? "border" : ""
@@ -309,6 +309,11 @@ const Actions = (props: ActionsProps) => {
                      >
                         <div className="d-flex justify-content-between">
                            <div className="d-flex align-items-center">
+                              {context.mode === "edit" && (
+                                 <div className="action-grip-handle" {...provided.dragHandleProps}>
+                                    <i className="fas fa-grip-horizontal" />
+                                 </div>
+                              )}
                               <div>
                                  <div
                                     className={`api-method-badge text-light me-3 rounded`}
@@ -329,7 +334,7 @@ const Actions = (props: ActionsProps) => {
                               {context.mode === "edit" && (
                                  <div className="d-flex align-items-center">
                                     <span
-                                       className="pe-2 font-sm text-dark text-hover-highlight"
+                                       className="action-menu"
                                        onClick={(e) => {
                                           e.stopPropagation();
                                           setModal({
@@ -342,7 +347,7 @@ const Actions = (props: ActionsProps) => {
                                        Edit
                                     </span>
                                     <span
-                                       className="pe-2 font-sm text-dark text-hover-highlight"
+                                       className="action-menu"
                                        onClick={(e) => {
                                           e.stopPropagation();
                                           dispatch({
@@ -359,7 +364,7 @@ const Actions = (props: ActionsProps) => {
                                        Duplicate
                                     </span>
                                     <WithDropdown
-                                       className="pe-2 font-sm text-dark text-hover-highlight"
+                                       className="action-menu"
                                        bindToRoot
                                        interactive
                                        DropdownComponent={(close) => (
@@ -392,7 +397,7 @@ const Actions = (props: ActionsProps) => {
                                        Copy
                                     </WithDropdown>
                                     <span
-                                       className="font-sm text-danger text-hover-highlight"
+                                       className="action-menu danger"
                                        onClick={(e) => {
                                           e.stopPropagation();
                                           setModal({

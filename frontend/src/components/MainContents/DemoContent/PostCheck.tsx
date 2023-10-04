@@ -340,7 +340,7 @@ const PostCheck = (props: PostCheckProps) => {
                               {context.mode === "edit" && (
                                  <>
                                     <span
-                                       className="pe-2 font-sm text-dark text-hover-highlight"
+                                       className="action-menu"
                                        onClick={(e) => {
                                           e.stopPropagation();
                                           setModal({
@@ -353,7 +353,7 @@ const PostCheck = (props: PostCheckProps) => {
                                        Edit
                                     </span>
                                     <span
-                                       className="pe-2 font-sm text-dark text-hover-highlight"
+                                       className="action-menu"
                                        onClick={(e) => {
                                           e.stopPropagation();
                                           dispatch({
@@ -370,7 +370,7 @@ const PostCheck = (props: PostCheckProps) => {
                                        Duplicate
                                     </span>
                                     <WithDropdown
-                                       className="pe-2 font-sm text-dark text-hover-highlight"
+                                       className="action-menu"
                                        bindToRoot
                                        interactive
                                        DropdownComponent={(close) => (
@@ -403,7 +403,7 @@ const PostCheck = (props: PostCheckProps) => {
                                        Copy
                                     </WithDropdown>
                                     <span
-                                       className="font-sm text-danger text-hover-highlight"
+                                       className="action-menu danger"
                                        onClick={(e) => {
                                           e.stopPropagation();
                                           setModal({
