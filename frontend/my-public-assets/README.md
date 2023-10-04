@@ -10,7 +10,9 @@ For example src='/my-assets/yapping-dog.png'.
 # Add more assets
 
 To add more assets, simply drop the files you wish to add in YAP/frontend/my-public-assets directory.
-and then re-build and run YAP container
+To load newly added assets, Example: src='/my-assets/filename'
+
+# If you encounter issues with loading your assets or the local icons follow steps below.
 
 Step 1 - make sure you are on root directory YAP when running the command
 
