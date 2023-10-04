@@ -8,7 +8,7 @@
       }
    ],
    "navbar": {
-      "logoUrl": "/assets/yapping-dog.png",
+      "logoUrl": "/my-assets/yapping-dog.png",
       "title": "YAP demo loadning personal icon",
       "navBgColor": "#2a642a",
       "navFontColor": "white"
@@ -16,7 +16,7 @@
    "preface": [
       {
          "stepDesc": "Intro",
-         "bodyMarkdown": "# YAP support for personal image assets <img height='100' width='100' src='/assets/yapping-dog.png'/>\n\n<br>\n\nThis demo intro section supports HTML and Markdown. This example uses HTML, that supports height and width to load a local asset image. \n\n In HTML, this is achived with &lt;img height='100' width='100' src='/assets/yapping-dog.png'/&gt;. \n\n The top navigaton bar is controlled by the navbar configuration object, that support the loadning of a remote icon."
+         "bodyMarkdown": "# YAP support for personal image assets <img height='100' width='100' src='/my-assets/yapping-dog.png'/>\n\n<br>\n\nThis demo intro section supports HTML and Markdown. This example uses HTML, that supports height and width to load a local asset image. \n\n In HTML, this is achived with &lt;img height='100' width='100' src='/my-assets/yapping-dog.png'/&gt;. \n\n The top navigaton bar is controlled by the navbar configuration object, that support the loadning of a remote icon."
       },
       {
          "stepDesc": "Images in Demo Steps",
@@ -37,7 +37,7 @@
    },
    "mainContent": {
       "step_1": {
-         "description": "<img height='100' width='100' src='/assets/yapping-dog.png'/> This section support Markdown and HTML.",
+         "description": "<img height='100' width='100' src='/my-assets/yapping-dog.png'/> This section support Markdown and HTML.",
          "continueOnFail": false,
          "prefaceRef": 1,
          "preCheck": [],

@@ -6,6 +6,8 @@ services:
          context: ./frontend
       ports:
          - 4000:3000
+      volumes:
+         - ./frontend/my-public-assets:/app/public/my-assets
       restart: unless-stopped
    yap-backend:
       build:
