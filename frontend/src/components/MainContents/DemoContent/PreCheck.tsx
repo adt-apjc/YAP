@@ -305,7 +305,7 @@ const PreCheck = (props: PreCheckProps) => {
                isDragDisabled={context.mode === "presentation"}
             >
                {(provided) => (
-                  <div className="mt-2" ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                  <div className="mt-2" ref={provided.innerRef} {...provided.draggableProps}>
                      <div
                         className={`shadow-sm p-3 mb-3 bg-light text-secondary rounded pointer ${
                            isPreCheckRunning(index) ? "border" : ""
@@ -314,6 +314,11 @@ const PreCheck = (props: PreCheckProps) => {
                      >
                         <div className="d-flex justify-content-between">
                            <div className="d-flex align-items-center">
+                              {context.mode === "edit" && (
+                                 <div className="action-grip-handle" {...provided.dragHandleProps}>
+                                    <i className="fas fa-grip-horizontal" />
+                                 </div>
+                              )}
                               <div>
                                  <div
                                     className={`api-method-badge text-light me-3 rounded`}
