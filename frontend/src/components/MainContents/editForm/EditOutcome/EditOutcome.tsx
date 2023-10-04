@@ -224,7 +224,7 @@ const EditOutcome = (props: EditOutcomeProps) => {
             <span className="modal-title">Outcome Editor</span>
             <button type="button" className="btn-close" onClick={props.onHide}></button>
          </div>
-         <div className="modal-body overflow-auto">
+         <div className="modal-body">
             <div className="row">
                <div className="btn-group btn-group-sm col-4">
                   <button

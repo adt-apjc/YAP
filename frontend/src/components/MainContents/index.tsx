@@ -15,14 +15,12 @@ const MainContents = () => {
          : context.config.mainContent[context.currentStep.name!];
 
    return (
-      <div className="container-fluid">
-         <div className="container-fluid pb-3">
-            {!context.currentStep.name ? (
-               <Preface config={context.config.preface} prefaceRef={0} />
-            ) : (
-               <DemoContent currentStep={context.currentStep as currentStep} currentStepDetails={currentStepDetails} />
-            )}
-         </div>
+      <div className="py-3 px-4">
+         {!context.currentStep.name ? (
+            <Preface config={context.config.preface} prefaceRef={0} />
+         ) : (
+            <DemoContent currentStep={context.currentStep as currentStep} currentStepDetails={currentStepDetails} />
+         )}
       </div>
    );
 };
