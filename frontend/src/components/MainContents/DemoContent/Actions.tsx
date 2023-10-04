@@ -298,12 +298,7 @@ const Actions = (props: ActionsProps) => {
                )
             ) : null;
          return (
-            <Draggable
-               draggableId={`action-${index}-aaa`}
-               index={index}
-               key={index}
-               isDragDisabled={context.mode === "presentation"}
-            >
+            <Draggable draggableId={`action-${index}`} index={index} key={index} isDragDisabled={context.mode === "presentation"}>
                {(provided) => (
                   <div className="mt-2" ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                      <div
@@ -431,7 +426,7 @@ const Actions = (props: ActionsProps) => {
    return (
       <>
          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable-1" type="PERSON" isDropDisabled={context.mode === "presentation"}>
+            <Droppable droppableId="droppable-1" isDropDisabled={context.mode === "presentation"}>
                {(provided) => (
                   <div ref={provided.innerRef} {...provided.droppableProps}>
                      <div className="container">{apiList}</div>

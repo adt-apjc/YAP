@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../contexts/ContextProvider";
-
+import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import WithDropdown from "../../../Popper/Dropdown";
 import AceEditor from "react-ace";
 import "ace-builds/webpack-resolver";
@@ -82,6 +82,21 @@ const AddCommandForm = (props: AddCommandFormProps) => {
    const [selectedCommandIndex, setSelectedCommandIndex] = useState<number | null>(null);
    const { context } = useGlobalContext();
 
+   const transformPayloadTextToObject = () => {
+      try {
+         if (data === "") return undefined;
+         let obj = JSON.parse(data);
+         return obj;
+      } catch (err) {
+         return false;
+      }
+   };
+
+   const handleBeautify = () => {
+      let payload = transformPayloadTextToObject();
+      if (payload) setData(JSON.stringify(payload, null, 3));
+   };
+
    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       if (selectedCommandIndex === null) return;
 
@@ -121,28 +136,51 @@ const AddCommandForm = (props: AddCommandFormProps) => {
       ]);
    };
 
+   const handleDragEnd = (result: DropResult) => {
+      if (!result.destination) {
+         return;
+      }
+      if (result.destination.index === result.source.index) {
+         return;
+      }
+      // reorder
+      const cmds = _.cloneDeep(props.commands);
+      const [removed] = cmds.splice(result.source.index, 1);
+      cmds.splice(result.destination.index, 0, removed);
+      props.setCommands(cmds);
+   };
+
+   const handleDragStart = () => {
+      setSelectedCommandIndex(null);
+   };
+
    const renderCommand = () => {
       return props.commands.map((el, index) => {
          return (
-            <button
-               type="button"
-               key={index}
-               className={`d-flex btn btn-sm btn${selectedCommandIndex === index ? "" : "-outline"}-info me-2`}
-               onClick={() => {
-                  if (typeof el.data === "object") setData(JSON.stringify(el.data, null, 3));
-                  else setData(el.data);
-                  setSelectedCommandIndex(index);
-               }}
-            >
-               <span className="me-2">{el.title}</span>
-               <span>
-                  <i
-                     title="delete"
-                     className="fal fa-times-circle icon-hover-highlight pointer"
-                     onClick={(e) => handleDeleteCommand(e, index)}
-                  />
-               </span>
-            </button>
+            <Draggable draggableId={`cmd-${index}`} index={index} key={index}>
+               {(provided) => (
+                  <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                     <div
+                        key={index}
+                        className={`d-flex btn btn-sm btn${selectedCommandIndex === index ? "" : "-outline"}-info me-2`}
+                        onClick={() => {
+                           if (typeof el.data === "object") setData(JSON.stringify(el.data, null, 3));
+                           else setData(el.data);
+                           setSelectedCommandIndex(index);
+                        }}
+                     >
+                        <span className="me-2">{el.title}</span>
+                        <span>
+                           <i
+                              title="delete"
+                              className="fal fa-times-circle icon-hover-highlight pointer"
+                              onClick={(e) => handleDeleteCommand(e, index)}
+                           />
+                        </span>
+                     </div>
+                  </div>
+               )}
+            </Draggable>
          );
       });
    };
@@ -157,21 +195,6 @@ const AddCommandForm = (props: AddCommandFormProps) => {
             </option>
          );
       });
-   };
-
-   const transformPayloadTextToObject = () => {
-      try {
-         if (data === "") return undefined;
-         let obj = JSON.parse(data);
-         return obj;
-      } catch (err) {
-         return false;
-      }
-   };
-
-   const handleBeautify = () => {
-      let payload = transformPayloadTextToObject();
-      if (payload) setData(JSON.stringify(payload, null, 3));
    };
 
    useEffect(() => {
@@ -237,7 +260,16 @@ const AddCommandForm = (props: AddCommandFormProps) => {
                      </div>
                   </div>
                   <div className="col-sm-12 col-md-10">
-                     <div className="d-flex overflow-auto">{renderCommand()}</div>
+                     <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
+                        <Droppable droppableId="cmd-drap-area" direction="horizontal">
+                           {(provided) => (
+                              <div className="d-flex overflow-auto" ref={provided.innerRef} {...provided.droppableProps}>
+                                 {renderCommand()}
+                                 {provided.placeholder}
+                              </div>
+                           )}
+                        </Droppable>
+                     </DragDropContext>
                   </div>
                </div>
 
