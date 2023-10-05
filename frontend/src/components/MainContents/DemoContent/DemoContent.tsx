@@ -53,6 +53,13 @@ const DemoContent = (props: DemoContentProps) => {
    const hideOutcomeNameList = ["stage", "cleanup", "unstage"];
    const [isClearVarChecked, setIsClearVarChecked] = useState(true);
 
+   // clear check icons for all sections when re-running All
+   const clearChecksHandler = () => {
+      setIsPreCheckCompleted((prev) => ({ ...prev, [props.currentStep.name]: false }));
+      setIsActionCompleted((prev) => ({ ...prev, [props.currentStep.name]: false }));
+      setIsPostCheckCompleted((prev) => ({ ...prev, [props.currentStep.name]: false }));
+   };
+
    // clear vars in storage
    const clearVarsHandler = () => {
       let keys = [];
@@ -283,6 +290,8 @@ const DemoContent = (props: DemoContentProps) => {
    };
 
    const startWorkflowHandler = async () => {
+      // clear check icons
+      clearChecksHandler();
       // clear complete status of current step before start
       setPreCheckResults((prev) => ({ ...prev, [props.currentStep.name]: undefined }));
       setActionResults((prev) => ({ ...prev, [props.currentStep.name]: undefined }));
