@@ -24,7 +24,7 @@ const CloneCommandSelector = (props: CloneCommandSelectorProps) => {
          data: JSON.stringify(c.data, null, 3), //data must be string because AceEditor require string.
       }));
 
-      props.setCommands(targetCommand);
+      props.setCommands((prev) => [...prev, ...targetCommand]);
       props.close();
    };
 
@@ -231,8 +231,8 @@ const AddCommandForm = (props: AddCommandFormProps) => {
                <div className="row my-1">
                   <div className="col-sm-12">
                      <span className="font-sm">
-                        You can add the command using <span className="fw-bold">+</span> <span className="fst-italic">or</span>{" "}
-                        <span className="fw-bold">clone</span> from the other element
+                        You can add new command using <span className="fw-bold">+</span> <span className="fst-italic">or</span>{" "}
+                        <span className="fw-bold">import</span> from the other element
                      </span>
                   </div>
                </div>
@@ -255,7 +255,7 @@ const AddCommandForm = (props: AddCommandFormProps) => {
                               />
                            )}
                         >
-                           Clone
+                           Import
                         </WithDropdown>
                      </div>
                   </div>
