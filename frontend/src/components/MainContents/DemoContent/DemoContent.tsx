@@ -16,6 +16,7 @@ import { StepDetails } from "../../contexts/ContextTypes";
 import { APIResponse } from "../../../helper/apiAction";
 import { CopyDestSelector } from "./CopyDestSelector";
 import WithDropdown from "../../Popper/Dropdown";
+import { cloneDeep } from "lodash";
 
 type StepResult = {
    [step: string]: { [index: number]: APIResponse } | undefined;
@@ -52,6 +53,19 @@ const DemoContent = (props: DemoContentProps) => {
    const [showOffCanvas, setShowOffCanvas] = useState(false);
    const hideOutcomeNameList = ["stage", "cleanup", "unstage"];
    const [isClearVarChecked, setIsClearVarChecked] = useState(true);
+   const [outcomeSummaryText, setOutcomeSummaryText] = useState("");
+   const [showEditOutcomeSumText, setShowEditOutcomeSumText] = useState(false);
+
+   const editOutcomeSumTextHandler = () => {
+      let currentConfig = cloneDeep(context.config);
+      currentConfig.mainContent[context.currentStep.name!].outcome![0] = {
+         ...currentConfig.mainContent[context.currentStep.name!].outcome![0],
+         summaryText: outcomeSummaryText,
+      };
+
+      dispatch({ type: "replaceConfig", payload: currentConfig });
+      setShowEditOutcomeSumText(false);
+   };
 
    // clear check icons for all sections when re-running All
    const clearChecksHandler = () => {
@@ -325,6 +339,10 @@ const DemoContent = (props: DemoContentProps) => {
    };
 
    useEffect(() => {
+      let outcomeSumText = props.currentStepDetails.outcome ? props.currentStepDetails.outcome[0].summaryText : "";
+      if (outcomeSumText !== undefined) setOutcomeSummaryText(outcomeSumText);
+      else setOutcomeSummaryText("");
+
       setSectionExpand({ preCheck: false, action: false, postCheck: false, outcome: true });
       // set clear var state based on config file
       if (props.currentStep.name === "cleanup") {
@@ -657,12 +675,37 @@ const DemoContent = (props: DemoContentProps) => {
                   className="section-header d-flex justify-content-between pointer"
                   onClick={() => setSectionExpand((prev) => ({ ...prev, outcome: !prev.outcome }))}
                >
-                  <div>
-                     <span>Outcome</span>
-                     <span className="fw-light mx-5">
-                        {props.currentStepDetails.outcome && props.currentStepDetails.outcome[0].summaryText}
-                     </span>
+                  <div>Outcome</div>
+                  <div className="flex-grow-1">
+                     <div className="fw-light mx-5">
+                        {context.mode === "edit" ? (
+                           <>
+                              {showEditOutcomeSumText ? (
+                                 <div className="d-flex align-items-center">
+                                    <input
+                                       className="form-control form-control-sm flex-grow-1"
+                                       value={outcomeSummaryText}
+                                       onChange={(e) => setOutcomeSummaryText(e.target.value)}
+                                    />
+                                    <i className="far fa-check pointer ms-2 text-info" onClick={editOutcomeSumTextHandler} />
+                                 </div>
+                              ) : (
+                                 <>
+                                    {outcomeSummaryText ? outcomeSummaryText : "Add outcome summary text"}
+                                    <i
+                                       title="edit text"
+                                       className="far fa-edit pointer ms-2 text-info"
+                                       onClick={() => setShowEditOutcomeSumText(true)}
+                                    />
+                                 </>
+                              )}
+                           </>
+                        ) : (
+                           <>{outcomeSummaryText}</>
+                        )}
+                     </div>
                   </div>
+
                   <div>
                      {context.mode === "edit" && (
                         <>
