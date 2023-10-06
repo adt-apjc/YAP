@@ -116,7 +116,8 @@ export type StepDetails = {
 export type StaticVariables = { [key: string]: string };
 
 export type config = {
-   version: string;
+   templateVersion: string;
+   demoVersion: string;
    title: string;
    sidebar: { name: string; label: string }[];
    navbar: {

@@ -9,9 +9,9 @@ const AboutTooltipContent = () => {
       <div className="text-dark px-2 py-1" style={{ minWidth: "10rem" }}>
          <div className="custom-dropdown-text text-muted mb-1">About</div>
          <hr className="m-0" />
+         <div className="custom-dropdown-text">Demo Version: {`${context.config.demoVersion}`}</div>
+         <div className="custom-dropdown-text">Template Version: {`${context.config.templateVersion}`}</div>
          <div className="custom-dropdown-text">YAP Version: 1.0.0</div>
-         <div className="custom-dropdown-text">Config Version: {`${context.config.version}`}</div>
-         <div className="custom-dropdown-text">Build: {process.env.REACT_APP_BUILD_VERSION || "dev"}</div>
       </div>
    );
 };

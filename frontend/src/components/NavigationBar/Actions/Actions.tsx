@@ -1,18 +1,19 @@
-import { useRef } from "react";
-import WithDropdown from "../../Popper/Dropdown";
+import { useRef, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
-import { saveAs } from "file-saver";
 
-const ActionTooltipContent = ({ close }: { close: () => void }) => {
+import WithDropdown from "../../Popper/Dropdown";
+import ModalContentSelector from "../ModalContentSelector";
+import { Modal } from "../../../helper/modalHelper";
+
+const ActionTooltipContent = ({
+   close,
+   setModalShow,
+}: {
+   close: () => void;
+   setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
    const { context, dispatch } = useGlobalContext();
    const importRef = useRef<HTMLInputElement | null>(null);
-
-   const exportProjectHandler = () => {
-      console.log("export:", context.config);
-      let blob = new Blob([JSON.stringify(context.config, null, 2)], { type: "text/plain;charset=utf-8" });
-      saveAs(blob, `${context.config.title || "project"}.json`);
-      close();
-   };
 
    const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       event.stopPropagation();
@@ -98,12 +99,7 @@ const ActionTooltipContent = ({ close }: { close: () => void }) => {
                   <i className="pointer fal fa-file me-2" />
                   New
                </div>
-               <div
-                  className="custom-dropdown"
-                  onClick={() => {
-                     importRef.current!.click();
-                  }}
-               >
+               <div className="custom-dropdown" onClick={() => importRef.current?.click()}>
                   <i className="pointer fal fa-file-import me-2" />
                   Import
                   <input
@@ -115,7 +111,13 @@ const ActionTooltipContent = ({ close }: { close: () => void }) => {
                      onChange={onFileChange}
                   />
                </div>
-               <div className="custom-dropdown" onClick={exportProjectHandler}>
+               <div
+                  className="custom-dropdown"
+                  onClick={() => {
+                     setModalShow(true);
+                     close();
+                  }}
+               >
                   <i className="pointer fal fa-download me-2" />
                   Export
                </div>
@@ -126,18 +128,25 @@ const ActionTooltipContent = ({ close }: { close: () => void }) => {
 };
 
 const Actions = () => {
+   const [modalShow, setModalShow] = useState(false);
+
    return (
-      <WithDropdown
-         className="d-none d-sm-block"
-         placement="left-start"
-         interactive
-         offset={[35, -35]}
-         DropdownComponent={(close) => <ActionTooltipContent close={close} />}
-      >
-         <div title="actions" className="nav-action me-2">
-            <i className="fal fa-ellipsis-h-alt" />
-         </div>
-      </WithDropdown>
+      <>
+         <WithDropdown
+            className="d-none d-sm-block"
+            placement="left-start"
+            interactive
+            offset={[35, -35]}
+            DropdownComponent={(close) => <ActionTooltipContent close={close} setModalShow={setModalShow} />}
+         >
+            <div title="actions" className="nav-action me-2">
+               <i className="fal fa-ellipsis-h-alt" />
+            </div>
+         </WithDropdown>
+         <Modal show={modalShow} onHide={() => setModalShow(false)}>
+            <ModalContentSelector contentType="export" onHide={() => setModalShow(false)} />
+         </Modal>
+      </>
    );
 };
 

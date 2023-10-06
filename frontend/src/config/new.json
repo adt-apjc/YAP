@@ -1,5 +1,6 @@
 {
-   "version": "1.0.2",
+   "templateVersion": "1.0.2",
+   "demoVersion": "1.0.0",
    "title": "My New Demo",
    "sidebar": [
       {
