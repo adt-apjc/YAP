@@ -1,4 +1,4 @@
-import Logo from "../MainContents/Logo";
+import Logo from "./Logo";
 import { useGlobalContext } from "../contexts/ContextProvider";
 import Actions from "./Actions/Actions";
 import About from "./About";

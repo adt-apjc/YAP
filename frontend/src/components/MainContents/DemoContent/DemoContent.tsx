@@ -339,10 +339,7 @@ const DemoContent = (props: DemoContentProps) => {
    };
 
    useEffect(() => {
-      let outcomeSumText = props.currentStepDetails.outcome ? props.currentStepDetails.outcome[0].summaryText : "";
-      if (outcomeSumText !== undefined) setOutcomeSummaryText(outcomeSumText);
-      else setOutcomeSummaryText("");
-
+      setShowEditOutcomeSumText(false);
       setSectionExpand({ preCheck: false, action: false, postCheck: false, outcome: true });
       // set clear var state based on config file
       if (props.currentStep.name === "cleanup") {
@@ -553,7 +550,7 @@ const DemoContent = (props: DemoContentProps) => {
                               <i className="fas fa-plus" />
                            </span>
                         )}
-                        <i className={`p-2 fas fa-caret-${sectionExpand.preCheck ? "down" : "right"}`}></i>
+                        <i style={{ width: 26 }} className={`p-2 fas fa-caret-${sectionExpand.preCheck ? "down" : "right"}`}></i>
                      </div>
                   </div>
                </div>
@@ -606,7 +603,7 @@ const DemoContent = (props: DemoContentProps) => {
                      </span>
                   )}
 
-                  <i className={`p-2 fas fa-caret-${sectionExpand.action ? "down" : "right"}`}></i>
+                  <i style={{ width: 26 }} className={`p-2 fas fa-caret-${sectionExpand.action ? "down" : "right"}`}></i>
                </div>
             </div>
             <Actions
@@ -656,7 +653,7 @@ const DemoContent = (props: DemoContentProps) => {
                         </span>
                      )}
 
-                     <i className={`p-2 fas fa-caret-${sectionExpand.postCheck ? "down" : "right"}`}></i>
+                     <i style={{ width: 26 }} className={`p-2 fas fa-caret-${sectionExpand.postCheck ? "down" : "right"}`}></i>
                   </div>
                </div>
                <PostCheck
@@ -681,27 +678,44 @@ const DemoContent = (props: DemoContentProps) => {
                         {context.mode === "edit" ? (
                            <>
                               {showEditOutcomeSumText ? (
-                                 <div className="d-flex align-items-center">
+                                 <div className="d-flex align-items-center" onClick={(e) => e.stopPropagation()}>
                                     <input
                                        className="form-control form-control-sm flex-grow-1"
                                        value={outcomeSummaryText}
                                        onChange={(e) => setOutcomeSummaryText(e.target.value)}
                                     />
-                                    <i className="far fa-check pointer ms-2 text-info" onClick={editOutcomeSumTextHandler} />
+                                    <i
+                                       className="far fa-check ms-2 text-success icon-hover-highlight"
+                                       onClick={editOutcomeSumTextHandler}
+                                    />
+                                    <i
+                                       className="far fa-times ms-2 text-danger icon-hover-highlight"
+                                       onClick={() => setShowEditOutcomeSumText(false)}
+                                    />
                                  </div>
                               ) : (
                                  <>
-                                    {outcomeSummaryText ? outcomeSummaryText : "Add outcome summary text"}
+                                    {props.currentStepDetails.outcome && props.currentStepDetails.outcome[0].summaryText
+                                       ? props.currentStepDetails.outcome[0].summaryText
+                                       : "Add outcome summary text"}
                                     <i
                                        title="edit text"
-                                       className="far fa-edit pointer ms-2 text-info"
-                                       onClick={() => setShowEditOutcomeSumText(true)}
+                                       className="far fa-edit ms-2 text-info icon-hover-highlight"
+                                       onClick={(e) => {
+                                          e.stopPropagation();
+                                          let outcomeSumText = props.currentStepDetails.outcome
+                                             ? props.currentStepDetails.outcome[0].summaryText
+                                             : "";
+                                          if (outcomeSumText) setOutcomeSummaryText(outcomeSumText);
+                                          else setOutcomeSummaryText("");
+                                          setShowEditOutcomeSumText(true);
+                                       }}
                                     />
                                  </>
                               )}
                            </>
                         ) : (
-                           <>{outcomeSummaryText}</>
+                           <>{props.currentStepDetails.outcome ? props.currentStepDetails.outcome[0].summaryText : ""}</>
                         )}
                      </div>
                   </div>
@@ -747,7 +761,7 @@ const DemoContent = (props: DemoContentProps) => {
                            </div>
                         </>
                      )}
-                     <i className={`p-2 fas fa-caret-${sectionExpand.outcome ? "down" : "right"}`}></i>
+                     <i style={{ width: 26 }} className={`p-2 fas fa-caret-${sectionExpand.outcome ? "down" : "right"}`}></i>
                   </div>
                </div>
                <Outcome sectionExpand={sectionExpand} currentStepDetails={props.currentStepDetails} />

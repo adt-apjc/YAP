@@ -62,7 +62,7 @@ const Logo = () => {
             <div style={{ fontSize: "12px" }} className={`${isSomeStepRunning() ? "disabled" : ""}`}>
                {state.activeEditMainTitle ? (
                   <div onClick={editTitleNameHandler}>
-                     <i className="far fa-check pointer ms-2" />
+                     <i className="far fa-check pointer ms-2 icon-hover-highlight" />
                   </div>
                ) : (
                   <div
@@ -71,7 +71,7 @@ const Logo = () => {
                         setState((prev) => ({ ...prev, activeEditMainTitle: true, titleInput: context.config.title }))
                      }
                   >
-                     <i className="far fa-edit pointer ms-2" />
+                     <i className="far fa-edit pointer ms-2 icon-hover-highlight" />
                   </div>
                )}
             </div>
