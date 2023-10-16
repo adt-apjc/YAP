@@ -42,7 +42,7 @@
    ],
    "endpoints": {
       "MOCKUP": {
-         "baseURL": "http://34.143.199.115:3010",
+         "baseURL": "http://64.104.255.166:80/mockup",
          "headers": {
             "Content-Type": "application/json"
          }
