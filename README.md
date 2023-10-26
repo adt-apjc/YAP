@@ -36,7 +36,7 @@ git clone https://github.com/adt-apjc/YAP.git
 Step 2 (optional) - REACT application runs on TCP porty 3000 and docker-compose expose this port as 4000. If YAP must answer to a different TCP port, update the ports statement in docker-compose.yaml.
 
 Step 3 (optional) - Step 3 (Optional) - Update REACT_APP_API_URL localhost string in the frontend/.env with the IP address of your server if you run this project on a remote server to explain to YAP frontend how to access the backend.
-For example, if you host YAP in a dCloud deployed VM (currently configured with the 198.18.134.15 address), you can use: REACT_APP_API_URL=http://198.18.134.15:5001.
+For example, if you host YAP in a Cisco dCloud VM, let say 198.18.134.15 IPv4 address, you can use: REACT_APP_API_URL=http://198.18.134.15:5001.
 
 Step 4 - Build and run YAP container (remove the -d to run interactively).
 
