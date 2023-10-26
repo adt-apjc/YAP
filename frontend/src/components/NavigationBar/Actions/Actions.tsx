@@ -1,6 +1,8 @@
 import { useRef, useState } from "react";
-import { useGlobalContext } from "../../contexts/ContextProvider";
+import { saveAs } from "file-saver";
+import axios from "axios";
 
+import { useGlobalContext } from "../../contexts/ContextProvider";
 import WithDropdown from "../../Popper/Dropdown";
 import ModalContentSelector from "../ModalContentSelector";
 import { Modal } from "../../../helper/modalHelper";
@@ -13,6 +15,7 @@ const ActionTooltipContent = ({
    setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
    const { context, dispatch } = useGlobalContext();
+   const [isPDFLoading, setIsPDFLoading] = useState(false);
    const importRef = useRef<HTMLInputElement | null>(null);
 
    const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,6 +47,18 @@ const ActionTooltipContent = ({
       }
    };
 
+   const handleGeneratePDF = async (e: React.MouseEvent) => {
+      e.preventDefault();
+      setIsPDFLoading(true);
+      let pdfBinaryData = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/generate/pdf`, context.config, {
+         responseType: "blob",
+      });
+      let blob = new Blob([pdfBinaryData.data], { type: "application/pdf" });
+      saveAs(blob, "presentation.pdf");
+      setIsPDFLoading(false);
+      close();
+   };
+
    return (
       <div className="text-dark px-2 py-1" style={{ minWidth: "10rem" }}>
          <div
@@ -53,7 +68,7 @@ const ActionTooltipContent = ({
                close();
             }}
          >
-            <i className="pointer fal fa-wrench me-1" />
+            <i style={{ width: 14 }} className="pointer fal fa-wrench me-1" />
             Stage
          </div>
          <div
@@ -63,7 +78,7 @@ const ActionTooltipContent = ({
                close();
             }}
          >
-            <i className="pointer fal fa-redo me-1" />
+            <i style={{ width: 14 }} className="pointer fal fa-redo me-1" />
             Clean Up
          </div>
          <div
@@ -73,7 +88,7 @@ const ActionTooltipContent = ({
                close();
             }}
          >
-            <i className="pointer fal fa-recycle me-1" />
+            <i style={{ width: 14 }} className="pointer fal fa-recycle me-1" />
             Unstage
          </div>
          {context.mode === "edit" && (
@@ -86,7 +101,7 @@ const ActionTooltipContent = ({
                      close();
                   }}
                >
-                  <i className="pointer fal fa-eraser me-2" />
+                  <i style={{ width: 14 }} className="pointer fal fa-eraser me-2" />
                   Reset
                </div>
                <div
@@ -96,11 +111,11 @@ const ActionTooltipContent = ({
                      close();
                   }}
                >
-                  <i className="pointer fal fa-file me-2" />
+                  <i style={{ width: 14 }} className="pointer fal fa-file me-2" />
                   New
                </div>
                <div className="custom-dropdown" onClick={() => importRef.current?.click()}>
-                  <i className="pointer fal fa-file-import me-2" />
+                  <i style={{ width: 14 }} className="pointer fal fa-file-import me-2" />
                   Import
                   <input
                      id="importFile"
@@ -118,8 +133,13 @@ const ActionTooltipContent = ({
                      close();
                   }}
                >
-                  <i className="pointer fal fa-download me-2" />
+                  <i style={{ width: 14 }} className="pointer fal fa-download me-2" />
                   Export
+               </div>
+               <div className="custom-dropdown" onClick={handleGeneratePDF}>
+                  <i style={{ width: 14 }} className="pointer fal fa-file-pdf me-2" />
+                  {isPDFLoading ? "Generating... " : "Export as PDF"}
+                  {isPDFLoading && <i className="fal fa-spinner fa-spin ms-2" />}
                </div>
             </>
          )}
