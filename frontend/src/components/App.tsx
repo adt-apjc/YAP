@@ -10,6 +10,7 @@ import NavigationBar from "./NavigationBar/NavigationBar";
 //
 import "./App.css";
 import { useEffect } from "react";
+import Catalog from "./Catalog/Catalog";
 
 const fitAddon = new FitAddon();
 
@@ -92,8 +93,9 @@ const App = () => {
       <ContextProvider>
          <HashRouter>
             <Routes>
+               <Route path="/" element={<Catalog />} />
+               <Route path="/demo" element={<Home />} />
                <Route path="/ssh" element={<SSHContainer />} />
-               <Route path="/" element={<Home />} />
             </Routes>
          </HashRouter>
       </ContextProvider>
