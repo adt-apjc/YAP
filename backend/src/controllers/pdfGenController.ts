@@ -75,7 +75,7 @@ function generateStepAPIinfo(config: config) {
                stepAPIinfoMD += "#### " + action.title + "\n";
                if (action.description) stepAPIinfoMD += `${action.description}\n`;
                stepAPIinfoMD += "\n";
-               stepAPIinfoMD += `**API Endpoint** : \`${action.useEndpoint}\` **Method** : \`${action.method.toLocaleUpperCase}\`  \n`;
+               stepAPIinfoMD += `**API Endpoint** : \`${action.useEndpoint}\` **Method** : \`${action.method.toLocaleUpperCase()}\`  \n`; // prettier-ignore
                stepAPIinfoMD += `**Path** : \`${action.url}\`  \n`;
                if (action.data)
                   if (typeof action.data === "object" && Object.keys(action.data).length > 0)
