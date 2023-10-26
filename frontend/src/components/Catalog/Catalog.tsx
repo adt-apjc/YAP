@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useGlobalContext } from "../contexts/ContextProvider";
-import config from "../../config/config.json";
+import helloWorld from "../../config/config.json";
 
 type CatalogDetails = {
    name: string;
@@ -16,7 +16,6 @@ type CatalogDetails = {
 
 type CardProps = {
    catalog: CatalogDetails;
-   handleDeploy: () => void;
 };
 
 const DefaultDemos = [
@@ -45,10 +44,37 @@ const Card = (props: CardProps) => {
    const navigate = useNavigate();
    const { context, dispatch } = useGlobalContext();
    const importRef = useRef<HTMLInputElement | null>(null);
+   const [isDeploying, setIsDeploying] = useState(false);
 
    // trim labels to only 3
    const labels = props.catalog.labels.length > 3 ? props.catalog.labels.splice(3) : props.catalog.labels;
    const demoName = props.catalog.name.toLowerCase();
+
+   const handleDeploy = async (path: string) => {
+      setIsDeploying(true);
+      if (path) {
+         try {
+            let config = {
+               baseURL: path,
+               method: "GET",
+            };
+
+            let response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
+            // load config context
+            dispatch({ type: "loadConfig", payload: response.data });
+            setIsDeploying(false);
+         } catch (e) {
+            setIsDeploying(false);
+            console.log(e);
+         }
+      } else {
+         // load config context
+         dispatch({ type: "loadConfig", payload: helloWorld });
+      }
+
+      setIsDeploying(false);
+      navigate("/demo");
+   };
 
    const handleCreateNew = () => {
       dispatch({ type: "newConfig" });
@@ -83,7 +109,15 @@ const Card = (props: CardProps) => {
       }
    };
 
-   let buttonComponent;
+   let buttonComponent = (
+      <div className="mt-4">
+         <button className="btn btn-sm btn-primary" onClick={() => handleDeploy(props.catalog.path)}>
+            {isDeploying && <i className="me-2 far fa-spin fa-spinner" />}
+            Deploy
+         </button>
+      </div>
+   );
+
    let defaultIcon;
    if (demoName === "my demo") {
       buttonComponent = (
@@ -106,13 +140,6 @@ const Card = (props: CardProps) => {
       );
       defaultIcon = <i className="fas fa-sticky-note" />;
    } else if (demoName === "hello world") {
-      buttonComponent = (
-         <div className="mt-4">
-            <button className="btn btn-sm btn-primary" onClick={props.handleDeploy}>
-               Deploy
-            </button>
-         </div>
-      );
       defaultIcon = <img src={`${process.env.PUBLIC_URL}/yapping-dog-white.png`} alt={`${demoName}`} className="custom-icon" />;
    } else {
       defaultIcon = <i className="far fa-chart-network" />;
@@ -120,7 +147,7 @@ const Card = (props: CardProps) => {
 
    return (
       <div className="col">
-         <div className="card" style={{ height: "320px" }}>
+         <div className="card" style={{ height: "330px" }}>
             <div className="card-body">
                <div className="d-flex flex-column align-items-center justify-content-center">
                   <div className="circle-icon" style={{ padding: `${props.catalog.iconPath ? "" : "12px 6px"}` }}>
@@ -131,10 +158,9 @@ const Card = (props: CardProps) => {
                      )}
                   </div>
                   <h5 className="p-0 m-0 text-center">{props.catalog.name}</h5>
-                  <small className="text-muted">{props.catalog.version}</small>
-
+                  <small className="text-muted ">{props.catalog.version}</small>
                   <small className="mt-4 text-start">{props.catalog.objective}</small>
-                  <div className="position-absolute mt-4" style={{ bottom: "2rem" }}>
+                  <div className="position-absolute " style={{ bottom: "2rem" }}>
                      <div className="d-flex flex-column justify-content-center align-items-center">
                         <div className="d-flex justify-content-center">
                            {labels.map((l) => {
@@ -156,8 +182,6 @@ const Card = (props: CardProps) => {
 };
 
 const Catalog = () => {
-   const navigate = useNavigate();
-   const { context, dispatch } = useGlobalContext();
    const [demoCatalog, setDemoCatalog] = useState<CatalogDetails[]>([]);
    const [loading, setLoading] = useState(false);
    const [searchQuery, setSearchQuery] = useState("");
@@ -184,12 +208,6 @@ const Catalog = () => {
       }
    };
 
-   const handleDeploy = () => {
-      // load config context
-      dispatch({ type: "loadConfig", payload: config });
-      navigate("/demo");
-   };
-
    const renderLibrary = () => {
       // search demo catalog with name or labels
       const searchKey = searchQuery.toLowerCase();
@@ -205,7 +223,7 @@ const Catalog = () => {
 
       if (searchResult.length === 0)
          return (
-            <div className="d-flex justify-content-center" style={{ height: "320px" }}>
+            <div className="d-flex justify-content-center" style={{ height: "330px" }}>
                <h6 className="text-muted">No demo available</h6>
             </div>
          );
@@ -213,16 +231,13 @@ const Catalog = () => {
       return (
          <div
             className={`row row-cols-1 g-4 
-
             ${searchResult.length < 3 ? "row-cols-md-1 row-cols-lg-2" : "row-cols-md-2 row-cols-lg-3"}
-
-
             `}
          >
             {searchResult.map((demo) => {
                return (
                   <div key={demo.name}>
-                     <Card catalog={demo} handleDeploy={handleDeploy} />
+                     <Card catalog={demo} />
                   </div>
                );
             })}
@@ -248,7 +263,7 @@ const Catalog = () => {
                <img src={`${process.env.PUBLIC_URL}/ciscologo.png`} alt="Cisco Logo" className="nav-logo" />
                <h2>Use Case Library</h2>
             </div>
-            <div className="w-50 mt-3 mb-5">
+            <div className="w-50 mt-3 mb-4">
                <input
                   className="form-control"
                   placeholder="search catalog"
