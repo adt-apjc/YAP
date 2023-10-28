@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useGlobalContext } from "../contexts/ContextProvider";
 import helloWorld from "../../config/config.json";
+import CatalogModal from "./CatalogModal";
+import { Modal } from "../../helper/modalHelper";
 
 type CatalogDetails = {
    name: string;
@@ -111,7 +113,14 @@ const Card = (props: CardProps) => {
 
    let buttonComponent = (
       <div className="mt-4">
-         <button className="btn btn-sm btn-primary" onClick={() => handleDeploy(props.catalog.path)}>
+         <button
+            className="btn btn-sm btn-primary"
+            onClick={(e) => {
+               e.stopPropagation();
+               handleDeploy(props.catalog.path);
+            }}
+            disabled={isDeploying}
+         >
             {isDeploying && <i className="me-2 far fa-spin fa-spinner" />}
             Deploy
          </button>
@@ -182,9 +191,21 @@ const Card = (props: CardProps) => {
 };
 
 const Catalog = () => {
+   const navigate = useNavigate();
+   const { context, dispatch } = useGlobalContext();
    const [demoCatalog, setDemoCatalog] = useState<CatalogDetails[]>([]);
    const [loading, setLoading] = useState(false);
    const [searchQuery, setSearchQuery] = useState("");
+   const [showModal, setShowModal] = useState(false);
+   const [modalParams, setModalParams] = useState<CatalogDetails>();
+   const hideModalFrom = ["My Demo", "Hello World"];
+
+   const handleCardClick = (params: any) => {
+      if (!hideModalFrom.includes(params.name)) {
+         setShowModal(true);
+         setModalParams(params);
+      }
+   };
 
    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchQuery(e.target.value);
@@ -236,7 +257,7 @@ const Catalog = () => {
          >
             {searchResult.map((demo) => {
                return (
-                  <div key={demo.name}>
+                  <div id={demo.name} key={demo.name} onClick={() => handleCardClick(demo)}>
                      <Card catalog={demo} />
                   </div>
                );
@@ -246,7 +267,10 @@ const Catalog = () => {
    };
 
    useEffect(() => {
-      fetchDemoCatalog();
+      const savedState = JSON.parse(window.localStorage.getItem("__internal__configData") as string);
+      if (savedState) {
+         navigate("/demo");
+      } else fetchDemoCatalog();
    }, []);
 
    if (loading)
@@ -273,6 +297,10 @@ const Catalog = () => {
             </div>
             <div className="container overflow-auto mt-5">{renderLibrary()}</div>
          </div>
+
+         <Modal show={showModal} onHide={() => setShowModal(false)} width="50%">
+            <CatalogModal onHide={() => setShowModal(false)} params={modalParams} />
+         </Modal>
       </div>
    );
 };

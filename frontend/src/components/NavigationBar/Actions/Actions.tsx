@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { saveAs } from "file-saver";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import WithDropdown from "../../Popper/Dropdown";
@@ -17,6 +18,7 @@ const ActionTooltipContent = ({
    const { context, dispatch } = useGlobalContext();
    const [isPDFLoading, setIsPDFLoading] = useState(false);
    const importRef = useRef<HTMLInputElement | null>(null);
+   const navigate = useNavigate();
 
    const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       event.stopPropagation();
@@ -99,6 +101,7 @@ const ActionTooltipContent = ({
                   onClick={() => {
                      dispatch({ type: "clearConfig" });
                      close();
+                     navigate("/");
                   }}
                >
                   <i style={{ width: 14 }} className="pointer fal fa-eraser me-2" />
