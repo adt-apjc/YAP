@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { mdToPdf } from "md-to-pdf";
 import { catchErrorAsync } from "../libs/errorHandler";
-import { config } from "../ConfigType";
+import { ApiResponseData, config } from "../ConfigType";
 import fs from "fs";
 // import logger from "../libs/logger";
 
@@ -61,17 +61,42 @@ function generateEndpointInfo(config: config) {
    return endpointInfoMD + "\n" + PAGE_BRAKE + "\n\n";
 }
 
-function generateStepAPIinfo(config: config) {
+function generateAPIResponse(
+   actionType: "preCheck" | "actions" | "postCheck",
+   responseData: ApiResponseData,
+   stepName: string,
+   i: number,
+) {
+   type PathMap = { [k: string]: keyof typeof responseData };
+
+   let typeToObjPathMap: PathMap = { preCheck: "preCheckResults", actions: "actionResults", postCheck: "postCheckResults" };
+   let responseMD = "";
+   let resp = responseData[typeToObjPathMap[actionType]][stepName]?.[i];
+   let data = resp?.data;
+   let statusCode = `${resp?.status} ${resp?.statusText}`;
+   if (!data) return "";
+
+   if (typeof data === "object") {
+      responseMD += `**Response** : \`${statusCode}\` \n\`\`\`json\n${JSON.stringify(data, null, 3)}\n\`\`\`  \n\n`;
+   } else if (typeof data === "string") {
+      responseMD += `**Response** : \`${statusCode}\` \n\`\`\`\n${data}\n\`\`\`  \n\n`;
+   }
+
+   return responseMD;
+}
+
+function generateStepAPIinfo(config: config, responseData: ApiResponseData) {
+   let stepTitleMap = { preCheck: "Pre-Check", actions: "Actions", postCheck: "Post-Check" };
    let stepAPIinfoMD = "";
    for (let step of config.sidebar) {
       if (["stage", "unstage", "cleanup"].includes(step.name)) continue;
 
       stepAPIinfoMD += `## ${step.label}\n\n`; // step name
       stepAPIinfoMD += `${config.mainContent[step.name].description}\n\n`; // step description
-      for (let stepAction of ["preCheck", "actions", "postCheck"] as const) {
-         if (config.mainContent[step.name][stepAction].length > 0) {
-            stepAPIinfoMD += `### ${stepAction}\n\n`;
-            for (let action of config.mainContent[step.name][stepAction]) {
+      for (let actionType of ["preCheck", "actions", "postCheck"] as const) {
+         if (config.mainContent[step.name][actionType].length > 0) {
+            stepAPIinfoMD += `### ${stepTitleMap[actionType]}\n\n`;
+            for (let [i, action] of config.mainContent[step.name][actionType].entries()) {
                stepAPIinfoMD += "#### " + action.title + "\n";
                if (action.description) stepAPIinfoMD += `${action.description}\n`;
                stepAPIinfoMD += "\n";
@@ -81,6 +106,7 @@ function generateStepAPIinfo(config: config) {
                   if (typeof action.data === "object" && Object.keys(action.data).length > 0)
                      stepAPIinfoMD += `**Payload** : \n\`\`\`json\n${JSON.stringify(action.data, null, 3)}\n\`\`\`  \n\n`;
                   else if (typeof action.data === "string") stepAPIinfoMD += `**Payload** : \`${action.data}\`  \n\n`;
+               stepAPIinfoMD += generateAPIResponse(actionType, responseData, step.name, i);
             }
          }
       }
@@ -89,11 +115,12 @@ function generateStepAPIinfo(config: config) {
 }
 
 export const pdfGenController = catchErrorAsync(async (req: Request, res: Response, next: NextFunction) => {
-   const config: config = req.body;
+   const config: config = req.body.config;
+   const responseData: ApiResponseData = req.body.responseData;
 
    let prefaceContent = generatePreface(config);
    let endpointInfoContent = generateEndpointInfo(config);
-   let stepAPIContent = generateStepAPIinfo(config);
+   let stepAPIContent = generateStepAPIinfo(config, responseData);
    let content = PDF_CONFIG + prefaceContent + endpointInfoContent + stepAPIContent;
    fs.writeFileSync("test.md", content);
    let pdf = await mdToPdf({ content: content }).catch(console.error);

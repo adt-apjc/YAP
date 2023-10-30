@@ -13,8 +13,13 @@ const ActionTooltipContent = ({ close }: { close: () => void; setModalShow: Reac
 
    const handleGeneratePDF = async (e: React.MouseEvent) => {
       e.preventDefault();
+      let mainContentState = window.localStorage.getItem("__internal__mainContentState");
+      let payload = { config: context.config, responseData: null };
+      if (mainContentState) {
+         payload.responseData = JSON.parse(mainContentState);
+      }
       setIsPDFLoading(true);
-      let pdfBinaryData = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/generate/pdf`, context.config, {
+      let pdfBinaryData = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/generate/pdf`, payload, {
          responseType: "blob",
       });
       let blob = new Blob([pdfBinaryData.data], { type: "application/pdf" });

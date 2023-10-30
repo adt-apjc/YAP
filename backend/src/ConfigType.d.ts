@@ -1,3 +1,5 @@
+import { AxiosResponse } from "axios";
+
 export type EndpointConfig = {
    baseURL: string;
    backendRequest?: boolean; // default [true]
@@ -61,4 +63,14 @@ export type config = {
    mainContent: {
       [step: string]: StepDetails;
    };
+};
+
+type StepResult = {
+   [step: string]: { [index: number]: AxiosResponse & { success: boolean; failureCause?: string } } | undefined;
+};
+
+export type ApiResponseData = {
+   preCheckResults: StepResult;
+   actionResults: StepResult;
+   postCheckResults: StepResult;
 };
