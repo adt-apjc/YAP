@@ -238,7 +238,10 @@ const Catalog = () => {
 
       // filtered catalog based on searchKey
       const searchResult = fullDemoCatalog.filter((demo) => {
-         if (demo.name.toLowerCase().includes(searchKey) || demo.labels.map((l) => l.toLowerCase()).includes(searchKey))
+         if (
+            demo.name.toLowerCase().includes(searchKey) ||
+            demo.labels.reduce((accumulator, label) => accumulator || label.toLowerCase().includes(searchKey), false)
+         )
             return demo;
       });
 
