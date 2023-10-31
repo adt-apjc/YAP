@@ -6,11 +6,13 @@ import { useDidUpdateEffect } from "./CustomHooks";
 
 const GlobalContext = React.createContext<TYPE.ContextType | null>(null);
 
-// Using empty config instead of null to avoid tyscript validation on cloneState - TODO discuss on the approach
+// Using an empty config instead of null to avoid forcing the tyscript validation clonedState.config
+// YAP will never use this configuration because a title: "__emptyConfig__" doesn't generate an __internal__configData localStorage configuration
+// If we make a routing mistake, it shall still render an empty demo instead of crashing the application
 const emptyConfig: TYPE.config = {
    templateVersion: "",
    demoVersion: "",
-   title: "",
+   title: "__emptyConfig__",
    sidebar: [],
    navbar: {
       logoUrl: "",
@@ -290,7 +292,7 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
                state.clearStateFunction[key]();
             }
          }
-         return { ...state, currentStep: { name: null, label: null }, runningStatus: null, config: null };
+         return { ...state, currentStep: { name: null, label: null }, runningStatus: null, config: emptyConfig };
 
       case "newConfig":
          window.localStorage.clear();
@@ -329,7 +331,7 @@ function ContextProvider({ children }: { children: React.ReactNode }) {
    }, []);
 
    useDidUpdateEffect(() => {
-      if (!_.isEmpty(state.config)) {
+      if (!_.isEmpty(state.config) && state.config.title !== "__emptyConfig__") {
          window.localStorage.setItem("__internal__configData", JSON.stringify(state.config));
       }
    }, [JSON.stringify(state.config)]);
