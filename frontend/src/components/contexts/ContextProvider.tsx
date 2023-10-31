@@ -1,5 +1,4 @@
 import React, { useEffect, useReducer } from "react";
-import config from "../../config/config.json";
 import newConfig from "../../config/new.json";
 import _ from "lodash";
 import * as TYPE from "./ContextTypes";
@@ -7,11 +6,28 @@ import { useDidUpdateEffect } from "./CustomHooks";
 
 const GlobalContext = React.createContext<TYPE.ContextType | null>(null);
 
+// Using empty config instead of null to avoid tyscript validation on cloneState - TODO discuss on the approach
+const emptyConfig: TYPE.config = {
+   templateVersion: "",
+   demoVersion: "",
+   title: "",
+   sidebar: [],
+   navbar: {
+      logoUrl: "",
+      title: "",
+      navBgColor: "",
+      navFontColor: "",
+   },
+   preface: [],
+   endpoints: {},
+   mainContent: {},
+};
+
 let initState: TYPE.ContextState = {
-   currentStep: config.preface ? { name: null, label: null } : { ...config.sidebar[0] },
+   currentStep: { name: null, label: null },
    runningStatus: null,
    clearStateFunction: {},
-   config: config,
+   config: emptyConfig,
    mode: "presentation",
 };
 
@@ -33,7 +49,7 @@ function copyAction(
    payload: {
       from: { index: number; step: string; tab: "actions" | "preCheck" | "postCheck" };
       to: { step: string; tab: "actions" | "preCheck" | "postCheck" };
-   },
+   }
 ) {
    let clonedState = _.cloneDeep(state);
    let action = clonedState.config.mainContent[payload.from.step][payload.from.tab][payload.from.index];
@@ -43,7 +59,7 @@ function copyAction(
 
 function addAction(
    state: TYPE.ContextState,
-   payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any },
+   payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any }
 ) {
    let clonedState = _.cloneDeep(state);
 
@@ -63,7 +79,7 @@ function addAction(
 
 function deleteAction(
    state: TYPE.ContextState,
-   payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" },
+   payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" }
 ) {
    let clonedState = _.cloneDeep(state);
    clonedState.config.mainContent[payload.stepKey][payload.tab].splice(payload.index, 1);
@@ -106,7 +122,7 @@ function deleteStep(state: TYPE.ContextState, payload: { name: string }) {
 }
 function addEndpoint(
    state: TYPE.ContextState,
-   payload: { name: string; baseURL: string; headerList: { key: string; value: string }[] },
+   payload: { name: string; baseURL: string; headerList: { key: string; value: string }[] }
 ) {
    let clonedState = _.cloneDeep(state);
    clonedState.config.endpoints[payload.name] = {
@@ -139,7 +155,7 @@ function deleteStaticVar(state: TYPE.ContextState, payload: { name: string }) {
 
 function reorderAction(
    state: TYPE.ContextState,
-   payload: { source: number; destination: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" },
+   payload: { source: number; destination: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" }
 ) {
    const { stepKey, tab, source, destination } = payload;
    let clonedState = _.cloneDeep(state);
@@ -274,7 +290,7 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
                state.clearStateFunction[key]();
             }
          }
-         return { ...state, currentStep: { name: null, label: null }, runningStatus: null, config: { ...config } };
+         return { ...state, currentStep: { name: null, label: null }, runningStatus: null, config: null };
 
       case "newConfig":
          window.localStorage.clear();
@@ -313,7 +329,9 @@ function ContextProvider({ children }: { children: React.ReactNode }) {
    }, []);
 
    useDidUpdateEffect(() => {
-      window.localStorage.setItem("__internal__configData", JSON.stringify(state.config));
+      if (!_.isEmpty(state.config)) {
+         window.localStorage.setItem("__internal__configData", JSON.stringify(state.config));
+      }
    }, [JSON.stringify(state.config)]);
 
    useEffect(() => {

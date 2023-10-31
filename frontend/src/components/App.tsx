@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter, Route, Routes, useLocation } from "react-router-dom";
+import { useNavigate, HashRouter, Route, Routes, useLocation } from "react-router-dom";
 import { io } from "socket.io-client";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
@@ -15,6 +15,14 @@ import Catalog from "./Catalog/Catalog";
 const fitAddon = new FitAddon();
 
 const Home = () => {
+   const navigate = useNavigate();
+   useEffect(() => {
+      const savedState = JSON.parse(window.localStorage.getItem("__internal__configData") as string);
+      if (!savedState) {
+         navigate("/");
+      }
+   }, []);
+
    return (
       <React.StrictMode>
          <NavigationBar />
