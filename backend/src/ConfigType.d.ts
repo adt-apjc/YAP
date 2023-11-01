@@ -73,4 +73,4 @@ export type ApiResponseData = {
    preCheckResults: StepResult;
    actionResults: StepResult;
    postCheckResults: StepResult;
-};
+} | null;

@@ -67,6 +67,7 @@ function generateAPIResponse(
    stepName: string,
    i: number,
 ) {
+   if (!responseData) return "";
    type PathMap = { [k: string]: keyof typeof responseData };
 
    let typeToObjPathMap: PathMap = { preCheck: "preCheckResults", actions: "actionResults", postCheck: "postCheckResults" };
@@ -87,11 +88,11 @@ function generateAPIResponse(
 
 function generateStepAPIinfo(config: config, responseData: ApiResponseData) {
    let stepTitleMap = { preCheck: "Pre-Check", actions: "Actions", postCheck: "Post-Check" };
-   let stepAPIinfoMD = "";
-   for (let step of config.sidebar) {
+   let stepAPIinfoMD = "# API Information\n\n";
+   for (let [i, step] of config.sidebar.entries()) {
       if (["stage", "unstage", "cleanup"].includes(step.name)) continue;
 
-      stepAPIinfoMD += `## ${step.label}\n\n`; // step name
+      stepAPIinfoMD += `## ${i + 1}. ${step.label}\n\n`; // step name
       stepAPIinfoMD += `${config.mainContent[step.name].description}\n\n`; // step description
       for (let actionType of ["preCheck", "actions", "postCheck"] as const) {
          if (config.mainContent[step.name][actionType].length > 0) {

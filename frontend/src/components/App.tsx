@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, HashRouter, Route, Routes, useLocation } from "react-router-dom";
+import { useNavigate, HashRouter, Route, Routes, useLocation, Navigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
@@ -97,6 +97,7 @@ const SSHContainer = () => {
 
 const App = () => {
    document.title = "Workflow Demo";
+
    return (
       <ContextProvider>
          <HashRouter>
@@ -104,6 +105,7 @@ const App = () => {
                <Route path="/" element={<Catalog />} />
                <Route path="/demo" element={<Home />} />
                <Route path="/ssh" element={<SSHContainer />} />
+               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
          </HashRouter>
       </ContextProvider>

@@ -19,12 +19,17 @@ const ActionTooltipContent = ({ close }: { close: () => void; setModalShow: Reac
          payload.responseData = JSON.parse(mainContentState);
       }
       setIsPDFLoading(true);
-      let pdfBinaryData = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/generate/pdf`, payload, {
-         responseType: "blob",
-      });
-      let blob = new Blob([pdfBinaryData.data], { type: "application/pdf" });
-      saveAs(blob, "presentation.pdf");
-      setIsPDFLoading(false);
+      try {
+         let pdfBinaryData = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/generate/pdf`, payload, {
+            responseType: "blob",
+         });
+         let blob = new Blob([pdfBinaryData.data], { type: "application/pdf" });
+         saveAs(blob, "presentation.pdf");
+         setIsPDFLoading(false);
+      } catch (err) {
+         console.log(err);
+         setIsPDFLoading(false);
+      }
       close();
    };
 
