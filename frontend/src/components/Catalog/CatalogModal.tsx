@@ -39,7 +39,7 @@ const CatalogModal = (props: CatalogModalProps) => {
          <div className="modal-body">
             <div className="h-100 ">
                <div className="d-block">
-                  <div className="d-flex flex-column align-items-center justify-content-center">
+                  <div className="d-flex flex-column align-items-center  justify-content-center">
                      <div className="circle-icon" style={{ padding: `${props.params.iconPath ? "" : "12px 6px"}` }}>
                         {props.params.iconPath ? (
                            <img src={`${props.params.iconPath}`} alt={`${props.params.name}`} className="custom-icon" />
@@ -47,28 +47,44 @@ const CatalogModal = (props: CatalogModalProps) => {
                            <i className="far fa-chart-network" />
                         )}
                      </div>
-                     <h5 className="p-0 m-0 text-center">{props.params.name}</h5>
+                     <h4 className="p-0 m-0 text-center">{props.params.name}</h4>
                      <small className="text-muted ">{props.params.version}</small>
-                     <div className="position-absolute " style={{ bottom: "2rem" }}>
-                        <div className="d-flex flex-column justify-content-center align-items-center">
-                           <div className="d-flex justify-content-center">
-                              {props.params.labels.map((l: string) => {
-                                 return (
-                                    <span key={l} className="badge badge-sm bg-secondary me-2">
-                                       {l}
-                                    </span>
-                                 );
-                              })}
-                           </div>
-                        </div>
+                     <div className="p-5">
+                        <ReactMarkdown
+                           children={props.params.description}
+                           // @ts-ignore
+                           rehypePlugins={[rehypeRaw]}
+                        />
+                        {props.params.useCases && (
+                           <>
+                              <h5 className="p-0 m-0 text-left">Use Cases</h5>
+                              <ReactMarkdown
+                                 children={props.params.useCases}
+                                 // @ts-ignore
+                                 rehypePlugins={[rehypeRaw]}
+                              />
+                           </>
+                        )}
+                        {props.params.requirements && (
+                           <>
+                              <h5 className="p-0 m-0 text-left">Requirements</h5>
+                              <ReactMarkdown
+                                 children={props.params.requirements}
+                                 // @ts-ignore
+                                 rehypePlugins={[rehypeRaw]}
+                              />
+                           </>
+                        )}
                      </div>
-                  </div>
-                  <div className="p-5">
-                     <ReactMarkdown
-                        children={props.params.description}
-                        // @ts-ignore
-                        rehypePlugins={[rehypeRaw]}
-                     />
+                     <div className="text-center " style={{ bottom: "2rem" }}>
+                        {props.params.labels.map((l: string) => {
+                           return (
+                              <span key={l} className="badge badge-sm bg-secondary me-2">
+                                 {l}
+                              </span>
+                           );
+                        })}
+                     </div>
                   </div>
                </div>
             </div>

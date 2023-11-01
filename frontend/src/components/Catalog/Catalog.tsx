@@ -212,21 +212,50 @@ const Catalog = () => {
    };
 
    const fetchDemoCatalog = async () => {
+      let response;
       try {
          setLoading(true);
+
+         console.log("TODO - having issues loading from .env CUSTOM_CATALOG variable", process.env.CUSTOM_CATALOG);
+
+         // TODO remove as fixing .env loading of CUSTOM_CATALOG
+         const custom_config = {
+            baseURL: "https://wwwin-github.cisco.com/raw/APJ-GSP-ADT/YAP-Zoo/master/devCatalog.json",
+            method: "GET",
+         };
+
+         // const custom_config = {
+         //    baseURL: process.env.CUSTOM_CATALOG,
+         //    method: "GET",
+         // };
+
+         response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...custom_config });
+
+         if (response && response.status === 200) {
+            setDemoCatalog(response.data);
+            setLoading(false);
+            return;
+         }
+      } catch (e) {
+         console.log(e);
+      }
+
+      try {
          let config = {
             baseURL: "https://wwwin-github.cisco.com/raw/APJ-GSP-ADT/YAP-Zoo/master/demoCatalog.json",
             method: "GET",
          };
+         response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
 
-         let response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
-
-         setDemoCatalog(response.data);
-         setLoading(false);
+         if (response && response.status === 200) {
+            setDemoCatalog(response.data);
+            setLoading(false);
+            return;
+         }
       } catch (e) {
-         setLoading(false);
          console.log(e);
       }
+      setLoading(false);
    };
 
    const renderLibrary = () => {

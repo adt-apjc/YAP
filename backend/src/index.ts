@@ -52,7 +52,7 @@ app.use(
          tokens["response-time"](req, res),
          "ms",
       ].join(" ");
-   }),
+   })
 );
 
 app.route("/proxy/request").post(proxyController);
