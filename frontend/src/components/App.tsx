@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter, Route, Routes, useLocation } from "react-router-dom";
+import { useNavigate, HashRouter, Route, Routes, useLocation, Navigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
@@ -10,10 +10,19 @@ import NavigationBar from "./NavigationBar/NavigationBar";
 //
 import "./App.css";
 import { useEffect } from "react";
+import Catalog from "./Catalog/Catalog";
 
 const fitAddon = new FitAddon();
 
 const Home = () => {
+   const navigate = useNavigate();
+   useEffect(() => {
+      const savedState = JSON.parse(window.localStorage.getItem("__internal__configData") as string);
+      if (!savedState) {
+         navigate("/");
+      }
+   }, []);
+
    return (
       <React.StrictMode>
          <NavigationBar />
@@ -88,12 +97,15 @@ const SSHContainer = () => {
 
 const App = () => {
    document.title = "Workflow Demo";
+
    return (
       <ContextProvider>
          <HashRouter>
             <Routes>
+               <Route path="/" element={<Catalog />} />
+               <Route path="/demo" element={<Home />} />
                <Route path="/ssh" element={<SSHContainer />} />
-               <Route path="/" element={<Home />} />
+               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
          </HashRouter>
       </ContextProvider>

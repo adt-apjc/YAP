@@ -440,3 +440,68 @@ div > .action-menu {
    background-color: var(--text-danger);
    color: var(--text-light);
 }
+
+/* CATALOG */
+
+.catalog-container {
+   height: 100%;
+   width: 100%;
+   display: flex;
+   padding: 4rem;
+   align-items: center;
+   justify-content: center;
+   background-color: var(--sidebar-bg-color);
+}
+
+.card:hover {
+   transition: all 0.3s ease;
+   opacity: 1;
+   background-color: var(--hover-bg-color-light);
+   cursor: pointer;
+   transition: all 0.2s ease-out;
+   box-shadow: 0px 4px 8px rgba(38, 38, 38, 0.2);
+   border: 1px solid var(--navbar-bg-color);
+}
+
+.circle-icon {
+   background: var(--navbar-bg-color);
+   border: 1px solid var(--bs-gray-500);
+   width: 40px;
+   height: 40px;
+   border-radius: 50%;
+   text-align: center;
+   line-height: 2px;
+   vertical-align: middle;
+   color: var(--text-light);
+   margin-bottom: 1rem;
+   overflow: hidden;
+}
+
+.custom-icon {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+}
+
+.auth-loading {
+   height: 100%;
+   width: 100%;
+   font-size: 30px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+@keyframes gradientText {
+   to {
+      background-position: 200% center;
+   }
+}
+.auth-gradient-text {
+   background: linear-gradient(to right, #fff 20%, #067faf 40%, #17a2b8 60%, #fff 80%);
+   background-size: 200% auto;
+   background-clip: text;
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   animation: gradientText 2s linear infinite;
+}

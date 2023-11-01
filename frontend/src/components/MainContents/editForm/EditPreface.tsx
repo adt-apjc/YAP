@@ -60,7 +60,7 @@ const EditPreface = (props: EditPrefaceProps) => {
                width="100%"
                value={state.bodyMarkdown}
                onChange={(value) => setState({ ...state, bodyMarkdown: value })}
-               placeholder="html content"
+               placeholder="Markdown and html content"
                name="data"
                className="rounded border"
                editorProps={{ $blockScrolling: true }}

@@ -16,6 +16,7 @@ import { Client as SSHClient } from "ssh2";
 // Helper Lib
 import { errorController } from "./controllers/errorController";
 import { proxyController } from "./controllers/proxyController";
+import { pdfGenController } from "./controllers/pdfGenController";
 import logger from "./libs/logger";
 
 const MODE = {
@@ -51,11 +52,11 @@ app.use(
          tokens["response-time"](req, res),
          "ms",
       ].join(" ");
-   }),
+   })
 );
 
 app.route("/proxy/request").post(proxyController);
-
+app.route("/generate/pdf").post(pdfGenController);
 // default 404 invalid route
 app.route("*").all((req, res) => {
    res.status(404).json({ message: "invalid endpoint." });

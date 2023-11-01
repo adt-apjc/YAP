@@ -11,7 +11,7 @@ const AboutTooltipContent = () => {
          <hr className="m-0" />
          <div className="custom-dropdown-text">Demo Version: {`${context.config.demoVersion}`}</div>
          <div className="custom-dropdown-text">Template Version: {`${context.config.templateVersion}`}</div>
-         <div className="custom-dropdown-text">YAP Version: 1.0.0</div>
+         <div className="custom-dropdown-text">YAP Version: 1.1.0</div>
       </div>
    );
 };
