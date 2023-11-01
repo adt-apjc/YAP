@@ -76,15 +76,6 @@ const CatalogModal = (props: CatalogModalProps) => {
                            </>
                         )}
                      </div>
-                     <div className="text-center " style={{ bottom: "2rem" }}>
-                        {props.params.labels.map((l: string) => {
-                           return (
-                              <span key={l} className="badge badge-sm bg-secondary me-2">
-                                 {l}
-                              </span>
-                           );
-                        })}
-                     </div>
                   </div>
                </div>
             </div>

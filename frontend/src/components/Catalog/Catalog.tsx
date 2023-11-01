@@ -216,18 +216,15 @@ const Catalog = () => {
       try {
          setLoading(true);
 
-         console.log("TODO - having issues loading from .env CUSTOM_CATALOG variable", process.env.CUSTOM_CATALOG);
-
-         // TODO remove as fixing .env loading of CUSTOM_CATALOG
-         const custom_config = {
-            baseURL: "https://wwwin-github.cisco.com/raw/APJ-GSP-ADT/YAP-Zoo/master/devCatalog.json",
-            method: "GET",
-         };
-
          // const custom_config = {
-         //    baseURL: process.env.CUSTOM_CATALOG,
+         //    baseURL: "https://wwwin-github.cisco.com/raw/APJ-GSP-ADT/YAP-Zoo/master/devCatalog.json",
          //    method: "GET",
          // };
+
+         const custom_config = {
+            baseURL: process.env.REACT_APP_CATALOG,
+            method: "GET",
+         };
 
          response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...custom_config });
 
