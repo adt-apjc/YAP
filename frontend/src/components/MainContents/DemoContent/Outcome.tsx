@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
 import { normalRequest, pollingRequest } from "../../../helper/actionHelper";
@@ -114,11 +114,21 @@ const CommandModal = (props: CommandModalProps) => {
 };
 
 const Outcome = (props: OutcomeProps) => {
+   const cyRef = useRef<cytoscape.Core | null>(null);
    const [modal, setModal] = useState<{ modalShow: boolean; selectedElementData: any }>({
       modalShow: false,
       selectedElementData: null,
    });
    const [collapseCount, setCollapseCount] = useState(0);
+
+   const handleFitToCanvas = () => {
+      if (!cyRef.current) return;
+      cyRef.current.zoomingEnabled(true);
+      cyRef.current.panningEnabled(true);
+      cyRef.current.fit(undefined, 30);
+      cyRef.current.zoomingEnabled(false);
+      cyRef.current.panningEnabled(false);
+   };
 
    const handleNodeClick = useCallback(
       (nodeElement: cytoscape.NodeSingular) => {
@@ -154,8 +164,12 @@ const Outcome = (props: OutcomeProps) => {
       );
 
    return (
-      <div className="container-fluid" style={{ height: 500 + (collapseCount % 2) }}>
-         <TopologyWrapper outcomeConfig={outcomeConfig} onNodeClick={handleNodeClick} />
+      <div className="container-fluid position-relative" style={{ height: 500 + (collapseCount % 2) }}>
+         <div className="outcome-recenter-btn" onClick={handleFitToCanvas}>
+            Re-center
+            <i className="ms-1 fal fa-crosshairs" />
+         </div>
+         <TopologyWrapper cy={(cy) => (cyRef.current = cy)} outcomeConfig={outcomeConfig} onNodeClick={handleNodeClick} />
          <Modal show={modal.modalShow} onHide={onModalHide}>
             <div className="modal-header">
                <span className="modal-title">{modal.selectedElementData ? modal.selectedElementData.label : ""}</span>
