@@ -1,6 +1,6 @@
 {
    "templateVersion": "1.0.2",
-   "demoVersion": "1.0.0",
+   "demoVersion": "1.1.0",
    "title": "YAP - Hello World",
    "sidebar": [
       {
@@ -40,11 +40,15 @@
          "bodyMarkdown": "### Enable Connectivity\n\n<br>\n\nThe third step follows the same flow suggested in Step 2, enabling connectivity between the two routers in your project.\n\n__Step 1 - Execute all API calls in this step__\n\nAs we learned in previous steps, we can execute all API with a single click on Run All (play icon in the top right).\nThis activity performs two PATCH calls on the resources created in the previous step, changing the status of the newly created interfaces to up.\n\n<img width='800' src='https://storage.googleapis.com/yap_hello_world/step_3/runAll.png'/></br></br>\n\n__Step 2 - Confirm Outcome in Post_Checks__\n\nExpand the Post-Check section to see that the connectivity is now successful. If you hover over the expect, you appreciate how YAP validate this state by matching the success rate in the response payload.\n\n<img width='800' src='https://storage.googleapis.com/yap_hello_world/step_3/postCheck.png'/></br></br>\n\n__Step 3 - Confirm Outcome in the Outcome__\n\nFinally, execute the \"Get Router Details\" on Node_1 in th Outcome section to confirm the interface status and connectivity.\n\n<img width='800' src='https://storage.googleapis.com/yap_hello_world/step_3/outcomeStatus.png'/></br></br>\n\n<img width='800' src='https://storage.googleapis.com/yap_hello_world/step_3/connectivity.png'/></br></br>"
       },
       {
-         "bodyMarkdown": "### Cleanup Demo\n\n<br>\n\nYAP supports three operation phases: Stage, Unstage and Cleanup. \n\nYou can access these stages by clicking the three dots (...) on the top right menu.\n\nThese stages behave like the other demo phases, supporting pre-checks, actions, and post-checks API sections. They are optional; you can decide how to use them.\n\n<img width='300' src='https://storage.googleapis.com/yap_hello_world/clean/operation.png'/></br></br>\n- For example, you can leverage __Stage__ to bring up demo resources or set up a demo baseline.\n- You can run __Clean Up__ between demos to remove configured resources without losing the state achieved by running Stage.\n- Finally, __Unstage__ is suitable for decommissioning your demo resources.\n\n__Step 1 - Run All for Cleanup step__\n\nThis basic demo leverages only the Cleanup step. Execute Run All to remove your project and reset the status of the demo workflow, removing the success checks.\n\n<img width='800' src='https://storage.googleapis.com/yap_hello_world/clean/cleanAll.png'/></br></br>\n\nClean Up is the perfect place for hiding your authentication if you want to avoid exposing it as demo steps. \n\nIn this case, remember to uncheck \"Clear Variables\" to prevent the action of cleaning the local storage with retrieved certificates or tickets.",
+         "bodyMarkdown": "### Generate Documentation\n\n<br>\n\nYAP can generate the documentation for your demo, summarizing the preface information and a complete API description, including responses for the executed calls.\n\nClick on the three dots (...) on the top right menu and select __Export as PDF__ from the proposed menu.\n\n<img width='900' src='https://storage.googleapis.com/yap_hello_world/exportAsPDF.png'/></br></br>\n\nYAP will generate the documentation as a PDF and ask where to save the document. You can now open this document with Word and, if required, modify the format proposed.",
+         "stepDesc": "Generate Documentation"
+      },
+      {
+         "bodyMarkdown": "### Cleanup Demo\n\n<br>\n\nYAP supports three operation phases: Stage, Unstage and Cleanup. \n\nYou can access these stages by clicking the three dots (...) on the top right menu.\n\nThese stages behave like the other demo phases, supporting pre-checks, actions, and post-checks API sections. They are optional; you can decide how to use them.\n\n<img width='300' src='https://storage.googleapis.com/yap_hello_world/operation.png'/></br></br>\n- For example, you can leverage __Stage__ to bring up demo resources or set up a demo baseline.\n- You can run __Clean Up__ between demos to remove configured resources without losing the state achieved by running Stage.\n- Finally, __Unstage__ is suitable for decommissioning your demo resources.\n\n__Step 1 - Run All for Cleanup step__\n\nThis basic demo leverages only the Cleanup step. Execute Run All to remove your project and reset the status of the demo workflow, removing the success checks.\n\n<img width='800' src='https://storage.googleapis.com/yap_hello_world/clean/cleanAll.png'/></br></br>\n\nClean Up is the perfect place for hiding your authentication if you want to avoid exposing it as demo steps. \n\nIn this case, remember to uncheck \"Clear Variables\" to prevent the action of cleaning the local storage with retrieved certificates or tickets.",
          "stepDesc": "Reset Demo"
       },
       {
-         "bodyMarkdown": "### Next Steps\n\n<br>\n\nAfter experimenting with the presentation mode, try a few changes on this demo or add some API calls to your environment before stepping in and creating a new use case.\n\nClick the right wheel icon on the top right to access this demo Setting. \n\n<img width='200' src='https://storage.googleapis.com/yap_hello_world/nextSteps/wheel.png'/></br></br>\n\n__Settings__ exposes the endpoint. You can have one or multiple endpoints, click on the endpoint names to access its details\n\n<img width='800' src='https://storage.googleapis.com/yap_hello_world/nextSteps/settings.png'/></br></br>\n\nClick the right wheel icon again and select the switch YAP in __Edit__ mode. YAP exposes intuitive copy, delete and edit actions to customize the flow.\n\nClick around the different sections of the demo and explore the edit, copy, duplicate, and delete options  offered by the YAP UI\n\n<img width='800' src='https://storage.googleapis.com/yap_hello_world/nextSteps/edit.png\n'/></br></br>\n\nFinally, you may save your work by exporting your changes as a JSON file to re-import at a later stage. \n\n<img width='200' src='https://storage.googleapis.com/yap_hello_world/nextSteps/importexport.png'/></br></br>\n\nIf you have any comments or are interested in collaborating on this project, leave us a message on [YAP discussion](https://github.com/adt-apjc/YAP/discussions).",
+         "bodyMarkdown": "### Next Steps\n\n<br>\n\nAfter experimenting with the presentation mode, try a few changes on this demo or add some API calls to your environment before stepping in and creating a new use case.\n\nClick the right wheel icon on the top right to access this demo Setting. \n\n<img width='200' src='https://storage.googleapis.com/yap_hello_world/nextSteps/wheel.png'/></br></br>\n\n__Settings__ exposes the endpoint. You can have one or multiple endpoints, click on the endpoint names to access its details.\n\n<img width='800' src='https://storage.googleapis.com/yap_hello_world/nextSteps/settings.png'/></br></br>\n\nClick the right wheel icon again and select the switch YAP in __Edit mode__. YAP exposes intuitive copy, delete and edit actions to customize the flow.\n\n<img width='200' src='https://storage.googleapis.com/yap_hello_world/nextSteps/edit.png'/></br></br>\n\nClick around the different sections of the demo and explore the edit, copy, duplicate, and delete options  offered by the YAP UI\n\n<img width='800' src='https://storage.googleapis.com/yap_hello_world/nextSteps/change.png'/></br></br>\n\nAfter updating your demo, you may save your work by exporting your changes as a JSON file to re-import at a later stage, from this same view or from the Catalog. \n\n<img width='200' src='https://storage.googleapis.com/yap_hello_world/nextSteps/importexport.png'/></br></br>\n\nFinally, select __Reset to catalog__ to close this demo and render YAP startup catalog page.\n\n<img width='200' src='https://storage.googleapis.com/yap_hello_world/nextSteps/reset.png'/></br></br>\n\nIf you have any comments or are interested in collaborating on this project, leave us a message on [YAP discussion](https://github.com/adt-apjc/YAP/discussions).",
          "stepDesc": "Next Steps "
       }
    ],
@@ -73,14 +77,11 @@
                "apiBadge": "Create",
                "apiBadgeColor": "Green",
                "title": "Add new project",
-               "description": "The proposed payload for the POST action describe how to embed a variable in the",
+               "description": "",
                "url": "api/project",
                "method": "post",
-               "data": {
-                  "name": "{{projectName}}",
-                  "description": "Mockup project to demonstrate YAP functionalities",
-                  "routers": []
-               },
+               "displayResponseAs": "json",
+               "payloadType": "json",
                "expect": [
                   {
                      "type": "codeIs",
@@ -96,6 +97,11 @@
                   "regEx": "(.*)",
                   "matchGroup": "1",
                   "storeAs": "projectId"
+               },
+               "data": {
+                  "name": "{{projectName}}",
+                  "description": "Mockup project to demonstrate YAP functionalities",
+                  "routers": []
                }
             }
          ],
