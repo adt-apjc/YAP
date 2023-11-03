@@ -4,7 +4,7 @@ Yet Another Presentation (YAP) is a general-purpose tool created for interactive
 
 YAP provides a lightweight workflow for your scripted demo, organizes your API in meaningful stages and links them to a verifiable outcome on a contextual topology.
 
-YAP comes with a simple Hello Word demo, leveraging an API mockup server hosted in Google Cloud, and we are preparing more documentation and demos to share.
+As initial documentation, YAP provides a simple Hello Word demo (described in the __How to start__ section below). This demo interacts with a mockup server and lets you assess tool functionalities.
 
 ### Prerequisite
 
@@ -86,6 +86,20 @@ cisco@deployer:~/YAP$ docker compose up -d --build
 ```
 
 You can now access YAP at http://198.18.134.15:4000.
+
+### How to start
+
+YAP starts showing the demo catalog, and if it can not access the catalog configuration file, it shows the two essential tails: My Demo and Hello World. 
+
+Click on Deploy Hello World to familiarize yourself with the tool.
+
+![catalog](https://storage.googleapis.com/yap_hello_world/catalog.png)
+
+- Hello World demo describes the Yet Another Presentation tool (YAP) functionalities by orchestrating a simple project in a safe mockup environment and explains how to use the YAP functionalities. Ultimately, it will generate a live documentation of the experience [example](https://storage.googleapis.com/yap_hello_world/YAP%20Hello%20World%20(1.1.0).pdf).
+
+- After testing My Demo, we can create a new bare demo flow or import your modified version of Hello World configuration.
+We will soon provide more documentation on the catalog format and how to customize it for your experience. 
+
 
 ### How to update YAP
 
