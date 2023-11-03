@@ -154,9 +154,22 @@ const AddEdgeForm = (props: AddEdgeFormProps) => {
                </div>
             </div>
          </div>
-         <button type="submit" className="btn btn-sm btn-primary my-1">
-            {props.initValue ? "Update" : "Add"}
-         </button>
+         <div className="mt-3">
+            <button type="submit" className="btn btn-sm btn-primary">
+               {props.initValue ? "Update" : "Add"}
+            </button>
+            {props.initValue && (
+               <button
+                  className="btn btn-sm ms-2"
+                  onClick={(e) => {
+                     e.preventDefault();
+                     props.onDeSelect();
+                  }}
+               >
+                  Cancel
+               </button>
+            )}
+         </div>
       </form>
    );
 };
