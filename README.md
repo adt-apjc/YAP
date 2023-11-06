@@ -144,3 +144,4 @@ docker compose rm
 ### YAP Roadmap
 
 YAP open issues and planned features are summarized in the repository's [issues](https://github.com/adt-apjc/YAP/issues) and [projects](https://github.com/adt-apjc/YAP/projects?query=is%3Aopen).
+If you have any ideas, please comment in [YAP Idea Space](https://github.com/adt-apjc/YAP/discussions/152). For other feedback, use [chat about anything](https://github.com/adt-apjc/YAP/discussions/141).
