@@ -7,45 +7,7 @@ import AddNodeForm from "./AddNodeForm";
 import AddEdgeForm from "./AddEdgeForm";
 import TopologyWrapper from "../../TopologyWrapper";
 
-import { CommitFormButtonProps, EditOutcomeProps, OutcomeSelectedElem, AddNodeParams, AddEdgeParams } from "./EditOutcomeTypes";
-
-const CommitFormButton = (props: CommitFormButtonProps) => {
-   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-
-   const handleCommit = () => {
-      if (props.shouldComfirm) {
-         setIsConfirmOpen(true);
-      } else {
-         props.saveHandler();
-      }
-   };
-
-   useEffect(() => {
-      if (!props.shouldComfirm) setIsConfirmOpen(false);
-   }, [props.shouldComfirm]);
-
-   if (isConfirmOpen) {
-      return (
-         <div className="font-sm d-flex align-items-center">
-            <span className="mx-2">
-               There can be updates that have not yet been saved as you select an element. Are you certain that you want to go?
-            </span>
-            <button className="btn btn-primary btn-sm me-2" onClick={props.saveHandler}>
-               Yes
-            </button>
-            <button className="btn btn-secondary btn-sm" onClick={() => setIsConfirmOpen(false)}>
-               No
-            </button>
-         </div>
-      );
-   } else {
-      return (
-         <button type="button" className="btn btn-primary btn-sm" onClick={handleCommit}>
-            Commit Change
-         </button>
-      );
-   }
-};
+import { EditOutcomeProps, OutcomeSelectedElem, AddNodeParams, AddEdgeParams } from "./EditOutcomeTypes";
 
 const EditOutcome = (props: EditOutcomeProps) => {
    const cyRef = useRef<cytoscape.Core | null>(null);
@@ -202,6 +164,19 @@ const EditOutcome = (props: EditOutcomeProps) => {
       }
    };
 
+   const handleFormTypeChange = (type: "node" | "edge") => {
+      if (selectedNode !== null || selectedEdge !== null) {
+         setSelectedNode(null);
+         setSelectedEdge(null);
+      }
+      setRenderForm(type);
+   };
+
+   const handleDeSelect = () => {
+      setSelectedNode(null);
+      setSelectedEdge(null);
+   };
+
    useEffect(() => {
       if (!formContainerRef.current) return;
       const resizeObserver = new ResizeObserver(() => {
@@ -230,14 +205,14 @@ const EditOutcome = (props: EditOutcomeProps) => {
                   <button
                      type="button"
                      className={`btn btn-${renderForm === "edge" ? "outline-" : ""}secondary`}
-                     onClick={() => setRenderForm("node")}
+                     onClick={() => handleFormTypeChange("node")}
                   >
                      Node
                   </button>
                   <button
                      type="button"
                      className={`btn btn-${renderForm === "node" ? "outline-" : ""}secondary`}
-                     onClick={() => setRenderForm("edge")}
+                     onClick={() => handleFormTypeChange("edge")}
                   >
                      Edge
                   </button>
@@ -255,10 +230,7 @@ const EditOutcome = (props: EditOutcomeProps) => {
                            <i
                               title="de-select"
                               className="fal fa-times-circle icon-hover-highlight pointer"
-                              onClick={() => {
-                                 setSelectedNode(null);
-                                 setSelectedEdge(null);
-                              }}
+                              onClick={handleDeSelect}
                            />
                         </div>
                      </div>
@@ -279,6 +251,7 @@ const EditOutcome = (props: EditOutcomeProps) => {
                   {renderForm === "node" ? (
                      <AddNodeForm
                         onAddElement={handleAddNode}
+                        onDeSelect={handleDeSelect}
                         nodeList={outcome.elements.nodes}
                         edgeList={outcome.elements.edges}
                         initValue={selectedNode}
@@ -286,6 +259,7 @@ const EditOutcome = (props: EditOutcomeProps) => {
                   ) : (
                      <AddEdgeForm
                         onAddElement={handleAddEdge}
+                        onDeSelect={handleDeSelect}
                         nodeList={outcome.elements.nodes}
                         edgeList={outcome.elements.edges}
                         initValue={selectedEdge}
@@ -309,7 +283,14 @@ const EditOutcome = (props: EditOutcomeProps) => {
             <button type="button" className="btn btn-sm" onClick={props.onHide}>
                Close
             </button>
-            <CommitFormButton shouldComfirm={selectedEdge !== null || selectedNode !== null} saveHandler={saveHandler} />
+            <button
+               type="button"
+               disabled={selectedEdge !== null || selectedNode !== null}
+               className="btn btn-primary btn-sm"
+               onClick={saveHandler}
+            >
+               Commit Changes
+            </button>
          </div>
       </>
    );

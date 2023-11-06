@@ -16,6 +16,7 @@ export type EditOutcomeProps = {
 
 export type AddNodeFormProps = {
    onAddElement: (elem: AddNodeParams, isNew?: boolean) => void;
+   onDeSelect: () => void;
    nodeList: cytoscape.ElementDefinition[];
    edgeList: cytoscape.ElementDefinition[];
    initValue: OutcomeSelectedElem | null;
@@ -23,6 +24,7 @@ export type AddNodeFormProps = {
 
 export type AddEdgeFormProps = {
    onAddElement: (elem: AddEdgeParams) => void;
+   onDeSelect: () => void;
    nodeList: cytoscape.ElementDefinition[];
    edgeList: cytoscape.ElementDefinition[];
    initValue: OutcomeSelectedElem | null;
@@ -42,11 +44,6 @@ export type AddCommandFormProps = {
    setEnableCommand: React.Dispatch<React.SetStateAction<boolean>>;
    commands: OutcomeCommandConfig[];
    setCommands: React.Dispatch<React.SetStateAction<OutcomeCommandConfig[]>>;
-};
-
-export type CommitFormButtonProps = {
-   shouldComfirm: boolean;
-   saveHandler: () => void;
 };
 
 export type CloneCommandSelectorProps = {
