@@ -4,7 +4,7 @@ Yet Another Presentation (YAP) is a general-purpose tool created for interactive
 
 YAP provides a lightweight workflow for your scripted demo, organizes your API in meaningful stages and links them to a verifiable outcome on a contextual topology.
 
-As initial documentation, YAP provides a simple Hello Word demo (described in the __How to start__ section below). This demo interacts with a mockup server and lets you assess tool functionalities.
+As initial documentation, YAP provides a simple [Hello Word demo](https://storage.googleapis.com/yap_hello_world/YAP%20Hello%20World%20(1.1.0).pdf) (described in the __How to start__ section below). This demo interacts with a mockup server and lets you assess tool functionalities.
 
 ### Prerequisite
 
@@ -59,30 +59,37 @@ Use YAP to orchestrate a dCloud demo by running the tool on your local machine o
 
 To install YAP on the dCloud Deployer, SSH to the server and execute the following commands:
 
+Step 1 - Confirm that docker is installed and running.
 ```
-# confirm that docker is installed and running.
 cisco@deployer:~$ docker --version
 Docker version 20.10.5, build 55c4c88
+```
 
-# install the docker compose plugin
+Step 2 - install the docker compose plugin.
+```
 cisco@deployer:~$ sudo apt-get update
 cisco@deployer:~$ sudo apt-get install docker-compose-plugin
 cisco@deployer:~$ docker compose version
 Docker Compose version v2.21.0
+```
 
-# Clone YAP
+Step 3 - Clone YAP.
+```
 cisco@deployer:~$ git clone http://github.com/adt-apjc/YAP.git
 Cloning into 'YAP'...
 <snip>
 Resolving deltas: 100% (1137/1137), done.
+```
 
-# Update the reference to the backend IP address
+Step 4 - Update the reference to the backend IP address
+```
 sed -i 's/localhost/198.18.134.15/' YAP/frontend/.env
+```
 
-# Compile and launch YAP
+Step 5 - Compile and launch YAP.
+```
 cisco@deployer:~/YAP$ cd YAP
 cisco@deployer:~/YAP$ docker compose up -d --build
-
 ```
 
 You can now access YAP at http://198.18.134.15:4000.
