@@ -20,10 +20,10 @@ const WipeOutcome = (props: WipeOutcomeProps) => {
             <span className="text-danger me-1">Warning: </span> All elements inside the outcome section will be wiped.
          </div>
          <div className="d-flex justify-content-end mt-3" role="group" aria-label="Small button group">
-            <button type="button" className="btn btn-sm btn-primary me-2 font-sm" onClick={() => props.close()}>
+            <button type="button" className="btn btn-sm font-sm" onClick={() => props.close()}>
                Cancel
             </button>
-            <button type="button" className="btn btn-sm btn-danger font-sm" onClick={() => wipeOutcomeHandler()}>
+            <button type="button" className="btn btn-sm btn-danger font-sm" onClick={wipeOutcomeHandler}>
                Confirm
             </button>
          </div>

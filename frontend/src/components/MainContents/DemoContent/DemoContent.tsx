@@ -726,7 +726,7 @@ const DemoContent = (props: DemoContentProps) => {
                         <>
                            <div className="btn-group btn-group-sm" role="group" aria-label="Small button group">
                               <WithDropdown
-                                 className={`btn btn-outline-danger font-sm ${
+                                 className={`btn btn-outline-secondary danger font-sm ${
                                     props.currentStepDetails.outcome && props.currentStepDetails.outcome[0].elements
                                        ? ""
                                        : "disabled"
@@ -756,7 +756,7 @@ const DemoContent = (props: DemoContentProps) => {
                                     />
                                  )}
                               >
-                                 Copy
+                                 Copy To
                               </WithDropdown>
                               <button
                                  type="button"

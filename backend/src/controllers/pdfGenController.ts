@@ -103,10 +103,11 @@ function generateStepAPIinfo(config: config, responseData: ApiResponseData) {
                stepAPIinfoMD += "\n";
                stepAPIinfoMD += `**API Endpoint** : \`${action.useEndpoint}\` **Method** : \`${action.method.toLocaleUpperCase()}\`  \n`; // prettier-ignore
                stepAPIinfoMD += `**Path** : \`${action.url}\`  \n`;
-               if (action.data)
+               if (action.data) {
                   if (typeof action.data === "object" && Object.keys(action.data).length > 0)
                      stepAPIinfoMD += `**Payload** : \n\`\`\`json\n${JSON.stringify(action.data, null, 3)}\n\`\`\`  \n\n`;
                   else if (typeof action.data === "string") stepAPIinfoMD += `**Payload** : \`${action.data}\`  \n\n`;
+               }
                stepAPIinfoMD += generateAPIResponse(actionType, responseData, step.name, i);
             }
          }
