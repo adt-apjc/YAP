@@ -1,4 +1,3 @@
-import { useState } from "react";
 import WithDropdown from "../Popper/Dropdown";
 import { useGlobalContext } from "../contexts/ContextProvider";
 

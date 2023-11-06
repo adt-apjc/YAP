@@ -44,7 +44,7 @@ const DefaultDemos = [
 
 const Card = (props: CardProps) => {
    const navigate = useNavigate();
-   const { context, dispatch } = useGlobalContext();
+   const { dispatch } = useGlobalContext();
    const importRef = useRef<HTMLInputElement | null>(null);
    const [isDeploying, setIsDeploying] = useState(false);
 
@@ -192,7 +192,6 @@ const Card = (props: CardProps) => {
 
 const Catalog = () => {
    const navigate = useNavigate();
-   const { context, dispatch } = useGlobalContext();
    const [demoCatalog, setDemoCatalog] = useState<CatalogDetails[]>([]);
    const [loading, setLoading] = useState(false);
    const [searchQuery, setSearchQuery] = useState("");
@@ -263,6 +262,7 @@ const Catalog = () => {
       const fullDemoCatalog = [...DefaultDemos, ...demoCatalog];
 
       // filtered catalog based on searchKey
+      // eslint-disable-next-line
       const searchResult = fullDemoCatalog.filter((demo) => {
          if (
             demo.name.toLowerCase().includes(searchKey) ||
@@ -299,7 +299,7 @@ const Catalog = () => {
       const savedState = JSON.parse(window.localStorage.getItem("__internal__configData") as string);
       if (savedState) {
          navigate("/demo");
-      } else fetchDemoCatalog();
+      } else fetchDemoCatalog(); // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
    if (loading)

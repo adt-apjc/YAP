@@ -100,7 +100,7 @@ const HeadersForm = (props: HeadersFormProps) => {
       for (let item in props.input.headers) {
          inputHeaders.push({ key: item, value: props.input.headers[item] });
       }
-      props.setInputHeaders(inputHeaders);
+      props.setInputHeaders(inputHeaders); // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [props.input.headers]);
 
    return (
@@ -266,7 +266,7 @@ const VariableForm = (props: VariableFormProps) => {
    useEffect(() => {
       if (props.input.displayResponseAs === "text") {
          if (props.match) props.setMatch({ regEx: ".*", matchGroup: "0", storeAs: props.match.storeAs, objectPath: "" });
-      }
+      } // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [props.input.displayResponseAs]);
 
    return (
@@ -460,7 +460,7 @@ const ActionForm = (props: ActionFormProps) => {
             setDataText(
                typeof props.initValue.action.data === "string"
                   ? props.initValue.action.data
-                  : JSON.stringify(props.initValue.action.data, null, 3)
+                  : JSON.stringify(props.initValue.action.data, null, 3),
             );
          return { ...prev, ...props.initValue.action };
       });
@@ -480,7 +480,7 @@ const ActionForm = (props: ActionFormProps) => {
          if (headers !== undefined) {
             setInput((prev) => ({ ...prev, headers: headers }));
          }
-      }
+      } // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [isHeadersEnabled, input.useEndpoint]);
 
    return (

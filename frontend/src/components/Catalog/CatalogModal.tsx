@@ -13,7 +13,7 @@ type CatalogModalProps = {
 const CatalogModal = (props: CatalogModalProps) => {
    const navigate = useNavigate();
    const [isDeploying, setIsDeploying] = useState(false);
-   const { context, dispatch } = useGlobalContext();
+   const { dispatch } = useGlobalContext();
 
    const handleDeploy = async () => {
       try {

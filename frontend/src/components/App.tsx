@@ -20,7 +20,7 @@ const Home = () => {
       const savedState = JSON.parse(window.localStorage.getItem("__internal__configData") as string);
       if (!savedState) {
          navigate("/");
-      }
+      } // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
    return (
