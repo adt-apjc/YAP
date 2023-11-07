@@ -10,8 +10,8 @@ import TopologyWrapper from "../../TopologyWrapper";
 import { EditOutcomeProps, OutcomeSelectedElem, AddNodeParams, AddEdgeParams } from "./EditOutcomeTypes";
 
 const EditOutcome = (props: EditOutcomeProps) => {
-   const cyRef = useRef<cytoscape.Core | null>(null);
    const { context, dispatch } = useGlobalContext();
+   const cyRef = useRef<cytoscape.Core | null>(null);
    const formContainerRef = useRef<HTMLDivElement>(null);
    const [outcome, setOutcome] = useState({
       elements: { nodes: [], edges: [] },
@@ -41,7 +41,7 @@ const EditOutcome = (props: EditOutcomeProps) => {
       return topologyObj;
    };
 
-   const deleteElementHandler = () => {
+   const handleDeleteSelectedElement = () => {
       let newOutcome = _.cloneDeep(outcome);
       if (selectedNode) {
          // delete node
@@ -186,11 +186,11 @@ const EditOutcome = (props: EditOutcomeProps) => {
       return () => resizeObserver.disconnect();
    }, []);
 
-   let selectedElementId = "";
+   let selectedElementLabel = "";
    if (selectedNode) {
-      selectedElementId = selectedNode.data.id;
+      selectedElementLabel = selectedNode.data.label;
    } else if (selectedEdge) {
-      selectedElementId = selectedEdge.data.id;
+      selectedElementLabel = selectedEdge.data.label ? selectedEdge.data.label : selectedEdge.data.id;
    }
 
    return (
@@ -223,8 +223,8 @@ const EditOutcome = (props: EditOutcomeProps) => {
                   <div className="col-sm-4 me-auto">
                      <div className="d-flex align-items-center">
                         <div className="input-group input-group-sm">
-                           <span className="input-group-text">Element ID</span>
-                           <input type="text" className="form-control" disabled value={selectedElementId} />
+                           <span className="input-group-text">Element</span>
+                           <input type="text" className="form-control" disabled value={selectedElementLabel} />
                         </div>
                         <div className="mx-2">
                            <i
@@ -235,23 +235,13 @@ const EditOutcome = (props: EditOutcomeProps) => {
                         </div>
                      </div>
                   </div>
-                  <div className="col-auto">
-                     <button
-                        type="button"
-                        title="Delete selected element"
-                        className="btn btn-danger btn-sm float-right"
-                        disabled={!selectedNode && !selectedEdge}
-                        onClick={deleteElementHandler}
-                     >
-                        Delete
-                     </button>
-                  </div>
                </div>
                <div ref={formContainerRef} className="mt-2">
                   {renderForm === "node" ? (
                      <AddNodeForm
                         onAddElement={handleAddNode}
                         onDeSelect={handleDeSelect}
+                        onDeleteElement={handleDeleteSelectedElement}
                         nodeList={outcome.elements.nodes}
                         edgeList={outcome.elements.edges}
                         initValue={selectedNode}
@@ -259,6 +249,7 @@ const EditOutcome = (props: EditOutcomeProps) => {
                   ) : (
                      <AddEdgeForm
                         onAddElement={handleAddEdge}
+                        onDeleteElement={handleDeleteSelectedElement}
                         onDeSelect={handleDeSelect}
                         nodeList={outcome.elements.nodes}
                         edgeList={outcome.elements.edges}
@@ -268,11 +259,18 @@ const EditOutcome = (props: EditOutcomeProps) => {
                </div>
             </div>
             <div>
-               <div className="p-2">
-                  Preview
-                  <span className="font-sm fst-italic fw-light text-muted ms-3">
-                     Click on the element below to edit parameters
+               <div className="p-2 d-flex align-items-center justify-content-between">
+                  <span>
+                     Preview
+                     <span className="font-sm fst-italic fw-light text-muted ms-3">
+                        Click on the element below to edit parameters
+                     </span>
                   </span>
+                  {(selectedEdge || selectedNode) && (
+                     <span className="font-sm fst-italic fw-light text-muted">
+                        You're currenlty selecting <span className="fw-bold">{selectedElementLabel}</span>
+                     </span>
+                  )}
                </div>
                <div className="border rounded" style={{ height: 500 + (heightAdj % 2) }}>
                   <TopologyWrapper cy={(cy) => (cyRef.current = cy)} outcomeConfig={outcome} onNodeClick={elementClickHandler} />

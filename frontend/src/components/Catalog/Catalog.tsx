@@ -44,9 +44,10 @@ const DefaultDemos = [
 
 const Card = (props: CardProps) => {
    const navigate = useNavigate();
-   const { context, dispatch } = useGlobalContext();
+   const { dispatch } = useGlobalContext();
    const importRef = useRef<HTMLInputElement | null>(null);
    const [isDeploying, setIsDeploying] = useState(false);
+   const [isFailing, setisFailing] = useState(false);
 
    // trim labels to only 3
    const labels = props.catalog.labels.length > 3 ? props.catalog.labels.splice(3) : props.catalog.labels;
@@ -54,6 +55,7 @@ const Card = (props: CardProps) => {
 
    const handleDeploy = async (path: string) => {
       setIsDeploying(true);
+      setisFailing(false);
       if (path) {
          try {
             let config = {
@@ -66,8 +68,10 @@ const Card = (props: CardProps) => {
             dispatch({ type: "loadConfig", payload: response.data });
             setIsDeploying(false);
          } catch (e) {
+            setisFailing(true);
             setIsDeploying(false);
             console.log(e);
+            return;
          }
       } else {
          // load config context
@@ -182,6 +186,11 @@ const Card = (props: CardProps) => {
                         </div>
                         {buttonComponent}
                      </div>
+                     {isFailing && (
+                        <div className="fa fa-exclamation-triangle" aria-hidden="true" style={{ color: "red" }}>
+                           Failing to load the demo configuration
+                        </div>
+                     )}
                   </div>
                </div>
             </div>
@@ -192,7 +201,6 @@ const Card = (props: CardProps) => {
 
 const Catalog = () => {
    const navigate = useNavigate();
-   const { context, dispatch } = useGlobalContext();
    const [demoCatalog, setDemoCatalog] = useState<CatalogDetails[]>([]);
    const [loading, setLoading] = useState(false);
    const [searchQuery, setSearchQuery] = useState("");
@@ -213,13 +221,31 @@ const Catalog = () => {
 
    const fetchDemoCatalog = async () => {
       let response;
+
+      // As first option YAP tries to fetch a JSON catalog configuration file called demoCatalog.json, stored locally in the my-public-assets volume that is published by the frontend as my-assets/.
+      // Something like http://localhost:4000/my-assets/devCatalog.json when testing locally
+
       try {
          setLoading(true);
 
-         // const custom_config = {
-         //    baseURL: "https://wwwin-github.cisco.com/raw/APJ-GSP-ADT/YAP-Zoo/master/devCatalog.json",
-         //    method: "GET",
-         // };
+         response = await axios({
+            baseURL: process.env.PUBLIC_URL?.concat("/my-assets/demoCatalog.json"),
+            method: "GET",
+         });
+
+         if (response && response.status === 200) {
+            setDemoCatalog(response.data);
+            setLoading(false);
+            return;
+         }
+      } catch (e) {
+         console.log("Info - There is no demoCatalog.json in my-assets");
+      }
+
+      // If there was no local catalog, as second option YAP tries to fetch the JSON catalog based on the env variable REACT_APP_CATALOG.
+
+      try {
+         setLoading(true);
 
          const custom_config = {
             baseURL: process.env.REACT_APP_CATALOG,
@@ -234,8 +260,10 @@ const Catalog = () => {
             return;
          }
       } catch (e) {
-         console.log(e);
+         console.log("Info - There is no REACT_APP_CATALOG variable or can not access the proposed URL");
       }
+
+      // As third option, YAP tries to load from the YAP-Zoo catalog. This works when YAP has access to the Cisco network.
 
       try {
          let config = {
@@ -263,6 +291,7 @@ const Catalog = () => {
       const fullDemoCatalog = [...DefaultDemos, ...demoCatalog];
 
       // filtered catalog based on searchKey
+      // eslint-disable-next-line
       const searchResult = fullDemoCatalog.filter((demo) => {
          if (
             demo.name.toLowerCase().includes(searchKey) ||
@@ -299,7 +328,7 @@ const Catalog = () => {
       const savedState = JSON.parse(window.localStorage.getItem("__internal__configData") as string);
       if (savedState) {
          navigate("/demo");
-      } else fetchDemoCatalog();
+      } else fetchDemoCatalog(); // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
    if (loading)

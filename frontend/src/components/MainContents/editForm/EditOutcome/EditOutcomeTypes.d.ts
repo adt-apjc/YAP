@@ -17,6 +17,7 @@ export type EditOutcomeProps = {
 export type AddNodeFormProps = {
    onAddElement: (elem: AddNodeParams, isNew?: boolean) => void;
    onDeSelect: () => void;
+   onDeleteElement: () => void;
    nodeList: cytoscape.ElementDefinition[];
    edgeList: cytoscape.ElementDefinition[];
    initValue: OutcomeSelectedElem | null;
@@ -25,6 +26,7 @@ export type AddNodeFormProps = {
 export type AddEdgeFormProps = {
    onAddElement: (elem: AddEdgeParams) => void;
    onDeSelect: () => void;
+   onDeleteElement: () => void;
    nodeList: cytoscape.ElementDefinition[];
    edgeList: cytoscape.ElementDefinition[];
    initValue: OutcomeSelectedElem | null;
@@ -46,6 +48,14 @@ export type AddCommandFormProps = {
    setCommands: React.Dispatch<React.SetStateAction<OutcomeCommandConfig[]>>;
 };
 
+export type NestedNodeFormProps = {
+   parent: string;
+   onParentChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+   nodeList: cytoscape.ElementDefinition[];
+   enableNested: boolean;
+   setEnableNested: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
 export type CloneCommandSelectorProps = {
    close: () => void;
    selectElementId?: string;
@@ -59,6 +69,7 @@ export type AddNodeParams = {
       width: string;
       height: string;
       imglink?: string;
+      parent?: string;
    };
    classes: string;
    commands?: OutcomeCommandConfig[];

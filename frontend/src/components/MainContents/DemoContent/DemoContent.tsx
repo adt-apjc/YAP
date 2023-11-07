@@ -17,6 +17,7 @@ import { APIResponse } from "../../../helper/apiAction";
 import { CopyDestSelector } from "./CopyDestSelector";
 import WithDropdown from "../../Popper/Dropdown";
 import { cloneDeep } from "lodash";
+import WipeOutcome from "./WipeOutcome";
 
 type StepResult = {
    [step: string]: { [index: number]: APIResponse } | undefined;
@@ -725,6 +726,19 @@ const DemoContent = (props: DemoContentProps) => {
                         <>
                            <div className="btn-group btn-group-sm" role="group" aria-label="Small button group">
                               <WithDropdown
+                                 className={`btn btn-outline-secondary danger font-sm ${
+                                    props.currentStepDetails.outcome && props.currentStepDetails.outcome[0].elements
+                                       ? ""
+                                       : "disabled"
+                                 } `}
+                                 bindToRoot
+                                 interactive
+                                 placement="left"
+                                 DropdownComponent={(close) => <WipeOutcome close={close} currentStep={props.currentStep.name} />}
+                              >
+                                 Wipe
+                              </WithDropdown>
+                              <WithDropdown
                                  className="btn btn-outline-secondary font-sm"
                                  bindToRoot
                                  interactive
@@ -742,7 +756,7 @@ const DemoContent = (props: DemoContentProps) => {
                                     />
                                  )}
                               >
-                                 Copy
+                                 Copy To
                               </WithDropdown>
                               <button
                                  type="button"

@@ -3,25 +3,30 @@ import React, { useEffect, useState } from "react";
 import _ from "lodash";
 import AddCommandForm from "./AddCommandForm";
 import AddSSHInfoForm from "./SSHForm";
+import NestedNodeForm from "./NestNodeForm";
 
 import { OutcomeCommandConfig, SSHConfig } from "../../../contexts/ContextTypes";
 import { NODE_APPEARANCE_OPTIONS, NODE_LABEL_CLASS_OPTIONS } from "../../../contexts/Utility";
 import { AddNodeFormProps, AddNodeParams } from "./EditOutcomeTypes";
 
+const DEFAULT_FORM_VALUE = {
+   id: "",
+   label: "",
+   type: "default",
+   width: "50",
+   height: "50",
+   highlight: false,
+   labelClass: "",
+   iconLink: "",
+   parent: "",
+};
+
 const AddNodeForm = (props: AddNodeFormProps) => {
-   const [input, setInput] = useState({
-      id: "",
-      label: "",
-      type: "default",
-      width: "50",
-      height: "50",
-      highlight: false,
-      labelClass: "",
-      iconLink: "",
-   });
+   const [input, setInput] = useState(DEFAULT_FORM_VALUE);
    const [commands, setCommands] = useState<OutcomeCommandConfig[]>([]);
    const [enableCommand, setEnableCommand] = useState(false);
    const [enableSSH, setEnableSSH] = useState(false);
+   const [enableNested, setEnableNested] = useState(false);
    const [isIconLinkChecked, setIsIconLinkChecked] = useState(false);
    const [sshInfo, setSSHInfo] = useState<SSHConfig>({ hostname: "", username: "", password: "", port: "22" });
    const [isCommandDataValid, setIsCommandDataValid] = useState(true);
@@ -71,16 +76,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
    };
 
    const clearInputbox = () => {
-      setInput({
-         id: "",
-         label: "",
-         type: "default",
-         width: "50",
-         height: "50",
-         highlight: false,
-         labelClass: "",
-         iconLink: "",
-      });
+      setInput(DEFAULT_FORM_VALUE);
       setIsIconLinkChecked(false);
       setEnableCommand(false);
       setEnableSSH(false);
@@ -96,6 +92,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             label: input.label,
             width: input.width,
             height: input.height,
+            parent: input.parent ? input.parent : undefined,
          },
          classes: `${isIconLinkChecked ? "" : input.type} ${input.highlight ? "highlight" : ""} ${
             input.labelClass ? input.labelClass : ""
@@ -156,7 +153,9 @@ const AddNodeForm = (props: AddNodeFormProps) => {
          );
          let labelClass = NODE_LABEL_CLASS_OPTIONS.find((el) => classesArray.includes(el.value));
          // init icon link check
-         if (type) setIsIconLinkChecked(false);
+         // if "type"/class exist OR no icon link,
+         // disable icon link check box and enable built-in icon
+         if (type || initValue.style.backgroundImage === "none") setIsIconLinkChecked(false);
          else setIsIconLinkChecked(true);
          // init node default value
          setInput({
@@ -168,6 +167,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             highlight: initValue.classes.includes("highlight"),
             labelClass: labelClass ? labelClass.value : "",
             iconLink: type ? "" : initValue.style.backgroundImage,
+            parent: initValue.data.id ? initValue.data.parent : "",
          });
          // init command form
          if (initValue.commands) {
@@ -187,6 +187,9 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             setSSHInfo({ hostname: "", username: "", password: "", port: "22" });
             setEnableSSH(false);
          }
+         // init parent node
+         if (initValue.data.parent) setEnableNested(true);
+         else setEnableNested(false);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [JSON.stringify(props.initValue)]);
@@ -323,6 +326,13 @@ const AddNodeForm = (props: AddNodeFormProps) => {
                />
             </div>
          </div>
+         <NestedNodeForm
+            parent={input.parent}
+            onParentChange={(e) => setInput((prev) => ({ ...prev, parent: e.target.value }))}
+            nodeList={props.nodeList.filter((n) => n.data.id !== input.id)}
+            enableNested={enableNested}
+            setEnableNested={setEnableNested}
+         />
          <AddSSHInfoForm
             nodeId={input.id}
             enableSSH={enableSSH}
@@ -338,19 +348,31 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             setCommands={setCommands}
          />
          {!isCommandDataValid && <div className="mt-2 font-sm">Payload invalid</div>}
-         <div className="mt-3">
-            <button type="submit" className="btn btn-sm btn-primary" form="addNodeForm" disabled={!isCommandDataValid}>
-               {props.initValue ? "Update" : "Add"}
-            </button>
+         <div className="mt-3 d-flex justify-content-between">
+            <div>
+               <button type="submit" className="btn btn-sm btn-primary" form="addNodeForm" disabled={!isCommandDataValid}>
+                  {props.initValue ? "Update" : "Add"}
+               </button>
+               {props.initValue && (
+                  <button
+                     className="btn btn-sm ms-2"
+                     onClick={(e) => {
+                        e.preventDefault();
+                        props.onDeSelect();
+                     }}
+                  >
+                     Cancel
+                  </button>
+               )}
+            </div>
             {props.initValue && (
                <button
-                  className="btn btn-sm ms-2"
-                  onClick={(e) => {
-                     e.preventDefault();
-                     props.onDeSelect();
-                  }}
+                  type="button"
+                  title="Delete selected element"
+                  className="btn btn-outline-danger btn-sm"
+                  onClick={props.onDeleteElement}
                >
-                  Cancel
+                  <i className="fas fa-trash me-1" /> Delete
                </button>
             )}
          </div>

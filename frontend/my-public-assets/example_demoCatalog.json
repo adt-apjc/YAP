@@ -1,0 +1,14 @@
+[
+   {
+      "Note": "Example object to render a demo in the catalog. Remove this note from the JSON object and the prefix example_ from the JSON file name to create a personal catalog",
+      "name": "Demo Name",
+      "version": "Demo Version",
+      "objective": "Objective of the demo as a string, suggested Markdown but can also be HTML",
+      "description": "Description of the demo as a string, suggested Markdown but can also be HTML",
+      "useCases": "Optional list of usecases as a string, suggested Markdown but can also be HTML.\n - First Usecase\n - Second Usecase",
+      "requirements": "Optional list of requirements as a string, suggested Markdownbut can also be HTML.\n - First Requirememt\n - Second Requirememt",
+      "labels": ["my label", "my second label"],
+      "path": "URL for the demo content exported from YAP. You store the file in frontend/my-public-assests and use as URL http://<YAP IP>:<YAP port>/my-assets/<demo name>.json",
+      "iconPath": "Optional icon to show in the catalog demo tail"
+   }
+]

@@ -103,10 +103,11 @@ function generateStepAPIinfo(config: config, responseData: ApiResponseData) {
                stepAPIinfoMD += "\n";
                stepAPIinfoMD += `**API Endpoint** : \`${action.useEndpoint}\` **Method** : \`${action.method.toLocaleUpperCase()}\`  \n`; // prettier-ignore
                stepAPIinfoMD += `**Path** : \`${action.url}\`  \n`;
-               if (action.data)
+               if (action.data) {
                   if (typeof action.data === "object" && Object.keys(action.data).length > 0)
                      stepAPIinfoMD += `**Payload** : \n\`\`\`json\n${JSON.stringify(action.data, null, 3)}\n\`\`\`  \n\n`;
                   else if (typeof action.data === "string") stepAPIinfoMD += `**Payload** : \`${action.data}\`  \n\n`;
+               }
                stepAPIinfoMD += generateAPIResponse(actionType, responseData, step.name, i);
             }
          }
@@ -124,7 +125,7 @@ export const pdfGenController = catchErrorAsync(async (req: Request, res: Respon
    let stepAPIContent = generateStepAPIinfo(config, responseData);
    let content = PDF_CONFIG + prefaceContent + endpointInfoContent + stepAPIContent;
    fs.writeFileSync("test.md", content);
-   let pdf = await mdToPdf({ content: content }).catch(console.error);
+   let pdf = await mdToPdf({ content: content }, { launch_options: { args: ["--no-sandbox"] } }).catch(console.error);
    if (pdf) {
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader("Content-Disposition", "attachment; filename=generatedPDF.pdf");
