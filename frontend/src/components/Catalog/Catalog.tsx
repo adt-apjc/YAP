@@ -212,13 +212,31 @@ const Catalog = () => {
 
    const fetchDemoCatalog = async () => {
       let response;
+
+      // As first option YAP tries to fetch a JSON catalog configuration file called demoCatalog.json, stored locally in the my-public-assets volume that is published by the frontend as my-assets/.
+      // Something like http://localhost:4000/my-assets/devCatalog.json when testing locally
+
       try {
          setLoading(true);
 
-         // const custom_config = {
-         //    baseURL: "https://wwwin-github.cisco.com/raw/APJ-GSP-ADT/YAP-Zoo/master/devCatalog.json",
-         //    method: "GET",
-         // };
+         response = await axios({
+            baseURL: process.env.PUBLIC_URL?.concat("/my-assets/demoCatalog.json"),
+            method: "GET",
+         });
+
+         if (response && response.status === 200) {
+            setDemoCatalog(response.data);
+            setLoading(false);
+            return;
+         }
+      } catch (e) {
+         console.log("Info - There is no demoCatalog.json in my-assets");
+      }
+
+      // If there was no local catalog, as second option YAP tries to fetch the JSON catalog based on the env variable REACT_APP_CATALOG.
+
+      try {
+         setLoading(true);
 
          const custom_config = {
             baseURL: process.env.REACT_APP_CATALOG,
@@ -233,8 +251,10 @@ const Catalog = () => {
             return;
          }
       } catch (e) {
-         console.log(e);
+         console.log("Info - There is no REACT_APP_CATALOG variable or can not access the proposed URL");
       }
+
+      // As third option, YAP tries to load from the YAP-Zoo catalog. This works when YAP has access to the Cisco network.
 
       try {
          let config = {
