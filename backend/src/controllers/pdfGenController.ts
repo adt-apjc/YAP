@@ -125,7 +125,7 @@ export const pdfGenController = catchErrorAsync(async (req: Request, res: Respon
    let stepAPIContent = generateStepAPIinfo(config, responseData);
    let content = PDF_CONFIG + prefaceContent + endpointInfoContent + stepAPIContent;
    fs.writeFileSync("test.md", content);
-   let pdf = await mdToPdf({ content: content }).catch(console.error);
+   let pdf = await mdToPdf({ content: content }, { launch_options: { args: ["--no-sandbox"] } }).catch(console.error);
    if (pdf) {
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader("Content-Disposition", "attachment; filename=generatedPDF.pdf");
