@@ -47,6 +47,7 @@ const Card = (props: CardProps) => {
    const { dispatch } = useGlobalContext();
    const importRef = useRef<HTMLInputElement | null>(null);
    const [isDeploying, setIsDeploying] = useState(false);
+   const [isFailing, setisFailing] = useState(false);
 
    // trim labels to only 3
    const labels = props.catalog.labels.length > 3 ? props.catalog.labels.splice(3) : props.catalog.labels;
@@ -54,6 +55,7 @@ const Card = (props: CardProps) => {
 
    const handleDeploy = async (path: string) => {
       setIsDeploying(true);
+      setisFailing(false);
       if (path) {
          try {
             let config = {
@@ -66,8 +68,10 @@ const Card = (props: CardProps) => {
             dispatch({ type: "loadConfig", payload: response.data });
             setIsDeploying(false);
          } catch (e) {
+            setisFailing(true);
             setIsDeploying(false);
             console.log(e);
+            return;
          }
       } else {
          // load config context
@@ -182,6 +186,11 @@ const Card = (props: CardProps) => {
                         </div>
                         {buttonComponent}
                      </div>
+                     {isFailing && (
+                        <div className="fa fa-exclamation-triangle" aria-hidden="true" style={{ color: "red" }}>
+                           Failing to load the demo configuration
+                        </div>
+                     )}
                   </div>
                </div>
             </div>

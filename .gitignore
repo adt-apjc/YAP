@@ -20,3 +20,6 @@ yarn-error.log*
 
 # Use in PDF generation - to be removed
 backend/test.md
+
+# We should not commit a personal catalog
+frontend/my-public-assets/demoCatalog.json

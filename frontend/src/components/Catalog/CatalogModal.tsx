@@ -13,11 +13,13 @@ type CatalogModalProps = {
 const CatalogModal = (props: CatalogModalProps) => {
    const navigate = useNavigate();
    const [isDeploying, setIsDeploying] = useState(false);
+   const [isFailing, setisFailing] = useState(false);
    const { dispatch } = useGlobalContext();
 
    const handleDeploy = async () => {
       try {
          setIsDeploying(true);
+         setisFailing(false);
          let config = {
             baseURL: props.params.path,
             method: "GET",
@@ -30,6 +32,7 @@ const CatalogModal = (props: CatalogModalProps) => {
          navigate("/demo");
       } catch (e) {
          setIsDeploying(false);
+         setisFailing(true);
          console.log(e);
       }
    };
@@ -81,6 +84,11 @@ const CatalogModal = (props: CatalogModalProps) => {
             </div>
          </div>
          <div className="modal-footer p-1">
+            {isFailing && (
+               <div className="fa fa-exclamation-triangle" aria-hidden="true" style={{ color: "red" }}>
+                  Failing to load the demo configuration
+               </div>
+            )}
             <button type="button" className="btn btn-sm" onClick={props.onHide}>
                Close
             </button>
