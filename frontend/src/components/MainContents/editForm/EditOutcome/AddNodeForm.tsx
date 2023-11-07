@@ -153,7 +153,9 @@ const AddNodeForm = (props: AddNodeFormProps) => {
          );
          let labelClass = NODE_LABEL_CLASS_OPTIONS.find((el) => classesArray.includes(el.value));
          // init icon link check
-         if (type) setIsIconLinkChecked(false);
+         // if "type"/class exist OR no icon link,
+         // disable icon link check box and enable built-in icon
+         if (type || initValue.style.backgroundImage === "none") setIsIconLinkChecked(false);
          else setIsIconLinkChecked(true);
          // init node default value
          setInput({
