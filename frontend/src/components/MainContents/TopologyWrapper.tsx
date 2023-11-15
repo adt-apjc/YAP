@@ -51,7 +51,7 @@ const TopologyWrapper = (props: TopologyWrapperProps) => {
       if (!cyRef.current) return;
       cyRef.current.zoomingEnabled(true);
       cyRef.current.panningEnabled(true);
-      cyRef.current.center();
+      cyRef.current.fit(undefined, 30);
       cyRef.current.zoomingEnabled(false);
       cyRef.current.panningEnabled(false);
    }, [props.outcomeConfig]);
@@ -61,7 +61,7 @@ const TopologyWrapper = (props: TopologyWrapperProps) => {
       if (typeof props.cy === "function") props.cy(cyRef.current);
 
       cyRef.current.ready(() => {
-         cyRef.current!.center();
+         cyRef.current!.fit(undefined, 30);
          cyRef.current!.boxSelectionEnabled(false);
          if (props.outcomeConfig.elements) {
             props.outcomeConfig.elements.nodes.forEach((ele) => {
