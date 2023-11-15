@@ -51,7 +51,7 @@ function copyAction(
    payload: {
       from: { index: number; step: string; tab: "actions" | "preCheck" | "postCheck" };
       to: { step: string; tab: "actions" | "preCheck" | "postCheck" };
-   }
+   },
 ) {
    let clonedState = _.cloneDeep(state);
    let action = clonedState.config.mainContent[payload.from.step][payload.from.tab][payload.from.index];
@@ -61,7 +61,7 @@ function copyAction(
 
 function addAction(
    state: TYPE.ContextState,
-   payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any }
+   payload: { index: number | null; stepKey: string; tab: "actions" | "preCheck" | "postCheck"; actionObject: any },
 ) {
    let clonedState = _.cloneDeep(state);
 
@@ -81,7 +81,7 @@ function addAction(
 
 function deleteAction(
    state: TYPE.ContextState,
-   payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" }
+   payload: { index: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" },
 ) {
    let clonedState = _.cloneDeep(state);
    clonedState.config.mainContent[payload.stepKey][payload.tab].splice(payload.index, 1);
@@ -90,7 +90,8 @@ function deleteAction(
 
 function addStep(state: TYPE.ContextState, payload: { name: string; type: string; stepDetails?: any }) {
    let clonedState = _.cloneDeep(state);
-   let newStepName = `Step_${clonedState.config.sidebar.length + 1}`;
+   let maxStepNum = Math.max(...clonedState.config.sidebar.map((s) => parseInt(s.name.split("_")[1])));
+   let newStepName = `Step_${maxStepNum + 1}`;
    clonedState.config.sidebar.push({ name: newStepName, label: payload.name });
 
    // if action is to add a new step use default stepDetails
@@ -124,7 +125,7 @@ function deleteStep(state: TYPE.ContextState, payload: { name: string }) {
 }
 function addEndpoint(
    state: TYPE.ContextState,
-   payload: { name: string; baseURL: string; headerList: { key: string; value: string }[] }
+   payload: { name: string; baseURL: string; headerList: { key: string; value: string }[] },
 ) {
    let clonedState = _.cloneDeep(state);
    clonedState.config.endpoints[payload.name] = {
@@ -157,7 +158,7 @@ function deleteStaticVar(state: TYPE.ContextState, payload: { name: string }) {
 
 function reorderAction(
    state: TYPE.ContextState,
-   payload: { source: number; destination: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" }
+   payload: { source: number; destination: number; stepKey: string; tab: "actions" | "preCheck" | "postCheck" },
 ) {
    const { stepKey, tab, source, destination } = payload;
    let clonedState = _.cloneDeep(state);
