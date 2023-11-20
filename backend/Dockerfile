@@ -1,4 +1,4 @@
-FROM node:20.9-slim
+FROM --platform=linux/amd64 node:20.9-slim
 
 # Note: this installs the necessary libs to make the browser work with Puppeteer.
 RUN apt-get update && apt-get install gnupg wget -y && \

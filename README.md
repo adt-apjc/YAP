@@ -4,7 +4,7 @@ Yet Another Presentation (YAP) is a general-purpose tool created for interactive
 
 YAP provides a lightweight workflow for your scripted demo, organizes your API in meaningful stages and links them to a verifiable outcome on a contextual topology.
 
-As initial documentation, YAP provides a simple [Hello Word demo](https://storage.googleapis.com/yap_hello_world/YAP%20Hello%20World%20(1.1.0).pdf) (described in the __How to start__ section below). This demo interacts with a mockup server and lets you assess tool functionalities.
+As initial documentation, YAP provides a simple [Hello Word demo](<https://storage.googleapis.com/yap_hello_world/YAP%20Hello%20World%20(1.1.0).pdf>) (described in the **How to start** section below). This demo interacts with a mockup server and lets you assess tool functionalities.
 
 ### Prerequisite
 
@@ -60,12 +60,14 @@ Use YAP to orchestrate a dCloud demo by running the tool on your local machine o
 To install YAP on the dCloud Deployer, SSH to the server and execute the following commands:
 
 Step 1 - Confirm that docker is installed and running.
+
 ```
 cisco@deployer:~$ docker --version
 Docker version 20.10.5, build 55c4c88
 ```
 
 Step 2 - install the docker compose plugin.
+
 ```
 cisco@deployer:~$ sudo apt-get update
 cisco@deployer:~$ sudo apt-get install docker-compose-plugin
@@ -74,6 +76,7 @@ Docker Compose version v2.21.0
 ```
 
 Step 3 - Clone YAP.
+
 ```
 cisco@deployer:~$ git clone http://github.com/adt-apjc/YAP.git
 Cloning into 'YAP'...
@@ -82,31 +85,38 @@ Resolving deltas: 100% (1137/1137), done.
 ```
 
 Step 4 - Update the reference to the backend IP address
+
 ```
 sed -i 's/localhost/198.18.134.15/' YAP/frontend/.env
 ```
 
 Step 5 - Compile and launch YAP.
+
 ```
 cisco@deployer:~/YAP$ cd YAP
 cisco@deployer:~/YAP$ docker compose up -d --build
+```
+
+Note: please disregard the following message if returned by docker compose.
+
+```
+yap-backend The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
 ```
 
 You can now access YAP at http://198.18.134.15:4000.
 
 ### How to start
 
-YAP starts showing the demo catalog, and if it can not access the catalog configuration file, it shows the two essential tails: My Demo and Hello World. 
+YAP starts showing the demo catalog, and if it can not access the catalog configuration file, it shows the two essential tails: My Demo and Hello World.
 
 Click on Deploy Hello World to familiarize yourself with the tool.
 
 ![catalog](https://storage.googleapis.com/yap_hello_world/catalog.png)
 
-- Hello World demo describes the Yet Another Presentation tool (YAP) functionalities by orchestrating a simple project in a safe mockup environment and explains how to use the YAP functionalities. Ultimately, it will generate a live documentation of the experience [example](https://storage.googleapis.com/yap_hello_world/YAP%20Hello%20World%20(1.1.0).pdf).
+-  Hello World demo describes the Yet Another Presentation tool (YAP) functionalities by orchestrating a simple project in a safe mockup environment and explains how to use the YAP functionalities. Ultimately, it will generate a live documentation of the experience [example](<https://storage.googleapis.com/yap_hello_world/YAP%20Hello%20World%20(1.1.0).pdf>).
 
-- After testing My Demo, we can create a new bare demo flow or import your modified version of Hello World configuration.
-We will soon provide more documentation on the catalog format and how to customize it for your experience. 
-
+-  After testing My Demo, we can create a new bare demo flow or import your modified version of Hello World configuration.
+   We will soon provide more documentation on the catalog format and how to customize it for your experience.
 
 ### How to update YAP
 
