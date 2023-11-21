@@ -511,17 +511,20 @@ div > .action-menu {
    animation: gradientText 2s linear infinite;
 }
 
-.outcome-recenter-btn {
-   font-size: 11px;
+.outcome-menu-btn {
+   font-size: 13px;
    font-weight: 400;
+   padding: 3px 5px;
+}
+.outcome-menu-btn:hover {
+   background-color: var(--hover-bg-color);
+   border-radius: 6px;
+}
+
+.outcome-canvas-menu {
    position: absolute;
    cursor: pointer;
-   padding: 3px 5px;
    z-index: 900;
    right: 10px;
    top: 5px;
-}
-.outcome-recenter-btn:hover {
-   background-color: var(--hover-bg-color);
-   border-radius: 6px;
 }

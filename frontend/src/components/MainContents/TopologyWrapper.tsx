@@ -25,6 +25,30 @@ const TopologyWrapper = (props: TopologyWrapperProps) => {
       });
    };
 
+   const handleCenterCanvas = () => {
+      if (!cyRef.current) return;
+      cyRef.current.zoomingEnabled(true);
+      cyRef.current.panningEnabled(true);
+      cyRef.current.center();
+      cyRef.current.zoomingEnabled(false);
+      cyRef.current.panningEnabled(false);
+   };
+
+   const handleCanvasZoom = (zoomIn: boolean) => {
+      if (!cyRef.current) return;
+      cyRef.current.zoomingEnabled(true);
+      cyRef.current.panningEnabled(true);
+      let currentZoom = cyRef.current.zoom();
+      if (zoomIn) {
+         cyRef.current.zoom(currentZoom + 0.2);
+      } else {
+         cyRef.current.zoom(currentZoom - 0.2);
+      }
+      cyRef.current.center();
+      cyRef.current.zoomingEnabled(false);
+      cyRef.current.panningEnabled(false);
+   };
+
    useEffect(() => {
       return () => {
          cyRef.current!.removeAllListeners();
@@ -51,7 +75,7 @@ const TopologyWrapper = (props: TopologyWrapperProps) => {
       if (!cyRef.current) return;
       cyRef.current.zoomingEnabled(true);
       cyRef.current.panningEnabled(true);
-      cyRef.current.fit(undefined, 30);
+      cyRef.current.center();
       cyRef.current.zoomingEnabled(false);
       cyRef.current.panningEnabled(false);
    }, [props.outcomeConfig]);
@@ -61,7 +85,7 @@ const TopologyWrapper = (props: TopologyWrapperProps) => {
       if (typeof props.cy === "function") props.cy(cyRef.current);
 
       cyRef.current.ready(() => {
-         cyRef.current!.fit(undefined, 30);
+         cyRef.current!.center();
          cyRef.current!.boxSelectionEnabled(false);
          if (props.outcomeConfig.elements) {
             props.outcomeConfig.elements.nodes.forEach((ele) => {
@@ -85,13 +109,28 @@ const TopologyWrapper = (props: TopologyWrapperProps) => {
    }, [props.onNodeClick]);
 
    return (
-      <CytoscapeComponent
-         // must cloneDeep because CytoscapeComponent take element as pointer and try to change/remember the last state of every element.
-         elements={CytoscapeComponent.normalizeElements(_.cloneDeep(props.outcomeConfig.elements || { nodes: [], edges: [] }))}
-         style={{ width: "100%", height: "100%" }}
-         stylesheet={stylesheet as cytoscape.Stylesheet[]}
-         cy={(cy) => (cyRef.current = cy)}
-      />
+      <>
+         <div className="position-relative">
+            <div className="outcome-canvas-menu">
+               <div className="outcome-menu-btn" title="Center" onClick={handleCenterCanvas}>
+                  <i className="fal fa-crosshairs" />
+               </div>
+               <div className="outcome-menu-btn" title="Zoom-in" onClick={() => handleCanvasZoom(true)}>
+                  <i className="fal fa-search-plus" />
+               </div>
+               <div className="outcome-menu-btn" title="Zoom-out" onClick={() => handleCanvasZoom(false)}>
+                  <i className="fal fa-search-minus" />
+               </div>
+            </div>
+         </div>
+         <CytoscapeComponent
+            // must cloneDeep because CytoscapeComponent take element as pointer and try to change/remember the last state of every element.
+            elements={CytoscapeComponent.normalizeElements(_.cloneDeep(props.outcomeConfig.elements || { nodes: [], edges: [] }))}
+            style={{ width: "100%", height: "100%" }}
+            stylesheet={stylesheet as cytoscape.Stylesheet[]}
+            cy={(cy) => (cyRef.current = cy)}
+         />
+      </>
    );
 };
 

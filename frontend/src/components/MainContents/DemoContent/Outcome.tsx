@@ -121,15 +121,6 @@ const Outcome = (props: OutcomeProps) => {
    });
    const [collapseCount, setCollapseCount] = useState(0);
 
-   const handleFitToCanvas = () => {
-      if (!cyRef.current) return;
-      cyRef.current.zoomingEnabled(true);
-      cyRef.current.panningEnabled(true);
-      cyRef.current.fit(undefined, 30);
-      cyRef.current.zoomingEnabled(false);
-      cyRef.current.panningEnabled(false);
-   };
-
    const handleNodeClick = useCallback(
       (nodeElement: cytoscape.NodeSingular) => {
          if (!props.currentStepDetails.outcome) return;
@@ -164,11 +155,7 @@ const Outcome = (props: OutcomeProps) => {
       );
 
    return (
-      <div className="container-fluid position-relative" style={{ height: 500 + (collapseCount % 2) }}>
-         <div className="outcome-recenter-btn" onClick={handleFitToCanvas}>
-            Re-center
-            <i className="ms-1 fal fa-crosshairs" />
-         </div>
+      <div className="container-fluid" style={{ height: 500 + (collapseCount % 2) }}>
          <TopologyWrapper cy={(cy) => (cyRef.current = cy)} outcomeConfig={outcomeConfig} onNodeClick={handleNodeClick} />
          <Modal show={modal.modalShow} onHide={onModalHide}>
             <div className="modal-header">
