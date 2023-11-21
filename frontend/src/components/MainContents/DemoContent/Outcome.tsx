@@ -94,11 +94,9 @@ const CommandModal = (props: CommandModalProps) => {
                <button
                   className="btn btn-outline-secondary"
                   onClick={() => {
-                     let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
-                        width=700,height=500`;
-                     let { hostname, username, password, port } = props.outcomeConfig.ssh![props.selectedElementData.id];
+                     let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=800,height=500`;
                      window.open(
-                        `/#/ssh?hostname=${hostname}&&username=${username}&&password=${password}&&port=${port}`,
+                        `/#/ssh?selectedElementId=${props.selectedElementData.id}&&stepId=${context.currentStep.name}`,
                         props.selectedElementData.id,
                         params,
                      );

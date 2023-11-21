@@ -29,7 +29,7 @@ const TopologyWrapper = (props: TopologyWrapperProps) => {
       if (!cyRef.current) return;
       cyRef.current.zoomingEnabled(true);
       cyRef.current.panningEnabled(true);
-      cyRef.current.center();
+      cyRef.current.fit(undefined, 50);
       cyRef.current.zoomingEnabled(false);
       cyRef.current.panningEnabled(false);
    };
@@ -112,7 +112,7 @@ const TopologyWrapper = (props: TopologyWrapperProps) => {
       <>
          <div className="position-relative">
             <div className="outcome-canvas-menu">
-               <div className="outcome-menu-btn" title="Center" onClick={handleCenterCanvas}>
+               <div className="outcome-menu-btn" title="Fit-to-screen" onClick={handleCenterCanvas}>
                   <i className="fal fa-crosshairs" />
                </div>
                <div className="outcome-menu-btn" title="Zoom-in" onClick={() => handleCanvasZoom(true)}>
