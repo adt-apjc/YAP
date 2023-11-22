@@ -52,6 +52,11 @@ You can run this build version on your local YAP deployment but remember that th
 ```
 docker compose -f docker-compose-prod.yaml up -d  --build
 ```
+Note: please disregard the following message if returned by docker compose.
+
+```
+yap-backend The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
+```
 
 ### Installation in dCloud
 
@@ -95,12 +100,6 @@ Step 5 - Compile and launch YAP.
 ```
 cisco@deployer:~/YAP$ cd YAP
 cisco@deployer:~/YAP$ docker compose up -d --build
-```
-
-Note: please disregard the following message if returned by docker compose.
-
-```
-yap-backend The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested
 ```
 
 You can now access YAP at http://198.18.134.15:4000.
