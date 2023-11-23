@@ -10,6 +10,7 @@ const fitAddon = new FitAddon();
 const SSHContainer = () => {
    const location = useLocation();
    const socketRef = useRef<Socket | null>(null);
+   const [commands, setCommands] = useState<{ label: string; command: string }[]>([]);
    const [selectedCmd, setSelectedCmd] = useState("");
 
    const handleSendCommand = () => {
@@ -19,7 +20,13 @@ const SSHContainer = () => {
    };
 
    const renderCommandOptions = () => {
-      return <option value="">Choose...</option>;
+      return commands.map((cmd, index) => {
+         return (
+            <option key={index} value={cmd.command}>
+               {cmd.label}
+            </option>
+         );
+      });
    };
 
    useEffect(() => {
@@ -34,7 +41,8 @@ const SSHContainer = () => {
       let stepId = queryParams.get("stepId")!;
       const config: config = JSON.parse(window.localStorage.getItem("__internal__configData") as string);
 
-      let { hostname, username, password, port } = config.mainContent[stepId].outcome![0].ssh![selectedElementId];
+      let { hostname, username, password, port, commands } = config.mainContent[stepId].outcome![0].ssh![selectedElementId];
+      if (commands) setCommands(commands);
 
       if (!hostname || !username || !password) return;
 
@@ -83,10 +91,8 @@ const SSHContainer = () => {
                   value={selectedCmd}
                   onChange={(e) => setSelectedCmd(e.target.value)}
                >
+                  <option value="">Choose...</option>
                   {renderCommandOptions()}
-                  {/* TODO */}
-                  {/* <option value={`config\nhostname test\nexit\nno\n`}>Config hostname</option>
-                  <option value="show config commit change last 1">show last commit change</option> */}
                </select>
                <button className="btn btn-outline-light" type="button" onClick={handleSendCommand}>
                   Send

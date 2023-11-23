@@ -154,6 +154,17 @@ const AddCommandForm = (props: AddCommandFormProps) => {
       setSelectedCommandIndex(null);
    };
 
+   const handleCommandSelection = (el: OutcomeCommandConfig, index: number) => {
+      if (selectedCommandIndex !== null && selectedCommandIndex === index) {
+         setData("");
+         setSelectedCommandIndex(null);
+      } else {
+         if (typeof el.data === "object") setData(JSON.stringify(el.data, null, 3));
+         else setData(el.data);
+         setSelectedCommandIndex(index);
+      }
+   };
+
    const renderCommand = () => {
       return props.commands.map((el, index) => {
          return (
@@ -162,12 +173,8 @@ const AddCommandForm = (props: AddCommandFormProps) => {
                   <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                      <div
                         key={index}
-                        className={`d-flex btn btn-sm btn${selectedCommandIndex === index ? "" : "-outline"}-info me-2`}
-                        onClick={() => {
-                           if (typeof el.data === "object") setData(JSON.stringify(el.data, null, 3));
-                           else setData(el.data);
-                           setSelectedCommandIndex(index);
-                        }}
+                        className={`d-flex btn btn-sm btn${selectedCommandIndex === index ? "" : "-outline"}-info me-2 my-1`}
+                        onClick={() => handleCommandSelection(el, index)}
                      >
                         <span className="me-2">{el.title}</span>
                         <span>
@@ -236,9 +243,9 @@ const AddCommandForm = (props: AddCommandFormProps) => {
                      </span>
                   </div>
                </div>
-               <div className="row my-2">
+               <div className="row my-1">
                   <div className="col-sm-12 col-md-2">
-                     <div className="btn-group">
+                     <div className="btn-group my-1">
                         <button type="button" className="btn btn-sm btn-outline-secondary" onClick={handleAddNewCommand}>
                            <span className="px-1">+</span>
                         </button>
@@ -263,7 +270,11 @@ const AddCommandForm = (props: AddCommandFormProps) => {
                      <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
                         <Droppable droppableId="cmd-drap-area" direction="horizontal">
                            {(provided) => (
-                              <div className="d-flex overflow-auto" ref={provided.innerRef} {...provided.droppableProps}>
+                              <div
+                                 className="d-flex flex-wrap overflow-auto"
+                                 ref={provided.innerRef}
+                                 {...provided.droppableProps}
+                              >
                                  {renderCommand()}
                                  {provided.placeholder}
                               </div>
