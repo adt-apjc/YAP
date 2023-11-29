@@ -94,11 +94,9 @@ const CommandModal = (props: CommandModalProps) => {
                <button
                   className="btn btn-outline-secondary"
                   onClick={() => {
-                     let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
-                        width=700,height=500`;
-                     let { hostname, username, password, port } = props.outcomeConfig.ssh![props.selectedElementData.id];
+                     let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=800,height=500`;
                      window.open(
-                        `/#/ssh?hostname=${hostname}&&username=${username}&&password=${password}&&port=${port}`,
+                        `/#/ssh?selectedElementId=${props.selectedElementData.id}&&stepId=${context.currentStep.name}`,
                         props.selectedElementData.id,
                         params,
                      );
@@ -120,15 +118,6 @@ const Outcome = (props: OutcomeProps) => {
       selectedElementData: null,
    });
    const [collapseCount, setCollapseCount] = useState(0);
-
-   const handleFitToCanvas = () => {
-      if (!cyRef.current) return;
-      cyRef.current.zoomingEnabled(true);
-      cyRef.current.panningEnabled(true);
-      cyRef.current.fit(undefined, 30);
-      cyRef.current.zoomingEnabled(false);
-      cyRef.current.panningEnabled(false);
-   };
 
    const handleNodeClick = useCallback(
       (nodeElement: cytoscape.NodeSingular) => {
@@ -164,11 +153,7 @@ const Outcome = (props: OutcomeProps) => {
       );
 
    return (
-      <div className="container-fluid position-relative" style={{ height: 500 + (collapseCount % 2) }}>
-         <div className="outcome-recenter-btn" onClick={handleFitToCanvas}>
-            Re-center
-            <i className="ms-1 fal fa-crosshairs" />
-         </div>
+      <div className="container-fluid" style={{ height: 500 + (collapseCount % 2) }}>
          <TopologyWrapper cy={(cy) => (cyRef.current = cy)} outcomeConfig={outcomeConfig} onNodeClick={handleNodeClick} />
          <Modal show={modal.modalShow} onHide={onModalHide}>
             <div className="modal-header">

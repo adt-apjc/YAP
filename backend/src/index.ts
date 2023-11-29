@@ -52,7 +52,7 @@ app.use(
          tokens["response-time"](req, res),
          "ms",
       ].join(" ");
-   })
+   }),
 );
 
 app.route("/proxy/request").post(proxyController);
@@ -88,7 +88,7 @@ io.on("connection", (socket) => {
    var conn = new SSHClient();
    conn
       .on("ready", function () {
-         socket.emit("data", "\r\n*** SSH CONNECTION ESTABLISHED ***\r\n");
+         socket.emit("data", "\r*** SSH CONNECTION ESTABLISHED ***\r");
          conn.shell(function (err, stream) {
             if (err) return socket.emit("data", "\r\n*** SSH SHELL ERROR: " + err.message + " ***\r\n");
             socket.on("data", function (data) {
