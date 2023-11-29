@@ -6,6 +6,8 @@ YAP provides a lightweight workflow for your scripted demo, organizes your API i
 
 As initial documentation, YAP provides a simple [Hello Word demo](<https://storage.googleapis.com/yap_hello_world/YAP%20Hello%20World%20(1.1.0).pdf>) (described in the **How to start** section below). This demo interacts with a mockup server and lets you assess tool functionalities.
 
+Check the YAP's [Releases](https://github.com/adt-apjc/YAP/releases) section for information on new features and bug fixes.
+
 ### Prerequisite
 
 This project has been written in TypeScript and Javascript.
