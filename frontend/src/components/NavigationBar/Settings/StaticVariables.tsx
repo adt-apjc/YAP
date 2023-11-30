@@ -28,7 +28,10 @@ const StaticVarEditor = (props: StaticVarEditorProps) => {
    };
 
    useEffect(() => {
-      if (!props.initValue) return;
+      if (!props.initValue) {
+         setState({ name: "", val: "" });
+         return;
+      }
 
       setState({ name: props.initValue.name, val: props.initValue.val });
    }, [props.initValue]);
@@ -38,12 +41,12 @@ const StaticVarEditor = (props: StaticVarEditorProps) => {
          <div className="d-flex align-items-center justify-content-between">
             <div>Static Variable</div>
             <div className="d-flex">
-               <div className="btn btn-sm text-info ms-auto" onClick={onHeaderSaveHandler}>
+               <button className="btn btn-xs btn-outline-info" disabled={!state.name || !state.val} onClick={onHeaderSaveHandler}>
                   Save
-               </div>
-               <div className="btn btn-sm ms-auto" onClick={props.onClose}>
+               </button>
+               <button className="btn btn-xs" onClick={props.onClose}>
                   Cancel
-               </div>
+               </button>
             </div>
          </div>
          <div className="col-11">

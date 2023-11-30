@@ -196,7 +196,10 @@ const EndpointEditor = (props: EndpointEditorProps) => {
    };
 
    useEffect(() => {
-      if (!props.initValue) return;
+      if (!props.initValue) {
+         setState({ input: { name: "", baseURL: "" }, inputHeader: [] });
+         return;
+      }
 
       setState({
          input: { name: props.initValue.name, baseURL: props.initValue.baseURL },
@@ -211,13 +214,17 @@ const EndpointEditor = (props: EndpointEditorProps) => {
       <div className="endpoint-form">
          <div className="d-flex align-items-center justify-content-between">
             <div>Endpoint</div>
-            <div className="d-flex">
-               <div className="btn btn-sm text-info ms-auto" onClick={handleSaveEndpoint}>
+            <div>
+               <button
+                  className="btn btn-xs btn-outline-info"
+                  disabled={!state.input.name || !state.input.baseURL}
+                  onClick={handleSaveEndpoint}
+               >
                   Save
-               </div>
-               <div className="btn btn-sm ms-auto" onClick={props.onClose}>
+               </button>
+               <button className="btn btn-xs btn-sm" onClick={props.onClose}>
                   Cancel
-               </div>
+               </button>
             </div>
          </div>
          <div className="col-11">
@@ -316,7 +323,13 @@ const Endpoint = () => {
       <>
          <div className="mb-3">
             Endpoints
-            <span className="mx-3 font-sm text-info pointer text-hover-highlight" onClick={() => setShowEditor(true)}>
+            <span
+               className="mx-3 font-sm text-info pointer text-hover-highlight"
+               onClick={() => {
+                  setSelectedEndpoint(null);
+                  setShowEditor(true);
+               }}
+            >
                Add
             </span>
          </div>
