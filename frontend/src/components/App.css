@@ -52,12 +52,23 @@ span {
    z-index: 1000;
 }
 
-.btn-primary,
-.btn-primary:hover,
-.btn-primary:active,
-.btn-primary:visited,
-.btn-primary:focus {
+.btn-group-xs > .btn {
+   --bs-btn-padding-y: 0.2rem;
+   --bs-btn-padding-x: 0.4rem;
+   --bs-btn-font-size: 0.575rem;
+   --bs-btn-border-radius: var(--bs-border-radius-sm);
+}
+
+.btn-primary {
    background-color: #007cad;
+   border-color: #0080b3;
+}
+.btn-primary:hover {
+   background-color: #006188;
+   border-color: #0080b3;
+}
+.btn-primary:active:hover {
+   background-color: #006188;
    border-color: #0080b3;
 }
 

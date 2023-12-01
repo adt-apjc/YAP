@@ -83,8 +83,8 @@ export type OutcomeCommandConfig = {
 export type ActionExpectObject = { type: string; value: any }[];
 export type ActionMatchObject = { objectPath: string; regEx: string; matchGroup: string; storeAs: string };
 
-export type ActionConfig = {
-   type: string;
+export type RestActionConfig = {
+   type: "request" | "polling";
    title: string;
    useEndpoint: string;
    url: string;
@@ -102,6 +102,22 @@ export type ActionConfig = {
    match?: ActionMatchObject;
    headers?: { [key: string]: string }; // option to override Axois request header from Endpoint
 };
+
+export type SSHActionConfig = {
+   type: "ssh-cli";
+   title: string;
+   useEndpoint: string;
+   apiBadge: string;
+   apiBadgeColor: string;
+   description: string;
+   displayResponseAs?: string;
+   payloadType?: string;
+   data?: any;
+   expect?: ActionExpectObject;
+   match?: ActionMatchObject;
+};
+
+export type ActionConfig = RestActionConfig | SSHActionConfig;
 
 export type PrefaceConfig = {
    stepDesc: string;

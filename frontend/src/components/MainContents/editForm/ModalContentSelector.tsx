@@ -1,4 +1,4 @@
-import ActionForm from "./ActionForm";
+import ActionForm from "./EditAction/EditActionForm";
 import ActionDeleteConfirmation from "./ActionDeleteConfirmation";
 import EditStepDescription from "./EditStepDescription";
 import EditPreface from "./EditPreface";

@@ -2,11 +2,11 @@ import React, { useCallback, useEffect, useState, useRef } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { Modal } from "../../../helper/modalHelper";
 import { normalRequest, pollingRequest } from "../../../helper/actionHelper";
-import { PostCheckDetail } from "./PostCheck";
 import TopologyWrapper from "../TopologyWrapper";
-import { ActionConfig, OutcomeCommandConfig, OutcomeConfig, StepDetails } from "../../contexts/ContextTypes";
+import { OutcomeCommandConfig, OutcomeConfig, RestActionConfig, StepDetails } from "../../contexts/ContextTypes";
 import cytoscape from "cytoscape";
 import { AxiosResponse } from "axios";
+import RestResponseDetail from "./RestResponseDetails";
 
 type CommandModalProps = {
    outcomeConfig: OutcomeConfig;
@@ -32,10 +32,10 @@ const CommandModal = (props: CommandModalProps) => {
          let response: APIResponse | null = null;
          if (action && action.type === "request") {
             // normal request
-            response = await normalRequest(action as ActionConfig, context.config);
+            response = await normalRequest(action as RestActionConfig, context.config);
          } else if (action && action.type === "polling") {
             // polling request
-            response = await pollingRequest(action as ActionConfig, context.config);
+            response = await pollingRequest(action as RestActionConfig, context.config);
          }
          // update state actionResults for specific step
          setIsRunning(false);
@@ -106,7 +106,7 @@ const CommandModal = (props: CommandModalProps) => {
                </button>
             )}
          </div>
-         {action !== null && <PostCheckDetail show={true} response={cmdResults} request={action as ActionConfig} />}
+         {action !== null && <RestResponseDetail show={true} response={cmdResults} request={action as RestActionConfig} />}
       </div>
    );
 };

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 import { AddSSHInfoFormProps } from "./EditOutcomeTypes";
 import { SSHConfig } from "../../../contexts/ContextTypes";
-import { set } from "lodash";
 
 type SShPredefineCommand = {
    label: string;
@@ -17,7 +16,7 @@ type SSHPredefineCommandListProps = {
    setSSHinfo: (value: React.SetStateAction<SSHConfig>) => void;
 };
 
-type SSHCommandForm = {
+type SSHCommandFormProps = {
    selectedCommandIndex: number;
    inputCmd: SShPredefineCommand;
    onHide: (e: React.MouseEvent) => void;
@@ -26,7 +25,7 @@ type SSHCommandForm = {
    setInputCmd: React.Dispatch<React.SetStateAction<SShPredefineCommand>>;
 };
 
-const SSHCommandForm = (props: SSHCommandForm) => {
+const SSHCommandForm = (props: SSHCommandFormProps) => {
    const handleAddOrUpdateCommand = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       e.preventDefault();

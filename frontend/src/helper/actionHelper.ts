@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { ActionExpectObject, ActionConfig, StaticVariables, config } from "../components/contexts/ContextTypes";
+import { ActionExpectObject, ActionConfig, StaticVariables, config, RestActionConfig } from "../components/contexts/ContextTypes";
 import { APIResponse } from "./apiAction";
 
 const validateExpect = (expect: ActionExpectObject, response: AxiosResponse) => {
@@ -116,7 +116,7 @@ const replaceStrWithParams = (text: any, staticVariables: StaticVariables | unde
    return text;
 };
 
-export const normalRequest = (actionObject: ActionConfig, { endpoints, staticVariables }: config): Promise<APIResponse> => {
+export const normalRequest = (actionObject: RestActionConfig, { endpoints, staticVariables }: config): Promise<APIResponse> => {
    if (!("expect" in actionObject)) {
       actionObject.expect = [];
    }
@@ -173,7 +173,7 @@ export const normalRequest = (actionObject: ActionConfig, { endpoints, staticVar
    });
 };
 
-export const pollingRequest = (actionObject: ActionConfig, { endpoints, staticVariables }: config): Promise<APIResponse> => {
+export const pollingRequest = (actionObject: RestActionConfig, { endpoints, staticVariables }: config): Promise<APIResponse> => {
    let interval = actionObject.interval ? parseInt(actionObject.interval) : 5000;
    let maxRetry = actionObject.maxRetry ? parseInt(actionObject.maxRetry) : 10;
    if (!("expect" in actionObject)) {
