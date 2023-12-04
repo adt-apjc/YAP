@@ -1,5 +1,6 @@
 import cytoscape from "cytoscape";
 import Outcome from "../MainContents/DemoContent/Outcome";
+import CommandEndpoint from "../NavigationBar/Settings/CommandEndpoint";
 
 export type ContextAction =
    | { type: "setCurrentStep"; payload: { name: string | null; label: string | null } }
@@ -38,7 +39,12 @@ export type ContextAction =
    | { type: "addStep"; payload: { name: string; type: string; stepDetails?: StepDetails } }
    | { type: "deleteStep"; payload: { name: string } }
    | { type: "addEndpoint"; payload: { name: string; baseURL: string; headerList: { key: any; value: any }[] } }
+   | {
+        type: "addCommandEndpoint";
+        payload: { name: string; hostname: string; port: string; username: string; password: string };
+     }
    | { type: "deleteEndpoint"; payload: { name: string } }
+   | { type: "deleteCommandEndpoint"; payload: { name: string } }
    | { type: "addStaticVar"; payload: { name: string; val: any } }
    | { type: "deleteStaticVar"; payload: { name: string } }
    | { type: "loadConfig"; payload: any }
@@ -65,6 +71,13 @@ export type EndpointConfig = {
    baseURL: string;
    backendRequest?: boolean; // default [true]
    headers?: { [key: string]: string };
+};
+
+export type CommandEndpointConfig = {
+   hostname: string;
+   port: string;
+   username: string;
+   password: string;
 };
 
 export type OutcomeCommandConfig = {
@@ -151,6 +164,9 @@ export type config = {
    preface: PrefaceConfig[];
    endpoints: {
       [name: string]: EndpointConfig;
+   };
+   commandEndpoints: {
+      [name: string]: CommandEndpointConfig;
    };
    staticVariables?: StaticVariables;
    mainContent: {

@@ -3,6 +3,7 @@ import { saveAs } from "file-saver";
 import { useGlobalContext } from "../contexts/ContextProvider";
 
 import Endpoint from "./Settings/Endpoint";
+import CommandEndpoint from "./Settings/CommandEndpoint";
 import StaticVariables from "./Settings/StaticVariables";
 import _ from "lodash";
 
@@ -17,6 +18,7 @@ const Settings = (props: { onHide: () => any }) => {
          </div>
          <div className="modal-body">
             <Endpoint />
+            <CommandEndpoint />
             <StaticVariables />
          </div>
          <div className="modal-footer">

@@ -22,6 +22,7 @@ const emptyConfig: TYPE.config = {
    },
    preface: [],
    endpoints: {},
+   commandEndpoints: {},
    mainContent: {},
 };
 
@@ -137,11 +138,34 @@ function addEndpoint(
    };
    return clonedState;
 }
+function addCommandEndpoint(
+   state: TYPE.ContextState,
+   payload: { name: string; hostname: string; port: string; username: string; password: string },
+) {
+   let clonedState = _.cloneDeep(state);
+
+   if (!clonedState.config.commandEndpoints) clonedState.config.commandEndpoints = {};
+
+   clonedState.config.commandEndpoints[payload.name] = {
+      hostname: payload.hostname,
+      port: payload.port,
+      username: payload.username,
+      password: payload.password,
+   };
+   return clonedState;
+}
 function deleteEndpoint(state: TYPE.ContextState, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
    delete clonedState.config.endpoints[payload.name];
    return clonedState;
 }
+
+function deleteCommandEndpoint(state: TYPE.ContextState, payload: { name: string }) {
+   let clonedState = _.cloneDeep(state);
+   delete clonedState.config.commandEndpoints[payload.name];
+   return clonedState;
+}
+
 function addStaticVar(state: TYPE.ContextState, payload: { name: string; val: any }) {
    let clonedState = _.cloneDeep(state);
    clonedState.config.staticVariables = {
@@ -264,8 +288,14 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
       case "addEndpoint":
          return { ...addEndpoint(state, action.payload) };
 
+      case "addCommandEndpoint":
+         return { ...addCommandEndpoint(state, action.payload) };
+
       case "deleteEndpoint":
          return { ...deleteEndpoint(state, action.payload) };
+
+      case "deleteCommandEndpoint":
+         return { ...deleteCommandEndpoint(state, action.payload) };
 
       case "addStaticVar":
          return { ...addStaticVar(state, action.payload) };
@@ -325,6 +355,7 @@ function ContextProvider({ children }: { children: React.ReactNode }) {
       const configData = window.localStorage.getItem("__internal__configData");
       const runningStatus = window.localStorage.getItem("__internal__runningStatus");
       // load config from localStorage if exist
+
       if (configData) dispatch({ type: "replaceConfig", payload: JSON.parse(configData) });
 
       // load runningStatus from localStorage if exist

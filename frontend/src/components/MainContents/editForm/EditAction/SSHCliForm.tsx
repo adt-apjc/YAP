@@ -10,6 +10,7 @@ import "ace-builds/src-noconflict/theme-github";
 import _ from "lodash";
 
 const SSHCliForm = (props: SSHCliFormProps) => {
+   const { context, dispatch } = useGlobalContext();
    const [input, setInput] = useState<SSHActionConfig>({
       type: "ssh-cli",
       useEndpoint: "",
@@ -24,15 +25,42 @@ const SSHCliForm = (props: SSHCliFormProps) => {
       data: "",
    });
 
+   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+      setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+   };
+
+   const renderEndpointOptions = () => {
+      if (!context.config.endpoints) return;
+
+      let endpoints = Object.keys(context.config.commandEndpoints);
+      return endpoints.map((el, index) => {
+         return (
+            <option key={index} value={el}>
+               {el}
+            </option>
+         );
+      });
+   };
+
    return (
       <form>
          <div className="row mb-2">
             <div className="col-6">
                <small className="mb-1">Endpoint</small>
-               <select className="form-select form-select-sm" name="useEndpoint" required>
+               {/* <select className="form-select form-select-sm" name="useEndpoint" required>
                   <option value="">Choose endpoint...</option>
                   <option value="mock-1">mock-1</option>
                   <option value="mock-2">mock-2</option>
+               </select> */}
+               <select
+                  className="form-select form-select-sm"
+                  name="useEndpoint"
+                  onChange={handleInputChange}
+                  value={input.useEndpoint}
+                  required
+               >
+                  <option value="">Choose endpoint...</option>
+                  {renderEndpointOptions()}
                </select>
             </div>
          </div>

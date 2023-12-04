@@ -270,7 +270,7 @@ const EndpointViewer = (props: EndpointViewerProps) => {
 
    const renderEndpoint = () => {
       if (!context.config.endpoints || Object.keys(context.config.endpoints).length === 0)
-         return <small className="text-muted">No Endpoints</small>;
+         return <small className="text-muted">No endpoints configured for APIs</small>;
 
       return Object.keys(context.config.endpoints).map((endpointName, index) => {
          return (
