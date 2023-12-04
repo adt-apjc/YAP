@@ -8,11 +8,11 @@ import WithInfoPopup from "../../Popper/InfoPopper";
 import WithDropdown from "../../Popper/Dropdown";
 import RestResponseDetails from "./RestResponseDetails";
 import { StepDetails } from "../../contexts/ContextTypes";
-import { APIResponse } from "../../../helper/apiAction";
+import { APIResponse, SSHCLIResponse } from "../../../helper/apiAction";
 import { CopyDestSelector } from "./CopyDestSelector";
 
 type Results = {
-   [index: number]: APIResponse;
+   [index: number]: APIResponse | SSHCLIResponse;
 };
 
 type ActionsProps = {
@@ -214,7 +214,7 @@ const Actions = (props: ActionsProps) => {
                      {action.type === "request" || action.type === "polling" ? (
                         <RestResponseDetails
                            show={curExpandRow.includes(index)}
-                           response={props.results && props.results[index] ? props.results[index] : null}
+                           response={props.results && props.results[index] ? (props.results[index] as APIResponse) : null}
                            request={action}
                         />
                      ) : null}

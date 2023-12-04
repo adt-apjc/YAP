@@ -88,11 +88,11 @@ io.on("connection", (socket) => {
    var conn = new SSHClient();
    conn
       .on("ready", function () {
-         socket.emit("data", "\r*** SSH CONNECTION ESTABLISHED ***\r");
+         socket.emit("sshconnect", "\r*** SSH CONNECTION ESTABLISHED ***\r");
          conn.shell(function (err, stream) {
             if (err) return socket.emit("data", "\r\n*** SSH SHELL ERROR: " + err.message + " ***\r\n");
             socket.on("data", function (data) {
-               // console.log("writing data ", data);
+               console.log("writing data ", data);
                stream.write(data);
             });
             socket.on("sshdisconnect", function (data) {
@@ -113,10 +113,10 @@ io.on("connection", (socket) => {
          });
       })
       .on("close", function () {
-         socket.emit("data", "\r\n*** SSH CONNECTION CLOSED ***\r\n");
+         socket.emit("sshclose", "\r\n*** SSH CONNECTION CLOSED ***\r\n");
       })
       .on("error", function (err) {
-         socket.emit("data", "\r\n*** SSH CONNECTION ERROR: " + err.message + " ***\r\n");
+         socket.emit("ssherror", "\r\n*** SSH CONNECTION ERROR: " + err.message + " ***\r\n");
       })
       .connect({
          host: socket.handshake.query["hostname"] as string,

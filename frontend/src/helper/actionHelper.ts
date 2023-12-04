@@ -1,6 +1,14 @@
 import axios, { AxiosResponse } from "axios";
-import { ActionExpectObject, ActionConfig, StaticVariables, config, RestActionConfig } from "../components/contexts/ContextTypes";
-import { APIResponse } from "./apiAction";
+import {
+   ActionExpectObject,
+   ActionConfig,
+   StaticVariables,
+   config,
+   RestActionConfig,
+   SSHActionConfig,
+} from "../components/contexts/ContextTypes";
+import { Socket, io } from "socket.io-client";
+import { APIResponse, SSHCLIResponse } from "./apiAction";
 
 const validateExpect = (expect: ActionExpectObject, response: AxiosResponse) => {
    let failureCause = "";
@@ -254,5 +262,46 @@ export const pollingRequest = (actionObject: RestActionConfig, { endpoints, stat
          }
          counterFlag++;
       }, interval);
+   });
+};
+
+export const sshCliAction = (
+   actionObject: SSHActionConfig,
+   { commandEndpoints, staticVariables }: config,
+): Promise<SSHCLIResponse> => {
+   const { hostname, username, password, port } = commandEndpoints[actionObject.useEndpoint];
+   const cmdList: string[] = actionObject.data.split("\n");
+   return new Promise((resolve, reject) => {
+      try {
+         const socket = io(process.env.REACT_APP_API_URL!, {
+            query: { hostname, username, password, port },
+         });
+         let response = "";
+         socket.on("sshconnect", () => {
+            console.log("DEBUG - SSH connected");
+            console.log("DEBUG - cmdlist", cmdList);
+         });
+         socket.on("data", function (data: string) {
+            response += data;
+            const HOST_PROMPT = /.*[$#]/;
+            if (data.match(HOST_PROMPT)) {
+               if (cmdList.length > 0) socket.emit("data", cmdList.shift() + "\n");
+               else {
+                  socket.disconnect();
+                  resolve({ response, success: true });
+               }
+            }
+         });
+         socket.on("ssherror", function (data: string) {
+            socket.disconnect();
+            reject({ response: "", success: false, failureCause: data });
+         });
+         socket.on("sshclose", () => {
+            socket.disconnect();
+            resolve({ response, success: true });
+         });
+      } catch (err: any) {
+         reject({ response: "", success: false, failureCause: err.message });
+      }
    });
 };

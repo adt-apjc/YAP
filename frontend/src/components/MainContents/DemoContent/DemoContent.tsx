@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { useDidUpdateEffect } from "../../contexts/CustomHooks";
-import { normalRequest, pollingRequest } from "../../../helper/actionHelper";
+import { normalRequest, pollingRequest, sshCliAction } from "../../../helper/actionHelper";
 import { Modal } from "../../../helper/modalHelper";
 import ModalContentSelector from "../editForm/ModalContentSelector";
 import Actions from "./Actions";
@@ -13,14 +13,14 @@ import OffCanvas from "../../OffCanvas/OffCanvas";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import { StepDetails } from "../../contexts/ContextTypes";
-import { APIResponse } from "../../../helper/apiAction";
+import { APIResponse, SSHCLIResponse } from "../../../helper/apiAction";
 import { CopyDestSelector } from "./CopyDestSelector";
 import WithDropdown from "../../Popper/Dropdown";
 import { cloneDeep } from "lodash";
 import WipeOutcome from "./WipeOutcome";
 
 type StepResult = {
-   [step: string]: { [index: number]: APIResponse } | undefined;
+   [step: string]: { [index: number]: APIResponse | SSHCLIResponse } | undefined;
 };
 
 type StepComplete = {
@@ -127,17 +127,21 @@ const DemoContent = (props: DemoContentProps) => {
          try {
             // SET current running state before start.
             setCurrentRunning((prev) => ({ ...prev, preCheck: index }));
-            let response: APIResponse;
+            let response: APIResponse | SSHCLIResponse;
             if (preCheck.type === "request") {
                // normal request
                response = await normalRequest(preCheck, context.config);
             } else if (preCheck.type === "polling") {
                // polling request
                response = await pollingRequest(preCheck, context.config);
+            } else if (preCheck.type === "ssh-cli") {
+               response = await sshCliAction(preCheck, context.config);
+            } else {
+               return false;
             }
 
             //
-            if (!response!.success) isCompleted = false;
+            if (!response.success) isCompleted = false;
             // update state preCheckResults for specific step
             setPreCheckResults((prev) => ({
                ...prev,
@@ -193,13 +197,15 @@ const DemoContent = (props: DemoContentProps) => {
          try {
             // SET current running state before start.
             setCurrentRunning((prev) => ({ ...prev, action: index }));
-            let response: APIResponse;
+            let response: APIResponse | SSHCLIResponse;
             if (action.type === "request") {
                // normal request
                response = await normalRequest(action, context.config);
             } else if (action.type === "polling") {
                // polling request
                response = await pollingRequest(action, context.config);
+            } else if (action.type === "ssh-cli") {
+               response = await sshCliAction(action, context.config);
             } else {
                return false;
             }
@@ -261,13 +267,15 @@ const DemoContent = (props: DemoContentProps) => {
          try {
             // SET current running state before start.
             setCurrentRunning((prev) => ({ ...prev, postCheck: index }));
-            let response: APIResponse;
+            let response: APIResponse | SSHCLIResponse;
             if (postCheck.type === "request") {
                // normal request
                response = await normalRequest(postCheck, context.config);
             } else if (postCheck.type === "polling") {
                // polling request
                response = await pollingRequest(postCheck, context.config);
+            } else if (postCheck.type === "ssh-cli") {
+               response = await sshCliAction(postCheck, context.config);
             } else {
                return false;
             }

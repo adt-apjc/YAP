@@ -72,6 +72,18 @@ const SSHContainer = () => {
          socket.emit("data", e);
       });
 
+      socket.on("sshconnect", function (data) {
+         terminal.write(data);
+      });
+
+      socket.on("sshclose ", function (data) {
+         terminal.write(data);
+      });
+
+      socket.on("ssherror", function (data) {
+         terminal.write(data);
+      });
+
       socket.on("data", function (data) {
          terminal.write(data);
       });

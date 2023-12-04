@@ -7,12 +7,12 @@ import RunButtonComponent from "../RunButtonComponent";
 import WithInfoPopup from "../../Popper/InfoPopper";
 import WithDropdown from "../../Popper/Dropdown";
 import { StepDetails } from "../../contexts/ContextTypes";
-import { APIResponse } from "../../../helper/apiAction";
+import { APIResponse, SSHCLIResponse } from "../../../helper/apiAction";
 import { CopyDestSelector } from "./CopyDestSelector";
 import RestResponseDetails from "./RestResponseDetails";
 
 type Results = {
-   [index: number]: APIResponse;
+   [index: number]: APIResponse | SSHCLIResponse;
 };
 
 type PostCheckProps = {
@@ -220,7 +220,7 @@ const PostCheck = (props: PostCheckProps) => {
                      {postCheck.type === "request" || postCheck.type === "polling" ? (
                         <RestResponseDetails
                            show={curExpandRow.includes(index)}
-                           response={props.results && props.results[index] ? props.results[index] : null}
+                           response={props.results && props.results[index] ? (props.results[index] as APIResponse) : null}
                            request={postCheck}
                         />
                      ) : null}
