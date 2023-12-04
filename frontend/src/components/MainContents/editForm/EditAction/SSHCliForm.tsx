@@ -30,7 +30,7 @@ const SSHCliForm = (props: SSHCliFormProps) => {
    };
 
    const renderEndpointOptions = () => {
-      if (!context.config.endpoints) return;
+      if (!context.config.commandEndpoints) return;
 
       let endpoints = Object.keys(context.config.commandEndpoints);
       return endpoints.map((el, index) => {
