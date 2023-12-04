@@ -30,6 +30,7 @@ export type VariableFormProps = {
 export type ExpectFormProps = {
    expect: ActionExpectObject;
    setExpect: (e: ActionExpectObject) => void;
+   input: ActionConfig;
 };
 
 export type PayloadTypeSelectorProps = {

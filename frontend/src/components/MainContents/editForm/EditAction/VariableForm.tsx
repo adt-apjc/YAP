@@ -42,7 +42,7 @@ const VariableForm = (props: VariableFormProps) => {
                      className="form-control form-control-sm"
                      type="text"
                      name="objectPath"
-                     required={props.input.type !== "ssh-cli" && props.input.payloadType === "text" ? false : true}
+                     required={props.input.payloadType === "text" ? false : true}
                      value={props.match ? props.match.objectPath : ""}
                      onChange={(e) => props.setMatch({ ...props.match!, [e.target.name]: e.target.value })}
                      disabled={props.input.displayResponseAs === "text"}

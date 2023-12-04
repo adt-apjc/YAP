@@ -30,6 +30,7 @@ const ActionForm = (props: ActionFormProps) => {
                      type="button"
                      className={`btn btn-outline-secondary ${actionType === "rest-api" && "active"}`}
                      onClick={() => setActionType("rest-api")}
+                     disabled={props.initValue !== null && props.initValue?.action.type === "ssh-cli"}
                   >
                      REST
                   </button>
@@ -37,6 +38,7 @@ const ActionForm = (props: ActionFormProps) => {
                      type="button"
                      className={`btn btn-outline-secondary ${actionType === "ssh-cli" && "active"}`}
                      onClick={() => setActionType("ssh-cli")}
+                     disabled={props.initValue !== null && props.initValue?.action.type !== "ssh-cli"}
                   >
                      CLI
                   </button>

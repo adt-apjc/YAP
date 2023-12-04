@@ -44,7 +44,7 @@ const ExpectForm = (props: ExpectFormProps) => {
                      >
                         <option value="bodyContain">bodyContain</option>
                         <option value="bodyNotContain">bodyNotContain</option>
-                        <option value="codeIs">HttpResponseCodeIs</option>
+                        {props.input.type !== "ssh-cli" && <option value="codeIs">HttpResponseCodeIs</option>}
                      </select>
                   </div>
                   <div className="col-7">

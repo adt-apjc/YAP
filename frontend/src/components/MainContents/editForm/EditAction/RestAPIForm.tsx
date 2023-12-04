@@ -467,7 +467,7 @@ const RestAPIForm = (props: RestAPIFormProps) => {
             )}
          </div>
 
-         <ExpectForm expect={input.expect!} setExpect={setExpect} />
+         <ExpectForm expect={input.expect!} setExpect={setExpect} input={input} />
          <VariableForm match={input.match} setMatch={setMatchObject} input={input} />
          <div className="row mt-3">
             <div className="col">
