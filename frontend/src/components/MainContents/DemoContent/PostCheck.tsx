@@ -6,10 +6,11 @@ import ModalContentSelector from "../editForm/ModalContentSelector";
 import RunButtonComponent from "../RunButtonComponent";
 import WithInfoPopup from "../../Popper/InfoPopper";
 import WithDropdown from "../../Popper/Dropdown";
-import { StepDetails } from "../../contexts/ContextTypes";
+import { SSHActionConfig, StepDetails } from "../../contexts/ContextTypes";
 import { APIResponse, SSHCLIResponse } from "../../../helper/apiAction";
 import { CopyDestSelector } from "./CopyDestSelector";
 import RestResponseDetails from "./RestResponseDetails";
+import CommandResponseDetails from "./CommandResponseDetails";
 
 type Results = {
    [index: number]: APIResponse | SSHCLIResponse;
@@ -223,7 +224,14 @@ const PostCheck = (props: PostCheckProps) => {
                            response={props.results && props.results[index] ? (props.results[index] as APIResponse) : null}
                            request={postCheck}
                         />
-                     ) : null}
+                     ) : (
+                        <CommandResponseDetails
+                           show={curExpandRow.includes(index)}
+                           response={props.results && props.results[index] ? (props.results[index] as SSHCLIResponse) : null}
+                           // @ts-ignore TODO: forcing action type to be SSHActionConfig instead of RestActionConfig that is currently returned
+                           request={postCheck as SSHActionConfig}
+                        />
+                     )}
                   </div>
                )}
             </Draggable>

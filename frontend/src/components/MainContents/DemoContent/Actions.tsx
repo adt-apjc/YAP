@@ -7,7 +7,8 @@ import RunButtonComponent from "../RunButtonComponent";
 import WithInfoPopup from "../../Popper/InfoPopper";
 import WithDropdown from "../../Popper/Dropdown";
 import RestResponseDetails from "./RestResponseDetails";
-import { StepDetails } from "../../contexts/ContextTypes";
+import CommandResponseDetails from "./CommandResponseDetails";
+import { SSHActionConfig, StepDetails } from "../../contexts/ContextTypes";
 import { APIResponse, SSHCLIResponse } from "../../../helper/apiAction";
 import { CopyDestSelector } from "./CopyDestSelector";
 
@@ -75,7 +76,6 @@ const Actions = (props: ActionsProps) => {
    // apiList component
    if (props.currentStepDetails.actions && props.currentStepDetails.actions.length !== 0) {
       apiList = props.currentStepDetails.actions.map((action, index) => {
-         //
          let runResultStatus =
             props.results && props.results[index] && !isActionRunning(index) ? (
                props.results[index].success ? (
@@ -217,7 +217,14 @@ const Actions = (props: ActionsProps) => {
                            response={props.results && props.results[index] ? (props.results[index] as APIResponse) : null}
                            request={action}
                         />
-                     ) : null}
+                     ) : (
+                        <CommandResponseDetails
+                           show={curExpandRow.includes(index)}
+                           response={props.results && props.results[index] ? (props.results[index] as SSHCLIResponse) : null}
+                           // @ts-ignore TODO: forcing action type to be SSHActionConfig instead of RestActionConfig that is currently returned
+                           request={action as SSHActionConfig}
+                        />
+                     )}
                   </div>
                )}
             </Draggable>

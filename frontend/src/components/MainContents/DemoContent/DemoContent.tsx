@@ -18,6 +18,7 @@ import { CopyDestSelector } from "./CopyDestSelector";
 import WithDropdown from "../../Popper/Dropdown";
 import { cloneDeep } from "lodash";
 import WipeOutcome from "./WipeOutcome";
+//import { copySelection } from "@testing-library/user-event/dist/types/document";
 
 type StepResult = {
    [step: string]: { [index: number]: APIResponse | SSHCLIResponse } | undefined;
