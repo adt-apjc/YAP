@@ -27,8 +27,6 @@ const validateExpect = (expect: ActionExpectObject, response: AxiosResponse) => 
             }
             break;
          case "bodyNotContain":
-            console.log("stringigy response", JSON.stringify(response.data));
-            console.log(JSON.stringify(condition.value));
             if (JSON.stringify(response.data).includes(JSON.stringify(condition.value).slice(1, -1))) {
                console.log(`DEBUG - ${condition.type} ${JSON.stringify(condition.value).slice(1, -1)} didn't match`);
                failureCause = "Expect criteria bodyNotContain didn't match.";
@@ -299,7 +297,7 @@ export const sshCliAction = (
    { commandEndpoints, staticVariables }: config,
 ): Promise<SSHCLIResponse> => {
    const { hostname, username, password, port } = commandEndpoints[actionObject.useEndpoint];
-   const cmdList: string[] = actionObject.data.split("\n");
+   const cmdList: string[] = replaceStrWithParams(actionObject.data, staticVariables).split("\n");
    return new Promise((resolve, reject) => {
       try {
          const socket = io(process.env.REACT_APP_API_URL!, {
@@ -317,7 +315,6 @@ export const sshCliAction = (
                if (cmdList.length > 0) socket.emit("data", cmdList.shift() + "\n");
                else {
                   socket.disconnect();
-                  console.log(response);
                   let { expectCriteriaMet } = validateExpectText(actionObject.expect!, response);
                   if (!expectCriteriaMet) {
                      console.log("DEBUG - conditions haven't been met", actionObject.expect);
