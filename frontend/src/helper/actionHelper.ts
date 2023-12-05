@@ -27,6 +27,8 @@ const validateExpect = (expect: ActionExpectObject, response: AxiosResponse) => 
             }
             break;
          case "bodyNotContain":
+            console.log("stringigy response", JSON.stringify(response.data));
+            console.log(JSON.stringify(condition.value));
             if (JSON.stringify(response.data).includes(JSON.stringify(condition.value).slice(1, -1))) {
                console.log(`DEBUG - ${condition.type} ${JSON.stringify(condition.value).slice(1, -1)} didn't match`);
                failureCause = "Expect criteria bodyNotContain didn't match.";
@@ -38,6 +40,33 @@ const validateExpect = (expect: ActionExpectObject, response: AxiosResponse) => 
             if (!condition.value.includes(response.status.toString())) {
                console.log(`DEBUG - ${condition.type} ${condition.value} didn't match (Response ${response.status})`);
                failureCause = "Expect criteria HttpResponseCodeIs didn't match.";
+               return { expectCriteriaMet: false, failureCause };
+            }
+            break;
+         default:
+            console.log(`ERROR - Unknown expect type ${condition.type}`);
+      }
+   }
+   return { expectCriteriaMet: true, failureCause };
+};
+
+const validateExpectText = (expect: ActionExpectObject, response: String) => {
+   let failureCause = "";
+   if (expect.length === 0) return { expectCriteriaMet: true, failureCause };
+
+   for (let condition of expect) {
+      switch (condition.type) {
+         case "bodyContain":
+            if (!response.includes(condition.value)) {
+               console.log(`DEBUG - ${condition.type} ${condition.value} didn't match`);
+               failureCause = "Expect criteria bodyContain didn't match.";
+               return { expectCriteriaMet: false, failureCause };
+            }
+            break;
+         case "bodyNotContain":
+            if (response.includes(condition.value)) {
+               console.log(`DEBUG - ${condition.type} ${condition.value} didn't match`);
+               failureCause = "Expect criteria bodyNotContain didn't match.";
                return { expectCriteriaMet: false, failureCause };
             }
             break;
@@ -288,7 +317,14 @@ export const sshCliAction = (
                if (cmdList.length > 0) socket.emit("data", cmdList.shift() + "\n");
                else {
                   socket.disconnect();
-                  resolve({ response, success: true });
+                  console.log(response);
+                  let { expectCriteriaMet } = validateExpectText(actionObject.expect!, response);
+                  if (!expectCriteriaMet) {
+                     console.log("DEBUG - conditions haven't been met", actionObject.expect);
+                     reject({ response, success: false, failureCause: "Expect criteria didn't match." });
+                  } else {
+                     resolve({ response, success: true });
+                  }
                }
             }
          });
@@ -298,7 +334,13 @@ export const sshCliAction = (
          });
          socket.on("sshclose", () => {
             socket.disconnect();
-            resolve({ response, success: true });
+            let { expectCriteriaMet } = validateExpectText(actionObject.expect!, response);
+            if (!expectCriteriaMet) {
+               console.log("DEBUG - conditions haven't been met", actionObject.expect);
+               reject({ response, success: false, failureCause: "Expect criteria didn't match." });
+            } else {
+               resolve({ response, success: true });
+            }
          });
       } catch (err: any) {
          reject({ response: "", success: false, failureCause: err.message });
