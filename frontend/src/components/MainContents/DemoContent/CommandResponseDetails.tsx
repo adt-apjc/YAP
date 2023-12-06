@@ -1,8 +1,11 @@
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import WithInfoPopup from "../../Popper/InfoPopper";
-import { getStringFromObject, getVariableDetails, checkStaticVarIfUsed } from "../../contexts/Utility";
-import { SSHActionConfig, ActionConfig } from "../../contexts/ContextTypes";
+import { getVariableDetails, checkStaticVarIfUsed } from "../../contexts/Utility";
+import { SSHActionConfig } from "../../contexts/ContextTypes";
 import { SSHCLIResponse } from "../../../helper/apiAction";
+import { useEffect, useRef } from "react";
+import { Terminal } from "xterm";
+import { FitAddon } from "xterm-addon-fit";
 
 type CommandResponseDetailProps = {
    show: boolean;
@@ -12,13 +15,57 @@ type CommandResponseDetailProps = {
 
 const CommandResponseDetails = (props: CommandResponseDetailProps) => {
    const { context } = useGlobalContext();
+   const fitAddon = useRef(new FitAddon()).current;
+   const terminal = useRef<Terminal>(
+      new Terminal({
+         convertEol: true,
+         fontFamily: `'Fira Mono', monospace`,
+         fontSize: 15,
+         disableStdin: true,
+         cursorBlink: false,
+         cursorInactiveStyle: "none",
+         theme: {
+            foreground: "#3e3e3e",
+            background: "#ffffff",
+            cursor: "#3f3f3f",
+            black: "#3e3e3e",
+            brightBlack: "#666666",
+            red: "#970b16",
+            brightRed: "#de0000",
+            green: "#07962a",
+            brightGreen: "#87d5a2",
+            yellow: "#f8eec7",
+            brightYellow: "#f1d007",
+            blue: "#003e8a",
+            brightBlue: "#2e6cba",
+            magenta: "#e94691",
+            brightMagenta: "#ffa29f",
+            cyan: "#89d1ec",
+            brightCyan: "#1cfafe",
+            white: "#ffffff",
+            brightWhite: "#ffffff",
+            selectionBackground: "#BEBFC5",
+         },
+      }),
+   ).current;
+
+   let uuid = useRef(Math.random().toString(36).substring(2, 15));
+
    let responseViewer;
    //let responseStatus = props.response ? `${props.response.status} ${props.response.statusText}` : "";
    let failureCause = props.response && props.response.failureCause ? props.response.failureCause : "";
 
    if (props.request) {
-      responseViewer = props.response ? <pre className="p-2">{props.response.response}</pre> : null;
+      // responseViewer = props.response ? <pre className="p-2">{props.response.response}</pre> : null;
+      responseViewer = props.response ? <div id={`xterm-${uuid.current}`} className="w-100" style={{ height: 500 }}></div> : null;
    }
+
+   const handleCopyToClipboard = () => {
+      if (!props.response) return;
+      terminal.selectAll();
+      navigator.clipboard.writeText(terminal.getSelection());
+      terminal.clearSelection();
+   };
 
    const renderVariableDetails = () => {
       const variableDetails = getVariableDetails(props.request);
@@ -76,6 +123,27 @@ const CommandResponseDetails = (props: CommandResponseDetailProps) => {
       );
    };
 
+   useEffect(() => {
+      if (!props.response) return;
+      if (!props.show) return;
+
+      terminal.open(document.getElementById(`xterm-${uuid.current}`)!);
+      terminal.clear();
+      terminal.loadAddon(fitAddon);
+      fitAddon.fit();
+      terminal.write(props.response.response);
+   }, [props.response, props.show]);
+
+   useEffect(() => {
+      const handleResize = () => {
+         fitAddon.fit();
+      };
+      window.addEventListener("resize", handleResize);
+      return () => {
+         window.removeEventListener("resize", handleResize);
+      };
+   }, []);
+
    if (!props.show) return null;
    return (
       <div className="container position-relative bg-light pt-2 pb-3" style={{ top: "-15px" }}>
@@ -114,7 +182,6 @@ const CommandResponseDetails = (props: CommandResponseDetailProps) => {
                            <div className="d-flex flex-column p-2 text-dark" style={{ maxWidth: "800px" }}>
                               {props.request.expect.map((item, i) => {
                                  let type = item.type;
-                                 // if (item.type === "codeIs") type = "responseCodeIs";
 
                                  return (
                                     <div className="d-flex" key={i}>
@@ -147,7 +214,16 @@ const CommandResponseDetails = (props: CommandResponseDetailProps) => {
                   {failureCause && `- ${failureCause}`}
                </div>
             </div>
-            {responseViewer}
+            <div className="position-relative">
+               <div className="position-absolute xterm-copy-clipboard">
+                  <i
+                     className="fal fa-copy pointer icon-hover-highlight"
+                     title="Copy to clipboard"
+                     onClick={handleCopyToClipboard}
+                  />
+               </div>
+               {responseViewer}
+            </div>
          </div>
       </div>
    );

@@ -111,7 +111,7 @@ const Actions = (props: ActionsProps) => {
                                  </div>
                               )}
                               <div>
-                                 <div className={action.type === "ssh-cli" ? "fas fa-terminal me-3" : "fas fa-binary me-3"} />
+                                 <div className={action.type === "ssh-cli" ? "far fa-terminal me-3" : "far fa-binary me-3"} />
                                  {action.apiBadge && (
                                     <div
                                        className={`api-method-badge text-light me-3 rounded`}

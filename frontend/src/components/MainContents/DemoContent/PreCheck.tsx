@@ -117,7 +117,7 @@ const PreCheck = (props: PreCheckProps) => {
                                  </div>
                               )}
                               <div>
-                                 <div className={preCheck.type === "ssh-cli" ? "fas fa-terminal me-3" : "fas fa-binary me-3"} />
+                                 <div className={preCheck.type === "ssh-cli" ? "far fa-terminal me-3" : "far fa-binary me-3"} />
                                  {preCheck.apiBadge && (
                                     <div
                                        className={`api-method-badge text-light me-3 rounded`}

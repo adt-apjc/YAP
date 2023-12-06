@@ -111,7 +111,7 @@ const SSHContainer = () => {
                </button>
             </div>
          </div>
-         <div className="xterm-container bg-dark ps-2 py-2">
+         <div className="xterm-container bg-dark">
             <div id="xterm" className="h-100 w-100"></div>
          </div>
       </div>
