@@ -27,10 +27,28 @@ const EndpointEditor = (props: EndpointEditorProps) => {
       setState((prev) => ({ ...prev, input: { ...prev.input, [e.target.name]: e.target.value } }));
    };
 
+   const [oldName, setOldName] = useState<string | undefined>(undefined);
+
    const handleSaveEndpoint = () => {
       dispatch({
          type: "addCommandEndpoint",
          payload: {
+            name: state.input.name,
+            hostname: state.input.hostname,
+            port: state.input.port,
+            username: state.input.username,
+            password: state.input.password,
+         },
+      });
+
+      props.onClose();
+   };
+
+   const handleUpdateEndpoint = () => {
+      dispatch({
+         type: "updateCommandEndpoint",
+         payload: {
+            oldName: oldName!,
             name: state.input.name,
             hostname: state.input.hostname,
             port: state.input.port,
@@ -57,6 +75,7 @@ const EndpointEditor = (props: EndpointEditorProps) => {
             password: props.initValue.password,
          },
       });
+      setOldName(props.initValue.name);
    }, [props.initValue]);
 
    return (
@@ -73,9 +92,9 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                      !state.input.password ||
                      !state.input.port
                   }
-                  onClick={handleSaveEndpoint}
+                  onClick={oldName ? handleUpdateEndpoint : handleSaveEndpoint}
                >
-                  Save
+                  {oldName ? "Update" : "Save"}
                </button>
                <button className="btn btn-xs btn-sm" onClick={props.onClose}>
                   Cancel

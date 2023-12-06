@@ -151,6 +151,17 @@ const EndpointEditor = (props: EndpointEditorProps) => {
       props.onClose();
    };
 
+   const [oldName, setOldName] = useState<string | undefined>(undefined);
+
+   const handleUpdateEndpoint = () => {
+      dispatch({
+         type: "updateEndpoint",
+         payload: { oldName: oldName!, name: state.input.name, baseURL: state.input.baseURL, headerList: state.inputHeader },
+      });
+
+      props.onClose();
+   };
+
    const onHeaderDeleteHandler = (index: number) => {
       setState((prev) => ({ ...prev, inputHeader: prev.inputHeader.filter((_, i) => i !== index) }));
    };
@@ -208,6 +219,8 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                ? Object.keys(props.initValue.headers).map((key) => ({ key: key, value: props.initValue!.headers![key] }))
                : [],
       });
+
+      setOldName(props.initValue.name);
    }, [props.initValue]);
 
    return (
@@ -218,9 +231,9 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                <button
                   className="btn btn-xs btn-outline-info"
                   disabled={!state.input.name || !state.input.baseURL}
-                  onClick={handleSaveEndpoint}
+                  onClick={oldName ? handleUpdateEndpoint : handleSaveEndpoint}
                >
-                  Save
+                  {oldName ? "Update" : "Save"}
                </button>
                <button className="btn btn-xs btn-sm" onClick={props.onClose}>
                   Cancel

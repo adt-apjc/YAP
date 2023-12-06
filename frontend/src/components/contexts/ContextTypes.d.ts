@@ -40,8 +40,16 @@ export type ContextAction =
    | { type: "deleteStep"; payload: { name: string } }
    | { type: "addEndpoint"; payload: { name: string; baseURL: string; headerList: { key: any; value: any }[] } }
    | {
+        type: "updateEndpoint";
+        payload: { oldName: string; name: string; baseURL: string; headerList: { key: any; value: any }[] };
+     }
+   | {
         type: "addCommandEndpoint";
         payload: { name: string; hostname: string; port: string; username: string; password: string };
+     }
+   | {
+        type: "updateCommandEndpoint";
+        payload: { oldName: string; name: string; hostname: string; port: string; username: string; password: string };
      }
    | { type: "deleteEndpoint"; payload: { name: string } }
    | { type: "deleteCommandEndpoint"; payload: { name: string } }

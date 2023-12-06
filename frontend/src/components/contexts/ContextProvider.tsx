@@ -138,6 +138,24 @@ function addEndpoint(
    };
    return clonedState;
 }
+
+function updateEndpoint(
+   state: TYPE.ContextState,
+   payload: { oldName: string; name: string; baseURL: string; headerList: { key: string; value: string }[] },
+) {
+   let clonedState = _.cloneDeep(state);
+   delete clonedState.config.endpoints[payload.oldName];
+
+   clonedState.config.endpoints[payload.name] = {
+      baseURL: payload.baseURL,
+      headers: payload.headerList.reduce((result: any, item) => {
+         result[item.key] = item.value;
+         return result;
+      }, {}),
+   };
+   return clonedState;
+}
+
 function addCommandEndpoint(
    state: TYPE.ContextState,
    payload: { name: string; hostname: string; port: string; username: string; password: string },
@@ -154,6 +172,26 @@ function addCommandEndpoint(
    };
    return clonedState;
 }
+
+function updateCommandEndpoint(
+   state: TYPE.ContextState,
+   payload: { oldName: string; name: string; hostname: string; port: string; username: string; password: string },
+) {
+   let clonedState = _.cloneDeep(state);
+
+   if (!clonedState.config.commandEndpoints) clonedState.config.commandEndpoints = {};
+
+   delete clonedState.config.commandEndpoints[payload.oldName];
+
+   clonedState.config.commandEndpoints[payload.name] = {
+      hostname: payload.hostname,
+      port: payload.port,
+      username: payload.username,
+      password: payload.password,
+   };
+   return clonedState;
+}
+
 function deleteEndpoint(state: TYPE.ContextState, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
    delete clonedState.config.endpoints[payload.name];
@@ -288,8 +326,14 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
       case "addEndpoint":
          return { ...addEndpoint(state, action.payload) };
 
+      case "updateEndpoint":
+         return { ...updateEndpoint(state, action.payload) };
+
       case "addCommandEndpoint":
          return { ...addCommandEndpoint(state, action.payload) };
+
+      case "updateCommandEndpoint":
+         return { ...updateCommandEndpoint(state, action.payload) };
 
       case "deleteEndpoint":
          return { ...deleteEndpoint(state, action.payload) };
