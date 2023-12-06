@@ -22,6 +22,7 @@ const SSHCliForm = (props: SSHCliFormProps) => {
       description: "",
       displayResponseAs: "text",
       payloadType: "text",
+      sessionTimeout: 60,
       expect: [],
       match: undefined,
       data: "",
@@ -54,6 +55,7 @@ const SSHCliForm = (props: SSHCliFormProps) => {
       const actionIndex = initValue ? initValue.actionIndex : null;
       let inputCloned = _.cloneDeep(input);
 
+      if (!inputCloned.sessionTimeout) delete inputCloned.sessionTimeout;
       dispatch({
          type: "addAction",
          payload: { stepKey: context.currentStep.name!, tab: props.tab, index: actionIndex, actionObject: inputCloned },
@@ -96,6 +98,20 @@ const SSHCliForm = (props: SSHCliFormProps) => {
                   <option value="">Choose endpoint...</option>
                   {renderEndpointOptions()}
                </select>
+            </div>
+            <div className="col-2">
+               <small className="mb-1">Session timeout</small>
+               <input
+                  type="number"
+                  min={1}
+                  className="form-control form-control-sm"
+                  name="sessionTimeout"
+                  placeholder="Default 60s"
+                  value={input.sessionTimeout}
+                  onChange={(e) => {
+                     setInput((prev) => ({ ...prev, sessionTimeout: parseInt(e.target.value) }));
+                  }}
+               />
             </div>
          </div>
          <div className="row mb-2">

@@ -133,6 +133,7 @@ export type SSHActionConfig = {
    description: string;
    displayResponseAs?: string;
    payloadType?: string;
+   sessionTimeout?: number; // in seconds, default 60 if not set
    data?: any;
    expect?: ActionExpectObject;
    match?: ActionMatchObject;

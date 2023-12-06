@@ -7,7 +7,7 @@ import {
    RestActionConfig,
    SSHActionConfig,
 } from "../components/contexts/ContextTypes";
-import { Socket, io } from "socket.io-client";
+import { io } from "socket.io-client";
 import { APIResponse, SSHCLIResponse } from "./apiAction";
 
 const validateExpect = (expect: ActionExpectObject, response: AxiosResponse) => {
@@ -298,12 +298,19 @@ export const sshCliAction = (
 ): Promise<SSHCLIResponse> => {
    const { hostname, username, password, port } = sshCliEndpoints[actionObject.useEndpoint];
    const cmdList: string[] = replaceStrWithParams(actionObject.data, staticVariables).split("\n");
+   let timeout = actionObject.sessionTimeout ? actionObject.sessionTimeout * 1000 : 60 * 1000;
    return new Promise((resolve, reject) => {
+      let response = "";
       try {
          const socket = io(process.env.REACT_APP_API_URL!, {
             query: { hostname, username, password, port },
          });
-         let response = "";
+
+         let timer = setTimeout(() => {
+            socket.disconnect();
+            reject({ response, success: false, failureCause: "Session timeout" });
+         }, timeout);
+
          socket.on("sshconnect", () => {
             console.log("DEBUG - SSH connected");
             console.log("DEBUG - cmdlist", cmdList);
@@ -318,8 +325,10 @@ export const sshCliAction = (
                   let { expectCriteriaMet } = validateExpectText(actionObject.expect!, response);
                   if (!expectCriteriaMet) {
                      console.log("DEBUG - conditions haven't been met", actionObject.expect);
+                     clearTimeout(timer);
                      reject({ response, success: false, failureCause: "Expect criteria didn't match." });
                   } else {
+                     clearTimeout(timer);
                      resolve({ response, success: true });
                   }
                }
@@ -327,10 +336,12 @@ export const sshCliAction = (
          });
          socket.on("ssherror", function (data: string) {
             socket.disconnect();
+            clearTimeout(timer);
             reject({ response: "", success: false, failureCause: data });
          });
          socket.on("sshclose", () => {
             socket.disconnect();
+            clearTimeout(timer);
             let { expectCriteriaMet } = validateExpectText(actionObject.expect!, response);
             if (!expectCriteriaMet) {
                console.log("DEBUG - conditions haven't been met", actionObject.expect);
