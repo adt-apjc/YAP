@@ -398,10 +398,9 @@ const RestAPIForm = (props: RestAPIFormProps) => {
                   type="text"
                   className="form-control form-control-sm"
                   name="apiBadge"
-                  placeholder="API Badge Text"
+                  placeholder="Optional Badge Text"
                   value={input.apiBadge}
                   onChange={handleInputChange}
-                  required
                />
             </div>
             <div className="col-sm-2">
@@ -410,7 +409,7 @@ const RestAPIForm = (props: RestAPIFormProps) => {
                   type="text"
                   className="form-control form-control-sm"
                   name="apiBadgeColor"
-                  placeholder="API Badge Color"
+                  placeholder="Optional Color"
                   value={input.apiBadgeColor}
                   onChange={handleInputChange}
                />

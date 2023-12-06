@@ -111,12 +111,15 @@ const Actions = (props: ActionsProps) => {
                                  </div>
                               )}
                               <div>
-                                 <div
-                                    className={`api-method-badge text-light me-3 rounded`}
-                                    style={{ backgroundColor: action.apiBadgeColor ? action.apiBadgeColor : "#007cad" }}
-                                 >
-                                    {action.apiBadge ? action.apiBadge : "NO HEADER"}
-                                 </div>
+                                 <div className={action.type === "ssh-cli" ? "fas fa-terminal me-3" : "fas fa-binary me-3"} />
+                                 {action.apiBadge && (
+                                    <div
+                                       className={`api-method-badge text-light me-3 rounded`}
+                                       style={{ backgroundColor: action.apiBadgeColor ? action.apiBadgeColor : "#007cad" }}
+                                    >
+                                       {action.apiBadge}
+                                    </div>
+                                 )}
                                  {action.title ? action.title : "NO TITLE"}
                               </div>
                               {runResultStatus}
@@ -127,6 +130,7 @@ const Actions = (props: ActionsProps) => {
                                  workflowHandler={() => props.workflowHandler(index)}
                                  disable={isActionRunning(index)}
                               />
+
                               {context.mode === "edit" && (
                                  <div className="d-flex align-items-center">
                                     <span

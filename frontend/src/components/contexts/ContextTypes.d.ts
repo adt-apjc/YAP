@@ -120,8 +120,8 @@ export type SSHActionConfig = {
    type: "ssh-cli";
    title: string;
    useEndpoint: string;
-   apiBadge: string;
-   apiBadgeColor: string;
+   apiBadge?: string;
+   apiBadgeColor?: string;
    description: string;
    displayResponseAs?: string;
    payloadType?: string;

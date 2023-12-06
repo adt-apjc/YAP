@@ -116,12 +116,15 @@ const PostCheck = (props: PostCheckProps) => {
                                  </div>
                               )}
                               <div>
-                                 <div
-                                    className={`api-method-badge text-light me-3 rounded`}
-                                    style={{ backgroundColor: postCheck.apiBadgeColor ? postCheck.apiBadgeColor : "#007cad" }}
-                                 >
-                                    {postCheck.apiBadge ? postCheck.apiBadge : "NO HEADER"}
-                                 </div>
+                                 <div className={postCheck.type === "ssh-cli" ? "fas fa-terminal me-3" : "fas fa-binary me-3"} />
+                                 {postCheck.apiBadge && (
+                                    <div
+                                       className={`api-method-badge text-light me-3 rounded`}
+                                       style={{ backgroundColor: postCheck.apiBadgeColor ? postCheck.apiBadgeColor : "#007cad" }}
+                                    >
+                                       {postCheck.apiBadge}
+                                    </div>
+                                 )}
                                  {postCheck.title ? postCheck.title : "NO TITLE"}
                               </div>
                               {/* RESULT ICON */}

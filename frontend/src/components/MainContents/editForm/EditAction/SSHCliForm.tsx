@@ -105,19 +105,18 @@ const SSHCliForm = (props: SSHCliFormProps) => {
                   type="text"
                   className="form-control form-control-sm"
                   name="apiBadge"
-                  placeholder="Badge Text"
+                  placeholder="Optional Badge Text"
                   value={input.apiBadge}
                   onChange={handleInputChange}
-                  required
                />
             </div>
             <div className="col-sm-2">
-               <small className="mb-1">Badge Color</small>
+               <small className="mb-1">Optional Color</small>
                <input
                   type="text"
                   className="form-control form-control-sm"
                   name="apiBadgeColor"
-                  placeholder="Badge Color"
+                  placeholder="Optional Color"
                   value={input.apiBadgeColor}
                   onChange={handleInputChange}
                />

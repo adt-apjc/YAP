@@ -117,12 +117,15 @@ const PreCheck = (props: PreCheckProps) => {
                                  </div>
                               )}
                               <div>
-                                 <div
-                                    className={`api-method-badge text-light me-3 rounded`}
-                                    style={{ backgroundColor: preCheck.apiBadgeColor ? preCheck.apiBadgeColor : "#007cad" }}
-                                 >
-                                    {preCheck.apiBadge ? preCheck.apiBadge : "NO HEADER"}
-                                 </div>
+                                 <div className={preCheck.type === "ssh-cli" ? "fas fa-terminal me-3" : "fas fa-binary me-3"} />
+                                 {preCheck.apiBadge && (
+                                    <div
+                                       className={`api-method-badge text-light me-3 rounded`}
+                                       style={{ backgroundColor: preCheck.apiBadgeColor ? preCheck.apiBadgeColor : "#007cad" }}
+                                    >
+                                       {preCheck.apiBadge}
+                                    </div>
+                                 )}
                                  {preCheck.title ? preCheck.title : "NO TITLE"}
                               </div>
                               {runResultStatus}
