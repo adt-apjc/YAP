@@ -81,7 +81,7 @@ export type EndpointConfig = {
    headers?: { [key: string]: string };
 };
 
-export type CommandEndpointConfig = {
+export type SSHCliEndpointConfig = {
    hostname: string;
    port: string;
    username: string;
@@ -173,8 +173,8 @@ export type config = {
    endpoints: {
       [name: string]: EndpointConfig;
    };
-   commandEndpoints: {
-      [name: string]: CommandEndpointConfig;
+   sshCliEndpoints: {
+      [name: string]: SSHCliEndpointConfig;
    };
    staticVariables?: StaticVariables;
    mainContent: {

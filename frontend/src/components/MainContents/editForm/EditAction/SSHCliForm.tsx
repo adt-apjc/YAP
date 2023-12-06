@@ -62,9 +62,9 @@ const SSHCliForm = (props: SSHCliFormProps) => {
    };
 
    const renderEndpointOptions = () => {
-      if (!context.config.commandEndpoints) return;
+      if (!context.config.sshCliEndpoints) return;
 
-      let endpoints = Object.keys(context.config.commandEndpoints);
+      let endpoints = Object.keys(context.config.sshCliEndpoints);
       return endpoints.map((el, index) => {
          return (
             <option key={index} value={el}>

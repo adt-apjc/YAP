@@ -22,7 +22,7 @@ const emptyConfig: TYPE.config = {
    },
    preface: [],
    endpoints: {},
-   commandEndpoints: {},
+   sshCliEndpoints: {},
    mainContent: {},
 };
 
@@ -162,9 +162,9 @@ function addCommandEndpoint(
 ) {
    let clonedState = _.cloneDeep(state);
 
-   if (!clonedState.config.commandEndpoints) clonedState.config.commandEndpoints = {};
+   if (!clonedState.config.sshCliEndpoints) clonedState.config.sshCliEndpoints = {};
 
-   clonedState.config.commandEndpoints[payload.name] = {
+   clonedState.config.sshCliEndpoints[payload.name] = {
       hostname: payload.hostname,
       port: payload.port,
       username: payload.username,
@@ -179,11 +179,11 @@ function updateCommandEndpoint(
 ) {
    let clonedState = _.cloneDeep(state);
 
-   if (!clonedState.config.commandEndpoints) clonedState.config.commandEndpoints = {};
+   if (!clonedState.config.sshCliEndpoints) clonedState.config.sshCliEndpoints = {};
 
-   delete clonedState.config.commandEndpoints[payload.oldName];
+   delete clonedState.config.sshCliEndpoints[payload.oldName];
 
-   clonedState.config.commandEndpoints[payload.name] = {
+   clonedState.config.sshCliEndpoints[payload.name] = {
       hostname: payload.hostname,
       port: payload.port,
       username: payload.username,
@@ -200,7 +200,7 @@ function deleteEndpoint(state: TYPE.ContextState, payload: { name: string }) {
 
 function deleteCommandEndpoint(state: TYPE.ContextState, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
-   delete clonedState.config.commandEndpoints[payload.name];
+   delete clonedState.config.sshCliEndpoints[payload.name];
    return clonedState;
 }
 

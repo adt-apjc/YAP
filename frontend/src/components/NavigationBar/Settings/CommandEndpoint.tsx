@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
-import { CommandEndpointConfig } from "../../contexts/ContextTypes";
+import { SSHCliEndpointConfig } from "../../contexts/ContextTypes";
 import _ from "lodash";
 
 type EndpointViewerProps = {
-   onSelect: (commandEndpoint: { name: string } & CommandEndpointConfig) => void;
+   onSelect: (commandEndpoint: { name: string } & SSHCliEndpointConfig) => void;
 };
 type EndpointEditorProps = {
-   initValue: ({ name: string } & CommandEndpointConfig) | null;
+   initValue: ({ name: string } & SSHCliEndpointConfig) | null;
    onClose: () => void;
 };
 
-type CommandEndpointState = ({ name: string } & CommandEndpointConfig) | null;
+type sshCliEndpointstate = ({ name: string } & SSHCliEndpointConfig) | null;
 
 type CommandEndpointEditorState = {
    input: { name: string; hostname: string; port: string; username: string; password: string };
@@ -136,7 +136,7 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                   type="text"
                   className="form-control"
                   name="username"
-                  placeholder="Enter a username as a string"
+                  placeholder="Enter a username"
                   required
                   value={state.input.username}
                   onChange={onChangeHandler}
@@ -145,7 +145,7 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                   type="text"
                   className="form-control"
                   name="password"
-                  placeholder="Enter a password as a string"
+                  placeholder="Enter a password"
                   required
                   value={state.input.password}
                   onChange={onChangeHandler}
@@ -160,7 +160,7 @@ const EndpointViewer = (props: EndpointViewerProps) => {
    const { context, dispatch } = useGlobalContext();
    const [showDeleteList, setShowDeleteList] = useState<number[]>([]);
 
-   const onSelectHandler = (name: string, endpoint: CommandEndpointConfig) => {
+   const onSelectHandler = (name: string, endpoint: SSHCliEndpointConfig) => {
       props.onSelect({
          name: name,
          hostname: endpoint.hostname,
@@ -171,19 +171,19 @@ const EndpointViewer = (props: EndpointViewerProps) => {
    };
 
    const renderEndpoint = () => {
-      if (!context.config.commandEndpoints || Object.keys(context.config.commandEndpoints).length === 0)
+      if (!context.config.sshCliEndpoints || Object.keys(context.config.sshCliEndpoints).length === 0)
          return <small className="text-muted">No endpoints configured for commands</small>;
 
-      return Object.keys(context.config.commandEndpoints).map((commandEndpointName, index) => {
+      return Object.keys(context.config.sshCliEndpoints).map((commandEndpointName, index) => {
          return (
             <div key={index} className="row">
                <div className="mb-2 col-10">
                   <div
                      className="input-group input-group-sm pointer"
-                     onClick={() => onSelectHandler(commandEndpointName, context.config.commandEndpoints[commandEndpointName])}
+                     onClick={() => onSelectHandler(commandEndpointName, context.config.sshCliEndpoints[commandEndpointName])}
                   >
                      <div className="form-control col-3">{commandEndpointName}</div>
-                     <div className="form-control col-9">{context.config.commandEndpoints[commandEndpointName].hostname}</div>
+                     <div className="form-control col-9">{context.config.sshCliEndpoints[commandEndpointName].hostname}</div>
                   </div>
                </div>
 
@@ -218,13 +218,13 @@ const EndpointViewer = (props: EndpointViewerProps) => {
 };
 
 const CommandEndpoint = () => {
-   const [selectedEndpoint, setSelectedEndpoint] = useState<CommandEndpointState>(null);
+   const [selectedEndpoint, setSelectedEndpoint] = useState<sshCliEndpointstate>(null);
    const [showEditor, setShowEditor] = useState(false);
 
    return (
       <>
          <div className="mb-3">
-            Command Endpoints
+            SSH CLI Endpoints
             <span
                className="mx-3 font-sm text-info pointer text-hover-highlight"
                onClick={() => {

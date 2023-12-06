@@ -294,9 +294,9 @@ export const pollingRequest = (actionObject: RestActionConfig, { endpoints, stat
 
 export const sshCliAction = (
    actionObject: SSHActionConfig,
-   { commandEndpoints, staticVariables }: config,
+   { sshCliEndpoints, staticVariables }: config,
 ): Promise<SSHCLIResponse> => {
-   const { hostname, username, password, port } = commandEndpoints[actionObject.useEndpoint];
+   const { hostname, username, password, port } = sshCliEndpoints[actionObject.useEndpoint];
    const cmdList: string[] = replaceStrWithParams(actionObject.data, staticVariables).split("\n");
    return new Promise((resolve, reject) => {
       try {

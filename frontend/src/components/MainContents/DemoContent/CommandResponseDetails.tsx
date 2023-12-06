@@ -88,9 +88,9 @@ const CommandResponseDetails = (props: CommandResponseDetailProps) => {
                      PopperComponent={
                         <div className="d-flex p-2 text-dark" style={{ maxWidth: "800px" }}>
                            <small>{`${
-                              context.config.commandEndpoints[props.request.useEndpoint] &&
-                              context.config.commandEndpoints[props.request.useEndpoint].hostname
-                                 ? context.config.commandEndpoints[props.request.useEndpoint].hostname
+                              context.config.sshCliEndpoints[props.request.useEndpoint] &&
+                              context.config.sshCliEndpoints[props.request.useEndpoint].hostname
+                                 ? context.config.sshCliEndpoints[props.request.useEndpoint].hostname
                                  : "Application error: Endpoint IP or Address not found" // endpoint ip or address is a manadadory field
                            }`}</small>
                         </div>
@@ -138,7 +138,7 @@ const CommandResponseDetails = (props: CommandResponseDetailProps) => {
          {/* <div className="bg-white p-2 rounded shadow-sm mb-2">{payloadViewer}</div> */}
          <div className="bg-white p-2 rounded shadow-sm mb-2">
             Commands
-            <pre className="p-2">{props.request.data} </pre>
+            <pre className="p-2">{props.request.data}</pre>
          </div>
          <div className="bg-white p-2 rounded shadow-sm">
             <div className="d-flex justify-content-between">
