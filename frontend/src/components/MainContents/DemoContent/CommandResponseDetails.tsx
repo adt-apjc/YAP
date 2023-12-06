@@ -50,15 +50,7 @@ const CommandResponseDetails = (props: CommandResponseDetailProps) => {
    ).current;
 
    let uuid = useRef(Math.random().toString(36).substring(2, 15));
-
-   let responseViewer;
-   //let responseStatus = props.response ? `${props.response.status} ${props.response.statusText}` : "";
    let failureCause = props.response && props.response.failureCause ? props.response.failureCause : "";
-
-   if (props.request) {
-      // responseViewer = props.response ? <pre className="p-2">{props.response.response}</pre> : null;
-      responseViewer = props.response ? <div id={`xterm-${uuid.current}`} className="w-100" style={{ height: 500 }}></div> : null;
-   }
 
    const handleCopyToClipboard = () => {
       if (!props.response) return;
@@ -66,6 +58,20 @@ const CommandResponseDetails = (props: CommandResponseDetailProps) => {
       navigator.clipboard.writeText(terminal.getSelection());
       terminal.clearSelection();
    };
+
+   let responseViewer =
+      props.response && props.response.response ? (
+         <>
+            <div className="position-absolute xterm-copy-clipboard">
+               <i
+                  className="fal fa-copy pointer icon-hover-highlight"
+                  title="Copy to clipboard"
+                  onClick={handleCopyToClipboard}
+               />
+            </div>
+            <div id={`xterm-${uuid.current}`} className="w-100" style={{ height: 500 }}></div>
+         </>
+      ) : null;
 
    const renderVariableDetails = () => {
       const variableDetails = getVariableDetails(props.request);
@@ -125,6 +131,7 @@ const CommandResponseDetails = (props: CommandResponseDetailProps) => {
 
    useEffect(() => {
       if (!props.response) return;
+      if (!props.response.response) return;
       if (!props.show) return;
 
       terminal.open(document.getElementById(`xterm-${uuid.current}`)!);
@@ -214,16 +221,7 @@ const CommandResponseDetails = (props: CommandResponseDetailProps) => {
                   {failureCause && `- ${failureCause}`}
                </div>
             </div>
-            <div className="position-relative">
-               <div className="position-absolute xterm-copy-clipboard">
-                  <i
-                     className="fal fa-copy pointer icon-hover-highlight"
-                     title="Copy to clipboard"
-                     onClick={handleCopyToClipboard}
-                  />
-               </div>
-               {responseViewer}
-            </div>
+            <div className="position-relative">{responseViewer}</div>
          </div>
       </div>
    );
