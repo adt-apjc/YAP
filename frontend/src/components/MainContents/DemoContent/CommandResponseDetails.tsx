@@ -6,6 +6,7 @@ import { SSHCLIResponse } from "../../../helper/apiAction";
 import { useEffect, useRef } from "react";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
+import { useDidUpdateEffect } from "../../contexts/CustomHooks";
 
 type CommandResponseDetailProps = {
    show: boolean;
@@ -129,7 +130,7 @@ const CommandResponseDetails = (props: CommandResponseDetailProps) => {
       );
    };
 
-   useEffect(() => {
+   useDidUpdateEffect(() => {
       if (!props.response) return;
       if (!props.response.response) return;
       if (!props.show) return;

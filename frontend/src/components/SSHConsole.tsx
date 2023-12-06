@@ -4,6 +4,7 @@ import { Socket, io } from "socket.io-client";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import { config } from "./contexts/ContextTypes";
+import { useDidUpdateEffect } from "./contexts/CustomHooks";
 
 const fitAddon = new FitAddon();
 
@@ -35,7 +36,7 @@ const SSHContainer = () => {
       });
    }, []);
 
-   useEffect(() => {
+   useDidUpdateEffect(() => {
       let queryParams = new URLSearchParams(location.search);
       let selectedElementId = queryParams.get("selectedElementId")!;
       let stepId = queryParams.get("stepId")!;
