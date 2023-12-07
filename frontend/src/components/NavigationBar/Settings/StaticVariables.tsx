@@ -37,10 +37,21 @@ const StaticVarEditor = (props: StaticVarEditorProps) => {
       setState({ ...state, [e.target.name]: e.target.value });
    };
 
+   const [oldName, setOldName] = useState<string | undefined>(undefined);
+
    const onHeaderSaveHandler = () => {
       dispatch({
          type: "addStaticVar",
          payload: { name: state.name, val: state.val },
+      });
+
+      props.onClose();
+   };
+
+   const onHeaderUpdateHandler = () => {
+      dispatch({
+         type: "updateStaticVar",
+         payload: { oldName: oldName!, name: state.name, val: state.val },
       });
 
       props.onClose();
@@ -53,6 +64,7 @@ const StaticVarEditor = (props: StaticVarEditorProps) => {
       }
 
       setState({ name: props.initValue.name, val: props.initValue.val });
+      setOldName(props.initValue.name);
    }, [props.initValue]);
 
    return (
@@ -63,9 +75,9 @@ const StaticVarEditor = (props: StaticVarEditorProps) => {
                <button
                   className="btn btn-xs btn-outline-info"
                   disabled={errorOnForm || !state.name || !state.val}
-                  onClick={onHeaderSaveHandler}
+                  onClick={oldName ? onHeaderUpdateHandler : onHeaderSaveHandler}
                >
-                  Save
+                  {oldName ? "Update" : "Save"}
                </button>
                <button className="btn btn-xs" onClick={props.onClose}>
                   Cancel

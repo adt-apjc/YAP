@@ -212,6 +212,17 @@ function addStaticVar(state: TYPE.ContextState, payload: { name: string; val: an
    };
    return clonedState;
 }
+
+function updateStaticVar(state: TYPE.ContextState, payload: { oldName: string; name: string; val: any }) {
+   let clonedState = _.cloneDeep(state);
+   if (clonedState.config.staticVariables) delete clonedState.config.staticVariables[payload.oldName];
+   clonedState.config.staticVariables = {
+      ...clonedState.config.staticVariables,
+      [payload.name]: payload.val,
+   };
+   return clonedState;
+}
+
 function deleteStaticVar(state: TYPE.ContextState, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
    if (clonedState.config.staticVariables) delete clonedState.config.staticVariables[payload.name];
@@ -343,6 +354,9 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
 
       case "addStaticVar":
          return { ...addStaticVar(state, action.payload) };
+
+      case "updateStaticVar":
+         return { ...updateStaticVar(state, action.payload) };
 
       case "deleteStaticVar":
          return { ...deleteStaticVar(state, action.payload) };

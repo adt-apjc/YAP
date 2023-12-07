@@ -54,6 +54,7 @@ export type ContextAction =
    | { type: "deleteEndpoint"; payload: { name: string } }
    | { type: "deleteSSHEndpoint"; payload: { name: string } }
    | { type: "addStaticVar"; payload: { name: string; val: any } }
+   | { type: "updateStaticVar"; payload: { oldName: string; name: string; val: any } }
    | { type: "deleteStaticVar"; payload: { name: string } }
    | { type: "loadConfig"; payload: any }
    | { type: "loadRunningStatus"; payload: any }
