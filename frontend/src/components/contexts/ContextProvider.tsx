@@ -156,10 +156,7 @@ function updateEndpoint(
    return clonedState;
 }
 
-function addSSHEndpoint(
-   state: TYPE.ContextState,
-   payload: { name: string; hostname: string; port: string; username: string; password: string },
-) {
+function addSSHEndpoint(state: TYPE.ContextState, payload: { name: string } & TYPE.SSHCliEndpointConfig) {
    let clonedState = _.cloneDeep(state);
 
    if (!clonedState.config.sshCliEndpoints) clonedState.config.sshCliEndpoints = {};
@@ -169,14 +166,13 @@ function addSSHEndpoint(
       port: payload.port,
       username: payload.username,
       password: payload.password,
+      deviceType: payload.deviceType,
+      promptRegex: payload.promptRegex,
    };
    return clonedState;
 }
 
-function updateSSHEndpoint(
-   state: TYPE.ContextState,
-   payload: { oldName: string; name: string; hostname: string; port: string; username: string; password: string },
-) {
+function updateSSHEndpoint(state: TYPE.ContextState, payload: { oldName: string; name: string } & TYPE.SSHCliEndpointConfig) {
    let clonedState = _.cloneDeep(state);
 
    if (!clonedState.config.sshCliEndpoints) clonedState.config.sshCliEndpoints = {};
@@ -188,6 +184,8 @@ function updateSSHEndpoint(
       port: payload.port,
       username: payload.username,
       password: payload.password,
+      deviceType: payload.deviceType,
+      promptRegex: payload.promptRegex,
    };
    return clonedState;
 }

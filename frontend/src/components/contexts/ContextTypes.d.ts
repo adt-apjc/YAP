@@ -45,11 +45,11 @@ export type ContextAction =
      }
    | {
         type: "addSSHEndpoint";
-        payload: { name: string; hostname: string; port: string; username: string; password: string };
+        payload: { name: string } & SSHCliEndpointConfig;
      }
    | {
         type: "updateSSHEndpoint";
-        payload: { oldName: string; name: string; hostname: string; port: string; username: string; password: string };
+        payload: { oldName: string; name: string } & SSHCliEndpointConfig;
      }
    | { type: "deleteEndpoint"; payload: { name: string } }
    | { type: "deleteSSHEndpoint"; payload: { name: string } }
@@ -87,6 +87,9 @@ export type SSHCliEndpointConfig = {
    port: string;
    username: string;
    password: string;
+   deviceType: "linux" | "cisco-ios";
+   promptRegex: string;
+   sshkey?: string;
 };
 
 export type OutcomeCommandConfig = {

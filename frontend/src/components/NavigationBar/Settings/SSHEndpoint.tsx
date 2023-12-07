@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { SSHCliEndpointConfig } from "../../contexts/ContextTypes";
-import _, { set } from "lodash";
+import _ from "lodash";
 
 type EndpointViewerProps = {
    showEditor: boolean;

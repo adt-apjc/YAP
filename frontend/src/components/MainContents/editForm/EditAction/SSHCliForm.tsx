@@ -100,7 +100,7 @@ const SSHCliForm = (props: SSHCliFormProps) => {
                </select>
             </div>
             <div className="col-2">
-               <small className="mb-1">Session timeout</small>
+               <small className="mb-1">Timeout (s)</small>
                <input
                   type="number"
                   min={1}

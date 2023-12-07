@@ -300,9 +300,13 @@ export const sshCliAction = (
    actionObject: SSHActionConfig,
    { sshCliEndpoints, staticVariables }: config,
 ): Promise<SSHCLIResponse> => {
-   const { hostname, username, password, port } = sshCliEndpoints[actionObject.useEndpoint];
+   const { hostname, username, password, port, promptRegex, deviceType } = sshCliEndpoints[actionObject.useEndpoint];
    const cmdList: string[] = replaceStrWithParams(actionObject.data, staticVariables).split("\n");
    let timeout = actionObject.sessionTimeout ? actionObject.sessionTimeout * 1000 : 60 * 1000;
+   let regexList = [promptRegex, "yes/no", "yes/no\\?", "\\(yes/no/cancel\\)\\?"].map((item) => new RegExp(item));
+
+   if (deviceType === "cisco-ios") cmdList.unshift("terminal length 0");
+
    return new Promise((resolve, reject) => {
       let response = "";
       try {
@@ -321,8 +325,8 @@ export const sshCliAction = (
          });
          socket.on("data", function (data: string) {
             response += data;
-            const HOST_PROMPT = /.*[$#]/;
-            if (data.match(HOST_PROMPT)) {
+
+            if (regexList.some((regex) => regex.test(data))) {
                if (cmdList.length > 0) socket.emit("data", cmdList.shift() + "\n");
                else {
                   socket.disconnect();
