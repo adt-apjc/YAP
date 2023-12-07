@@ -85,7 +85,8 @@ const CatalogModal = (props: CatalogModalProps) => {
          </div>
          <div className="modal-footer p-1">
             {isFailing && (
-               <div className="fa fa-exclamation-triangle" aria-hidden="true" style={{ color: "red" }}>
+               <div aria-hidden="true" style={{ color: "#CE2029" }}>
+                  <i className="far fa-exclamation-triangle me-2" />
                   Failing to load the demo configuration
                </div>
             )}

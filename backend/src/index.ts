@@ -95,7 +95,7 @@ io.on("connection", (socket) => {
                console.log("writing data ", data);
                stream.write(data);
             });
-            socket.on("sshdisconnect", function (data) {
+            socket.on("sshdisconnect", function () {
                console.log("logout by button");
                conn.end();
             });
@@ -128,6 +128,6 @@ io.on("connection", (socket) => {
 
    socket.on("disconnect", () => {
       conn.end();
-      console.log("user disconnected", socket.id);
+      console.log(`user ${socket.id} disconnected`);
    });
 });

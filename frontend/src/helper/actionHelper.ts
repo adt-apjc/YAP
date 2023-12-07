@@ -199,7 +199,11 @@ export const normalRequest = (actionObject: RestActionConfig, { endpoints, stati
                console.log("DEBUG - Criteria hit on 404 which is accepted");
                resolve(e.response);
             } else {
-               reject({ ...e.response, failureCause: "Response with HTTP error code (4XX/5XX).", success: false });
+               reject({
+                  ...e.response,
+                  failureCause: e.response.data ? e.response.data : "Response with HTTP error code (4XX/5XX).",
+                  success: false,
+               });
             }
          } else {
             reject({ status: "Error", statusText: "connect ECONNREFUSED", success: false });
