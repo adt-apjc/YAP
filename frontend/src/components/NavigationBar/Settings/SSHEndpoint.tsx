@@ -21,9 +21,27 @@ const EndpointEditor = (props: EndpointEditorProps) => {
    const [state, setState] = useState<SSHEndpointEditorState>({
       input: { name: "", hostname: "", port: "22", username: "", password: "" },
    });
-   const { dispatch } = useGlobalContext();
+   const { context, dispatch } = useGlobalContext();
+   const [errorOnForm, setErrorOnForm] = useState(false);
 
    const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.name === "name") {
+         if (props.initValue) {
+            // updating the endpoint props.initValue.name
+            if (e.target.value !== props.initValue.name && e.target.value in context.config.sshCliEndpoints) {
+               setErrorOnForm(true);
+            } else {
+               setErrorOnForm(false);
+            }
+         } else {
+            // adding a new endpoint
+            if (e.target.value in context.config.sshCliEndpoints) {
+               setErrorOnForm(true);
+            } else {
+               setErrorOnForm(false);
+            }
+         }
+      }
       setState((prev) => ({ ...prev, input: { ...prev.input, [e.target.name]: e.target.value } }));
    };
 
@@ -86,6 +104,7 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                <button
                   className="btn btn-xs btn-outline-info"
                   disabled={
+                     errorOnForm ||
                      !state.input.name ||
                      !state.input.hostname ||
                      !state.input.username ||
@@ -151,6 +170,7 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                   onChange={onChangeHandler}
                />
             </div>
+            {errorOnForm ? <div className="text-danger">Endpoint name already exists</div> : null}
          </div>
       </div>
    );

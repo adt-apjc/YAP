@@ -12,9 +12,28 @@ type StaticVarViewerProps = {
 
 const StaticVarEditor = (props: StaticVarEditorProps) => {
    const [state, setState] = useState({ name: "", val: "" });
-   const { dispatch } = useGlobalContext();
+   const { context, dispatch } = useGlobalContext();
+   const [errorOnForm, setErrorOnForm] = useState(false);
 
    const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if ("staticVariables" in context.config && e.target.name === "name") {
+         if (props.initValue) {
+            console.log(context.config.staticVariables);
+            // updating the endpoint props.initValue.name
+            if (e.target.value !== props.initValue.name && e.target.value in context.config.staticVariables!) {
+               setErrorOnForm(true);
+            } else {
+               setErrorOnForm(false);
+            }
+         } else {
+            // adding a new endpoint
+            if (e.target.value in context.config.staticVariables!) {
+               setErrorOnForm(true);
+            } else {
+               setErrorOnForm(false);
+            }
+         }
+      }
       setState({ ...state, [e.target.name]: e.target.value });
    };
 
@@ -41,7 +60,11 @@ const StaticVarEditor = (props: StaticVarEditorProps) => {
          <div className="d-flex align-items-center justify-content-between">
             <div>Static Variable</div>
             <div className="d-flex">
-               <button className="btn btn-xs btn-outline-info" disabled={!state.name || !state.val} onClick={onHeaderSaveHandler}>
+               <button
+                  className="btn btn-xs btn-outline-info"
+                  disabled={errorOnForm || !state.name || !state.val}
+                  onClick={onHeaderSaveHandler}
+               >
                   Save
                </button>
                <button className="btn btn-xs" onClick={props.onClose}>
@@ -71,6 +94,7 @@ const StaticVarEditor = (props: StaticVarEditorProps) => {
                   onChange={onChangeHandler}
                />
             </div>
+            {errorOnForm ? <div className="text-danger">Variable name already exists</div> : null}
          </div>
       </div>
    );

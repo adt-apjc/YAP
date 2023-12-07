@@ -130,9 +130,27 @@ const EndpointEditor = (props: EndpointEditorProps) => {
       input: { name: "", baseURL: "" },
       inputHeader: [],
    });
-   const { dispatch } = useGlobalContext();
+   const { context, dispatch } = useGlobalContext();
+   const [errorOnForm, setErrorOnForm] = useState(false);
 
    const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.name === "name") {
+         if (props.initValue) {
+            // updating the endpoint props.initValue.name
+            if (e.target.value !== props.initValue.name && e.target.value in context.config.endpoints) {
+               setErrorOnForm(true);
+            } else {
+               setErrorOnForm(false);
+            }
+         } else {
+            // adding a new endpoint
+            if (e.target.value in context.config.endpoints) {
+               setErrorOnForm(true);
+            } else {
+               setErrorOnForm(false);
+            }
+         }
+      }
       setState((prev) => ({ ...prev, input: { ...prev.input, [e.target.name]: e.target.value } }));
    };
 
@@ -230,7 +248,7 @@ const EndpointEditor = (props: EndpointEditorProps) => {
             <div>
                <button
                   className="btn btn-xs btn-outline-info"
-                  disabled={!state.input.name || !state.input.baseURL}
+                  disabled={errorOnForm || !state.input.name || !state.input.baseURL}
                   onClick={oldName ? handleUpdateEndpoint : handleSaveEndpoint}
                >
                   {oldName ? "Update" : "Save"}
@@ -263,6 +281,8 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                />
             </div>
          </div>
+         {errorOnForm ? <div className="text-danger">Endpoint name already exists</div> : null}
+
          <div className="mb-2">Header</div>
          <div className="row">{renderHeaderField()}</div>
          <div className="text-center text-info font-lg">
