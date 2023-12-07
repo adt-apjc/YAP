@@ -10,7 +10,7 @@ import { SSHActionConfig, StepDetails } from "../../contexts/ContextTypes";
 import { APIResponse, SSHCLIResponse } from "../../../helper/apiAction";
 import { CopyDestSelector } from "./CopyDestSelector";
 import RestResponseDetails from "./RestResponseDetails";
-import CommandResponseDetails from "./CommandResponseDetails";
+import SSHResponseDetails from "./SSHResponseDetails";
 
 type Results = {
    [index: number]: APIResponse | SSHCLIResponse;
@@ -228,7 +228,7 @@ const PostCheck = (props: PostCheckProps) => {
                            request={postCheck}
                         />
                      ) : (
-                        <CommandResponseDetails
+                        <SSHResponseDetails
                            show={curExpandRow.includes(index)}
                            response={props.results && props.results[index] ? (props.results[index] as SSHCLIResponse) : null}
                            // @ts-ignore TODO: forcing action type to be SSHActionConfig instead of RestActionConfig that is currently returned

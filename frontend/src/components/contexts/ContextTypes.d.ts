@@ -1,6 +1,6 @@
 import cytoscape from "cytoscape";
 import Outcome from "../MainContents/DemoContent/Outcome";
-import CommandEndpoint from "../NavigationBar/Settings/CommandEndpoint";
+import SSHEndpoint from "../NavigationBar/Settings/SSHEndpoint";
 
 export type ContextAction =
    | { type: "setCurrentStep"; payload: { name: string | null; label: string | null } }
@@ -44,15 +44,15 @@ export type ContextAction =
         payload: { oldName: string; name: string; baseURL: string; headerList: { key: any; value: any }[] };
      }
    | {
-        type: "addCommandEndpoint";
+        type: "addSSHEndpoint";
         payload: { name: string; hostname: string; port: string; username: string; password: string };
      }
    | {
-        type: "updateCommandEndpoint";
+        type: "updateSSHEndpoint";
         payload: { oldName: string; name: string; hostname: string; port: string; username: string; password: string };
      }
    | { type: "deleteEndpoint"; payload: { name: string } }
-   | { type: "deleteCommandEndpoint"; payload: { name: string } }
+   | { type: "deleteSSHEndpoint"; payload: { name: string } }
    | { type: "addStaticVar"; payload: { name: string; val: any } }
    | { type: "deleteStaticVar"; payload: { name: string } }
    | { type: "loadConfig"; payload: any }

@@ -156,7 +156,7 @@ function updateEndpoint(
    return clonedState;
 }
 
-function addCommandEndpoint(
+function addSSHEndpoint(
    state: TYPE.ContextState,
    payload: { name: string; hostname: string; port: string; username: string; password: string },
 ) {
@@ -173,7 +173,7 @@ function addCommandEndpoint(
    return clonedState;
 }
 
-function updateCommandEndpoint(
+function updateSSHEndpoint(
    state: TYPE.ContextState,
    payload: { oldName: string; name: string; hostname: string; port: string; username: string; password: string },
 ) {
@@ -198,7 +198,7 @@ function deleteEndpoint(state: TYPE.ContextState, payload: { name: string }) {
    return clonedState;
 }
 
-function deleteCommandEndpoint(state: TYPE.ContextState, payload: { name: string }) {
+function deleteSSHEndpoint(state: TYPE.ContextState, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
    delete clonedState.config.sshCliEndpoints[payload.name];
    return clonedState;
@@ -329,17 +329,17 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
       case "updateEndpoint":
          return { ...updateEndpoint(state, action.payload) };
 
-      case "addCommandEndpoint":
-         return { ...addCommandEndpoint(state, action.payload) };
+      case "addSSHEndpoint":
+         return { ...addSSHEndpoint(state, action.payload) };
 
-      case "updateCommandEndpoint":
-         return { ...updateCommandEndpoint(state, action.payload) };
+      case "updateSSHEndpoint":
+         return { ...updateSSHEndpoint(state, action.payload) };
 
       case "deleteEndpoint":
          return { ...deleteEndpoint(state, action.payload) };
 
-      case "deleteCommandEndpoint":
-         return { ...deleteCommandEndpoint(state, action.payload) };
+      case "deleteSSHEndpoint":
+         return { ...deleteSSHEndpoint(state, action.payload) };
 
       case "addStaticVar":
          return { ...addStaticVar(state, action.payload) };

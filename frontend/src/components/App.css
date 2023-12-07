@@ -84,6 +84,10 @@ span {
    color: var(--text-light);
 }
 
+.btn-text:disabled {
+   border: none;
+}
+
 .font-sm {
    font-size: 12px;
 }

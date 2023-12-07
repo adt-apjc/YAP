@@ -4,7 +4,7 @@ import { SSHCliEndpointConfig } from "../../contexts/ContextTypes";
 import _ from "lodash";
 
 type EndpointViewerProps = {
-   onSelect: (commandEndpoint: { name: string } & SSHCliEndpointConfig) => void;
+   onSelect: (sSHEndpoint: { name: string } & SSHCliEndpointConfig) => void;
 };
 type EndpointEditorProps = {
    initValue: ({ name: string } & SSHCliEndpointConfig) | null;
@@ -13,12 +13,12 @@ type EndpointEditorProps = {
 
 type sshCliEndpointstate = ({ name: string } & SSHCliEndpointConfig) | null;
 
-type CommandEndpointEditorState = {
+type SSHEndpointEditorState = {
    input: { name: string; hostname: string; port: string; username: string; password: string };
 };
 
 const EndpointEditor = (props: EndpointEditorProps) => {
-   const [state, setState] = useState<CommandEndpointEditorState>({
+   const [state, setState] = useState<SSHEndpointEditorState>({
       input: { name: "", hostname: "", port: "22", username: "", password: "" },
    });
    const { dispatch } = useGlobalContext();
@@ -31,7 +31,7 @@ const EndpointEditor = (props: EndpointEditorProps) => {
 
    const handleSaveEndpoint = () => {
       dispatch({
-         type: "addCommandEndpoint",
+         type: "addSSHEndpoint",
          payload: {
             name: state.input.name,
             hostname: state.input.hostname,
@@ -46,7 +46,7 @@ const EndpointEditor = (props: EndpointEditorProps) => {
 
    const handleUpdateEndpoint = () => {
       dispatch({
-         type: "updateCommandEndpoint",
+         type: "updateSSHEndpoint",
          payload: {
             oldName: oldName!,
             name: state.input.name,
@@ -156,88 +156,102 @@ const EndpointEditor = (props: EndpointEditorProps) => {
    );
 };
 
-const EndpointViewer = (props: EndpointViewerProps) => {
-   const { context, dispatch } = useGlobalContext();
-   const [showDeleteList, setShowDeleteList] = useState<number[]>([]);
-
-   const onSelectHandler = (name: string, endpoint: SSHCliEndpointConfig) => {
-      props.onSelect({
-         name: name,
-         hostname: endpoint.hostname,
-         port: endpoint.port,
-         username: endpoint.username,
-         password: endpoint.password,
-      });
-   };
-
-   const renderEndpoint = () => {
-      if (!context.config.sshCliEndpoints || Object.keys(context.config.sshCliEndpoints).length === 0)
-         return <small className="text-muted">No endpoints configured for commands</small>;
-
-      return Object.keys(context.config.sshCliEndpoints).map((commandEndpointName, index) => {
-         return (
-            <div key={index} className="row">
-               <div className="mb-2 col-10">
-                  <div
-                     className="input-group input-group-sm pointer"
-                     onClick={() => onSelectHandler(commandEndpointName, context.config.sshCliEndpoints[commandEndpointName])}
-                  >
-                     <div className="form-control col-3">{commandEndpointName}</div>
-                     <div className="form-control col-9">{context.config.sshCliEndpoints[commandEndpointName].hostname}</div>
-                  </div>
-               </div>
-
-               <div className="col-2">
-                  {showDeleteList.includes(index) ? (
-                     <>
-                        <span
-                           className="pointer font-sm"
-                           onClick={() => setShowDeleteList(showDeleteList.filter((el) => el !== index))}
-                        >
-                           Cancel
-                        </span>
-                        <span
-                           className="pointer font-sm text-danger mx-2 text-hover-highlight"
-                           onClick={() => dispatch({ type: "deleteCommandEndpoint", payload: { name: commandEndpointName } })}
-                        >
-                           Delete
-                        </span>
-                     </>
-                  ) : (
-                     <span className="pointer" onClick={() => setShowDeleteList([...showDeleteList, index])}>
-                        {"\u00D7"}
-                     </span>
-                  )}
-               </div>
-            </div>
-         );
-      });
-   };
-
-   return <div className="mb-3">{renderEndpoint()}</div>;
-};
-
-const CommandEndpoint = () => {
+const SSHEndpoint = () => {
    const [selectedEndpoint, setSelectedEndpoint] = useState<sshCliEndpointstate>(null);
    const [showEditor, setShowEditor] = useState(false);
+   const [showDeleteList, setShowDeleteList] = useState<number[]>([]);
+
+   const EndpointViewer = (props: EndpointViewerProps) => {
+      const { context, dispatch } = useGlobalContext();
+
+      const onSelectHandler = (name: string, endpoint: SSHCliEndpointConfig) => {
+         props.onSelect({
+            name: name,
+            hostname: endpoint.hostname,
+            port: endpoint.port,
+            username: endpoint.username,
+            password: endpoint.password,
+         });
+      };
+
+      const renderEndpoint = () => {
+         if (!context.config.sshCliEndpoints || Object.keys(context.config.sshCliEndpoints).length === 0)
+            return <small className="text-muted">No endpoints configured for commands</small>;
+
+         return Object.keys(context.config.sshCliEndpoints).map((sSHEndpointName, index) => {
+            return (
+               <div key={index} className="row">
+                  <div className="mb-2 col-10">
+                     <div
+                        className="input-group input-group-sm pointer"
+                        onClick={() => onSelectHandler(sSHEndpointName, context.config.sshCliEndpoints[sSHEndpointName])}
+                     >
+                        <div className="form-control col-3">{sSHEndpointName}</div>
+                        <div className="form-control col-9">{context.config.sshCliEndpoints[sSHEndpointName].hostname}</div>
+                     </div>
+                  </div>
+
+                  <div className="col-2">
+                     {showDeleteList.includes(index) ? (
+                        <>
+                           <span
+                              className="pointer font-sm"
+                              onClick={() => {
+                                 setShowDeleteList(showDeleteList.filter((el) => el !== index));
+                              }}
+                           >
+                              Cancel
+                           </span>
+                           <span
+                              className="pointer font-sm text-danger mx-2 text-hover-highlight"
+                              onClick={() => {
+                                 dispatch({ type: "deleteSSHEndpoint", payload: { name: sSHEndpointName } });
+                                 setShowDeleteList(showDeleteList.filter((el) => el !== index));
+                              }}
+                           >
+                              Delete
+                           </span>
+                        </>
+                     ) : (
+                        <button
+                           className="btn btn-text pointer"
+                           disabled={showEditor}
+                           onClick={() => {
+                              setShowDeleteList([...showDeleteList, index]);
+                           }}
+                        >
+                           {"\u00D7"}
+                        </button>
+                     )}
+                  </div>
+               </div>
+            );
+         });
+      };
+
+      return <div className="mb-3">{renderEndpoint()}</div>;
+   };
 
    return (
       <>
          <div className="mb-3">
             SSH CLI Endpoints
-            <span
-               className="mx-3 font-sm text-info pointer text-hover-highlight"
+            <button
+               className="mx-3 btn btn-text font-sm text-info pointer text-hover-highlight"
+               disabled={showEditor || showDeleteList.length > 0}
                onClick={() => {
                   setSelectedEndpoint(null);
                   setShowEditor(true);
                }}
             >
                Add
-            </span>
+            </button>
             <EndpointViewer
                onSelect={(endpoint) => {
-                  setSelectedEndpoint(endpoint);
-                  setShowEditor(true);
+                  if (!showEditor && showDeleteList.length === 0) {
+                     setSelectedEndpoint(endpoint);
+                     setShowEditor(true);
+                  }
                }}
             />
             {showEditor && <EndpointEditor initValue={selectedEndpoint} onClose={() => setShowEditor(false)} />}
@@ -246,4 +260,4 @@ const CommandEndpoint = () => {
    );
 };
 
-export default CommandEndpoint;
+export default SSHEndpoint;

@@ -8,13 +8,13 @@ import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import { useDidUpdateEffect } from "../../contexts/CustomHooks";
 
-type CommandResponseDetailProps = {
+type SHHResponseDetailProps = {
    show: boolean;
    request: SSHActionConfig;
    response: SSHCLIResponse | null;
 };
 
-const CommandResponseDetails = (props: CommandResponseDetailProps) => {
+const SSHResponseDetails = (props: SHHResponseDetailProps) => {
    const { context } = useGlobalContext();
    const fitAddon = useRef(new FitAddon()).current;
    const terminal = useRef<Terminal>(
@@ -164,7 +164,8 @@ const CommandResponseDetails = (props: CommandResponseDetailProps) => {
                      PopperComponent={
                         <div className="d-flex p-2 text-dark" style={{ maxWidth: "800px" }}>
                            <small>{`${
-                              context.config.sshCliEndpoints[props.request.useEndpoint] &&
+                              context.config.sshCliEndpoints &&
+                              props.request.useEndpoint in context.config.sshCliEndpoints &&
                               context.config.sshCliEndpoints[props.request.useEndpoint].hostname
                                  ? context.config.sshCliEndpoints[props.request.useEndpoint].hostname
                                  : "Application error: Endpoint IP or Address not found" // endpoint ip or address is a manadadory field
@@ -228,4 +229,4 @@ const CommandResponseDetails = (props: CommandResponseDetailProps) => {
    );
 };
 
-export default CommandResponseDetails;
+export default SSHResponseDetails;
