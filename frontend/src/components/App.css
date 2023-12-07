@@ -89,7 +89,7 @@ span {
    color: var(--text-light);
 }
 
-.btn-text:disabled {
+.btn-text {
    border: none;
 }
 

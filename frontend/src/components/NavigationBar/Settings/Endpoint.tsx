@@ -4,6 +4,9 @@ import { EndpointConfig } from "../../contexts/ContextTypes";
 import _ from "lodash";
 
 type EndpointViewerProps = {
+   showEditor: boolean;
+   showDeleteList: number[];
+   setShowDeleteList: React.Dispatch<React.SetStateAction<number[]>>;
    onSelect: (endpoint: { name: string } & EndpointConfig) => void;
 };
 type EndpointEditorProps = {
@@ -293,78 +296,78 @@ const EndpointEditor = (props: EndpointEditorProps) => {
    );
 };
 
+const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEditor }: EndpointViewerProps) => {
+   const { context, dispatch } = useGlobalContext();
+
+   const onSelectHandler = (name: string, endpoint: EndpointConfig) => {
+      onSelect({ name: name, baseURL: endpoint.baseURL, headers: endpoint.headers });
+   };
+
+   const renderEndpoint = () => {
+      if (!context.config.endpoints || Object.keys(context.config.endpoints).length === 0)
+         return <small className="text-muted">No endpoints configured for APIs</small>;
+
+      return Object.keys(context.config.endpoints).map((endpointName, index) => {
+         return (
+            <div key={index} className="row mb-2">
+               <div className="col-10">
+                  <div
+                     className="input-group input-group-sm pointer"
+                     onClick={() => onSelectHandler(endpointName, context.config.endpoints[endpointName])}
+                  >
+                     <div className="form-control col-3">{endpointName}</div>
+                     <div className="form-control col-9">{context.config.endpoints[endpointName].baseURL}</div>
+                  </div>
+               </div>
+
+               <div className="col-2">
+                  {showDeleteList.includes(index) ? (
+                     <>
+                        <span
+                           className="pointer font-sm"
+                           onClick={() => setShowDeleteList(showDeleteList.filter((el) => el !== index))}
+                        >
+                           Cancel
+                        </span>
+                        <span
+                           className="pointer font-sm text-danger mx-2 text-hover-highlight"
+                           onClick={() => {
+                              dispatch({ type: "deleteEndpoint", payload: { name: endpointName } });
+                              setShowDeleteList(showDeleteList.filter((el) => el !== index));
+                           }}
+                        >
+                           Delete
+                        </span>
+                     </>
+                  ) : (
+                     <button
+                        className="btn btn-sm btn-text pointer"
+                        disabled={showEditor}
+                        onClick={() => setShowDeleteList([...showDeleteList, index])}
+                     >
+                        <i className="fal fa-trash-alt"></i>
+                     </button>
+                  )}
+               </div>
+            </div>
+         );
+      });
+   };
+
+   return <div className="mb-3">{renderEndpoint()}</div>;
+};
+
 const Endpoint = () => {
    const [selectedEndpoint, setSelectedEndpoint] = useState<EndpointState>(null);
    const [showEditor, setShowEditor] = useState(false);
    const [showDeleteList, setShowDeleteList] = useState<number[]>([]);
-
-   const EndpointViewer = (props: EndpointViewerProps) => {
-      const { context, dispatch } = useGlobalContext();
-
-      const onSelectHandler = (name: string, endpoint: EndpointConfig) => {
-         props.onSelect({ name: name, baseURL: endpoint.baseURL, headers: endpoint.headers });
-      };
-
-      const renderEndpoint = () => {
-         if (!context.config.endpoints || Object.keys(context.config.endpoints).length === 0)
-            return <small className="text-muted">No endpoints configured for APIs</small>;
-
-         return Object.keys(context.config.endpoints).map((endpointName, index) => {
-            return (
-               <div key={index} className="row">
-                  <div className="mb-2 col-10">
-                     <div
-                        className="input-group input-group-sm pointer"
-                        onClick={() => onSelectHandler(endpointName, context.config.endpoints[endpointName])}
-                     >
-                        <div className="form-control col-3">{endpointName}</div>
-                        <div className="form-control col-9">{context.config.endpoints[endpointName].baseURL}</div>
-                     </div>
-                  </div>
-
-                  <div className="col-2">
-                     {showDeleteList.includes(index) ? (
-                        <>
-                           <span
-                              className="pointer font-sm"
-                              onClick={() => setShowDeleteList(showDeleteList.filter((el) => el !== index))}
-                           >
-                              Cancel
-                           </span>
-                           <span
-                              className="pointer font-sm text-danger mx-2 text-hover-highlight"
-                              onClick={() => {
-                                 dispatch({ type: "deleteEndpoint", payload: { name: endpointName } });
-                                 setShowDeleteList(showDeleteList.filter((el) => el !== index));
-                              }}
-                           >
-                              Delete
-                           </span>
-                        </>
-                     ) : (
-                        <button
-                           className="btn btn-text pointer"
-                           disabled={showEditor}
-                           onClick={() => setShowDeleteList([...showDeleteList, index])}
-                        >
-                           {"\u00D7"}
-                        </button>
-                     )}
-                  </div>
-               </div>
-            );
-         });
-      };
-
-      return <div className="mb-3">{renderEndpoint()}</div>;
-   };
 
    return (
       <>
          <div className="mb-3">
             Endpoints
             <button
-               className="mx-3 btn btn-text font-sm text-info pointer text-hover-highlight"
+               className="mx-3 btn btn-sm btn-text text-info text-hover-highlight"
                disabled={showEditor || showDeleteList.length > 0}
                onClick={() => {
                   setSelectedEndpoint(null);
@@ -375,6 +378,9 @@ const Endpoint = () => {
             </button>
          </div>
          <EndpointViewer
+            showEditor={showEditor}
+            showDeleteList={showDeleteList}
+            setShowDeleteList={setShowDeleteList}
             onSelect={(endpoint) => {
                if (!showEditor && showDeleteList.length === 0) {
                   setSelectedEndpoint(endpoint);

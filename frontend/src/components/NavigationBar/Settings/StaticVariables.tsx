@@ -7,8 +7,13 @@ type StaticVarEditorProps = {
 };
 
 type StaticVarViewerProps = {
+   showStaticVarEditor: boolean;
+   showDeleteList: number[];
+   setShowDeleteList: React.Dispatch<React.SetStateAction<number[]>>;
    onSelect: (v: { name: string; val: any }) => void;
 };
+
+type StaticVariablesState = { selectedVar: { name: string; val: any } | null; showStaticVarEditor: boolean };
 
 const StaticVarEditor = (props: StaticVarEditorProps) => {
    const [state, setState] = useState({ name: "", val: "" });
@@ -112,7 +117,65 @@ const StaticVarEditor = (props: StaticVarEditorProps) => {
    );
 };
 
-type StaticVariablesState = { selectedVar: { name: string; val: any } | null; showStaticVarEditor: boolean };
+const StaticVarViewer = ({ onSelect, setShowDeleteList, showDeleteList, showStaticVarEditor }: StaticVarViewerProps) => {
+   const { context, dispatch } = useGlobalContext();
+
+   const onSelectHandler = (varName: string, val: any) => {
+      onSelect({ name: varName, val });
+   };
+
+   const renderStaticVar = () => {
+      if (!context.config.staticVariables || Object.keys(context.config.staticVariables).length === 0)
+         return <small className="text-muted">No Static Variables</small>;
+
+      return Object.keys(context.config.staticVariables).map((varName, index) => {
+         return (
+            <div key={index} className="row mb-2">
+               <div className="col-10">
+                  <div
+                     className="input-group input-group-sm pointer"
+                     onClick={() => onSelectHandler(varName, context.config.staticVariables![varName])}
+                  >
+                     <div className="form-control col-3">{varName}</div>
+                     <div className="form-control col-9">{context.config.staticVariables![varName]}</div>
+                  </div>
+               </div>
+               <div className="col-2">
+                  {showDeleteList.includes(index) ? (
+                     <>
+                        <span
+                           className="pointer font-sm"
+                           onClick={() => setShowDeleteList((prev) => prev.filter((el) => el !== index))}
+                        >
+                           Cancel
+                        </span>
+                        <span
+                           className="pointer font-sm text-danger mx-2 text-hover-highlight"
+                           onClick={() => {
+                              dispatch({ type: "deleteStaticVar", payload: { name: varName } });
+                              setShowDeleteList((prev) => prev.filter((el) => el !== index));
+                           }}
+                        >
+                           Delete
+                        </span>
+                     </>
+                  ) : (
+                     <button
+                        className="btn btn-sm btn-text pointer"
+                        disabled={showStaticVarEditor}
+                        onClick={() => setShowDeleteList([...showDeleteList, index])}
+                     >
+                        <i className="fal fa-trash-alt"></i>
+                     </button>
+                  )}
+               </div>
+            </div>
+         );
+      });
+   };
+
+   return <div className="mb-3">{renderStaticVar()}</div>;
+};
 
 const StaticVariables = () => {
    const [state, setState] = useState<StaticVariablesState>({
@@ -121,72 +184,12 @@ const StaticVariables = () => {
    });
    const [showDeleteList, setShowDeleteList] = useState<number[]>([]);
 
-   const StaticVarViewer = (props: StaticVarViewerProps) => {
-      const { context, dispatch } = useGlobalContext();
-
-      const onSelectHandler = (varName: string, val: any) => {
-         props.onSelect({ name: varName, val });
-      };
-
-      const renderStaticVar = () => {
-         if (!context.config.staticVariables || Object.keys(context.config.staticVariables).length === 0)
-            return <small className="text-muted">No Static Variables</small>;
-
-         return Object.keys(context.config.staticVariables).map((varName, index) => {
-            return (
-               <div key={index} className="row">
-                  <div className="mb-2 col-10">
-                     <div
-                        className="input-group input-group-sm pointer"
-                        onClick={() => onSelectHandler(varName, context.config.staticVariables![varName])}
-                     >
-                        <div className="form-control col-3">{varName}</div>
-                        <div className="form-control col-9">{context.config.staticVariables![varName]}</div>
-                     </div>
-                  </div>
-                  <div className="col-2">
-                     {showDeleteList.includes(index) ? (
-                        <>
-                           <span
-                              className="pointer font-sm"
-                              onClick={() => setShowDeleteList((prev) => prev.filter((el) => el !== index))}
-                           >
-                              Cancel
-                           </span>
-                           <span
-                              className="pointer font-sm text-danger mx-2 text-hover-highlight"
-                              onClick={() => {
-                                 dispatch({ type: "deleteStaticVar", payload: { name: varName } });
-                                 setShowDeleteList((prev) => prev.filter((el) => el !== index));
-                              }}
-                           >
-                              Delete
-                           </span>
-                        </>
-                     ) : (
-                        <button
-                           className="btn btn-text pointer"
-                           disabled={state.showStaticVarEditor}
-                           onClick={() => setShowDeleteList([...showDeleteList, index])}
-                        >
-                           {"\u00D7"}
-                        </button>
-                     )}
-                  </div>
-               </div>
-            );
-         });
-      };
-
-      return <div className="mb-3">{renderStaticVar()}</div>;
-   };
-
    return (
       <>
          <div className="mt-4 mb-2">
             Static Variables
             <button
-               className="mx-3 btn btn-text font-sm text-info pointer text-hover-highlight"
+               className="mx-3 btn btn-sm btn-text text-info text-hover-highlight"
                disabled={state.showStaticVarEditor || showDeleteList.length > 0}
                onClick={() => setState({ selectedVar: null, showStaticVarEditor: true })}
             >
@@ -194,6 +197,9 @@ const StaticVariables = () => {
             </button>
          </div>
          <StaticVarViewer
+            showStaticVarEditor={state.showStaticVarEditor}
+            showDeleteList={showDeleteList}
+            setShowDeleteList={setShowDeleteList}
             onSelect={(el) => {
                if (!state.showStaticVarEditor && showDeleteList.length === 0) {
                   setState({ selectedVar: el, showStaticVarEditor: true });

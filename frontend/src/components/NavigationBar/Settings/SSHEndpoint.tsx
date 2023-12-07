@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { SSHCliEndpointConfig } from "../../contexts/ContextTypes";
-import _ from "lodash";
+import _, { set } from "lodash";
 
 type EndpointViewerProps = {
+   showEditor: boolean;
+   showDeleteList: number[];
+   setShowDeleteList: React.Dispatch<React.SetStateAction<number[]>>;
    onSelect: (sSHEndpoint: { name: string } & SSHCliEndpointConfig) => void;
 };
 type EndpointEditorProps = {
@@ -13,18 +16,31 @@ type EndpointEditorProps = {
 
 type sshCliEndpointstate = ({ name: string } & SSHCliEndpointConfig) | null;
 
-type SSHEndpointEditorState = {
-   input: { name: string; hostname: string; port: string; username: string; password: string };
+type SSHEndpointEditorState = { name: string } & SSHCliEndpointConfig;
+
+const DEFAULT_PROMPT_REGEX = {
+   linux: ".*\\$",
+   "cisco-ios": ".*#",
+};
+
+const DEFAULT_INPUT: SSHEndpointEditorState = {
+   name: "",
+   hostname: "",
+   port: "22",
+   username: "",
+   password: "",
+   deviceType: "linux",
+   promptRegex: DEFAULT_PROMPT_REGEX.linux,
 };
 
 const EndpointEditor = (props: EndpointEditorProps) => {
-   const [state, setState] = useState<SSHEndpointEditorState>({
-      input: { name: "", hostname: "", port: "22", username: "", password: "" },
-   });
+   const [input, setInput] = useState<SSHEndpointEditorState>(DEFAULT_INPUT);
    const { context, dispatch } = useGlobalContext();
    const [errorOnForm, setErrorOnForm] = useState(false);
+   const [oldName, setOldName] = useState<string | undefined>(undefined);
+   const [enablePromptOveride, setEnablePromptOveride] = useState(false);
 
-   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       if (e.target.name === "name") {
          if (props.initValue) {
             // updating the endpoint props.initValue.name
@@ -42,20 +58,20 @@ const EndpointEditor = (props: EndpointEditorProps) => {
             }
          }
       }
-      setState((prev) => ({ ...prev, input: { ...prev.input, [e.target.name]: e.target.value } }));
+      setInput((prev) => ({ ...prev, [e.target.name]: e.target.value }));
    };
-
-   const [oldName, setOldName] = useState<string | undefined>(undefined);
 
    const handleSaveEndpoint = () => {
       dispatch({
          type: "addSSHEndpoint",
          payload: {
-            name: state.input.name,
-            hostname: state.input.hostname,
-            port: state.input.port,
-            username: state.input.username,
-            password: state.input.password,
+            name: input.name,
+            hostname: input.hostname,
+            port: input.port,
+            username: input.username,
+            password: input.password,
+            deviceType: input.deviceType,
+            promptRegex: input.promptRegex,
          },
       });
 
@@ -67,11 +83,13 @@ const EndpointEditor = (props: EndpointEditorProps) => {
          type: "updateSSHEndpoint",
          payload: {
             oldName: oldName!,
-            name: state.input.name,
-            hostname: state.input.hostname,
-            port: state.input.port,
-            username: state.input.username,
-            password: state.input.password,
+            name: input.name,
+            hostname: input.hostname,
+            port: input.port,
+            username: input.username,
+            password: input.password,
+            deviceType: input.deviceType,
+            promptRegex: input.promptRegex,
          },
       });
 
@@ -79,19 +97,23 @@ const EndpointEditor = (props: EndpointEditorProps) => {
    };
 
    useEffect(() => {
+      setInput((prev) => ({ ...prev, promptRegex: DEFAULT_PROMPT_REGEX[input.deviceType] }));
+   }, [input.deviceType]);
+
+   useEffect(() => {
       if (!props.initValue) {
-         setState({ input: { name: "", hostname: "", port: "22", username: "", password: "" } });
+         setInput(DEFAULT_INPUT);
          return;
       }
 
-      setState({
-         input: {
-            name: props.initValue.name,
-            hostname: props.initValue.hostname,
-            port: props.initValue.port,
-            username: props.initValue.username,
-            password: props.initValue.password,
-         },
+      setInput({
+         name: props.initValue.name,
+         hostname: props.initValue.hostname,
+         port: props.initValue.port,
+         username: props.initValue.username,
+         password: props.initValue.password,
+         deviceType: props.initValue.deviceType,
+         promptRegex: props.initValue.promptRegex,
       });
       setOldName(props.initValue.name);
    }, [props.initValue]);
@@ -99,18 +121,51 @@ const EndpointEditor = (props: EndpointEditorProps) => {
    return (
       <div className="endpoint-form">
          <div className="d-flex align-items-center justify-content-between">
-            <div>Command Endpoint</div>
+            <div className="row" style={{ width: "70%" }}>
+               <div className="col-4">
+                  <small>Device type</small>
+                  <select
+                     className="form-select form-select-sm"
+                     name="deviceType"
+                     value={input.deviceType}
+                     onChange={handleInputChange}
+                  >
+                     <option value="linux">Linux</option>
+                     <option value="cisco-ios">Cisco IOS</option>
+                  </select>
+               </div>
+               <div className="col-4">
+                  <small>Prompt RegEx.</small>
+                  <input
+                     className="form-control form-control-sm"
+                     type="text"
+                     name="promptRegex"
+                     disabled={!enablePromptOveride}
+                     value={input.promptRegex}
+                     onChange={handleInputChange}
+                  />
+               </div>
+               <div className="col-2 position-relative" style={{ top: 27 }}>
+                  <div className="form-check">
+                     <input
+                        id="promptRegex-checkbox"
+                        className="form-check-input"
+                        type="checkbox"
+                        name="promptRegex"
+                        checked={enablePromptOveride}
+                        onChange={() => setEnablePromptOveride(!enablePromptOveride)}
+                     />
+                     <label className="form-check-label font-sm" htmlFor="promptRegex-checkbox">
+                        Override
+                     </label>
+                  </div>
+               </div>
+            </div>
+
             <div>
                <button
                   className="btn btn-xs btn-outline-info"
-                  disabled={
-                     errorOnForm ||
-                     !state.input.name ||
-                     !state.input.hostname ||
-                     !state.input.username ||
-                     !state.input.password ||
-                     !state.input.port
-                  }
+                  disabled={errorOnForm || !input.name || !input.hostname || !input.username || !input.password || !input.port}
                   onClick={oldName ? handleUpdateEndpoint : handleSaveEndpoint}
                >
                   {oldName ? "Update" : "Save"}
@@ -129,8 +184,8 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                   name="name"
                   placeholder="Endpoint Name"
                   required
-                  value={state.input.name}
-                  onChange={onChangeHandler}
+                  value={input.name}
+                  onChange={handleInputChange}
                />
                <input
                   type="text"
@@ -138,16 +193,16 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                   name="hostname"
                   placeholder="IP address or Hostname"
                   required
-                  value={state.input.hostname}
-                  onChange={onChangeHandler}
+                  value={input.hostname}
+                  onChange={handleInputChange}
                />
                <input
                   type="text"
                   className="form-control"
                   name="port"
                   placeholder="TCP port"
-                  value={state.input.port}
-                  onChange={onChangeHandler}
+                  value={input.port}
+                  onChange={handleInputChange}
                />
             </div>
             <div className="input-group my-3">
@@ -157,8 +212,8 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                   name="username"
                   placeholder="Enter a username"
                   required
-                  value={state.input.username}
-                  onChange={onChangeHandler}
+                  value={input.username}
+                  onChange={handleInputChange}
                />
                <input
                   type="text"
@@ -166,8 +221,8 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                   name="password"
                   placeholder="Enter a password"
                   required
-                  value={state.input.password}
-                  onChange={onChangeHandler}
+                  value={input.password}
+                  onChange={handleInputChange}
                />
             </div>
             {errorOnForm ? <div className="text-danger">Endpoint name already exists</div> : null}
@@ -176,107 +231,110 @@ const EndpointEditor = (props: EndpointEditorProps) => {
    );
 };
 
+const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEditor }: EndpointViewerProps) => {
+   const { context, dispatch } = useGlobalContext();
+
+   const onSelectHandler = (name: string, endpoint: SSHCliEndpointConfig) => {
+      onSelect({
+         name: name,
+         hostname: endpoint.hostname,
+         port: endpoint.port,
+         username: endpoint.username,
+         password: endpoint.password,
+         deviceType: endpoint.deviceType,
+         promptRegex: endpoint.promptRegex,
+      });
+   };
+
+   const renderEndpoint = () => {
+      if (!context.config.sshCliEndpoints || Object.keys(context.config.sshCliEndpoints).length === 0)
+         return <small className="text-muted">No endpoints configured for commands</small>;
+
+      return Object.keys(context.config.sshCliEndpoints).map((sSHEndpointName, index) => {
+         return (
+            <div key={index} className="row mb-2">
+               <div className="col-10">
+                  <div
+                     className="input-group input-group-sm pointer"
+                     onClick={() => onSelectHandler(sSHEndpointName, context.config.sshCliEndpoints[sSHEndpointName])}
+                  >
+                     <div className="form-control col-3">{sSHEndpointName}</div>
+                     <div className="form-control col-9">{context.config.sshCliEndpoints[sSHEndpointName].hostname}</div>
+                  </div>
+               </div>
+
+               <div className="col-2">
+                  {showDeleteList.includes(index) ? (
+                     <>
+                        <span
+                           className="pointer font-sm"
+                           onClick={() => {
+                              setShowDeleteList(showDeleteList.filter((el) => el !== index));
+                           }}
+                        >
+                           Cancel
+                        </span>
+                        <span
+                           className="pointer font-sm text-danger mx-2 text-hover-highlight"
+                           onClick={() => {
+                              dispatch({ type: "deleteSSHEndpoint", payload: { name: sSHEndpointName } });
+                              setShowDeleteList(showDeleteList.filter((el) => el !== index));
+                           }}
+                        >
+                           Delete
+                        </span>
+                     </>
+                  ) : (
+                     <button
+                        className="btn btn-sm btn-text pointer"
+                        disabled={showEditor}
+                        onClick={() => {
+                           setShowDeleteList([...showDeleteList, index]);
+                        }}
+                     >
+                        <i className="fal fa-trash-alt"></i>
+                     </button>
+                  )}
+               </div>
+            </div>
+         );
+      });
+   };
+
+   return <div className="mb-3">{renderEndpoint()}</div>;
+};
+
 const SSHEndpoint = () => {
    const [selectedEndpoint, setSelectedEndpoint] = useState<sshCliEndpointstate>(null);
    const [showEditor, setShowEditor] = useState(false);
    const [showDeleteList, setShowDeleteList] = useState<number[]>([]);
 
-   const EndpointViewer = (props: EndpointViewerProps) => {
-      const { context, dispatch } = useGlobalContext();
-
-      const onSelectHandler = (name: string, endpoint: SSHCliEndpointConfig) => {
-         props.onSelect({
-            name: name,
-            hostname: endpoint.hostname,
-            port: endpoint.port,
-            username: endpoint.username,
-            password: endpoint.password,
-         });
-      };
-
-      const renderEndpoint = () => {
-         if (!context.config.sshCliEndpoints || Object.keys(context.config.sshCliEndpoints).length === 0)
-            return <small className="text-muted">No endpoints configured for commands</small>;
-
-         return Object.keys(context.config.sshCliEndpoints).map((sSHEndpointName, index) => {
-            return (
-               <div key={index} className="row">
-                  <div className="mb-2 col-10">
-                     <div
-                        className="input-group input-group-sm pointer"
-                        onClick={() => onSelectHandler(sSHEndpointName, context.config.sshCliEndpoints[sSHEndpointName])}
-                     >
-                        <div className="form-control col-3">{sSHEndpointName}</div>
-                        <div className="form-control col-9">{context.config.sshCliEndpoints[sSHEndpointName].hostname}</div>
-                     </div>
-                  </div>
-
-                  <div className="col-2">
-                     {showDeleteList.includes(index) ? (
-                        <>
-                           <span
-                              className="pointer font-sm"
-                              onClick={() => {
-                                 setShowDeleteList(showDeleteList.filter((el) => el !== index));
-                              }}
-                           >
-                              Cancel
-                           </span>
-                           <span
-                              className="pointer font-sm text-danger mx-2 text-hover-highlight"
-                              onClick={() => {
-                                 dispatch({ type: "deleteSSHEndpoint", payload: { name: sSHEndpointName } });
-                                 setShowDeleteList(showDeleteList.filter((el) => el !== index));
-                              }}
-                           >
-                              Delete
-                           </span>
-                        </>
-                     ) : (
-                        <button
-                           className="btn btn-text pointer"
-                           disabled={showEditor}
-                           onClick={() => {
-                              setShowDeleteList([...showDeleteList, index]);
-                           }}
-                        >
-                           {"\u00D7"}
-                        </button>
-                     )}
-                  </div>
-               </div>
-            );
-         });
-      };
-
-      return <div className="mb-3">{renderEndpoint()}</div>;
-   };
-
    return (
-      <>
-         <div className="mb-3">
-            SSH CLI Endpoints
-            <button
-               className="mx-3 btn btn-text font-sm text-info pointer text-hover-highlight"
-               disabled={showEditor || showDeleteList.length > 0}
-               onClick={() => {
-                  setSelectedEndpoint(null);
+      <div className="mb-3">
+         SSH CLI Endpoints
+         <button
+            className="mx-3 btn btn-sm btn-text text-info text-hover-highlight"
+            disabled={showEditor || showDeleteList.length > 0}
+            onClick={() => {
+               setSelectedEndpoint(null);
+               setShowEditor(true);
+            }}
+         >
+            Add
+         </button>
+         <EndpointViewer
+            showEditor={showEditor}
+            showDeleteList={showDeleteList}
+            setShowDeleteList={setShowDeleteList}
+            onSelect={(endpoint) => {
+               if (!showEditor && showDeleteList.length === 0) {
+                  setSelectedEndpoint(endpoint);
                   setShowEditor(true);
-               }}
-            >
-               Add
-            </button>
-            <EndpointViewer
-               onSelect={(endpoint) => {
-                  if (!showEditor && showDeleteList.length === 0) {
-                     setSelectedEndpoint(endpoint);
-                     setShowEditor(true);
-                  }
-               }}
-            />
-            {showEditor && <EndpointEditor initValue={selectedEndpoint} onClose={() => setShowEditor(false)} />}
-         </div>
-      </>
+               }
+            }}
+         />
+         {showEditor && <EndpointEditor initValue={selectedEndpoint} onClose={() => setShowEditor(false)} />}
+      </div>
    );
 };
 
