@@ -144,7 +144,31 @@ function updateEndpoint(
    payload: { oldName: string; name: string; baseURL: string; headerList: { key: string; value: string }[] },
 ) {
    let clonedState = _.cloneDeep(state);
-   delete clonedState.config.endpoints[payload.oldName];
+
+   // before updating an old endpoint, we need to check if the endpoint name was used in any action and update accordingly
+
+   for (const phase in clonedState.config.mainContent) {
+      clonedState.config.mainContent[phase].actions.map((step) => {
+         if (step.type === ("request" || "polling") && step.useEndpoint === payload.oldName) step.useEndpoint = payload.name;
+         return step;
+      });
+
+      // API endpoint are also used in the Outcome section
+
+      // loop clonedState.config.mainContent[phase].outcome
+      if ("outcome" in clonedState.config.mainContent[phase]) {
+         clonedState.config.mainContent[phase].outcome!.forEach((outcome) => {
+            // Currently we support a single outcome per step
+            for (const command in outcome.commands) {
+               outcome.commands[command].map((step) => {
+                  if (step.type === ("request" || "polling") && step.useEndpoint === payload.oldName)
+                     step.useEndpoint = payload.name;
+                  return step;
+               });
+            }
+         });
+      }
+   }
 
    clonedState.config.endpoints[payload.name] = {
       baseURL: payload.baseURL,
@@ -153,6 +177,7 @@ function updateEndpoint(
          return result;
       }, {}),
    };
+   delete clonedState.config.endpoints[payload.oldName];
    return clonedState;
 }
 
@@ -175,9 +200,14 @@ function addSSHEndpoint(state: TYPE.ContextState, payload: { name: string } & TY
 function updateSSHEndpoint(state: TYPE.ContextState, payload: { oldName: string; name: string } & TYPE.SSHCliEndpointConfig) {
    let clonedState = _.cloneDeep(state);
 
-   if (!clonedState.config.sshCliEndpoints) clonedState.config.sshCliEndpoints = {};
+   // before deleting the old endpoint, we need to check if the endpoint name was used in any action and update accordingly
 
-   delete clonedState.config.sshCliEndpoints[payload.oldName];
+   for (const phase in clonedState.config.mainContent) {
+      clonedState.config.mainContent[phase].actions.map((step) => {
+         if (step.type === "ssh-cli" && step.useEndpoint === payload.oldName) step.useEndpoint = payload.name;
+         return step;
+      });
+   }
 
    clonedState.config.sshCliEndpoints[payload.name] = {
       hostname: payload.hostname,
@@ -187,6 +217,8 @@ function updateSSHEndpoint(state: TYPE.ContextState, payload: { oldName: string;
       deviceType: payload.deviceType,
       promptRegex: payload.promptRegex,
    };
+
+   delete clonedState.config.sshCliEndpoints[payload.oldName];
    return clonedState;
 }
 

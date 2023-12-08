@@ -51,7 +51,7 @@ const EndpointEditor = (props: EndpointEditorProps) => {
             }
          } else {
             // adding a new endpoint
-            if (e.target.value in context.config.sshCliEndpoints) {
+            if ("sshCliEndpoints" in context.config && e.target.value in context.config.sshCliEndpoints) {
                setErrorOnForm(true);
             } else {
                setErrorOnForm(false);

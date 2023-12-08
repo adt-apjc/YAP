@@ -147,7 +147,7 @@ const EndpointEditor = (props: EndpointEditorProps) => {
             }
          } else {
             // adding a new endpoint
-            if (e.target.value in context.config.endpoints) {
+            if ("endpoints" in context.config && e.target.value in context.config.endpoints) {
                setErrorOnForm(true);
             } else {
                setErrorOnForm(false);
