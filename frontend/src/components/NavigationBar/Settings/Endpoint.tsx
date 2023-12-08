@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
-import { EndpointConfig } from "../../contexts/ContextTypes";
+import { ContextState, EndpointConfig } from "../../contexts/ContextTypes";
 import _ from "lodash";
 
 type EndpointViewerProps = {
@@ -303,6 +303,29 @@ const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEdito
       onSelect({ name: name, baseURL: endpoint.baseURL, headers: endpoint.headers });
    };
 
+   const usedEndpointHandler = (endpointName: string, context: ContextState) => {
+      let usedEndpoint = false;
+
+      for (const phase in context.config.mainContent) {
+         for (const action of context.config.mainContent[phase].actions) {
+            if (action.type === ("request" || "polling") && action.useEndpoint === endpointName) return true;
+         }
+         if ("outcome" in context.config.mainContent[phase]) {
+            context.config.mainContent[phase].outcome!.forEach((outcome) => {
+               // Currently we support a single outcome per step
+               for (const node in outcome.commands) {
+                  for (const command of outcome.commands[node]) {
+                     if (command.type === ("request" || "polling") && command.useEndpoint === endpointName) {
+                        usedEndpoint = true;
+                     }
+                  }
+               }
+            });
+         }
+      }
+      return usedEndpoint;
+   };
+
    const renderEndpoint = () => {
       if (!context.config.endpoints || Object.keys(context.config.endpoints).length === 0)
          return <small className="text-muted">No endpoints configured for APIs</small>;
@@ -342,7 +365,7 @@ const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEdito
                   ) : (
                      <button
                         className="btn btn-sm btn-text pointer"
-                        disabled={showEditor}
+                        disabled={showEditor || usedEndpointHandler(endpointName, context)}
                         onClick={() => setShowDeleteList([...showDeleteList, index])}
                      >
                         <i className="fal fa-trash-alt"></i>

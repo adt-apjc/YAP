@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
-import { SSHCliEndpointConfig } from "../../contexts/ContextTypes";
+import { ContextState, SSHCliEndpointConfig } from "../../contexts/ContextTypes";
 import _ from "lodash";
 
 type EndpointViewerProps = {
@@ -246,6 +246,15 @@ const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEdito
       });
    };
 
+   const usedEndpointHandler = (endpointName: string, context: ContextState) => {
+      for (const phase in context.config.mainContent) {
+         for (const action of context.config.mainContent[phase].actions) {
+            if (action.type === "ssh-cli" && action.useEndpoint === endpointName) return true;
+         }
+      }
+      return false;
+   };
+
    const renderEndpoint = () => {
       if (!context.config.sshCliEndpoints || Object.keys(context.config.sshCliEndpoints).length === 0)
          return <small className="text-muted">No endpoints configured for commands</small>;
@@ -287,7 +296,7 @@ const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEdito
                   ) : (
                      <button
                         className="btn btn-sm btn-text pointer"
-                        disabled={showEditor}
+                        disabled={showEditor || usedEndpointHandler(sSHEndpointName, context)}
                         onClick={() => {
                            setShowDeleteList([...showDeleteList, index]);
                         }}
