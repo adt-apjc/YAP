@@ -245,11 +245,18 @@ function addStaticVar(state: TYPE.ContextState, payload: { name: string; val: an
 
 function updateStaticVar(state: TYPE.ContextState, payload: { oldName: string; name: string; val: any }) {
    let clonedState = _.cloneDeep(state);
-   if (clonedState.config.staticVariables) delete clonedState.config.staticVariables[payload.oldName];
+
+   // When updating a static variable, we need to check if the variable name was used in any action and update accordingly
+
+   let configMainContentString = JSON.stringify(clonedState.config.mainContent);
+   configMainContentString = configMainContentString.replaceAll(`{{${payload.oldName}}}`, `{{${payload.name}}}`);
+   clonedState.config.mainContent = JSON.parse(configMainContentString);
+
    clonedState.config.staticVariables = {
       ...clonedState.config.staticVariables,
       [payload.name]: payload.val,
    };
+   if (clonedState.config.staticVariables) delete clonedState.config.staticVariables[payload.oldName];
    return clonedState;
 }
 
