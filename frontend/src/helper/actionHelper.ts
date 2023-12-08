@@ -75,22 +75,22 @@ const validateExpectText = (expect: ActionExpectObject, response: String) => {
    return { expectCriteriaMet: true, failureCause };
 };
 
-const processMatchResponse = (actionObject: ActionConfig, response: AxiosResponse) => {
-   if (actionObject.match) {
-      let { objectPath, regEx, storeAs, matchGroup } = actionObject.match;
-      let reservedNames = ["__internal__configData", "__internal__mainContentState", "__internal__runningStatus"];
-      if (reservedNames.includes(storeAs)) return; // var name cannot be the same as reserved list
+const processMatchResponse = (actionObject: ActionConfig, response: AxiosResponse | string) => {
+   if (!actionObject.match) return;
 
-      let targetValue = getStringFromObject(response.data, objectPath);
-      // If RegEx configured
-      let re = new RegExp(regEx);
-      let matchedValue = targetValue.match(re);
-      if (matchedValue) {
-         // If RegEx match
-         let group = matchGroup ? parseInt(matchGroup) : 0;
-         localStorage.setItem(storeAs, matchedValue[group]);
-         console.log("DEBUG:", matchedValue[group], "store as", storeAs);
-      }
+   let { objectPath, regEx, storeAs, matchGroup } = actionObject.match;
+   let reservedNames = ["__internal__configData", "__internal__mainContentState", "__internal__runningStatus"];
+   if (reservedNames.includes(storeAs)) return; // var name cannot be the same as reserved list
+
+   let targetValue = typeof response === "string" ? response : getStringFromObject(response.data, objectPath);
+   // If RegEx configured
+   let re = new RegExp(regEx);
+   let matchedValue = targetValue.match(re);
+   if (matchedValue) {
+      // If RegEx match
+      let group = matchGroup ? parseInt(matchGroup) : 0;
+      localStorage.setItem(storeAs, matchedValue[group]);
+      console.log("DEBUG:", matchedValue[group], "store as", storeAs);
    }
 };
 
@@ -251,6 +251,8 @@ export const pollingRequest = (actionObject: RestActionConfig, { endpoints, stat
                if (actionObject.expect!.length > 0 && expectCriteriaMet) {
                   console.log("INFO - Resolved and testing condition have been met", actionObject.expect);
                   clearInterval(timer);
+                  // process Match response if configured
+                  processMatchResponse(actionObject, response);
                   resolve({ ...response, success: true });
                }
             } else {
@@ -263,6 +265,8 @@ export const pollingRequest = (actionObject: RestActionConfig, { endpoints, stat
                      success: false,
                   });
                } else {
+                  // process Match response if configured
+                  processMatchResponse(actionObject, response);
                   // this case mean runtime exceed maxRetry and expect not set
                   // we will assume that it success. in case user want to polling for a specific time and dont expect anything in response.
                   resolve({ ...response, success: true });
@@ -337,6 +341,7 @@ export const sshCliAction = (
                      reject({ response, success: false, failureCause: "Expect criteria didn't match." });
                   } else {
                      clearTimeout(timer);
+                     processMatchResponse(actionObject, response);
                      resolve({ response, success: true });
                   }
                }
