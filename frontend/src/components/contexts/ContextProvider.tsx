@@ -169,7 +169,7 @@ function updateEndpoint(
          });
       }
    }
-
+   delete clonedState.config.endpoints[payload.oldName];
    clonedState.config.endpoints[payload.name] = {
       baseURL: payload.baseURL,
       headers: payload.headerList.reduce((result: any, item) => {
@@ -177,7 +177,7 @@ function updateEndpoint(
          return result;
       }, {}),
    };
-   delete clonedState.config.endpoints[payload.oldName];
+
    return clonedState;
 }
 
@@ -208,7 +208,7 @@ function updateSSHEndpoint(state: TYPE.ContextState, payload: { oldName: string;
          return step;
       });
    }
-
+   delete clonedState.config.sshCliEndpoints[payload.oldName];
    clonedState.config.sshCliEndpoints[payload.name] = {
       hostname: payload.hostname,
       port: payload.port,
@@ -218,7 +218,6 @@ function updateSSHEndpoint(state: TYPE.ContextState, payload: { oldName: string;
       promptRegex: payload.promptRegex,
    };
 
-   delete clonedState.config.sshCliEndpoints[payload.oldName];
    return clonedState;
 }
 
@@ -252,11 +251,12 @@ function updateStaticVar(state: TYPE.ContextState, payload: { oldName: string; n
    configMainContentString = configMainContentString.replaceAll(`{{${payload.oldName}}}`, `{{${payload.name}}}`);
    clonedState.config.mainContent = JSON.parse(configMainContentString);
 
+   if (clonedState.config.staticVariables) delete clonedState.config.staticVariables[payload.oldName];
    clonedState.config.staticVariables = {
       ...clonedState.config.staticVariables,
       [payload.name]: payload.val,
    };
-   if (clonedState.config.staticVariables) delete clonedState.config.staticVariables[payload.oldName];
+
    return clonedState;
 }
 
