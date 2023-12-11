@@ -303,6 +303,17 @@ const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEdito
       onSelect({ name: name, baseURL: endpoint.baseURL, headers: endpoint.headers });
    };
 
+   const isUsed = (endpointName: string) => {
+      if (
+         JSON.stringify(context.config.mainContent).includes(`"type":"request","useEndpoint":"${endpointName}"`) ||
+         JSON.stringify(context.config.mainContent).includes(`"type":"polling","useEndpoint":"${endpointName}"`)
+      ) {
+         return true;
+      } else {
+         return false;
+      }
+   };
+
    const usedEndpointHandler = (endpointName: string, context: ContextState) => {
       let usedEndpoint = false;
 
@@ -363,13 +374,16 @@ const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEdito
                         </span>
                      </>
                   ) : (
-                     <button
-                        className="btn btn-sm btn-text pointer"
-                        disabled={showEditor || usedEndpointHandler(endpointName, context)}
-                        onClick={() => setShowDeleteList([...showDeleteList, index])}
-                     >
-                        <i className="fal fa-trash-alt"></i>
-                     </button>
+                     <>
+                        <button
+                           className="btn btn-sm btn-text pointer"
+                           disabled={showEditor || usedEndpointHandler(endpointName, context)}
+                           onClick={() => setShowDeleteList([...showDeleteList, index])}
+                        >
+                           <i className="fal fa-trash-alt"></i>
+                        </button>
+                        {isUsed(endpointName) ? <span className="mx-2 fa fa-exclamation"></span> : ""}
+                     </>
                   )}
                </div>
             </div>

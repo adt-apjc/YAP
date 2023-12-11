@@ -246,6 +246,14 @@ const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEdito
       });
    };
 
+   const isUsed = (sSHEndpointName: string) => {
+      if (JSON.stringify(context.config.mainContent).includes(`"type":"ssh-cli","useEndpoint":"${sSHEndpointName}"`)) {
+         return true;
+      } else {
+         return false;
+      }
+   };
+
    const usedEndpointHandler = (endpointName: string, context: ContextState) => {
       for (const phase in context.config.mainContent) {
          for (const action of context.config.mainContent[phase].actions) {
@@ -294,15 +302,18 @@ const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEdito
                         </span>
                      </>
                   ) : (
-                     <button
-                        className="btn btn-sm btn-text pointer"
-                        disabled={showEditor || usedEndpointHandler(sSHEndpointName, context)}
-                        onClick={() => {
-                           setShowDeleteList([...showDeleteList, index]);
-                        }}
-                     >
-                        <i className="fal fa-trash-alt"></i>
-                     </button>
+                     <>
+                        <button
+                           className="btn btn-sm btn-text pointer"
+                           disabled={showEditor || usedEndpointHandler(sSHEndpointName, context)}
+                           onClick={() => {
+                              setShowDeleteList([...showDeleteList, index]);
+                           }}
+                        >
+                           <i className="fal fa-trash-alt"></i>
+                        </button>
+                        {isUsed(sSHEndpointName) ? <span className="mx-2 fa fa-exclamation"></span> : ""}
+                     </>
                   )}
                </div>
             </div>

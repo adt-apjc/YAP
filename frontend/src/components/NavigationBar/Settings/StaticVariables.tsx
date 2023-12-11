@@ -124,6 +124,14 @@ const StaticVarViewer = ({ onSelect, setShowDeleteList, showDeleteList, showStat
       onSelect({ name: varName, val });
    };
 
+   const isUsed = (varName: string) => {
+      if (JSON.stringify(context.config.mainContent).includes(`{{${varName}}}`)) {
+         return true;
+      } else {
+         return false;
+      }
+   };
+
    const renderStaticVar = () => {
       if (!context.config.staticVariables || Object.keys(context.config.staticVariables).length === 0)
          return <small className="text-muted">No Static Variables</small>;
@@ -160,13 +168,16 @@ const StaticVarViewer = ({ onSelect, setShowDeleteList, showDeleteList, showStat
                         </span>
                      </>
                   ) : (
-                     <button
-                        className="btn btn-sm btn-text pointer"
-                        disabled={showStaticVarEditor}
-                        onClick={() => setShowDeleteList([...showDeleteList, index])}
-                     >
-                        <i className="fal fa-trash-alt"></i>
-                     </button>
+                     <>
+                        <button
+                           className="btn btn-sm btn-text pointer"
+                           disabled={showStaticVarEditor}
+                           onClick={() => setShowDeleteList([...showDeleteList, index])}
+                        >
+                           <i className="fal fa-trash-alt"></i>
+                        </button>
+                        {isUsed(varName) ? <span className="mx-2 fa fa-exclamation"></span> : ""}
+                     </>
                   )}
                </div>
             </div>
