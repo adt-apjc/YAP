@@ -11,8 +11,8 @@ import { io } from "socket.io-client";
 import { APIResponse, SSHCLIResponse } from "./apiAction";
 
 const validateExpect = (expect: ActionExpectObject, response: AxiosResponse) => {
-   let failureCause = "";
-   if (expect.length === 0) return { expectCriteriaMet: true, failureCause };
+   let statusText = "";
+   if (expect.length === 0) return { expectCriteriaMet: true, statusText };
 
    for (let condition of expect) {
       switch (condition.type) {
@@ -22,57 +22,57 @@ const validateExpect = (expect: ActionExpectObject, response: AxiosResponse) => 
 
             if (!JSON.stringify(response.data).includes(JSON.stringify(condition.value).slice(1, -1))) {
                console.log(`DEBUG - ${condition.type} ${JSON.stringify(condition.value).slice(1, -1)} didn't match`);
-               failureCause = "Expect criteria bodyContain didn't match.";
-               return { expectCriteriaMet: false, failureCause };
+               statusText = "Expect criteria bodyContain didn't match.";
+               return { expectCriteriaMet: false, statusText };
             }
             break;
          case "bodyNotContain":
             if (JSON.stringify(response.data).includes(JSON.stringify(condition.value).slice(1, -1))) {
                console.log(`DEBUG - ${condition.type} ${JSON.stringify(condition.value).slice(1, -1)} didn't match`);
-               failureCause = "Expect criteria bodyNotContain didn't match.";
-               return { expectCriteriaMet: false, failureCause };
+               statusText = "Expect criteria bodyNotContain didn't match.";
+               return { expectCriteriaMet: false, statusText };
             }
             break;
          case "codeIs":
             // code may be a single string or an array of string, where one need to match the value expected
             if (!condition.value.includes(response.status.toString())) {
                console.log(`DEBUG - ${condition.type} ${condition.value} didn't match (Response ${response.status})`);
-               failureCause = "Expect criteria HttpResponseCodeIs didn't match.";
-               return { expectCriteriaMet: false, failureCause };
+               statusText = "Expect criteria HttpResponseCodeIs didn't match.";
+               return { expectCriteriaMet: false, statusText };
             }
             break;
          default:
             console.log(`ERROR - Unknown expect type ${condition.type}`);
       }
    }
-   return { expectCriteriaMet: true, failureCause };
+   return { expectCriteriaMet: true, statusText };
 };
 
 const validateExpectText = (expect: ActionExpectObject, response: String) => {
-   let failureCause = "";
-   if (expect.length === 0) return { expectCriteriaMet: true, failureCause };
+   let statusText = "";
+   if (expect.length === 0) return { expectCriteriaMet: true, statusText };
 
    for (let condition of expect) {
       switch (condition.type) {
          case "bodyContain":
             if (!response.includes(condition.value)) {
                console.log(`DEBUG - ${condition.type} ${condition.value} didn't match`);
-               failureCause = "Expect criteria bodyContain didn't match.";
-               return { expectCriteriaMet: false, failureCause };
+               statusText = "Expect criteria bodyContain didn't match.";
+               return { expectCriteriaMet: false, statusText };
             }
             break;
          case "bodyNotContain":
             if (response.includes(condition.value)) {
                console.log(`DEBUG - ${condition.type} ${condition.value} didn't match`);
-               failureCause = "Expect criteria bodyNotContain didn't match.";
-               return { expectCriteriaMet: false, failureCause };
+               statusText = "Expect criteria bodyNotContain didn't match.";
+               return { expectCriteriaMet: false, statusText };
             }
             break;
          default:
             console.log(`ERROR - Unknown expect type ${condition.type}`);
       }
    }
-   return { expectCriteriaMet: true, failureCause };
+   return { expectCriteriaMet: true, statusText };
 };
 
 const processMatchResponse = (actionObject: ActionConfig, response: AxiosResponse | string) => {
@@ -164,16 +164,22 @@ export const normalRequest = (actionObject: RestActionConfig, { endpoints, stati
       url: replaceStrWithParams(actionObject.url, staticVariables),
       method: actionObject.method,
       data: replaceStrWithParams(actionObject.data, staticVariables),
+      timeout: 5000,
    };
 
    return new Promise(async (resolve, reject) => {
       try {
          let response: AxiosResponse;
+         console.log("DEBUG - normalRequest", config);
          if (
             endpoints[actionObject.useEndpoint].backendRequest ||
             endpoints[actionObject.useEndpoint].backendRequest === undefined
          ) {
-            response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
+            const controller = new AbortController();
+            response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, {
+               ...config,
+            });
+            // controller.abort();
          } else {
             response = await axios(config);
          }
@@ -182,10 +188,10 @@ export const normalRequest = (actionObject: RestActionConfig, { endpoints, stati
          processMatchResponse(actionObject, response);
          // if expect has any condition, we shall validate them before assume a success: true state
          if (actionObject.expect!.length > 0) {
-            let { expectCriteriaMet, failureCause } = validateExpect(actionObject.expect!, response);
+            let { expectCriteriaMet, statusText } = validateExpect(actionObject.expect!, response);
             if (!expectCriteriaMet) {
                console.log("DEBUG - conditions haven't been met", actionObject.expect);
-               reject({ ...response, failureCause, success: false });
+               reject({ ...response, statusText, success: false });
             }
          }
          resolve({ ...response, success: true });
@@ -201,11 +207,12 @@ export const normalRequest = (actionObject: RestActionConfig, { endpoints, stati
             } else {
                reject({
                   ...e.response,
-                  failureCause: e.response.data ? e.response.data : "Response with HTTP error code (4XX/5XX).",
+                  statusText: e.response.data ? e.response.data : "Response with HTTP error code (4XX/5XX).",
                   success: false,
                });
             }
          } else {
+            console.log("DEBUG - Criteria hit on 404 is rejected ");
             reject({ status: "Error", statusText: "connect ECONNREFUSED", success: false });
          }
       }
@@ -261,7 +268,7 @@ export const pollingRequest = (actionObject: RestActionConfig, { endpoints, stat
                   // this case mean runtime exceed maxRetry and expect was set and it still not hit the criteria
                   reject({
                      ...response,
-                     failureCause: "Criteria was not met in the proposed polling time",
+                     statusText: "Criteria was not met in the proposed polling time",
                      success: false,
                   });
                } else {
@@ -320,7 +327,7 @@ export const sshCliAction = (
 
          let timer = setTimeout(() => {
             socket.disconnect();
-            reject({ response, success: false, failureCause: "Session timeout" });
+            reject({ response, success: false, statusText: "Session timeout" });
          }, timeout);
 
          socket.on("sshconnect", () => {
@@ -338,7 +345,7 @@ export const sshCliAction = (
                   if (!expectCriteriaMet) {
                      console.log("DEBUG - conditions haven't been met", actionObject.expect);
                      clearTimeout(timer);
-                     reject({ response, success: false, failureCause: "Expect criteria didn't match." });
+                     reject({ response, success: false, statusText: "Expect criteria didn't match." });
                   } else {
                      clearTimeout(timer);
                      processMatchResponse(actionObject, response);
@@ -350,7 +357,7 @@ export const sshCliAction = (
          socket.on("ssherror", function (data: string) {
             socket.disconnect();
             clearTimeout(timer);
-            reject({ response: "", success: false, failureCause: data });
+            reject({ response: "", success: false, statusText: data });
          });
          socket.on("sshclose", () => {
             socket.disconnect();
@@ -358,13 +365,13 @@ export const sshCliAction = (
             let { expectCriteriaMet } = validateExpectText(actionObject.expect!, response);
             if (!expectCriteriaMet) {
                console.log("DEBUG - conditions haven't been met", actionObject.expect);
-               reject({ response, success: false, failureCause: "Expect criteria didn't match." });
+               reject({ response, success: false, statusText: "Expect criteria didn't match." });
             } else {
                resolve({ response, success: true });
             }
          });
       } catch (err: any) {
-         reject({ response: "", success: false, failureCause: err.message });
+         reject({ response: "", success: false, statusText: err.message });
       }
    });
 };

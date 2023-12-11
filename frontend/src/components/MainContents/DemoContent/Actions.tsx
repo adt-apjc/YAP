@@ -84,7 +84,7 @@ const Actions = (props: ActionsProps) => {
                   <WithInfoPopup
                      PopperComponent={
                         <div className="d-flex p-2 text-nowrap text-dark">
-                           <small>{props.results[index].failureCause}</small>
+                           <small>{props.results[index].statusText}</small>
                         </div>
                      }
                      placement="right"
