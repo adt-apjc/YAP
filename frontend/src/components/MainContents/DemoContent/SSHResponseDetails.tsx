@@ -51,7 +51,7 @@ const SSHResponseDetails = (props: SHHResponseDetailProps) => {
    ).current;
 
    let uuid = useRef(Math.random().toString(36).substring(2, 15));
-   let statusText = props.response && props.response.statusText ? props.response.statusText : "";
+   let failureCause = props.response && props.response.failureCause ? props.response.failureCause : "";
 
    const handleCopyToClipboard = () => {
       if (!props.response) return;
@@ -220,7 +220,7 @@ const SSHResponseDetails = (props: SHHResponseDetailProps) => {
             <div className="d-flex justify-content-between">
                Response
                <div className="fw-light" style={{ fontSize: "12px" }}>
-                  {statusText && `- ${statusText}`}
+                  {failureCause && `- ${failureCause}`}
                </div>
             </div>
             <div className="position-relative">{responseViewer}</div>

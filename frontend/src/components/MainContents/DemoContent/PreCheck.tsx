@@ -85,7 +85,7 @@ const PreCheck = (props: PreCheckProps) => {
                   <WithInfoPopup
                      PopperComponent={
                         <div className="d-flex p-2 text-nowrap text-dark">
-                           <small>{props.results[index].statusText}</small>
+                           <small>{props.results[index].failureCause}</small>
                         </div>
                      }
                      placement="right"

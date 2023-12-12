@@ -15,7 +15,7 @@ const RestResponseDetails = (props: RestResponseDetailProps) => {
    const { context } = useGlobalContext();
    let responseViewer;
    let responseStatus = props.response ? `${props.response.status} ${props.response.statusText}` : "";
-   let statusText = props.response && props.response.statusText ? props.response.statusText : "";
+   let failureCause = props.response && props.response.failureCause ? props.response.failureCause : "";
    let payloadViewer =
       props.request && props.request.data ? (
          <div className="p-2">
@@ -199,7 +199,7 @@ const RestResponseDetails = (props: RestResponseDetailProps) => {
             <div className="d-flex justify-content-between">
                Response
                <div className="fw-light" style={{ fontSize: "12px" }}>
-                  {responseStatus} {statusText && `- ${statusText}`}
+                  {responseStatus} {failureCause && `- ${failureCause}`}
                </div>
             </div>
             {responseViewer}

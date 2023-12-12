@@ -66,7 +66,7 @@ export type config = {
 };
 
 type StepResult = {
-   [step: string]: { [index: number]: AxiosResponse & { success: boolean; statusText?: string } } | undefined;
+   [step: string]: { [index: number]: AxiosResponse & { success: boolean; failureCause?: string } } | undefined;
 };
 
 export type ApiResponseData = {
