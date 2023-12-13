@@ -6,6 +6,16 @@ export type EndpointConfig = {
    headers?: { [key: string]: string };
 };
 
+export type SSHEndpointConfig = {
+   baseURL: string;
+   hostname: string;
+   port: string;
+   username: string;
+   password: string;
+   deviceType: string;
+   promptRegex: string;
+};
+
 export type ActionExpectObject = { type: string; value: any }[];
 export type ActionMatchObject = { objectPath: string; regEx: string; matchGroup: string; storeAs: string };
 
@@ -20,6 +30,7 @@ export type ActionConfig = {
    description: string;
    data?: any;
    payloadType?: string;
+   sessionTimeout: number;
    maxRetry?: string;
    interval?: string;
    displayResponseAs?: string;
@@ -59,6 +70,9 @@ export type config = {
    endpoints: {
       [name: string]: EndpointConfig;
    };
+   sshCliEndpoints: {
+      [name: string]: SSHEndpointConfig;
+   };
    staticVariables?: StaticVariables;
    mainContent: {
       [step: string]: StepDetails;
@@ -69,7 +83,7 @@ type StepResult = {
    [step: string]: { [index: number]: AxiosResponse & { success: boolean; failureCause?: string } } | undefined;
 };
 
-export type ApiResponseData = {
+export type ResponseData = {
    preCheckResults: StepResult;
    actionResults: StepResult;
    postCheckResults: StepResult;

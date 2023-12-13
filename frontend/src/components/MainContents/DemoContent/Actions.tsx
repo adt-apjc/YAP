@@ -216,7 +216,7 @@ const Actions = (props: ActionsProps) => {
                            </div>
                         </div>
                      </div>
-                     {action.type === "request" || action.type === "polling" ? (
+                     {/* {action.type === "request" || action.type === "polling" ? (
                         <RestResponseDetails
                            show={curExpandRow.includes(index)}
                            response={props.results && props.results[index] ? (props.results[index] as APIResponse) : null}
@@ -227,7 +227,20 @@ const Actions = (props: ActionsProps) => {
                            show={curExpandRow.includes(index)}
                            response={props.results && props.results[index] ? (props.results[index] as SSHCLIResponse) : null}
                            // @ts-ignore TODO: forcing action type to be SSHActionConfig instead of RestActionConfig that is currently returned
-                           request={action as SSHActionConfig}
+                           request={action}
+                        />
+                     )} */}
+                     {action.type !== "ssh-cli" ? (
+                        <RestResponseDetails
+                           show={curExpandRow.includes(index)}
+                           response={props.results && props.results[index] ? (props.results[index] as APIResponse) : null}
+                           request={action}
+                        />
+                     ) : (
+                        <SSHResponseDetails
+                           show={curExpandRow.includes(index)}
+                           response={props.results && props.results[index] ? (props.results[index] as SSHCLIResponse) : null}
+                           request={action}
                         />
                      )}
                   </div>
