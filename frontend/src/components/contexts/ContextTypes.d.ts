@@ -64,8 +64,10 @@ export type ContextAction =
 export type SSHConfig = {
    hostname: string;
    username: string;
-   password: string;
+   password?: string;
    port: string;
+   sshkey?: string;
+   keyFilename?: string;
    commands?: { label: string; command: string }[];
 };
 
@@ -86,10 +88,11 @@ export type SSHCliEndpointConfig = {
    hostname: string;
    port: string;
    username: string;
-   password: string;
+   password?: string;
    deviceType: "linux" | "cisco-ios";
    promptRegex: string;
    sshkey?: string;
+   keyFilename?: string;
 };
 
 export type OutcomeCommandConfig = {

@@ -3,6 +3,7 @@ import { useGlobalContext } from "../../contexts/ContextProvider";
 import { ContextState, SSHCliEndpointConfig } from "../../contexts/ContextTypes";
 import _ from "lodash";
 import WithInfoPopup from "../../Popper/InfoPopper";
+import PKFileUploader from "../../MainContents/editForm/EditOutcome/PKFileUploader";
 
 type EndpointViewerProps = {
    showEditor: boolean;
@@ -30,6 +31,8 @@ const DEFAULT_INPUT: SSHEndpointEditorState = {
    port: "22",
    username: "",
    password: "",
+   sshkey: "",
+   keyFilename: "",
    deviceType: "linux",
    promptRegex: DEFAULT_PROMPT_REGEX.linux,
 };
@@ -73,6 +76,8 @@ const EndpointEditor = (props: EndpointEditorProps) => {
             password: input.password,
             deviceType: input.deviceType,
             promptRegex: input.promptRegex,
+            sshkey: input.sshkey,
+            keyFilename: input.keyFilename,
          },
       });
 
@@ -91,6 +96,8 @@ const EndpointEditor = (props: EndpointEditorProps) => {
             password: input.password,
             deviceType: input.deviceType,
             promptRegex: input.promptRegex,
+            sshkey: input.sshkey,
+            keyFilename: input.keyFilename,
          },
       });
 
@@ -100,6 +107,11 @@ const EndpointEditor = (props: EndpointEditorProps) => {
    useEffect(() => {
       setInput((prev) => ({ ...prev, promptRegex: DEFAULT_PROMPT_REGEX[input.deviceType] }));
    }, [input.deviceType]);
+
+   useEffect(() => {
+      if (!input.keyFilename) return;
+      setInput((prev) => ({ ...prev, password: "" }));
+   }, [input.keyFilename]);
 
    useEffect(() => {
       if (!props.initValue) {
@@ -115,6 +127,8 @@ const EndpointEditor = (props: EndpointEditorProps) => {
          password: props.initValue.password,
          deviceType: props.initValue.deviceType,
          promptRegex: props.initValue.promptRegex,
+         sshkey: props.initValue.sshkey,
+         keyFilename: props.initValue.keyFilename,
       });
       setOldName(props.initValue.name);
    }, [props.initValue]);
@@ -166,7 +180,14 @@ const EndpointEditor = (props: EndpointEditorProps) => {
             <div>
                <button
                   className="btn btn-xs btn-outline-info"
-                  disabled={errorOnForm || !input.name || !input.hostname || !input.username || !input.password || !input.port}
+                  disabled={
+                     errorOnForm ||
+                     !input.name ||
+                     !input.hostname ||
+                     !input.username ||
+                     (!input.password && !input.keyFilename) ||
+                     !input.port
+                  }
                   onClick={oldName ? handleUpdateEndpoint : handleSaveEndpoint}
                >
                   {oldName ? "Update" : "Save"}
@@ -220,11 +241,15 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                   type="text"
                   className="form-control"
                   name="password"
-                  placeholder="Enter a password"
-                  required
+                  placeholder={input.keyFilename ? "Using PK auth" : "Enter a password"}
+                  required={input.keyFilename ? false : true}
+                  disabled={input.keyFilename ? true : false}
                   value={input.password}
                   onChange={handleInputChange}
                />
+            </div>
+            <div className="col-4">
+               <PKFileUploader<SSHEndpointEditorState> sshkey={input.sshkey} filename={input.keyFilename} setInfo={setInput} />
             </div>
             {errorOnForm ? <div className="text-danger">Endpoint name already exists</div> : null}
          </div>
@@ -238,12 +263,7 @@ const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEdito
    const onSelectHandler = (name: string, endpoint: SSHCliEndpointConfig) => {
       onSelect({
          name: name,
-         hostname: endpoint.hostname,
-         port: endpoint.port,
-         username: endpoint.username,
-         password: endpoint.password,
-         deviceType: endpoint.deviceType,
-         promptRegex: endpoint.promptRegex,
+         ...endpoint,
       });
    };
 

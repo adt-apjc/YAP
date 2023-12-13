@@ -50,6 +50,11 @@ const ExportConfig = (props: { onHide: () => any }) => {
             <button type="button" className="btn-close" onClick={props.onHide}></button>
          </div>
          <div className="modal-body">
+            <div className="font-sm fst-italic mb-2">
+               Security Note: The exported file does
+               <span className="fw-bold"> NOT encrypt </span>
+               your device credentials, including passwords or private keys. Please share the file securely.
+            </div>
             <label>Demo version</label>
             <input
                type="text"

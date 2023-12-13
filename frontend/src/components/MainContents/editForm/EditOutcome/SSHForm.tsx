@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { AddSSHInfoFormProps } from "./EditOutcomeTypes";
 import { SSHConfig } from "../../../contexts/ContextTypes";
+import PKFileUploader from "./PKFileUploader";
 
 type SShPredefineCommand = {
    label: string;
@@ -148,6 +149,11 @@ const AddSSHInfoForm = (props: AddSSHInfoFormProps) => {
    };
 
    useEffect(() => {
+      if (!props.sshInfo.keyFilename) return;
+      props.setSSHinfo((prev) => ({ ...prev, password: "" }));
+   }, [props.sshInfo.keyFilename]);
+
+   useEffect(() => {
       if (selectedCommandIndex >= 0) setShowAddCmdForm(true);
    }, [selectedCommandIndex]);
 
@@ -216,14 +222,22 @@ const AddSSHInfoForm = (props: AddSSHInfoFormProps) => {
                   <div className="col-sm-12 col-md-4">
                      <label>Password</label>
                      <input
-                        required
                         className="form-control form-control-sm"
                         type="text"
                         name="password"
                         value={props.sshInfo.password}
                         onChange={handleInputChange}
+                        disabled={props.sshInfo.keyFilename ? true : false}
+                        required={props.sshInfo.keyFilename ? false : true}
                      />
                   </div>
+               </div>
+               <div className="col-3 mt-2">
+                  <PKFileUploader<SSHConfig>
+                     filename={props.sshInfo.keyFilename}
+                     sshkey={props.sshInfo.sshkey}
+                     setInfo={props.setSSHinfo}
+                  />
                </div>
                <div className="mt-3 mb-2">
                   <span>Pre-defined SSH command</span>

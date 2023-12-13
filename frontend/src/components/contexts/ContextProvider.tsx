@@ -190,9 +190,10 @@ function addSSHEndpoint(state: TYPE.ContextState, payload: { name: string } & TY
       hostname: payload.hostname,
       port: payload.port,
       username: payload.username,
-      password: payload.password,
       deviceType: payload.deviceType,
       promptRegex: payload.promptRegex,
+      keyFilename: payload.sshkey ? payload.keyFilename : undefined,
+      [payload.sshkey ? "sshkey" : "password"]: payload.sshkey ? payload.sshkey : payload.password,
    };
    return clonedState;
 }
@@ -201,7 +202,6 @@ function updateSSHEndpoint(state: TYPE.ContextState, payload: { oldName: string;
    let clonedState = _.cloneDeep(state);
 
    // before deleting the old endpoint, we need to check if the endpoint name was used in any action and update accordingly
-
    for (const phase in clonedState.config.mainContent) {
       clonedState.config.mainContent[phase].actions.map((step) => {
          if (step.type === "ssh-cli" && step.useEndpoint === payload.oldName) step.useEndpoint = payload.name;
@@ -213,9 +213,10 @@ function updateSSHEndpoint(state: TYPE.ContextState, payload: { oldName: string;
       hostname: payload.hostname,
       port: payload.port,
       username: payload.username,
-      password: payload.password,
       deviceType: payload.deviceType,
       promptRegex: payload.promptRegex,
+      keyFilename: payload.sshkey ? payload.keyFilename : undefined,
+      [payload.sshkey ? "sshkey" : "password"]: payload.sshkey ? payload.sshkey : payload.password,
    };
 
    return clonedState;

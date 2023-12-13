@@ -21,6 +21,15 @@ const DEFAULT_FORM_VALUE = {
    parent: "",
 };
 
+const DEFAULT_SSH_INFO = {
+   hostname: "",
+   username: "",
+   password: "",
+   port: "22",
+   sshkey: "",
+   keyFilename: "",
+};
+
 const AddNodeForm = (props: AddNodeFormProps) => {
    const [input, setInput] = useState(DEFAULT_FORM_VALUE);
    const [commands, setCommands] = useState<OutcomeCommandConfig[]>([]);
@@ -28,7 +37,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
    const [enableSSH, setEnableSSH] = useState(false);
    const [enableNested, setEnableNested] = useState(false);
    const [isIconLinkChecked, setIsIconLinkChecked] = useState(false);
-   const [sshInfo, setSSHInfo] = useState<SSHConfig>({ hostname: "", username: "", password: "", port: "22" });
+   const [sshInfo, setSSHInfo] = useState<SSHConfig>(DEFAULT_SSH_INFO);
    const [isCommandDataValid, setIsCommandDataValid] = useState(true);
 
    const renderLabelClassOptions = () => {
@@ -121,7 +130,10 @@ const AddNodeForm = (props: AddNodeFormProps) => {
       }
 
       if (enableSSH) {
-         nodeObject.ssh = sshInfo;
+         let sshConfigObj = { ...sshInfo };
+         if (!sshConfigObj.password) delete sshConfigObj.password;
+         if (!sshConfigObj.sshkey) delete sshConfigObj.sshkey;
+         nodeObject.ssh = sshConfigObj;
       } else {
          nodeObject.ssh = undefined;
       }
@@ -184,7 +196,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
             setSSHInfo({ ...initValue.ssh });
             setEnableSSH(true);
          } else {
-            setSSHInfo({ hostname: "", username: "", password: "", port: "22" });
+            setSSHInfo(DEFAULT_SSH_INFO);
             setEnableSSH(false);
          }
          // init parent node

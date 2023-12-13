@@ -318,7 +318,7 @@ export const sshCliAction = (
    actionObject: SSHActionConfig,
    { sshCliEndpoints, staticVariables }: config,
 ): Promise<SSHCLIResponse> => {
-   const { hostname, username, password, port, promptRegex, deviceType } = sshCliEndpoints[actionObject.useEndpoint];
+   const { hostname, username, password, port, promptRegex, deviceType, sshkey } = sshCliEndpoints[actionObject.useEndpoint];
    const cmdList: string[] = replaceStrWithParams(actionObject.data, staticVariables).split("\n");
    let timeout = actionObject.sessionTimeout ? actionObject.sessionTimeout * 1000 : 60 * 1000;
    let regexList = [promptRegex, "yes/no", "yes/no\\?", "\\(yes/no/cancel\\)\\?"].map((item) => new RegExp(item));
@@ -329,7 +329,7 @@ export const sshCliAction = (
       let response = "";
       try {
          const socket = io(process.env.REACT_APP_API_URL!, {
-            query: { hostname, username, password, port },
+            query: { hostname, username, port, [sshkey ? "sshkey" : "password"]: sshkey ? sshkey : password },
          });
 
          let timer = setTimeout(() => {

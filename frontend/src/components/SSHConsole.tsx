@@ -42,15 +42,16 @@ const SSHContainer = () => {
       let stepId = queryParams.get("stepId")!;
       const config: config = JSON.parse(window.localStorage.getItem("__internal__configData") as string);
 
-      let { hostname, username, password, port, commands } = config.mainContent[stepId].outcome![0].ssh![selectedElementId];
+      let { hostname, username, password, port, commands, sshkey } =
+         config.mainContent[stepId].outcome![0].ssh![selectedElementId];
       if (commands) setCommands(commands);
 
-      if (!hostname || !username || !password) return;
+      if (!hostname || !username || (!password && !sshkey)) return;
 
       document.title = `SSH connection ${hostname}`;
 
       const socket = io(process.env.REACT_APP_API_URL!, {
-         query: { hostname, username, password, port },
+         query: { hostname, username, port, [sshkey ? "sshkey" : "password"]: sshkey ? sshkey : password },
       });
       socketRef.current = socket;
 

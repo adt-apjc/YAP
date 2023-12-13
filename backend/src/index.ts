@@ -11,7 +11,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import morgan from "morgan";
 import { Server } from "socket.io";
-import { Client as SSHClient } from "ssh2";
+import { Client as SSHClient, ConnectConfig } from "ssh2";
 
 // Helper Lib
 import { errorController } from "./controllers/errorController";
@@ -82,9 +82,17 @@ let io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
    console.log(`user ${socket.id} connected`);
-   // console.log(socket.handshake.query["host"]);
-   // console.log(socket.handshake.query["username"]);
-   // console.log(socket.handshake.query["password"]);
+
+   let connectionConfig: ConnectConfig = {
+      host: socket.handshake.query["hostname"] as string,
+      username: socket.handshake.query["username"] as string,
+      port: socket.handshake.query["port"] ? parseInt(socket.handshake.query["port"] as string) : 22,
+      algorithms: { kex: { append: ["diffie-hellman-group14-sha1"], prepend: [], remove: [] } },
+      [socket.handshake.query["sshkey"] ? "privateKey" : "password"]: socket.handshake.query["sshkey"]
+         ? socket.handshake.query["sshkey"]
+         : socket.handshake.query["password"],
+   };
+
    var conn = new SSHClient();
    conn
       .on("ready", function () {
@@ -118,13 +126,7 @@ io.on("connection", (socket) => {
       .on("error", function (err) {
          socket.emit("ssherror", "\r\n*** SSH CONNECTION ERROR: " + err.message + " ***\r\n");
       })
-      .connect({
-         host: socket.handshake.query["hostname"] as string,
-         username: socket.handshake.query["username"] as string,
-         password: socket.handshake.query["password"] as string,
-         port: socket.handshake.query["port"] ? parseInt(socket.handshake.query["port"] as string) : 22,
-         algorithms: { kex: { append: ["diffie-hellman-group14-sha1"], prepend: [], remove: [] } },
-      });
+      .connect(connectionConfig);
 
    socket.on("disconnect", () => {
       conn.end();
