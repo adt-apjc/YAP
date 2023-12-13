@@ -119,6 +119,7 @@ export type RestActionConfig = {
    description: string;
    data?: any;
    payloadType?: string;
+   sessionTimeout?: number; // in seconds, default 60 if not set
    maxRetry?: string;
    interval?: string;
    displayResponseAs?: string;

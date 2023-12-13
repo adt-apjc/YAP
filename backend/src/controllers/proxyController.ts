@@ -10,6 +10,7 @@ export const proxyController = catchErrorAsync(async (req: Request, res: Respons
       url: req.body.url,
       method: req.body.method,
       data: req.body.data,
+      timeout: req.body.timeout ? req.body.timeout * 1000 : 0, // axios default timeout is 0 (no timeout)
    };
    try {
       const response = await axios(config);

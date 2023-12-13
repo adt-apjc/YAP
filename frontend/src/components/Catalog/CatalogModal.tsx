@@ -23,6 +23,7 @@ const CatalogModal = (props: CatalogModalProps) => {
          let config = {
             baseURL: props.params.path,
             method: "GET",
+            timeout: 5000, // 5 seconds timeout
          };
 
          let response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });

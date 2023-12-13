@@ -164,6 +164,7 @@ export const normalRequest = (actionObject: RestActionConfig, { endpoints, stati
       url: replaceStrWithParams(actionObject.url, staticVariables),
       method: actionObject.method,
       data: replaceStrWithParams(actionObject.data, staticVariables),
+      timeout: actionObject.sessionTimeout,
    };
 
    return new Promise(async (resolve, reject) => {
@@ -226,6 +227,7 @@ export const pollingRequest = (actionObject: RestActionConfig, { endpoints, stat
       url: replaceStrWithParams(actionObject.url, staticVariables),
       method: actionObject.method,
       data: replaceStrWithParams(actionObject.data, staticVariables),
+      timeout: actionObject.sessionTimeout,
    };
 
    let response: AxiosResponse;

@@ -137,6 +137,7 @@ const RestAPIForm = (props: RestAPIFormProps) => {
       method: "get",
       displayResponseAs: "json",
       payloadType: "json",
+      sessionTimeout: 60, // default 60s
       objectPath: "",
       expect: [],
       maxRetry: "10",
@@ -302,7 +303,7 @@ const RestAPIForm = (props: RestAPIFormProps) => {
                   </label>
                </div>
             </div>
-            <div className="col-8">
+            <div className="col-6">
                <div className="row">
                   <div className={`${input.type === "polling" ? "col-6" : "form-check form-check-inline"}`}>
                      <small className="mb-1">Endpoint</small>
@@ -348,6 +349,23 @@ const RestAPIForm = (props: RestAPIFormProps) => {
                      ) : null}
                   </div>
                </div>
+            </div>
+            <div className="col-2">
+               <small className="mb-1">Timeout (s)</small>
+               <input
+                  type="number"
+                  min={1}
+                  className="form-control form-control-sm"
+                  name="sessionTimeout"
+                  placeholder="Default 60s"
+                  value={input.sessionTimeout}
+                  onChange={(e) => {
+                     setInput((prev) => ({
+                        ...prev,
+                        sessionTimeout: parseInt(e.target.value),
+                     }));
+                  }}
+               />
             </div>
             <div className="col-2 align-items-center mt-4">
                <div className="form-check ">

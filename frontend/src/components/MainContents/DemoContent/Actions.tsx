@@ -11,6 +11,7 @@ import SSHResponseDetails from "./SSHResponseDetails";
 import { SSHActionConfig, StepDetails } from "../../contexts/ContextTypes";
 import { APIResponse, SSHCLIResponse } from "../../../helper/apiAction";
 import { CopyDestSelector } from "./CopyDestSelector";
+import { isString } from "lodash";
 
 type Results = {
    [index: number]: APIResponse | SSHCLIResponse;
@@ -73,9 +74,11 @@ const Actions = (props: ActionsProps) => {
    if (!props.show) return null;
 
    let apiList: React.ReactNode;
-   // apiList component
+   //apiList component
    if (props.currentStepDetails.actions && props.currentStepDetails.actions.length !== 0) {
       apiList = props.currentStepDetails.actions.map((action, index) => {
+         console.log("index", index);
+         console.log("props.results", props.results);
          let runResultStatus =
             props.results && props.results[index] && !isActionRunning(index) ? (
                props.results[index].success ? (
@@ -84,7 +87,13 @@ const Actions = (props: ActionsProps) => {
                   <WithInfoPopup
                      PopperComponent={
                         <div className="d-flex p-2 text-nowrap text-dark">
-                           <small>{props.results[index].failureCause}</small>
+                           {/* Issue #202 */}
+                           {isString(props.results[index].failureCause) ? (
+                              <small>{props.results[index].failureCause}</small>
+                           ) : (
+                              <small>Issue with failureCause: {typeof props.results[index].failureCause} instead of string</small>
+                           )}
+                           {/* <small>{props.results[index].failureCause}</small> */}
                         </div>
                      }
                      placement="right"
