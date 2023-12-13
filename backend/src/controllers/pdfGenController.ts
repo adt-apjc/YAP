@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { mdToPdf } from "md-to-pdf";
 import { catchErrorAsync } from "../libs/errorHandler";
-import { ResponseData, config } from "../ConfigType";
+import { ResponseData, RestAPIResponseData, SSHCliResponseData, config } from "../ConfigType";
 
 import fs from "fs";
 // import logger from "../libs/logger";
@@ -86,7 +86,7 @@ function generateSSHEndpointInfo(config: config) {
 
 function generateAPIResponse(
    actionType: "preCheck" | "actions" | "postCheck",
-   responseData: ResponseData,
+   responseData: RestAPIResponseData,
    stepName: string,
    i: number,
 ) {
@@ -111,7 +111,7 @@ function generateAPIResponse(
 
 function generateSSHResponse(
    actionType: "preCheck" | "actions" | "postCheck",
-   responseData: ResponseData,
+   responseData: SSHCliResponseData,
    stepName: string,
    i: number,
 ) {
@@ -122,7 +122,7 @@ function generateSSHResponse(
    let typeToObjPathMap: PathMap = { preCheck: "preCheckResults", actions: "actionResults", postCheck: "postCheckResults" };
    let responseMD = "";
 
-   let resp: SSHCLIResponse = responseData[typeToObjPathMap[actionType]][stepName]?.[i] as unknown as SSHCLIResponse;
+   let resp: SSHCLIResponse = responseData[typeToObjPathMap[actionType]][stepName]?.[i];
    if (!resp) return "";
    let data = resp?.response;
    responseMD += `**Response** : \n\`\`\`\n${data}\n\`\`\`  \n\n`;
@@ -152,15 +152,15 @@ function generateStepinfo(config: config, responseData: ResponseData) {
                         stepInfoMD += `**Payload** : \n\`\`\`json\n${JSON.stringify(action.data, null, 3)}\n\`\`\`  \n\n`;
                      else if (typeof action.data === "string") stepInfoMD += `**Payload** : \`${action.data}\`  \n\n`;
                   }
-                  stepInfoMD += generateAPIResponse(actionType, responseData, step.name, i);
-               } else {
+                  stepInfoMD += generateAPIResponse(actionType, responseData as RestAPIResponseData, step.name, i);
+               } else if (action.type === "ssh-cli") {
                   stepInfoMD += `#### ${i + 1} -  ${action.title}\n`;
                   if (action.description) stepInfoMD += `${action.description}\n`;
                   stepInfoMD += "\n";
                   stepInfoMD += `**SSH Endpoint** : \`${action.useEndpoint}\` **Timeout** : \`${action.sessionTimeout}\  \n`; // prettier-ignore
 
                   stepInfoMD += `**List of Instructions:**  \n\`\`\`\n${action.data}\n\`\`\`  \n\n`;
-                  stepInfoMD += generateSSHResponse(actionType, responseData, step.name, i);
+                  stepInfoMD += generateSSHResponse(actionType, responseData as SSHCliResponseData, step.name, i);
                }
             }
          }
