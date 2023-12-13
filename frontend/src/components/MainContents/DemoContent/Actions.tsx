@@ -11,7 +11,6 @@ import SSHResponseDetails from "./SSHResponseDetails";
 import { SSHActionConfig, StepDetails } from "../../contexts/ContextTypes";
 import { APIResponse, SSHCLIResponse } from "../../../helper/apiAction";
 import { CopyDestSelector } from "./CopyDestSelector";
-import { isString } from "lodash";
 
 type Results = {
    [index: number]: APIResponse | SSHCLIResponse;
@@ -77,23 +76,16 @@ const Actions = (props: ActionsProps) => {
    //apiList component
    if (props.currentStepDetails.actions && props.currentStepDetails.actions.length !== 0) {
       apiList = props.currentStepDetails.actions.map((action, index) => {
-         console.log("index", index);
-         console.log("props.results", props.results);
          let runResultStatus =
             props.results && props.results[index] && !isActionRunning(index) ? (
                props.results[index].success ? (
                   <i className="fad fa-check-circle m-2 text-success" />
                ) : (
                   <WithInfoPopup
+                     enable={props.results[index].failureCause ? true : false}
                      PopperComponent={
                         <div className="d-flex p-2 text-nowrap text-dark">
-                           {/* Issue #202 */}
-                           {isString(props.results[index].failureCause) ? (
-                              <small>{props.results[index].failureCause}</small>
-                           ) : (
-                              <small>Issue with failureCause: {typeof props.results[index].failureCause} instead of string</small>
-                           )}
-                           {/* <small>{props.results[index].failureCause}</small> */}
+                           <small>{props.results[index].failureCause}</small>
                         </div>
                      }
                      placement="right"

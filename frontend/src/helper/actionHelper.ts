@@ -193,7 +193,7 @@ export const normalRequest = (actionObject: RestActionConfig, { endpoints, stati
       } catch (e: any) {
          console.log("REQUEST ERROR - ", e);
          if (e.response) {
-            let { expectCriteriaMet } = validateExpect(actionObject.expect!, e.response);
+            let { expectCriteriaMet, failureCause } = validateExpect(actionObject.expect!, e.response);
             if (actionObject.expect!.length > 0 && expectCriteriaMet) {
                // special case to handle 404 exception (which may be acceptable) - TBA any other case?
                e.response.success = true;
@@ -202,7 +202,11 @@ export const normalRequest = (actionObject: RestActionConfig, { endpoints, stati
             } else {
                reject({
                   ...e.response,
-                  failureCause: e.response.data ? e.response.data : "Response with HTTP error code (4XX/5XX).",
+                  failureCause: failureCause
+                     ? failureCause
+                     : e.response.data
+                     ? e.response.data.message
+                     : "Response with HTTP error code (4XX/5XX).",
                   success: false,
                });
             }
@@ -281,7 +285,7 @@ export const pollingRequest = (actionObject: RestActionConfig, { endpoints, stat
             // if 404 is returned as a code, check if it is acceptable as condition, if it is:
             // - set the special case flag e.response.success to true;
             // resolve the promise sucessfully
-            let { expectCriteriaMet } = validateExpect(actionObject.expect!, e.response);
+            let { expectCriteriaMet, failureCause } = validateExpect(actionObject.expect!, e.response);
             if (e.response && actionObject.expect!.length > 0 && expectCriteriaMet) {
                console.log("DEBUG - Criteria hit on 404 which is accepted");
                clearInterval(timer);
@@ -291,7 +295,15 @@ export const pollingRequest = (actionObject: RestActionConfig, { endpoints, stat
             if (counterFlag === maxRetry) {
                clearInterval(timer);
                if (e.response) {
-                  reject({ ...e.response, success: false });
+                  reject({
+                     ...e.response,
+                     failureCause: failureCause
+                        ? failureCause
+                        : e.response.data
+                        ? e.response.data.message
+                        : "Response with HTTP error code (4XX/5XX).",
+                     success: false,
+                  });
                } else {
                   reject({ status: "Error", statusText: "connect ECONNREFUSED", success: false });
                }

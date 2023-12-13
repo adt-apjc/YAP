@@ -81,6 +81,7 @@ const PostCheck = (props: PostCheckProps) => {
                   <i className="fad fa-check-circle m-2 text-success" />
                ) : (
                   <WithInfoPopup
+                     enable={props.results[index].failureCause ? true : false}
                      PopperComponent={
                         <div className="d-flex p-2 text-nowrap text-dark">
                            <small>{props.results[index].failureCause}</small>
