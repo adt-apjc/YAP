@@ -68,13 +68,11 @@ function generateSSHEndpointInfo(config: config) {
       console.log(config.sshCliEndpoints);
       for (let endpoint of Object.keys(config.sshCliEndpoints)) {
          endpointInfoMD += `**${endpoint}**  \n`;
-
+         endpointInfoMD += `- Device Type : \`${config.sshCliEndpoints[endpoint].deviceType}\`\n\n`;
          endpointInfoMD += `- Hostname : \`${config.sshCliEndpoints[endpoint].hostname}\`\n\n`;
          endpointInfoMD += `- TCP Port : \`${config.sshCliEndpoints[endpoint].port}\`\n\n`;
          endpointInfoMD += `- Username : \`${config.sshCliEndpoints[endpoint].username}\`\n\n`;
-         // endpointInfoMD += `- Password : \`${config.sshCliEndpoints[endpoint].password}\`\n\n`;
-         endpointInfoMD += `- Device Type : \`${config.sshCliEndpoints[endpoint].hostname}\`\n\n`;
-         endpointInfoMD += `- Prompt Regex : \`${config.sshCliEndpoints[endpoint].hostname}\`\n\n`;
+         endpointInfoMD += `- Prompt Regex : \`${config.sshCliEndpoints[endpoint].promptRegex}\`\n\n`;
          endpointInfoMD += "\n\n";
       }
 
@@ -125,7 +123,7 @@ function generateSSHResponse(
    let resp: SSHCLIResponse = responseData[typeToObjPathMap[actionType]][stepName]?.[i];
    if (!resp) return "";
    let data = resp?.response;
-   responseMD += `**Response** : \n\`\`\`\n${data}\n\`\`\`  \n\n`;
+   responseMD += `**Response** : \n\`\`\`\n${data.replace(/\[[0-9;]*m/g, "")}\n\`\`\`  \n\n`;
    return responseMD;
 }
 
@@ -157,7 +155,7 @@ function generateStepinfo(config: config, responseData: ResponseData) {
                   stepInfoMD += `#### ${i + 1} -  ${action.title}\n`;
                   if (action.description) stepInfoMD += `${action.description}\n`;
                   stepInfoMD += "\n";
-                  stepInfoMD += `**SSH Endpoint** : \`${action.useEndpoint}\` **Timeout** : \`${action.sessionTimeout}\  \n`; // prettier-ignore
+                  stepInfoMD += `**SSH Endpoint** : \`${action.useEndpoint}\` **Timeout** : \`${action.sessionTimeout}\`  \n`; // prettier-ignore
 
                   stepInfoMD += `**List of Instructions:**  \n\`\`\`\n${action.data}\n\`\`\`  \n\n`;
                   stepInfoMD += generateSSHResponse(actionType, responseData as SSHCliResponseData, step.name, i);
