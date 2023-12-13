@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
+import WithInfoPopup from "../../Popper/InfoPopper";
 
 type StaticVarEditorProps = {
    initValue: { name: string; val: any } | null;
@@ -168,7 +169,14 @@ const StaticVarViewer = ({ onSelect, setShowDeleteList, showDeleteList, showStat
                         </span>
                      </>
                   ) : (
-                     <>
+                     <WithInfoPopup
+                        PopperComponent={
+                           <div className="d-flex p-2 text-dark" style={{ maxWidth: "800px" }}>
+                              <small>{`${isUsed(varName) ? "Variable referred in the demo content" : "Unused variable"}`}</small>
+                           </div>
+                        }
+                        placement="top"
+                     >
                         <button
                            className="btn btn-sm btn-text pointer"
                            disabled={showStaticVarEditor}
@@ -176,8 +184,7 @@ const StaticVarViewer = ({ onSelect, setShowDeleteList, showDeleteList, showStat
                         >
                            <i className="fal fa-trash-alt"></i>
                         </button>
-                        {isUsed(varName) ? <span className="mx-2 fa fa-exclamation"></span> : ""}
-                     </>
+                     </WithInfoPopup>
                   )}
                </div>
             </div>

@@ -20,7 +20,6 @@ const Settings = (props: { onHide: () => any }) => {
             <Endpoint />
             <SSHEndpoint />
             <StaticVariables />
-            Note: Endpoints and variables marked with ! are implemented in the demo.
          </div>
          <div className="modal-footer">
             <button type="button" className="btn btn-sm btn-danger" onClick={props.onHide}>

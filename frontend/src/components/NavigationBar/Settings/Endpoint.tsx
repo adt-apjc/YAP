@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
 import { ContextState, EndpointConfig } from "../../contexts/ContextTypes";
 import _ from "lodash";
+import WithInfoPopup from "../../Popper/InfoPopper";
 
 type EndpointViewerProps = {
    showEditor: boolean;
@@ -374,16 +375,26 @@ const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEdito
                         </span>
                      </>
                   ) : (
-                     <>
+                     <WithInfoPopup
+                        PopperComponent={
+                           <div className="d-flex p-2 text-dark" style={{ maxWidth: "800px" }}>
+                              <small>{`${
+                                 isUsed(endpointName) ? "Endpoint referred in the demo content" : "Unused Endpoint"
+                              }`}</small>
+                           </div>
+                        }
+                        placement="top"
+                     >
                         <button
                            className="btn btn-sm btn-text pointer"
                            disabled={showEditor || usedEndpointHandler(endpointName, context)}
-                           onClick={() => setShowDeleteList([...showDeleteList, index])}
+                           onClick={() => {
+                              setShowDeleteList([...showDeleteList, index]);
+                           }}
                         >
                            <i className="fal fa-trash-alt"></i>
                         </button>
-                        {isUsed(endpointName) ? <span className="mx-2 fa fa-exclamation"></span> : ""}
-                     </>
+                     </WithInfoPopup>
                   )}
                </div>
             </div>
