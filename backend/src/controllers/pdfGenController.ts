@@ -97,7 +97,11 @@ function generateAPIResponse(
    let data = resp?.data;
    let statusCode = `${resp?.status} ${resp?.statusText}`;
    if (!data) return "";
-
+   if (resp.success) {
+      responseMD += `**Response Status:** \`Success\`  \n`;
+   } else {
+      responseMD += `**Response Status:**  \`Fail\`   **Response Status**:  \`${resp.failureCause}\`  \n`;
+   }
    if (typeof data === "object") {
       responseMD += `**Response** : \`${statusCode}\` \n\`\`\`json\n${JSON.stringify(data, null, 3)}\n\`\`\`  \n\n`;
    } else if (typeof data === "string") {
@@ -122,8 +126,13 @@ function generateSSHResponse(
 
    let resp: SSHCLIResponse = responseData[typeToObjPathMap[actionType]][stepName]?.[i];
    if (!resp) return "";
+   if (resp.success) {
+      responseMD += `**Response Status:** \`Success\`  \n`;
+   } else {
+      responseMD += `**Response Status:**  \`Fail\`   **Response Status**:  \`${resp.failureCause}\`  \n`;
+   }
    let data = resp?.response;
-   responseMD += `**Response** : \n\`\`\`\n${data.replace(/\[[0-9;]*m/g, "")}\n\`\`\`  \n\n`;
+   responseMD += `**Response:**  \n\`\`\`${data.replace(/\[[0-9;]*m/g, "")}\n\`\`\`  \n`;
    return responseMD;
 }
 
@@ -145,6 +154,17 @@ function generateStepinfo(config: config, responseData: ResponseData) {
                   stepInfoMD += "\n";
                   stepInfoMD += `**API Endpoint** : \`${action.useEndpoint}\` **Method** : \`${action.method.toLocaleUpperCase()}\`  \n`; // prettier-ignore
                   stepInfoMD += `**Path** : \`${action.url}\`  \n`;
+                  if (action.match)
+                     stepInfoMD += `**Regexp match:** \`${action.match.regEx}\` **Store as:** \`${action.match.storeAs}\`  \n`;
+
+                  if (action.expect && action.expect.length > 0) {
+                     stepInfoMD += `**Expect Statements:**:  \n`;
+                     for (const expect of action.expect) {
+                        stepInfoMD += `- ${expect.type}  \`${expect.value}\`\n`;
+                     }
+                     stepInfoMD += "\n";
+                  }
+
                   if (action.data) {
                      if (typeof action.data === "object" && Object.keys(action.data).length > 0)
                         stepInfoMD += `**Payload** : \n\`\`\`json\n${JSON.stringify(action.data, null, 3)}\n\`\`\`  \n\n`;
@@ -156,7 +176,16 @@ function generateStepinfo(config: config, responseData: ResponseData) {
                   if (action.description) stepInfoMD += `${action.description}\n`;
                   stepInfoMD += "\n";
                   stepInfoMD += `**SSH Endpoint** : \`${action.useEndpoint}\` **Timeout** : \`${action.sessionTimeout}\`  \n`; // prettier-ignore
+                  if (action.match)
+                     stepInfoMD += `**Regexp match:** \`${action.match.regEx}\` **Store as:** \`${action.match.storeAs}\`  \n`;
 
+                  if (action.expect && action.expect.length > 0) {
+                     stepInfoMD += `**Expect Statements:**:  \n`;
+                     for (const expect of action.expect) {
+                        stepInfoMD += `- ${expect.type}  \`${expect.value}\`\n`;
+                     }
+                     stepInfoMD += "\n";
+                  }
                   stepInfoMD += `**List of Instructions:**  \n\`\`\`\n${action.data}\n\`\`\`  \n\n`;
                   stepInfoMD += generateSSHResponse(actionType, responseData as SSHCliResponseData, step.name, i);
                }
