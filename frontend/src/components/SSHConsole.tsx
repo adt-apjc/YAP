@@ -42,8 +42,15 @@ const SSHContainer = () => {
       let stepId = queryParams.get("stepId")!;
       const config: config = JSON.parse(window.localStorage.getItem("__internal__configData") as string);
 
-      let { hostname, username, password, port, commands, sshkey } =
-         config.mainContent[stepId].outcome![0].ssh![selectedElementId];
+      let hostname, username, password, port, sshkey;
+      let { inheritFrom, commands } = config.mainContent[stepId].outcome![0].ssh![selectedElementId];
+
+      if (inheritFrom && config.sshCliEndpoints[inheritFrom]) {
+         ({ hostname, username, password, port, sshkey } = config.sshCliEndpoints[inheritFrom]);
+      } else {
+         ({ hostname, username, password, port, sshkey } = config.mainContent[stepId].outcome![0].ssh![selectedElementId]);
+      }
+
       if (commands) setCommands(commands);
 
       if (!hostname || !username || (!password && !sshkey)) return;

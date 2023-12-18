@@ -62,10 +62,11 @@ export type ContextAction =
    | { type: "newConfig" };
 
 export type SSHConfig = {
-   hostname: string;
-   username: string;
+   inheritFrom?: string;
+   hostname?: string;
+   username?: string;
    password?: string;
-   port: string;
+   port?: string;
    sshkey?: string;
    keyFilename?: string;
    commands?: { label: string; command: string }[];

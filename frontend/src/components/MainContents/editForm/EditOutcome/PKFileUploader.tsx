@@ -1,6 +1,7 @@
 import { SSHConfig } from "../../../contexts/ContextTypes";
 
 type PKFileUploaderProps<T> = {
+   disabled?: boolean;
    filename?: string;
    sshkey?: string;
    setInfo: React.Dispatch<React.SetStateAction<T>>;
@@ -38,7 +39,7 @@ const PKFileUploader = <T,>(props: PKFileUploaderProps<T>) => {
    return (
       <>
          <small className="me-2">PrivateKey Auth (optional)</small>
-         <input className="form-control form-control-sm" type="file" onChange={handleFileChange} />
+         <input disabled={props.disabled} className="form-control form-control-sm" type="file" onChange={handleFileChange} />
       </>
    );
 };

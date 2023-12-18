@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { AddSSHInfoFormProps } from "./EditOutcomeTypes";
 import { SSHConfig } from "../../../contexts/ContextTypes";
+import { useGlobalContext } from "../../../contexts/ContextProvider";
 import PKFileUploader from "./PKFileUploader";
 
 type SShPredefineCommand = {
@@ -134,11 +135,12 @@ const SSHPredefineCommandList = (props: SSHPredefineCommandListProps) => {
 };
 
 const AddSSHInfoForm = (props: AddSSHInfoFormProps) => {
+   const { context } = useGlobalContext();
    const [showAddCmdForm, setShowAddCmdForm] = useState(false);
    const [inputCmd, setInputCmd] = useState<SShPredefineCommand>({ label: "", command: "" });
    const [selectedCommandIndex, setSelectedCommandIndex] = useState(-1);
 
-   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       props.setSSHinfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
    };
 
@@ -148,10 +150,25 @@ const AddSSHInfoForm = (props: AddSSHInfoFormProps) => {
       setShowAddCmdForm(isShow);
    };
 
+   const renderSSHEndpoints = () => {
+      return Object.keys(context.config.sshCliEndpoints).map((epName, i) => {
+         return (
+            <option key={i} value={epName}>
+               {epName}
+            </option>
+         );
+      });
+   };
+
    useEffect(() => {
       if (!props.sshInfo.keyFilename) return;
       props.setSSHinfo((prev) => ({ ...prev, password: "" }));
    }, [props.sshInfo.keyFilename]);
+
+   useEffect(() => {
+      if (!props.sshInfo.inheritFrom) return;
+      props.setSSHinfo((prev) => ({ ...prev, hostname: "", username: "", password: "", port: "", sshkey: "", keyFilename: "" }));
+   }, [props.sshInfo.inheritFrom]);
 
    useEffect(() => {
       if (selectedCommandIndex >= 0) setShowAddCmdForm(true);
@@ -183,57 +200,75 @@ const AddSSHInfoForm = (props: AddSSHInfoFormProps) => {
             <div className="px-4 py-2 border-top">
                <div className="row">
                   <div className="col-sm-12 col-md-4">
-                     <label>Hostname</label>
+                     <small>Inherit from SSH-Endpoint setting.</small>
+                     <select
+                        className="form-select form-select-sm"
+                        name="inheritFrom"
+                        value={props.sshInfo.inheritFrom}
+                        onChange={handleInputChange}
+                     >
+                        <option value="">Manually fill host credential.</option>
+                        {renderSSHEndpoints()}
+                     </select>
+                  </div>
+               </div>
+               <div className="row mt-2">
+                  <div className="col-sm-12 col-md-4">
+                     <small>Hostname</small>
                      <div className="row">
                         <div className="col-9">
                            <input
-                              required
                               className="form-control form-control-sm"
                               type="text"
                               name="hostname"
                               value={props.sshInfo.hostname}
                               onChange={handleInputChange}
+                              disabled={props.sshInfo.inheritFrom ? true : false}
+                              required={props.sshInfo.inheritFrom ? false : true}
                            />
                         </div>
                         <div className="col-3 position-relative form-port-number">
                            <input
-                              required
                               className="form-control form-control-sm"
                               type="number"
                               name="port"
                               value={props.sshInfo.port}
                               onChange={handleInputChange}
+                              disabled={props.sshInfo.inheritFrom ? true : false}
+                              required={props.sshInfo.inheritFrom ? false : true}
                            />
                         </div>
                      </div>
                   </div>
 
                   <div className="col-sm-12 col-md-4">
-                     <label>Username</label>
+                     <small>Username</small>
                      <input
-                        required
                         className="form-control form-control-sm"
                         type="text"
                         name="username"
                         value={props.sshInfo.username}
                         onChange={handleInputChange}
+                        disabled={props.sshInfo.inheritFrom ? true : false}
+                        required={props.sshInfo.inheritFrom ? false : true}
                      />
                   </div>
                   <div className="col-sm-12 col-md-4">
-                     <label>Password</label>
+                     <small>Password</small>
                      <input
                         className="form-control form-control-sm"
                         type="text"
                         name="password"
                         value={props.sshInfo.password}
                         onChange={handleInputChange}
-                        disabled={props.sshInfo.keyFilename ? true : false}
-                        required={props.sshInfo.keyFilename ? false : true}
+                        disabled={props.sshInfo.keyFilename || props.sshInfo.inheritFrom ? true : false}
+                        required={props.sshInfo.keyFilename || props.sshInfo.inheritFrom ? false : true}
                      />
                   </div>
                </div>
-               <div className="col-3 mt-2">
+               <div className="col-sm-12 col-md-4 mt-2 pe-3">
                   <PKFileUploader<SSHConfig>
+                     disabled={props.sshInfo.inheritFrom ? true : false}
                      filename={props.sshInfo.keyFilename}
                      sshkey={props.sshInfo.sshkey}
                      setInfo={props.setSSHinfo}

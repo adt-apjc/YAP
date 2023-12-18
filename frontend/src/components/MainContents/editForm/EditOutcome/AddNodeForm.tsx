@@ -22,6 +22,7 @@ const DEFAULT_FORM_VALUE = {
 };
 
 const DEFAULT_SSH_INFO = {
+   inheritFrom: "",
    hostname: "",
    username: "",
    password: "",
@@ -193,7 +194,7 @@ const AddNodeForm = (props: AddNodeFormProps) => {
          }
          // init ssh form
          if (initValue.ssh) {
-            setSSHInfo({ ...initValue.ssh });
+            setSSHInfo({ ...DEFAULT_SSH_INFO, ...initValue.ssh });
             setEnableSSH(true);
          } else {
             setSSHInfo(DEFAULT_SSH_INFO);
