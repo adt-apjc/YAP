@@ -1,5 +1,6 @@
 import cytoscape from "cytoscape";
 import Outcome from "../MainContents/DemoContent/Outcome";
+import SSHEndpoint from "../NavigationBar/Settings/SSHEndpoint";
 
 export type ContextAction =
    | { type: "setCurrentStep"; payload: { name: string | null; label: string | null } }
@@ -38,8 +39,22 @@ export type ContextAction =
    | { type: "addStep"; payload: { name: string; type: string; stepDetails?: StepDetails } }
    | { type: "deleteStep"; payload: { name: string } }
    | { type: "addEndpoint"; payload: { name: string; baseURL: string; headerList: { key: any; value: any }[] } }
+   | {
+        type: "updateEndpoint";
+        payload: { oldName: string; name: string; baseURL: string; headerList: { key: any; value: any }[] };
+     }
+   | {
+        type: "addSSHEndpoint";
+        payload: { name: string } & SSHCliEndpointConfig;
+     }
+   | {
+        type: "updateSSHEndpoint";
+        payload: { oldName: string; name: string } & SSHCliEndpointConfig;
+     }
    | { type: "deleteEndpoint"; payload: { name: string } }
+   | { type: "deleteSSHEndpoint"; payload: { name: string } }
    | { type: "addStaticVar"; payload: { name: string; val: any } }
+   | { type: "updateStaticVar"; payload: { oldName: string; name: string; val: any } }
    | { type: "deleteStaticVar"; payload: { name: string } }
    | { type: "loadConfig"; payload: any }
    | { type: "loadRunningStatus"; payload: any }
@@ -47,10 +62,13 @@ export type ContextAction =
    | { type: "newConfig" };
 
 export type SSHConfig = {
-   hostname: string;
-   username: string;
-   password: string;
-   port: string;
+   inheritFrom?: string;
+   hostname?: string;
+   username?: string;
+   password?: string;
+   port?: string;
+   sshkey?: string;
+   keyFilename?: string;
    commands?: { label: string; command: string }[];
 };
 
@@ -65,6 +83,17 @@ export type EndpointConfig = {
    baseURL: string;
    backendRequest?: boolean; // default [true]
    headers?: { [key: string]: string };
+};
+
+export type SSHCliEndpointConfig = {
+   hostname: string;
+   port: string;
+   username: string;
+   password?: string;
+   deviceType: "linux" | "cisco-ios";
+   promptRegex: string;
+   sshkey?: string;
+   keyFilename?: string;
 };
 
 export type OutcomeCommandConfig = {
@@ -83,8 +112,8 @@ export type OutcomeCommandConfig = {
 export type ActionExpectObject = { type: string; value: any }[];
 export type ActionMatchObject = { objectPath: string; regEx: string; matchGroup: string; storeAs: string };
 
-export type ActionConfig = {
-   type: string;
+export type RestActionConfig = {
+   type: "request" | "polling";
    title: string;
    useEndpoint: string;
    url: string;
@@ -94,6 +123,7 @@ export type ActionConfig = {
    description: string;
    data?: any;
    payloadType?: string;
+   sessionTimeout?: number; // in seconds, default 60 if not set
    maxRetry?: string;
    interval?: string;
    displayResponseAs?: string;
@@ -102,6 +132,23 @@ export type ActionConfig = {
    match?: ActionMatchObject;
    headers?: { [key: string]: string }; // option to override Axois request header from Endpoint
 };
+
+export type SSHActionConfig = {
+   type: "ssh-cli";
+   title: string;
+   useEndpoint: string;
+   apiBadge?: string;
+   apiBadgeColor?: string;
+   description: string;
+   displayResponseAs?: string;
+   payloadType?: string;
+   sessionTimeout?: number; // in seconds, default 60 if not set
+   data?: any;
+   expect?: ActionExpectObject;
+   match?: ActionMatchObject;
+};
+
+export type ActionConfig = RestActionConfig | SSHActionConfig;
 
 export type PrefaceConfig = {
    stepDesc: string;
@@ -135,6 +182,9 @@ export type config = {
    preface: PrefaceConfig[];
    endpoints: {
       [name: string]: EndpointConfig;
+   };
+   sshCliEndpoints: {
+      [name: string]: SSHCliEndpointConfig;
    };
    staticVariables?: StaticVariables;
    mainContent: {

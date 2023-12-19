@@ -4,6 +4,7 @@ import { Socket, io } from "socket.io-client";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import { config } from "./contexts/ContextTypes";
+import { useDidUpdateEffect } from "./contexts/CustomHooks";
 
 const fitAddon = new FitAddon();
 
@@ -35,21 +36,29 @@ const SSHContainer = () => {
       });
    }, []);
 
-   useEffect(() => {
+   useDidUpdateEffect(() => {
       let queryParams = new URLSearchParams(location.search);
       let selectedElementId = queryParams.get("selectedElementId")!;
       let stepId = queryParams.get("stepId")!;
       const config: config = JSON.parse(window.localStorage.getItem("__internal__configData") as string);
 
-      let { hostname, username, password, port, commands } = config.mainContent[stepId].outcome![0].ssh![selectedElementId];
+      let hostname, username, password, port, sshkey;
+      let { inheritFrom, commands } = config.mainContent[stepId].outcome![0].ssh![selectedElementId];
+
+      if (inheritFrom && config.sshCliEndpoints[inheritFrom]) {
+         ({ hostname, username, password, port, sshkey } = config.sshCliEndpoints[inheritFrom]);
+      } else {
+         ({ hostname, username, password, port, sshkey } = config.mainContent[stepId].outcome![0].ssh![selectedElementId]);
+      }
+
       if (commands) setCommands(commands);
 
-      if (!hostname || !username || !password) return;
+      if (!hostname || !username || (!password && !sshkey)) return;
 
       document.title = `SSH connection ${hostname}`;
 
       const socket = io(process.env.REACT_APP_API_URL!, {
-         query: { hostname, username, password, port },
+         query: { hostname, username, port, [sshkey ? "sshkey" : "password"]: sshkey ? sshkey : password },
       });
       socketRef.current = socket;
 
@@ -70,6 +79,18 @@ const SSHContainer = () => {
 
       terminal.onData((e) => {
          socket.emit("data", e);
+      });
+
+      socket.on("sshconnect", function (data) {
+         terminal.write(data);
+      });
+
+      socket.on("sshclose ", function (data) {
+         terminal.write(data);
+      });
+
+      socket.on("ssherror", function (data) {
+         terminal.write(data);
       });
 
       socket.on("data", function (data) {
@@ -99,7 +120,7 @@ const SSHContainer = () => {
                </button>
             </div>
          </div>
-         <div className="xterm-container bg-dark ps-2 py-2">
+         <div className="xterm-container bg-dark">
             <div id="xterm" className="h-100 w-100"></div>
          </div>
       </div>

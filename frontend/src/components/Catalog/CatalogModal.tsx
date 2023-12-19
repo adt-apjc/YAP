@@ -23,6 +23,7 @@ const CatalogModal = (props: CatalogModalProps) => {
          let config = {
             baseURL: props.params.path,
             method: "GET",
+            timeout: 5000, // 5 seconds timeout
          };
 
          let response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
@@ -85,7 +86,8 @@ const CatalogModal = (props: CatalogModalProps) => {
          </div>
          <div className="modal-footer p-1">
             {isFailing && (
-               <div className="fa fa-exclamation-triangle" aria-hidden="true" style={{ color: "red" }}>
+               <div aria-hidden="true" style={{ color: "#CE2029" }}>
+                  <i className="far fa-exclamation-triangle me-2" />
                   Failing to load the demo configuration
                </div>
             )}

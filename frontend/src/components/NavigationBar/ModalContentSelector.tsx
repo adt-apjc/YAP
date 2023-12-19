@@ -3,6 +3,7 @@ import { saveAs } from "file-saver";
 import { useGlobalContext } from "../contexts/ContextProvider";
 
 import Endpoint from "./Settings/Endpoint";
+import SSHEndpoint from "./Settings/SSHEndpoint";
 import StaticVariables from "./Settings/StaticVariables";
 import _ from "lodash";
 
@@ -17,6 +18,7 @@ const Settings = (props: { onHide: () => any }) => {
          </div>
          <div className="modal-body">
             <Endpoint />
+            <SSHEndpoint />
             <StaticVariables />
          </div>
          <div className="modal-footer">
@@ -31,10 +33,12 @@ const Settings = (props: { onHide: () => any }) => {
 const ExportConfig = (props: { onHide: () => any }) => {
    const { context } = useGlobalContext();
    const [demoVersion, setDemoVersion] = useState(context.config.demoVersion || "1.0.0");
+   const templateVersion = "1.0.3"; // current template version
 
    const handleExport = () => {
       let config = _.cloneDeep(context.config);
       config.demoVersion = demoVersion;
+      config.templateVersion = templateVersion;
       let blob = new Blob([JSON.stringify(config, null, 2)], { type: "text/plain;charset=utf-8" });
       saveAs(blob, `${config.title || "project"}.json`);
       console.log("export:", config);
@@ -48,6 +52,11 @@ const ExportConfig = (props: { onHide: () => any }) => {
             <button type="button" className="btn-close" onClick={props.onHide}></button>
          </div>
          <div className="modal-body">
+            <div className="font-sm fst-italic mb-2">
+               Security Note: The exported file does
+               <span className="fw-bold"> NOT encrypt </span>
+               your device credentials, including passwords or private keys. Please share the file securely.
+            </div>
             <label>Demo version</label>
             <input
                type="text"

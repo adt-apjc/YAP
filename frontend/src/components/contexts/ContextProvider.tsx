@@ -22,6 +22,7 @@ const emptyConfig: TYPE.config = {
    },
    preface: [],
    endpoints: {},
+   sshCliEndpoints: {},
    mainContent: {},
 };
 
@@ -137,11 +138,105 @@ function addEndpoint(
    };
    return clonedState;
 }
+
+function updateEndpoint(
+   state: TYPE.ContextState,
+   payload: { oldName: string; name: string; baseURL: string; headerList: { key: string; value: string }[] },
+) {
+   let clonedState = _.cloneDeep(state);
+
+   // before updating an old endpoint, we need to check if the endpoint name was used in any action and update accordingly
+
+   for (const stepKey in clonedState.config.mainContent) {
+      for (let actionType of ["actions", "preCheck", "postCheck"] as const) {
+         clonedState.config.mainContent[stepKey][actionType].forEach((action) => {
+            if (action.type !== "ssh-cli" && action.useEndpoint === payload.oldName) action.useEndpoint = payload.name;
+         });
+      }
+      if (!clonedState.config.mainContent[stepKey].outcome) continue;
+      if (!clonedState.config.mainContent[stepKey].outcome![0].commands) continue;
+      // API endpoint are also used in the Outcome section
+      // check old endpoint name in outcome
+      for (let commands of Object.values(clonedState.config.mainContent[stepKey].outcome![0].commands!)) {
+         for (let cmd of commands) {
+            if (cmd.type !== "ssh-cli" && cmd.useEndpoint === payload.oldName) cmd.useEndpoint = payload.name;
+         }
+      }
+   }
+   delete clonedState.config.endpoints[payload.oldName];
+   clonedState.config.endpoints[payload.name] = {
+      baseURL: payload.baseURL,
+      headers: payload.headerList.reduce((result: any, item) => {
+         result[item.key] = item.value;
+         return result;
+      }, {}),
+   };
+
+   return clonedState;
+}
+
+function addSSHEndpoint(state: TYPE.ContextState, payload: { name: string } & TYPE.SSHCliEndpointConfig) {
+   let clonedState = _.cloneDeep(state);
+
+   if (!clonedState.config.sshCliEndpoints) clonedState.config.sshCliEndpoints = {};
+
+   clonedState.config.sshCliEndpoints[payload.name] = {
+      hostname: payload.hostname,
+      port: payload.port,
+      username: payload.username,
+      deviceType: payload.deviceType,
+      promptRegex: payload.promptRegex,
+      keyFilename: payload.sshkey ? payload.keyFilename : undefined,
+      [payload.sshkey ? "sshkey" : "password"]: payload.sshkey ? payload.sshkey : payload.password,
+   };
+   return clonedState;
+}
+
+function updateSSHEndpoint(state: TYPE.ContextState, payload: { oldName: string; name: string } & TYPE.SSHCliEndpointConfig) {
+   let clonedState = _.cloneDeep(state);
+
+   // before deleting the old endpoint, we need to check if the endpoint name was used in any action and update accordingly
+   for (const stepKey in clonedState.config.mainContent) {
+      for (let actionType of ["actions", "preCheck", "postCheck"] as const) {
+         clonedState.config.mainContent[stepKey][actionType].forEach((action) => {
+            if (action.type === "ssh-cli" && action.useEndpoint === payload.oldName) action.useEndpoint = payload.name;
+         });
+      }
+      if (!clonedState.config.mainContent[stepKey].outcome) continue;
+      if (!clonedState.config.mainContent[stepKey].outcome![0].ssh) continue;
+      // SSH endpoint are also used in the Outcome section
+      // check old endpoint name in outcome
+      for (let sshInfo of Object.values(clonedState.config.mainContent[stepKey].outcome![0].ssh!)) {
+         if (sshInfo.inheritFrom === payload.oldName) sshInfo.inheritFrom = payload.name;
+      }
+   }
+
+   delete clonedState.config.sshCliEndpoints[payload.oldName];
+   clonedState.config.sshCliEndpoints[payload.name] = {
+      hostname: payload.hostname,
+      port: payload.port,
+      username: payload.username,
+      deviceType: payload.deviceType,
+      promptRegex: payload.promptRegex,
+      keyFilename: payload.sshkey ? payload.keyFilename : undefined,
+      [payload.sshkey ? "sshkey" : "password"]: payload.sshkey ? payload.sshkey : payload.password,
+   };
+
+   return clonedState;
+}
+
 function deleteEndpoint(state: TYPE.ContextState, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
    delete clonedState.config.endpoints[payload.name];
    return clonedState;
 }
+
+function deleteSSHEndpoint(state: TYPE.ContextState, payload: { name: string }) {
+   let clonedState = _.cloneDeep(state);
+   delete clonedState.config.sshCliEndpoints[payload.name];
+   return clonedState;
+}
+
 function addStaticVar(state: TYPE.ContextState, payload: { name: string; val: any }) {
    let clonedState = _.cloneDeep(state);
    clonedState.config.staticVariables = {
@@ -150,6 +245,25 @@ function addStaticVar(state: TYPE.ContextState, payload: { name: string; val: an
    };
    return clonedState;
 }
+
+function updateStaticVar(state: TYPE.ContextState, payload: { oldName: string; name: string; val: any }) {
+   let clonedState = _.cloneDeep(state);
+
+   // When updating a static variable, we need to check if the variable name was used in any action and update accordingly
+
+   let configMainContentString = JSON.stringify(clonedState.config.mainContent);
+   configMainContentString = configMainContentString.replaceAll(`{{${payload.oldName}}}`, `{{${payload.name}}}`);
+   clonedState.config.mainContent = JSON.parse(configMainContentString);
+
+   if (clonedState.config.staticVariables) delete clonedState.config.staticVariables[payload.oldName];
+   clonedState.config.staticVariables = {
+      ...clonedState.config.staticVariables,
+      [payload.name]: payload.val,
+   };
+
+   return clonedState;
+}
+
 function deleteStaticVar(state: TYPE.ContextState, payload: { name: string }) {
    let clonedState = _.cloneDeep(state);
    if (clonedState.config.staticVariables) delete clonedState.config.staticVariables[payload.name];
@@ -264,11 +378,26 @@ function globalContextreducer(state: TYPE.ContextState, action: TYPE.ContextActi
       case "addEndpoint":
          return { ...addEndpoint(state, action.payload) };
 
+      case "updateEndpoint":
+         return { ...updateEndpoint(state, action.payload) };
+
+      case "addSSHEndpoint":
+         return { ...addSSHEndpoint(state, action.payload) };
+
+      case "updateSSHEndpoint":
+         return { ...updateSSHEndpoint(state, action.payload) };
+
       case "deleteEndpoint":
          return { ...deleteEndpoint(state, action.payload) };
 
+      case "deleteSSHEndpoint":
+         return { ...deleteSSHEndpoint(state, action.payload) };
+
       case "addStaticVar":
          return { ...addStaticVar(state, action.payload) };
+
+      case "updateStaticVar":
+         return { ...updateStaticVar(state, action.payload) };
 
       case "deleteStaticVar":
          return { ...deleteStaticVar(state, action.payload) };
@@ -325,6 +454,7 @@ function ContextProvider({ children }: { children: React.ReactNode }) {
       const configData = window.localStorage.getItem("__internal__configData");
       const runningStatus = window.localStorage.getItem("__internal__runningStatus");
       // load config from localStorage if exist
+
       if (configData) dispatch({ type: "replaceConfig", payload: JSON.parse(configData) });
 
       // load runningStatus from localStorage if exist

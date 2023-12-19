@@ -59,6 +59,7 @@ const Card = (props: CardProps) => {
             let config = {
                baseURL: path,
                method: "GET",
+               timeout: 5000, // 5 seconds
             };
 
             let response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
@@ -242,6 +243,7 @@ const Catalog = () => {
          const custom_config = {
             baseURL: process.env.REACT_APP_CATALOG,
             method: "GET",
+            timeout: 5000, // 5 seconds
          };
 
          response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...custom_config });
@@ -261,6 +263,7 @@ const Catalog = () => {
          let config = {
             baseURL: "https://wwwin-github.cisco.com/raw/APJ-GSP-ADT/YAP-Zoo/master/demoCatalog.json",
             method: "GET",
+            timeout: 5000, // 5 seconds
          };
          response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
 

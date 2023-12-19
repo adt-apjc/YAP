@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
-import { EndpointConfig } from "../../contexts/ContextTypes";
+import { ContextState, EndpointConfig } from "../../contexts/ContextTypes";
 import _ from "lodash";
+import WithInfoPopup from "../../Popper/InfoPopper";
 
 type EndpointViewerProps = {
+   showEditor: boolean;
+   showDeleteList: number[];
+   setShowDeleteList: React.Dispatch<React.SetStateAction<number[]>>;
    onSelect: (endpoint: { name: string } & EndpointConfig) => void;
 };
 type EndpointEditorProps = {
@@ -130,9 +134,27 @@ const EndpointEditor = (props: EndpointEditorProps) => {
       input: { name: "", baseURL: "" },
       inputHeader: [],
    });
-   const { dispatch } = useGlobalContext();
+   const { context, dispatch } = useGlobalContext();
+   const [errorOnForm, setErrorOnForm] = useState(false);
 
    const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.name === "name") {
+         if (props.initValue) {
+            // updating the endpoint props.initValue.name
+            if (e.target.value !== props.initValue.name && e.target.value in context.config.endpoints) {
+               setErrorOnForm(true);
+            } else {
+               setErrorOnForm(false);
+            }
+         } else {
+            // adding a new endpoint
+            if ("endpoints" in context.config && e.target.value in context.config.endpoints) {
+               setErrorOnForm(true);
+            } else {
+               setErrorOnForm(false);
+            }
+         }
+      }
       setState((prev) => ({ ...prev, input: { ...prev.input, [e.target.name]: e.target.value } }));
    };
 
@@ -146,6 +168,17 @@ const EndpointEditor = (props: EndpointEditorProps) => {
       dispatch({
          type: "addEndpoint",
          payload: { name: state.input.name, baseURL: state.input.baseURL, headerList: state.inputHeader },
+      });
+
+      props.onClose();
+   };
+
+   const [oldName, setOldName] = useState<string | undefined>(undefined);
+
+   const handleUpdateEndpoint = () => {
+      dispatch({
+         type: "updateEndpoint",
+         payload: { oldName: oldName!, name: state.input.name, baseURL: state.input.baseURL, headerList: state.inputHeader },
       });
 
       props.onClose();
@@ -196,7 +229,10 @@ const EndpointEditor = (props: EndpointEditorProps) => {
    };
 
    useEffect(() => {
-      if (!props.initValue) return;
+      if (!props.initValue) {
+         setState({ input: { name: "", baseURL: "" }, inputHeader: [] });
+         return;
+      }
 
       setState({
          input: { name: props.initValue.name, baseURL: props.initValue.baseURL },
@@ -205,19 +241,25 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                ? Object.keys(props.initValue.headers).map((key) => ({ key: key, value: props.initValue!.headers![key] }))
                : [],
       });
+
+      setOldName(props.initValue.name);
    }, [props.initValue]);
 
    return (
       <div className="endpoint-form">
          <div className="d-flex align-items-center justify-content-between">
             <div>Endpoint</div>
-            <div className="d-flex">
-               <div className="btn btn-sm text-info ms-auto" onClick={handleSaveEndpoint}>
-                  Save
-               </div>
-               <div className="btn btn-sm ms-auto" onClick={props.onClose}>
+            <div>
+               <button
+                  className="btn btn-xs btn-outline-info"
+                  disabled={errorOnForm || !state.input.name || !state.input.baseURL}
+                  onClick={oldName ? handleUpdateEndpoint : handleSaveEndpoint}
+               >
+                  {oldName ? "Update" : "Save"}
+               </button>
+               <button className="btn btn-xs btn-sm" onClick={props.onClose}>
                   Cancel
-               </div>
+               </button>
             </div>
          </div>
          <div className="col-11">
@@ -243,6 +285,8 @@ const EndpointEditor = (props: EndpointEditorProps) => {
                />
             </div>
          </div>
+         {errorOnForm ? <div className="text-danger">Endpoint name already exists</div> : null}
+
          <div className="mb-2">Header</div>
          <div className="row">{renderHeaderField()}</div>
          <div className="text-center text-info font-lg">
@@ -253,22 +297,33 @@ const EndpointEditor = (props: EndpointEditorProps) => {
    );
 };
 
-const EndpointViewer = (props: EndpointViewerProps) => {
+const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEditor }: EndpointViewerProps) => {
    const { context, dispatch } = useGlobalContext();
-   const [showDeleteList, setShowDeleteList] = useState<number[]>([]);
 
    const onSelectHandler = (name: string, endpoint: EndpointConfig) => {
-      props.onSelect({ name: name, baseURL: endpoint.baseURL, headers: endpoint.headers });
+      onSelect({ name: name, baseURL: endpoint.baseURL, headers: endpoint.headers });
+   };
+
+   const isUsed = (endpointName: string) => {
+      let configString = JSON.stringify(context.config.mainContent);
+      if (
+         configString.includes(`"type":"request","useEndpoint":"${endpointName}"`) ||
+         configString.includes(`"type":"polling","useEndpoint":"${endpointName}"`)
+      ) {
+         return true;
+      } else {
+         return false;
+      }
    };
 
    const renderEndpoint = () => {
       if (!context.config.endpoints || Object.keys(context.config.endpoints).length === 0)
-         return <small className="text-muted">No Endpoints</small>;
+         return <small className="text-muted">No endpoints configured for APIs</small>;
 
       return Object.keys(context.config.endpoints).map((endpointName, index) => {
          return (
-            <div key={index} className="row">
-               <div className="mb-2 col-10">
+            <div key={index} className="row mb-2">
+               <div className="col-10">
                   <div
                      className="input-group input-group-sm pointer"
                      onClick={() => onSelectHandler(endpointName, context.config.endpoints[endpointName])}
@@ -289,15 +344,34 @@ const EndpointViewer = (props: EndpointViewerProps) => {
                         </span>
                         <span
                            className="pointer font-sm text-danger mx-2 text-hover-highlight"
-                           onClick={() => dispatch({ type: "deleteEndpoint", payload: { name: endpointName } })}
+                           onClick={() => {
+                              dispatch({ type: "deleteEndpoint", payload: { name: endpointName } });
+                              setShowDeleteList(showDeleteList.filter((el) => el !== index));
+                           }}
                         >
                            Delete
                         </span>
                      </>
                   ) : (
-                     <span className="pointer" onClick={() => setShowDeleteList([...showDeleteList, index])}>
-                        {"\u00D7"}
-                     </span>
+                     <WithInfoPopup
+                        enable={isUsed(endpointName)}
+                        PopperComponent={
+                           <div className="d-flex p-2 text-dark" style={{ maxWidth: "800px" }}>
+                              <small>Endpoint referred in the demo content</small>
+                           </div>
+                        }
+                        placement="top"
+                     >
+                        <button
+                           className={`btn btn-sm btn-text pointer${!isUsed(endpointName) ? " text-danger" : ""}`}
+                           disabled={showEditor || isUsed(endpointName)}
+                           onClick={() => {
+                              setShowDeleteList([...showDeleteList, index]);
+                           }}
+                        >
+                           <i className="fal fa-trash-alt"></i>
+                        </button>
+                     </WithInfoPopup>
                   )}
                </div>
             </div>
@@ -311,19 +385,32 @@ const EndpointViewer = (props: EndpointViewerProps) => {
 const Endpoint = () => {
    const [selectedEndpoint, setSelectedEndpoint] = useState<EndpointState>(null);
    const [showEditor, setShowEditor] = useState(false);
+   const [showDeleteList, setShowDeleteList] = useState<number[]>([]);
 
    return (
       <>
          <div className="mb-3">
             Endpoints
-            <span className="mx-3 font-sm text-info pointer text-hover-highlight" onClick={() => setShowEditor(true)}>
+            <button
+               className="mx-3 btn btn-sm btn-text text-info text-hover-highlight"
+               disabled={showEditor || showDeleteList.length > 0}
+               onClick={() => {
+                  setSelectedEndpoint(null);
+                  setShowEditor(true);
+               }}
+            >
                Add
-            </span>
+            </button>
          </div>
          <EndpointViewer
+            showEditor={showEditor}
+            showDeleteList={showDeleteList}
+            setShowDeleteList={setShowDeleteList}
             onSelect={(endpoint) => {
-               setSelectedEndpoint(endpoint);
-               setShowEditor(true);
+               if (!showEditor && showDeleteList.length === 0) {
+                  setSelectedEndpoint(endpoint);
+                  setShowEditor(true);
+               }
             }}
          />
          {showEditor && <EndpointEditor initValue={selectedEndpoint} onClose={() => setShowEditor(false)} />}

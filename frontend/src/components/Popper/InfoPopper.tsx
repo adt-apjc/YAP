@@ -27,6 +27,7 @@ type WithInfoPopupProps = {
    children: React.ReactNode;
    className?: string;
    style?: React.CSSProperties;
+   enable?: boolean;
 };
 
 const WithInfoPopup = (props: WithInfoPopupProps) => {
@@ -51,7 +52,7 @@ const WithInfoPopup = (props: WithInfoPopupProps) => {
          >
             {props.children}
          </span>
-         {showPopper && (
+         {(props.enable === undefined || props.enable === true) && showPopper && (
             <PopperElement ref={setPopperElement} styles={styles} attributes={attributes}>
                {props.PopperComponent}
             </PopperElement>

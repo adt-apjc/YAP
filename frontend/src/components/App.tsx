@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate, HashRouter, Route, Routes, Navigate } from "react-router-dom";
 
 import SideBar from "./Sidebar/SideBar";
@@ -21,7 +20,7 @@ const Home = () => {
    }, []);
 
    return (
-      <React.StrictMode>
+      <>
          <NavigationBar />
          <SideBar />
          {/* main-content div will set the flag for 100% width and 100% height */}
@@ -34,7 +33,7 @@ const Home = () => {
                <MainContents />
             </div>
          </div>
-      </React.StrictMode>
+      </>
    );
 };
 

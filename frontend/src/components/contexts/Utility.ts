@@ -39,7 +39,7 @@ export const getVariableDetails = (request: ActionConfig): VarDetails => {
 
    const regexp = /{{[A-Za-z_-]+[A-Za-z_0-9-]*\}}/g;
 
-   const variablesInUrl = request.url.match(regexp) || [];
+   const variablesInUrl = (request.type !== "ssh-cli" && request.url.match(regexp)) || [];
    for (const item of variablesInUrl) {
       variables.add(item.slice(2, item.length - 2));
    }
