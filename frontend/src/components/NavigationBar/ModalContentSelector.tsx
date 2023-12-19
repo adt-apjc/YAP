@@ -33,10 +33,12 @@ const Settings = (props: { onHide: () => any }) => {
 const ExportConfig = (props: { onHide: () => any }) => {
    const { context } = useGlobalContext();
    const [demoVersion, setDemoVersion] = useState(context.config.demoVersion || "1.0.0");
+   const templateVersion = "1.0.3"; // current template version
 
    const handleExport = () => {
       let config = _.cloneDeep(context.config);
       config.demoVersion = demoVersion;
+      config.templateVersion = templateVersion;
       let blob = new Blob([JSON.stringify(config, null, 2)], { type: "text/plain;charset=utf-8" });
       saveAs(blob, `${config.title || "project"}.json`);
       console.log("export:", config);

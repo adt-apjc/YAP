@@ -24,7 +24,6 @@ const StaticVarEditor = (props: StaticVarEditorProps) => {
    const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
       if ("staticVariables" in context.config && e.target.name === "name") {
          if (props.initValue) {
-            console.log(context.config.staticVariables);
             // updating the endpoint props.initValue.name
             if (e.target.value !== props.initValue.name && e.target.value in context.config.staticVariables!) {
                setErrorOnForm(true);

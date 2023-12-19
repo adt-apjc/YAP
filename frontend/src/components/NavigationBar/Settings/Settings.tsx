@@ -20,7 +20,6 @@ const SettingsTooltipContent = ({ close, setModalShow, setModalType }: SettingsT
       event.stopPropagation();
 
       let file = event.target.files![0];
-      console.log(file);
       if (file) {
          const reader = new FileReader();
          // define callback
@@ -30,7 +29,6 @@ const SettingsTooltipContent = ({ close, setModalShow, setModalType }: SettingsT
             const contentString = reader.result;
             try {
                const config = JSON.parse(contentString as string);
-               console.log("DEBUG", config);
                // load config context
                dispatch({ type: "loadConfig", payload: config });
                importRef.current!.value = "";
