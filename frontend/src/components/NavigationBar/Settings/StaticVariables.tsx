@@ -125,7 +125,8 @@ const StaticVarViewer = ({ onSelect, setShowDeleteList, showDeleteList, showStat
    };
 
    const isUsed = (varName: string) => {
-      if (JSON.stringify(context.config.mainContent).includes(`{{${varName}}}`)) {
+      let configString = JSON.stringify(context.config.mainContent);
+      if (configString.includes(`{{${varName}}}`)) {
          return true;
       } else {
          return false;
@@ -169,16 +170,17 @@ const StaticVarViewer = ({ onSelect, setShowDeleteList, showDeleteList, showStat
                      </>
                   ) : (
                      <WithInfoPopup
+                        enable={isUsed(varName)}
                         PopperComponent={
                            <div className="d-flex p-2 text-dark" style={{ maxWidth: "800px" }}>
-                              <small>{`${isUsed(varName) ? "Variable referred in the demo content" : "Unused variable"}`}</small>
+                              <small>Variable referred in the demo content</small>
                            </div>
                         }
                         placement="top"
                      >
                         <button
-                           className="btn btn-sm btn-text pointer"
-                           disabled={showStaticVarEditor}
+                           className={`btn btn-sm btn-text pointer${!isUsed(varName) ? " text-danger" : ""}`}
+                           disabled={showStaticVarEditor || isUsed(varName)}
                            onClick={() => setShowDeleteList([...showDeleteList, index])}
                         >
                            <i className="fal fa-trash-alt"></i>

@@ -268,20 +268,15 @@ const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEdito
    };
 
    const isUsed = (sSHEndpointName: string) => {
-      if (JSON.stringify(context.config.mainContent).includes(`"type":"ssh-cli","useEndpoint":"${sSHEndpointName}"`)) {
+      let configString = JSON.stringify(context.config.mainContent);
+      if (
+         configString.includes(`"type":"ssh-cli","useEndpoint":"${sSHEndpointName}"`) ||
+         configString.includes(`"inheritFrom":"${sSHEndpointName}"`)
+      ) {
          return true;
       } else {
          return false;
       }
-   };
-
-   const usedEndpointHandler = (endpointName: string, context: ContextState) => {
-      for (const phase in context.config.mainContent) {
-         for (const action of context.config.mainContent[phase].actions) {
-            if (action.type === "ssh-cli" && action.useEndpoint === endpointName) return true;
-         }
-      }
-      return false;
    };
 
    const renderEndpoint = () => {
@@ -324,18 +319,17 @@ const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEdito
                      </>
                   ) : (
                      <WithInfoPopup
+                        enable={isUsed(sSHEndpointName)}
                         PopperComponent={
                            <div className="d-flex p-2 text-dark" style={{ maxWidth: "800px" }}>
-                              <small>{`${
-                                 isUsed(sSHEndpointName) ? "Endpoint referred in the demo content" : "Unused Endpoint"
-                              }`}</small>
+                              <small>Endpoint referred in the demo content</small>
                            </div>
                         }
                         placement="top"
                      >
                         <button
-                           className="btn btn-sm btn-text pointer"
-                           disabled={showEditor || usedEndpointHandler(sSHEndpointName, context)}
+                           className={`btn btn-sm btn-text pointer${!isUsed(sSHEndpointName) ? " text-danger" : ""}`}
+                           disabled={showEditor || isUsed(sSHEndpointName)}
                            onClick={() => {
                               setShowDeleteList([...showDeleteList, index]);
                            }}

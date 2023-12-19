@@ -305,37 +305,15 @@ const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEdito
    };
 
    const isUsed = (endpointName: string) => {
+      let configString = JSON.stringify(context.config.mainContent);
       if (
-         JSON.stringify(context.config.mainContent).includes(`"type":"request","useEndpoint":"${endpointName}"`) ||
-         JSON.stringify(context.config.mainContent).includes(`"type":"polling","useEndpoint":"${endpointName}"`)
+         configString.includes(`"type":"request","useEndpoint":"${endpointName}"`) ||
+         configString.includes(`"type":"polling","useEndpoint":"${endpointName}"`)
       ) {
          return true;
       } else {
          return false;
       }
-   };
-
-   const usedEndpointHandler = (endpointName: string, context: ContextState) => {
-      let usedEndpoint = false;
-
-      for (const phase in context.config.mainContent) {
-         for (const action of context.config.mainContent[phase].actions) {
-            if (action.type === ("request" || "polling") && action.useEndpoint === endpointName) return true;
-         }
-         if ("outcome" in context.config.mainContent[phase]) {
-            context.config.mainContent[phase].outcome!.forEach((outcome) => {
-               // Currently we support a single outcome per step
-               for (const node in outcome.commands) {
-                  for (const command of outcome.commands[node]) {
-                     if (command.type === ("request" || "polling") && command.useEndpoint === endpointName) {
-                        usedEndpoint = true;
-                     }
-                  }
-               }
-            });
-         }
-      }
-      return usedEndpoint;
    };
 
    const renderEndpoint = () => {
@@ -376,18 +354,17 @@ const EndpointViewer = ({ onSelect, setShowDeleteList, showDeleteList, showEdito
                      </>
                   ) : (
                      <WithInfoPopup
+                        enable={isUsed(endpointName)}
                         PopperComponent={
                            <div className="d-flex p-2 text-dark" style={{ maxWidth: "800px" }}>
-                              <small>{`${
-                                 isUsed(endpointName) ? "Endpoint referred in the demo content" : "Unused Endpoint"
-                              }`}</small>
+                              <small>Endpoint referred in the demo content</small>
                            </div>
                         }
                         placement="top"
                      >
                         <button
-                           className="btn btn-sm btn-text pointer"
-                           disabled={showEditor || usedEndpointHandler(endpointName, context)}
+                           className={`btn btn-sm btn-text pointer${!isUsed(endpointName) ? " text-danger" : ""}`}
+                           disabled={showEditor || isUsed(endpointName)}
                            onClick={() => {
                               setShowDeleteList([...showDeleteList, index]);
                            }}
