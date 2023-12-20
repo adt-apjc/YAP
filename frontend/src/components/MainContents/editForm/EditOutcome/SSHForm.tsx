@@ -151,6 +151,7 @@ const AddSSHInfoForm = (props: AddSSHInfoFormProps) => {
    };
 
    const renderSSHEndpoints = () => {
+      if (!context.config.sshCliEndpoints) return null;
       return Object.keys(context.config.sshCliEndpoints).map((epName, i) => {
          return (
             <option key={i} value={epName}>
