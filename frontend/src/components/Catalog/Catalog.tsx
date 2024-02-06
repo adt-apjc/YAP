@@ -5,6 +5,7 @@ import { useGlobalContext } from "../contexts/ContextProvider";
 import helloWorld from "../../config/config.json";
 import CatalogModal from "./CatalogModal";
 import { Modal } from "../../helper/modalHelper";
+import BACKEND_URL from "../../helper/apiURL";
 
 type CatalogDetails = {
    name: string;
@@ -62,7 +63,7 @@ const Card = (props: CardProps) => {
                timeout: 5000, // 5 seconds
             };
 
-            let response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
+            let response = await axios.post(`${BACKEND_URL}/proxy/request`, { ...config });
             // load config context
             dispatch({ type: "loadConfig", payload: response.data });
             setIsDeploying(false);
@@ -246,7 +247,7 @@ const Catalog = () => {
             timeout: 5000, // 5 seconds
          };
 
-         response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...custom_config });
+         response = await axios.post(`${BACKEND_URL}/proxy/request`, { ...custom_config });
 
          if (response && response.status === 200) {
             setDemoCatalog(response.data);
@@ -265,7 +266,7 @@ const Catalog = () => {
             method: "GET",
             timeout: 5000, // 5 seconds
          };
-         response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
+         response = await axios.post(`${BACKEND_URL}/proxy/request`, { ...config });
 
          if (response && response.status === 200) {
             setDemoCatalog(response.data);

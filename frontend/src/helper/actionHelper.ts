@@ -9,6 +9,7 @@ import {
 } from "../components/contexts/ContextTypes";
 import { io } from "socket.io-client";
 import { APIResponse, SSHCLIResponse } from "./apiAction";
+import BACKEND_URL from "./apiURL";
 
 const validateExpect = (expect: ActionExpectObject, response: AxiosResponse) => {
    let failureCause = "";
@@ -174,7 +175,7 @@ export const normalRequest = (actionObject: RestActionConfig, { endpoints, stati
             endpoints[actionObject.useEndpoint].backendRequest ||
             endpoints[actionObject.useEndpoint].backendRequest === undefined
          ) {
-            response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
+            response = await axios.post(`${BACKEND_URL}/proxy/request`, { ...config });
          } else {
             response = await axios(config);
          }
@@ -246,7 +247,7 @@ export const pollingRequest = (actionObject: RestActionConfig, { endpoints, stat
                endpoints[actionObject.useEndpoint].backendRequest ||
                endpoints[actionObject.useEndpoint].backendRequest === undefined
             ) {
-               response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
+               response = await axios.post(`${BACKEND_URL}/proxy/request`, { ...config });
             } else {
                response = await axios(config);
             }

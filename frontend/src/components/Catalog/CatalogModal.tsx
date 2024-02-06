@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
+import BACKEND_URL from "../../helper/apiURL";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useGlobalContext } from "../contexts/ContextProvider";
 
 type CatalogModalProps = {
@@ -26,7 +27,7 @@ const CatalogModal = (props: CatalogModalProps) => {
             timeout: 5000, // 5 seconds timeout
          };
 
-         let response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
+         let response = await axios.post(`${BACKEND_URL}/proxy/request`, { ...config });
          // load config context
          dispatch({ type: "loadConfig", payload: response.data });
          setIsDeploying(false);

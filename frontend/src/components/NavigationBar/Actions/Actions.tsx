@@ -6,6 +6,7 @@ import { useGlobalContext } from "../../contexts/ContextProvider";
 import WithDropdown from "../../Popper/Dropdown";
 import ModalContentSelector from "../ModalContentSelector";
 import { Modal } from "../../../helper/modalHelper";
+import BACKEND_URL from "../../../helper/apiURL";
 
 const ActionTooltipContent = ({ close }: { close: () => void; setModalShow: React.Dispatch<React.SetStateAction<boolean>> }) => {
    const { context, dispatch } = useGlobalContext();
@@ -20,7 +21,7 @@ const ActionTooltipContent = ({ close }: { close: () => void; setModalShow: Reac
       }
       setIsPDFLoading(true);
       try {
-         let pdfBinaryData = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/generate/pdf`, payload, {
+         let pdfBinaryData = await axios.post(`${BACKEND_URL}/generate/pdf`, payload, {
             responseType: "blob",
          });
          let blob = new Blob([pdfBinaryData.data], { type: "application/pdf" });

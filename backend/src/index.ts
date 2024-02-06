@@ -55,8 +55,8 @@ app.use(
    }),
 );
 
-app.route("/proxy/request").post(proxyController);
-app.route("/generate/pdf").post(pdfGenController);
+app.route("/api/proxy/request").post(proxyController);
+app.route("/api/generate/pdf").post(pdfGenController);
 // default 404 invalid route
 app.route("*").all((req, res) => {
    res.status(404).json({ message: "invalid endpoint." });
