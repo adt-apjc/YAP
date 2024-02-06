@@ -5,6 +5,7 @@ import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import { config } from "./contexts/ContextTypes";
 import { useDidUpdateEffect } from "./contexts/CustomHooks";
+import BACKEND_URL from "../helper/apiURL";
 
 const fitAddon = new FitAddon();
 
@@ -36,7 +37,7 @@ const SSHContainer = () => {
       });
    }, []);
 
-   useDidUpdateEffect(() => {
+   useEffect(() => {
       let queryParams = new URLSearchParams(location.search);
       let selectedElementId = queryParams.get("selectedElementId")!;
       let stepId = queryParams.get("stepId")!;
@@ -57,7 +58,7 @@ const SSHContainer = () => {
 
       document.title = `SSH connection ${hostname}`;
 
-      const socket = io(process.env.REACT_APP_API_URL!, {
+      const socket = io(BACKEND_URL, {
          query: { hostname, username, port, [sshkey ? "sshkey" : "password"]: sshkey ? sshkey : password },
       });
       socketRef.current = socket;

@@ -100,7 +100,7 @@ io.on("connection", (socket) => {
          conn.shell(function (err, stream) {
             if (err) return socket.emit("data", "\r\n*** SSH SHELL ERROR: " + err.message + " ***\r\n");
             socket.on("data", function (data) {
-               console.log("writing data ", data);
+               console.log(`${socket.id} writing data `, data);
                stream.write(data);
             });
             socket.on("sshdisconnect", function () {
@@ -110,7 +110,7 @@ io.on("connection", (socket) => {
             stream
                .on("data", function (d: BinaryData) {
                   socket.emit("data", d.toString());
-                  console.log(d.toString());
+                  console.log(`${socket.id}`, d.toString());
                })
                .on("close", function () {
                   console.log("logout by console");

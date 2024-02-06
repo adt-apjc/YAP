@@ -27,7 +27,7 @@ const CatalogModal = (props: CatalogModalProps) => {
             timeout: 5000, // 5 seconds timeout
          };
 
-         let response = await axios.post(`${BACKEND_URL}/proxy/request`, { ...config });
+         let response = await axios.post(`${BACKEND_URL}/api/proxy/request`, { ...config });
          // load config context
          dispatch({ type: "loadConfig", payload: response.data });
          setIsDeploying(false);

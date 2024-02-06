@@ -4,9 +4,9 @@ services:
    frontend:
       build:
          context: .
-         dockerfile: ./frontend/Dockerfile-ssl
+         dockerfile: ./frontend/Dockerfile-prod
       ports:
-         - 80:3000
+         - 3000:3000
       restart: unless-stopped
    backend:
       build:

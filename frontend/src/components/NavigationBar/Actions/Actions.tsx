@@ -21,7 +21,7 @@ const ActionTooltipContent = ({ close }: { close: () => void; setModalShow: Reac
       }
       setIsPDFLoading(true);
       try {
-         let pdfBinaryData = await axios.post(`${BACKEND_URL}/generate/pdf`, payload, {
+         let pdfBinaryData = await axios.post(`${BACKEND_URL}/api/generate/pdf`, payload, {
             responseType: "blob",
          });
          let blob = new Blob([pdfBinaryData.data], { type: "application/pdf" });
