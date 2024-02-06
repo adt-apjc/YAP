@@ -289,6 +289,7 @@ const Catalog = () => {
       // filtered catalog based on searchKey
       // eslint-disable-next-line
       const searchResult = fullDemoCatalog.filter((demo) => {
+         if (!demo.name) return;
          if (
             demo.name.toLowerCase().includes(searchKey) ||
             demo.labels.reduce((accumulator, label) => accumulator || label.toLowerCase().includes(searchKey), false)

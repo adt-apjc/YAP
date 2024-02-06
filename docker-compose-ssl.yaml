@@ -7,8 +7,6 @@ services:
          dockerfile: ./frontend/Dockerfile-ssl
       ports:
          - 80:3000
-      volumes:
-         - ./frontend/my-public-assets:/app/public/my-assets
       restart: unless-stopped
    backend:
       build:
