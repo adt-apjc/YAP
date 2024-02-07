@@ -38,8 +38,10 @@ const Home = () => {
 };
 
 const App = () => {
-   document.title = "Workflow Demo";
-
+   useEffect(() => {
+      console.log("env:", process.env);
+      document.title = "Workflow Demo";
+   }, []);
    return (
       <ContextProvider>
          <HashRouter>

@@ -46,14 +46,6 @@ Step 4 - Build and run YAP container (remove the -d to run interactively).
 docker compose up  -d --build
 ```
 
-Step 4 (alternative) - Considering the optimised build when deploying YAP as a shared service would be a preferred option to improve performance.
-
-The current docker-compose-prod.yaml exposes YAP on port 80 and leverages nginx to serve the application.
-You can run this build version on your local YAP deployment but remember that they will take longer to build and you lose the option to map a local folter to serve your local assets.
-
-```
-docker compose -f docker-compose-prod.yaml up -d  --build
-```
 Note: please disregard the following message if returned by docker compose.
 
 ```

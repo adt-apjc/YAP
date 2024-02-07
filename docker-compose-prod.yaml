@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+   frontend:
+      build:
+         context: .
+         dockerfile: ./frontend/Dockerfile-prod
+      ports:
+         - 3000:3000
+      restart: unless-stopped
+   backend:
+      build:
+         context: ./backend
+      ports:
+         - 5001:5001
+      restart: unless-stopped

@@ -5,6 +5,7 @@ import { useGlobalContext } from "../contexts/ContextProvider";
 import helloWorld from "../../config/config.json";
 import CatalogModal from "./CatalogModal";
 import { Modal } from "../../helper/modalHelper";
+import BACKEND_URL from "../../helper/apiURL";
 
 type CatalogDetails = {
    name: string;
@@ -62,7 +63,7 @@ const Card = (props: CardProps) => {
                timeout: 5000, // 5 seconds
             };
 
-            let response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
+            let response = await axios.post(`${BACKEND_URL}/api/proxy/request`, { ...config });
             // load config context
             dispatch({ type: "loadConfig", payload: response.data });
             setIsDeploying(false);
@@ -215,28 +216,6 @@ const Catalog = () => {
    const fetchDemoCatalog = async () => {
       let response;
 
-      // As first option YAP tries to fetch a JSON catalog configuration file called demoCatalog.json, stored locally in the my-public-assets volume that is published by the frontend as my-assets/.
-      // Something like http://localhost:4000/my-assets/devCatalog.json when testing locally
-
-      try {
-         setLoading(true);
-
-         response = await axios({
-            baseURL: process.env.PUBLIC_URL?.concat("/my-assets/demoCatalog.json"),
-            method: "GET",
-         });
-
-         if (response && response.status === 200) {
-            setDemoCatalog(response.data);
-            setLoading(false);
-            return;
-         }
-      } catch (e) {
-         console.log("Info - There is no demoCatalog.json in my-assets");
-      }
-
-      // If there was no local catalog, as second option YAP tries to fetch the JSON catalog based on the env variable REACT_APP_CATALOG.
-
       try {
          setLoading(true);
 
@@ -246,7 +225,7 @@ const Catalog = () => {
             timeout: 5000, // 5 seconds
          };
 
-         response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...custom_config });
+         response = await axios.post(`${BACKEND_URL}/api/proxy/request`, { ...custom_config });
 
          if (response && response.status === 200) {
             setDemoCatalog(response.data);
@@ -257,6 +236,28 @@ const Catalog = () => {
          console.log("Info - There is no REACT_APP_CATALOG variable or can not access the proposed URL");
       }
 
+      // YAP tries to fetch a JSON catalog configuration file called demoCatalog.json, stored locally in the my-public-assets volume that is published by the frontend as my-assets/.
+      // Something like http://localhost:4000/my-assets/devCatalog.json when testing locally
+      // ******** this option is only available in development mode ********
+      if (process.env.NODE_ENV === "development") {
+         try {
+            setLoading(true);
+
+            response = await axios({
+               baseURL: process.env.PUBLIC_URL?.concat("/my-assets/demoCatalog.json"),
+               method: "GET",
+            });
+
+            if (response && response.status === 200) {
+               setDemoCatalog(response.data);
+               setLoading(false);
+               return;
+            }
+         } catch (e) {
+            console.log("Info - There is no demoCatalog.json in my-assets");
+         }
+      }
+
       // As third option, YAP tries to load from the YAP-Zoo catalog. This works when YAP has access to the Cisco network.
 
       try {
@@ -265,7 +266,7 @@ const Catalog = () => {
             method: "GET",
             timeout: 5000, // 5 seconds
          };
-         response = await axios.post(`${process.env.REACT_APP_API_URL!.replace(/\/+$/, "")}/proxy/request`, { ...config });
+         response = await axios.post(`${BACKEND_URL}/proxy/request`, { ...config });
 
          if (response && response.status === 200) {
             setDemoCatalog(response.data);
@@ -288,6 +289,7 @@ const Catalog = () => {
       // filtered catalog based on searchKey
       // eslint-disable-next-line
       const searchResult = fullDemoCatalog.filter((demo) => {
+         if (!demo.name) return;
          if (
             demo.name.toLowerCase().includes(searchKey) ||
             demo.labels.reduce((accumulator, label) => accumulator || label.toLowerCase().includes(searchKey), false)
