@@ -8,7 +8,7 @@ import WithInfoPopup from "../../Popper/InfoPopper";
 import WithDropdown from "../../Popper/Dropdown";
 import RestResponseDetails from "./RestResponseDetails";
 import SSHResponseDetails from "./SSHResponseDetails";
-import { SSHActionConfig, StepDetails } from "../../contexts/ContextTypes";
+import { StepDetails } from "../../contexts/ContextTypes";
 import { APIResponse, SSHCLIResponse } from "../../../helper/apiAction";
 import { CopyDestSelector } from "./CopyDestSelector";
 

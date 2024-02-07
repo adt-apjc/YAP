@@ -1,5 +1,3 @@
-import { SSHConfig } from "../../../contexts/ContextTypes";
-
 type PKFileUploaderProps<T> = {
    disabled?: boolean;
    filename?: string;

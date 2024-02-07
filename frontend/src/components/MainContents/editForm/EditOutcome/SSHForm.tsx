@@ -164,11 +164,13 @@ const AddSSHInfoForm = (props: AddSSHInfoFormProps) => {
    useEffect(() => {
       if (!props.sshInfo.keyFilename) return;
       props.setSSHinfo((prev) => ({ ...prev, password: "" }));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [props.sshInfo.keyFilename]);
 
    useEffect(() => {
       if (!props.sshInfo.inheritFrom) return;
       props.setSSHinfo((prev) => ({ ...prev, hostname: "", username: "", password: "", port: "", sshkey: "", keyFilename: "" }));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [props.sshInfo.inheritFrom]);
 
    useEffect(() => {
