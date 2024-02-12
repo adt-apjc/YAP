@@ -4,7 +4,7 @@
    "title": "My New Demo",
    "sidebar": [
       {
-         "name": "stage1",
+         "name": "step_1",
          "label": "Stage 1"
       }
    ],
@@ -63,7 +63,7 @@
          "actions": [],
          "postCheck": []
       },
-      "stage1": {
+      "step_1": {
          "description": "A short introduction about your demo.",
          "continueOnFail": false,
          "prefaceRef": 1,
