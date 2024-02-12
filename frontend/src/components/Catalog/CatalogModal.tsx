@@ -5,10 +5,11 @@ import rehypeRaw from "rehype-raw";
 import BACKEND_URL from "../../helper/apiURL";
 import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../contexts/ContextProvider";
+import { CatalogDetails } from "./CatalogTypes";
 
 type CatalogModalProps = {
    onHide: () => void;
-   params: any;
+   params: CatalogDetails;
 };
 
 const CatalogModal = (props: CatalogModalProps) => {
@@ -27,7 +28,21 @@ const CatalogModal = (props: CatalogModalProps) => {
             timeout: 5000, // 5 seconds timeout
          };
 
-         let response = await axios.post(`${BACKEND_URL}/api/proxy/request`, { ...config });
+         let response = await axios.post(
+            `${BACKEND_URL}/api/proxy/request`,
+            { ...config },
+            {
+               headers: {
+                  "Cache-Control": "no-cache",
+                  Pragma: "no-cache",
+                  Expires: "0",
+               },
+            },
+         );
+         if (!response.data.demoVersion) {
+            console.log("response", response.data);
+            throw Error("Received invalid configuation format.");
+         }
          // load config context
          dispatch({ type: "loadConfig", payload: response.data });
          setIsDeploying(false);
@@ -89,7 +104,7 @@ const CatalogModal = (props: CatalogModalProps) => {
             {isFailing && (
                <div aria-hidden="true" style={{ color: "#CE2029" }}>
                   <i className="far fa-exclamation-triangle me-2" />
-                  Failing to load the demo configuration
+                  Received invalid configuation format.
                </div>
             )}
             <button type="button" className="btn btn-sm" onClick={props.onHide}>

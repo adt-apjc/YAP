@@ -26,6 +26,7 @@ export const useIntersection = (element: React.RefObject<HTMLElement>, rootMargi
       element.current && observer.observe(element.current); // start observing
 
       return () => observer.disconnect();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
    return isVisible;

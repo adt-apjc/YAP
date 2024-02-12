@@ -150,6 +150,7 @@ const SSHResponseDetails = (props: SHHResponseDetailProps) => {
       return () => {
          window.removeEventListener("resize", handleResize);
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
    if (!props.show) return null;

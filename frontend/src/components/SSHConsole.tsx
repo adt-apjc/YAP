@@ -4,7 +4,6 @@ import { Socket, io } from "socket.io-client";
 import { Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import { config } from "./contexts/ContextTypes";
-import { useDidUpdateEffect } from "./contexts/CustomHooks";
 import BACKEND_URL from "../helper/apiURL";
 
 const fitAddon = new FitAddon();

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
-import { ContextState, EndpointConfig } from "../../contexts/ContextTypes";
+import { EndpointConfig } from "../../contexts/ContextTypes";
 import _ from "lodash";
 import WithInfoPopup from "../../Popper/InfoPopper";
 

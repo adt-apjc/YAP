@@ -6,27 +6,20 @@ import helloWorld from "../../config/config.json";
 import CatalogModal from "./CatalogModal";
 import { Modal } from "../../helper/modalHelper";
 import BACKEND_URL from "../../helper/apiURL";
-
-type CatalogDetails = {
-   name: string;
-   version: string;
-   objective: string;
-   description: string;
-   labels: string[];
-   path: string;
-   iconPath: string;
-};
+import { CatalogDetails } from "./CatalogTypes";
 
 type CardProps = {
    catalog: CatalogDetails;
 };
 
-const DefaultDemos = [
+const DefaultDemos: CatalogDetails[] = [
    {
       name: "My Demo",
       version: "",
       objective: `Select "Create New" button to load an empty workspace. Select "Import" button to load personal demo config file.`,
       description: "",
+      useCases: "",
+      requirements: "",
       labels: [],
       path: "",
       iconPath: "",
@@ -37,6 +30,8 @@ const DefaultDemos = [
       objective:
          " This basic Hello World demo describes the Yet Another Presentation tool (YAP) functionalities by orchestrating a simple project in a safe mockup environment",
       description: "",
+      useCases: "",
+      requirements: "",
       labels: ["YAP"],
       path: "",
       iconPath: "",
@@ -63,7 +58,17 @@ const Card = (props: CardProps) => {
                timeout: 5000, // 5 seconds
             };
 
-            let response = await axios.post(`${BACKEND_URL}/api/proxy/request`, { ...config });
+            let response = await axios.post(
+               `${BACKEND_URL}/api/proxy/request`,
+               { ...config },
+               {
+                  headers: {
+                     "Cache-Control": "no-cache",
+                     Pragma: "no-cache",
+                     Expires: "0",
+                  },
+               },
+            );
             // load config context
             dispatch({ type: "loadConfig", payload: response.data });
             setIsDeploying(false);
@@ -225,7 +230,17 @@ const Catalog = () => {
             timeout: 5000, // 5 seconds
          };
 
-         response = await axios.post(`${BACKEND_URL}/api/proxy/request`, { ...custom_config });
+         response = await axios.post(
+            `${BACKEND_URL}/api/proxy/request`,
+            { ...custom_config },
+            {
+               headers: {
+                  "Cache-Control": "no-cache",
+                  Pragma: "no-cache",
+                  Expires: "0",
+               },
+            },
+         );
 
          if (response && response.status === 200) {
             setDemoCatalog(response.data);
@@ -266,7 +281,17 @@ const Catalog = () => {
             method: "GET",
             timeout: 5000, // 5 seconds
          };
-         response = await axios.post(`${BACKEND_URL}/proxy/request`, { ...config });
+         response = await axios.post(
+            `${BACKEND_URL}/api/proxy/request`,
+            { ...config },
+            {
+               headers: {
+                  "Cache-Control": "no-cache",
+                  Pragma: "no-cache",
+                  Expires: "0",
+               },
+            },
+         );
 
          if (response && response.status === 200) {
             setDemoCatalog(response.data);
@@ -289,12 +314,12 @@ const Catalog = () => {
       // filtered catalog based on searchKey
       // eslint-disable-next-line
       const searchResult = fullDemoCatalog.filter((demo) => {
-         if (!demo.name) return;
+         if (!demo.name) return false;
          if (
             demo.name.toLowerCase().includes(searchKey) ||
             demo.labels.reduce((accumulator, label) => accumulator || label.toLowerCase().includes(searchKey), false)
          )
-            return demo;
+            return true;
       });
 
       if (searchResult.length === 0)
@@ -354,7 +379,7 @@ const Catalog = () => {
          </div>
 
          <Modal show={showModal} onHide={() => setShowModal(false)} width="50%">
-            <CatalogModal onHide={() => setShowModal(false)} params={modalParams} />
+            <CatalogModal onHide={() => setShowModal(false)} params={modalParams as CatalogDetails} />
          </Modal>
       </div>
    );

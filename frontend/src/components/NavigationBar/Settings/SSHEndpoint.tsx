@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../contexts/ContextProvider";
-import { ContextState, SSHCliEndpointConfig } from "../../contexts/ContextTypes";
-import _ from "lodash";
+import { SSHCliEndpointConfig } from "../../contexts/ContextTypes";
 import WithInfoPopup from "../../Popper/InfoPopper";
 import PKFileUploader from "../../MainContents/editForm/EditOutcome/PKFileUploader";
 
